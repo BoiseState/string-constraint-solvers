@@ -1,9 +1,5 @@
 package extendedSolvers;
 
-import java.util.HashMap;
-
-import com.sun.jna.NativeLibrary;
-
 import edu.ucsb.cs.www.vlab.stranger.PerfInfo;
 import edu.ucsb.cs.www.vlab.stranger.StrangerAutomaton;
 
@@ -14,12 +10,6 @@ import edu.ucsb.cs.www.vlab.stranger.StrangerAutomaton;
  */
 public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	
-	StrangerAutomaton last = null;
-	int lastId=-1;
-	
-	StrangerAutomaton lastArg = null;
-	int lastArgId = -1;
-	
 	public EStranger(){
 		//Set up Stranger
 		System.setProperty("jna.library.path","/usr/local/lib/libstranger.so");
@@ -29,8 +19,6 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		StrangerAutomaton.traceID = 0;
 		String fileName = "traceFile"; 
 		StrangerAutomaton.openCtraceFile(fileName);
-		
-		symbolicStringMap = new HashMap<Integer, StrangerAutomaton>();
 	}
 	
 	public void newSymbolicString(int id){
@@ -140,21 +128,6 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		return isSingleton(id);
 	}
 	
-	public void revertLastPredicate(){
-		if(last == null){
-			throw new IllegalStateException();
-		}
-		symbolicStringMap.put(lastId, last);
-		last = null;
-		lastId = -1;
-		
-		if(lastArg !=null){
-			symbolicStringMap.put(lastArgId, lastArg);
-			lastArg = null;
-			lastArgId = -1;
-		}
-	}
-	
 	public String getSatisfiableResult(int id){
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(id);
 		return baseAutomaton.generateSatisfyingExample();
@@ -202,7 +175,6 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 			automaton=StrangerAutomaton.makeAnyStringL1ToL2(0, max);
 		}
 		else if(baseAutomation.generateSatisfyingExample()!=null && baseAutomation.generateSatisfyingExample().startsWith("   ")){
-			//TODO: find longest length and restrict this string to it
 			automaton = StrangerAutomaton.makeAnyString();
 		}
 		else if(StrangerAutomaton.makeAnyString().checkInclusion(baseAutomation)){
@@ -290,12 +262,9 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	}
 	
 	private void assertCondition(boolean result, int base, int arg, StrangerAutomaton x){
+		setLast(base, arg);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
-		last = baseAutomaton;
-		lastId = base;
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
-		lastArg = argAutomaton;
-		lastArgId = arg;
 		
 		if(result){
 			baseAutomaton=baseAutomaton.intersect(x);
@@ -340,12 +309,9 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	}
 	
 	public void equals(boolean result, int base, int arg){
+		setLast(base, arg);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
-		last = baseAutomaton;
-		lastId = base;
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
-		lastArg = argAutomaton;
-		lastArgId = arg;
 		
 		if(result){
 			baseAutomaton=baseAutomaton.intersect(argAutomaton);
@@ -366,12 +332,9 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	}
 	
 	public void equalsIgnoreCase(boolean result, int base, int arg){
+		setLast(base, arg);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
-		last = baseAutomaton;
-		lastId = base;
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
-		lastArg = argAutomaton;
-		lastArgId = arg;
 		
 		baseAutomaton=baseAutomaton.equalsIgnoreCase(argAutomaton, result);
 		
@@ -380,9 +343,9 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	}
 	
 	public void isEmpty(boolean result, int base){
+		setLast(base, -1);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
-		last = baseAutomaton;
-		lastId = base;
+
 		if(result){
 			baseAutomaton=baseAutomaton.intersect(StrangerAutomaton.makeEmptyString());
 		}
@@ -423,5 +386,9 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		value=value.replace((char)65533, (char)newMap);
 
 		return value;
+	}
+
+	@Override
+	public void shutDown() {		
 	}
 }

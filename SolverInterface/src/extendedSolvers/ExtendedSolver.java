@@ -1,5 +1,6 @@
 package extendedSolvers;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -10,7 +11,12 @@ import java.util.Map;
  */
 public abstract class ExtendedSolver<T> {
 	
-	Map<Integer, T> symbolicStringMap;
+	protected Map<Integer, T> symbolicStringMap = new HashMap<Integer, T>();
+	protected T last = null;
+	protected T lastArg = null;
+	
+	protected int lastId = -1;
+	protected int lastArgId = -1;
 	
 	/**
 	 * Used to check if the values involved are capable of being used in the comming operations.
@@ -210,13 +216,7 @@ public abstract class ExtendedSolver<T> {
 	 * @param base represents calling string
 	 */
 	public abstract void isEmpty(boolean result, int base);
-	
-	/**
-	 * Used to undo the last predicate applied. Useful for checking 
-	 * if the branch is satisfiable without actually applying the predicate.
-	 */
-	public abstract void revertLastPredicate();
-	
+
 	/**
 	 * Gets a statisfiable result for the symbolic string
 	 * @param id represents string to test
@@ -280,4 +280,51 @@ public abstract class ExtendedSolver<T> {
 			return true;
 		return false;
 	}
+	
+	/**
+	 * Sets the last base and argument for reverting the last predicate.
+	 * @param base id of the current base.
+	 * @param arg id of the current arg
+	 */
+	protected void setLast(int base, int arg) {
+		last = symbolicStringMap.get(base);
+		lastId = base;
+		if(arg > 0) {
+			lastArg = symbolicStringMap.get(arg);
+			lastArgId = arg;
+		}
+	}
+	
+	/**
+	 * Used to undo the last predicate applied. Useful for checking 
+	 * if the branch is satisfiable without actually applying the predicate.
+	 */
+	public void revertLastPredicate(){
+		if(last == null){
+			throw new IllegalStateException();
+		}
+		symbolicStringMap.put(lastId, last);
+		last = null;
+		lastId = -1;
+		
+		if(lastArg !=null){
+			symbolicStringMap.put(lastArgId, lastArg);
+			lastArg = null;
+			lastArgId = -1;
+		}
+	}
+
+	/**
+	 * Used to get the value currently stored in the symbolic string map for the given id.
+	 * @param id id used to get the value to return.
+	 * @return
+	 */
+	public T getValue(int id) {
+		return symbolicStringMap.get(id);
+	}
+
+	/**
+	 * Used when a solver requires some sort of shut down task. For example EZ3-str needs to shut down its executor
+	 */
+	public abstract void shutDown();
 }

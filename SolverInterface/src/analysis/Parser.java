@@ -15,7 +15,7 @@ public class Parser {
 	ExtendedSolver solver;
 	Map<Integer, String> actualVals;
 	
-	private static final boolean DEBUG = false;
+	private boolean debug = false;
 	
 	public Parser(ExtendedSolver solver) {
 		this.solver = solver;
@@ -23,8 +23,12 @@ public class Parser {
 		System.out.println("SING\tTSAT\tFSAT\tDISJOINT");
 	}
 	
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+	
 	public void addRoot(String value, String actualValue, int id) {
-		if(DEBUG){
+		if(debug){
 			System.out.println("Root: " + value);
 		}
 		if(actualValue !=null){
@@ -45,7 +49,7 @@ public class Parser {
 	public void addOperation(String string, String actualVal, int id,
 			HashMap<String, Integer> sourceMap) {
 
-		if(DEBUG){
+		if(debug){
 			System.out.println("Operation: " + string);
 		}
 		
@@ -209,12 +213,31 @@ public class Parser {
 
 	public void addEnd(String string, String actualVal, int id,
 			HashMap<String, Integer> sourceMap) {
-		if(DEBUG){
+		if(debug){
 			System.out.println("End: " + string);
 		}
 		
 		actualVal= solver.replaceExcapes(actualVal);
 		actualVals.put(id, actualVal);
+		
+		if(debug){			
+			if(sourceMap.containsKey("t")) {
+				int base = sourceMap.get("t");
+				if(!solver.isSound(base, actualVal)) {
+					System.err.println("Base not sound:");
+					System.err.println(solver.getValue(base));
+					throw new IllegalArgumentException("Invalid base in solver");
+				}
+			}
+			if(sourceMap.containsKey("s1")) {
+				int arg = sourceMap.get("s1");
+				if(!solver.isSound(arg, actualVal)) {
+					System.err.println("Arg not sound:");
+					System.err.println(solver.getValue(arg));
+					throw new IllegalArgumentException("Invalid arg in solver");
+				}
+			}
+		}
 
 		String fName=string.split("!!")[0];
 
@@ -228,8 +251,8 @@ public class Parser {
 			HashMap<String, Integer> sourceMap){
 		int base = sourceMap.get("t");
 		String stats = "";
-		if(solver.isSingleton(base) && (sourceMap.get("s1")==null || 
-				solver.isSingleton(sourceMap.get("s1"))))
+		if(solver.isSingleton(base, actualVal) && (sourceMap.get("s1")==null || 
+				solver.isSingleton(sourceMap.get("s1"), actualVal)))
 			stats += "true\t";
 		else
 			stats += "false\t";
@@ -306,8 +329,7 @@ public class Parser {
 		solver.remove(id);
 	}
 
-	public void finishUp() {
-		// TODO Auto-generated method stub
-		
+	public void shutDown() {
+		solver.shutDown();
 	}
 }

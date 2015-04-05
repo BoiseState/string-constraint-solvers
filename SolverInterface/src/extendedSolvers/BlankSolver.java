@@ -192,4 +192,10 @@ public class BlankSolver extends ExtendedSolver<String>{
 		return false;
 	}
 
+	@Override
+	public void shutDown() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -23,24 +23,29 @@ import org.jgrapht.DirectedGraph;
 import stringSymbolic.SymbolicEdge;
 import extendedSolvers.BlankSolver;
 import extendedSolvers.EStranger;
+import extendedSolvers.EZ3Str;
 
 public class SolveMain {
 
 	public static void main(String[] args) {
 		String fileName="../graphs/compact1.ser";
 		String solverName="estranger";
-
+		boolean debug = false;
+		
 		if(args.length>0){
 			LinkedList<String> list = new LinkedList<String>(Arrays.asList(args));
 			
 			String options=list.removeLast();
 			if(options.startsWith("-")){
-				if(options.contains("u")){
-					System.out.println("Usage: <graph file> <solver name> (-<solvers>(s) <usage>u)");
-					System.out.println("Example: sootOutput/graph.ser StrangerSolver -td");
+				if(options.contains("u") || options.contains("h")){
+					System.out.println("Usage: <graph file> <solver name> (-<solvers>(s) <usage>u <debugMode>d)");
+					System.out.println("Example: sootOutput/graph.ser StrangerSolver -sd");
 				}
 				if(options.contains("s")){
-					System.out.println("Solvers: EStranger");
+					System.out.println("Solvers: EStranger EZ3Str");
+				}
+				if(options.contains("d")){
+					debug = true;
 				}
 			}else{
 				list.addLast(options);
@@ -72,10 +77,16 @@ public class SolveMain {
 	      }
 	      Parser parser=null;
 	      String lc =solverName.toLowerCase();
-	      if(lc.equals("blanksolver"))
+	      if(lc.equals("blanksolver")) {
 	    	  parser=new Parser(new BlankSolver());
-	      else
+	      }
+	      else if(lc.equals("ez3str")) {
+	    	  parser = new Parser(new EZ3Str(5000, "/usr/local/bin/Z3-str/Z3-str.py", "str", "tempZ3Str"));
+	      }
+	      else {
 	    	  parser=new Parser(new EStranger());
+	      }
+	      parser.setDebug(debug);
 	      runSolver(graph, parser);
 	}
 	/**
@@ -168,6 +179,6 @@ public class SolveMain {
 				 processedSet.add(first);
 			 }
 		 }
-		 parser.finishUp();
+		 parser.shutDown();
 	 }
 }
