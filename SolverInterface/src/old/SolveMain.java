@@ -30,8 +30,9 @@ public class SolveMain {
 
 	/**
 	 * @param args See README in source file or Usage: print statement using "-u".
+	 * @throws Exception 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		String fileName="../sootOutput/" +
 				"graph.ser";
 		String solverName="JSASolver";
@@ -88,8 +89,17 @@ public class SolveMain {
 	      }
 	      Solver solve=null;
 	      String lc =solverName.toLowerCase();
-	      if(solverName.toLowerCase().equals("z3strsolver"))
+	      if(lc.equals("z3strsolver"))
 	    	  solve=new Z3StrSolver(true, properties, tempFile);
+	      else if(solverName.toLowerCase().equals("jsasolver")) {
+	    	  solve = new JSASolver(true, properties, tempFile);
+	      }
+	      else if(lc.equals("eclipsesolver")) {
+	    	  solve = new ECLIPSESolver(true, properties, tempFile);
+	      }
+	      else if(lc.equals("combinedsatanalysis")) {
+	    	  solve = new CombinedSatAnalysis(properties, tempFile);
+	      }
 	      else {
 	    	  solve=new StrangerSolver(true, properties, tempFile);
 	      }
