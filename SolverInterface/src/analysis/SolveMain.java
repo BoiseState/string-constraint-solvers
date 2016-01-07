@@ -22,6 +22,7 @@ import org.jgrapht.DirectedGraph;
 
 import stringSymbolic.SymbolicEdge;
 import extendedSolvers.BlankSolver;
+import extendedSolvers.ConcreteSolver;
 import extendedSolvers.EStranger;
 import extendedSolvers.EZ3Str;
 
@@ -77,14 +78,17 @@ public class SolveMain {
 	      }
 	      Parser parser=null;
 	      String lc =solverName.toLowerCase();
+	      
 	      if(lc.equals("blanksolver")) {
 	    	  parser=new Parser(new BlankSolver());
 	      }
 	      else if(lc.equals("ez3str")) {
 	    	  parser = new Parser(new EZ3Str(5000, "/usr/local/bin/Z3-str/Z3-str.py", "str", "tempZ3Str"));
 	      }
-	      else {
+	      else if(lc.equals("strangersolver")){
 	    	  parser=new Parser(new EStranger());
+	      } else if (lc.equals("concretesolver")){
+	    	  parser = new Parser(new ConcreteSolver());
 	      }
 	      parser.setDebug(debug);
 	      runSolver(graph, parser);

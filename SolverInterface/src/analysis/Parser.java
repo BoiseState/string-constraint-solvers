@@ -15,7 +15,7 @@ public class Parser {
 	ExtendedSolver solver;
 	Map<Integer, String> actualVals;
 	
-	private boolean debug = false;
+	private boolean debug = true;
 	
 	public Parser(ExtendedSolver solver) {
 		this.solver = solver;
@@ -50,7 +50,7 @@ public class Parser {
 			HashMap<String, Integer> sourceMap) {
 
 		if(debug){
-			System.out.println("Operation: " + string);
+			System.out.println("Operation: " + string + " " + actualVal + " " + id + " " + sourceMap);
 		}
 		
 		actualVal= solver.replaceExcapes(actualVal);
