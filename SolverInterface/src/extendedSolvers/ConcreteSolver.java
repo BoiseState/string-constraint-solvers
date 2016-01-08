@@ -1,5 +1,6 @@
 package extendedSolvers;
 
+import analysis.Parser;
 import stringRandom.RandomString;
 
 
@@ -7,10 +8,12 @@ public class ConcreteSolver extends ExtendedSolver<String> {
 
 	@Override
 	public void newSymbolicString(int id) {
-		System.out.println("Sybm " + id);
+		System.out.println("Symb " + id);
 		//in the concrete solver this should be substituted for the
 		//concrete string with the next value to analyze
-		String s = RandomString.randomString();
+		//String s = RandomString.randomString();
+		//get actual value for now
+		String s = Parser.actualVals.get(id);
 		System.out.println(id + " - " + s);
 		symbolicStringMap.put(id, s);
 
@@ -18,7 +21,7 @@ public class ConcreteSolver extends ExtendedSolver<String> {
 
 	@Override
 	public void newConcreteString(int id, String string) {
-		System.out.println("Concr " + id);
+		System.out.println("Concr " + id + " " + string);
 		symbolicStringMap.put(id, string);
 
 	}
@@ -32,7 +35,9 @@ public class ConcreteSolver extends ExtendedSolver<String> {
 
 	@Override
 	public void propagateSymbolicString(int id, int base) {
-		//don't think needs to be implemented
+		//take the value of base and put it into id
+		String baseStr = symbolicStringMap.get(base);
+		symbolicStringMap.put(id, baseStr);
 
 	}
 
@@ -168,7 +173,7 @@ public class ConcreteSolver extends ExtendedSolver<String> {
 		String baseStr = symbolicStringMap.get(base);
 		String argOneStr = symbolicStringMap.get(argOne);
 		String argTwoStr = symbolicStringMap.get(argTwo);
-		baseStr.replace(argOneStr, argTwoStr);
+		symbolicStringMap.put(id, baseStr.replace(argOneStr, argTwoStr));
 
 	}
 
@@ -177,6 +182,7 @@ public class ConcreteSolver extends ExtendedSolver<String> {
 	 */
 	@Override
 	public void contains(boolean result, int base, int arg) {
+		setLast(base,arg);
 		String baseStr = symbolicStringMap.get(base);
 		String argStr = symbolicStringMap.get(arg);
 
@@ -188,61 +194,49 @@ public class ConcreteSolver extends ExtendedSolver<String> {
 		//if the current result is different
 		//from the result of the actual trace
 		//then set the base to null
-		if(result != baseStr.contains(argStr)){
-			symbolicStringMap.put(base, null);
-		}
+		setToNull(result,baseStr.contains(argStr),base);
 	}
 
 	@Override
 	public void endsWith(boolean result, int base, int arg) {
+		setLast(base,arg);
 		String baseStr = symbolicStringMap.get(base);
 		String argStr = symbolicStringMap.get(arg);
-		if(result != baseStr.endsWith(argStr)){
-			symbolicStringMap.put(base, null);
-		}
-
+		setToNull(result,baseStr.endsWith(argStr),base);
 	}
 
 	@Override
 	public void startsWith(boolean result, int base, int arg) {
+		setLast(base,arg);
 		String baseStr = symbolicStringMap.get(base);
 		String argStr = symbolicStringMap.get(arg);
-		result = baseStr.startsWith(argStr);
-		if(!result){
-			symbolicStringMap.put(base, null);
-		}
-
+		setToNull(result,baseStr.startsWith(argStr),base);
 	}
 
 	@Override
 	public void equals(boolean result, int base, int arg) {
+		setLast(base,arg);
 		String baseStr = symbolicStringMap.get(base);
-		String argStr = symbolicStringMap.get(arg);
-		result = baseStr.equals(argStr);
-		if(!result){
-			symbolicStringMap.put(base, null);
-		}
+		String argStr = symbolicStringMap.get(arg);	
+		setToNull(result,baseStr.equals(argStr),base);
 
 	}
 
 	@Override
 	public void equalsIgnoreCase(boolean result, int base, int arg) {
+		setLast(base,arg);
 		String baseStr = symbolicStringMap.get(base);
 		String argStr = symbolicStringMap.get(arg);
-		result = baseStr.equalsIgnoreCase(argStr);
-		if(!result){
-			symbolicStringMap.put(base, null);
-		}
+		setToNull(result,baseStr.equalsIgnoreCase(argStr),base);
 
 	}
 
 	@Override
 	public void isEmpty(boolean result, int base) {
+		setLast(base,-1);
 		String baseStr = symbolicStringMap.get(base);
-		result = baseStr.isEmpty();
-		if(!result){
-			symbolicStringMap.put(base, null);
-		}
+		//System.out.println(base + " -> " + baseStr);
+		setToNull(result, baseStr.isEmpty(), base);
 
 	}
 
@@ -284,6 +278,14 @@ public class ConcreteSolver extends ExtendedSolver<String> {
 	public void shutDown() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	private void setToNull(boolean result, boolean actual, int id){
+		System.out.println("Setting to null? " + id);
+		if(result!=actual){
+			System.out.println(" -- yes");
+			symbolicStringMap.put(id, null);
+		}
 	}
 
 }

@@ -13,7 +13,7 @@ import extendedSolvers.ExtendedSolver;
 public class Parser {
 
 	ExtendedSolver solver;
-	Map<Integer, String> actualVals;
+	public static Map<Integer, String> actualVals;
 	
 	private boolean debug = true;
 	
@@ -214,7 +214,7 @@ public class Parser {
 	public void addEnd(String string, String actualVal, int id,
 			HashMap<String, Integer> sourceMap) {
 		if(debug){
-			System.out.println("End: " + string);
+			System.out.println("End: " + string + " " + actualVal);
 		}
 		
 		actualVal= solver.replaceExcapes(actualVal);
