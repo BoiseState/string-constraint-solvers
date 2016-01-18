@@ -45,6 +45,7 @@ import dk.brics.string.stringoperations.ToUpperCase;
 import dk.brics.string.stringoperations.Trim;
 import dk.brics.string.stringoperations.UnaryOperation;
 
+@SuppressWarnings("Duplicates")
 public class JSASolver extends SatSolver {
 	private int boolId;
 	
@@ -560,6 +561,7 @@ public class JSASolver extends SatSolver {
 				PreciseSuffix s=new PreciseSuffix(start);
 				startAuto=doOp(auto, s);
 			}
+
 			if(end<=start){
 				store.put(id, auto);
 			}

@@ -20,7 +20,7 @@ public class BlankSolver extends ExtendedSolver<String>{
 	}
 
 	@Override
-	public String replaceExcapes(String value) {
+	public String replaceEscapes(String value) {
 		return value;
 	}
 

@@ -61,7 +61,7 @@ public class EZ3Str extends ExtendedSolver<StringBuilder>{
 	}
 
 	@Override
-	public String replaceExcapes(String value) {
+	public String replaceEscapes(String value) {
 		if(value==null){
 			return "\"\\\\0\"";
 		}

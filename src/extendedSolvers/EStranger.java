@@ -20,11 +20,11 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		String fileName = "traceFile"; 
 		StrangerAutomaton.openCtraceFile(fileName);
 	}
-	
+
 	public void newSymbolicString(int id){
 		symbolicStringMap.put(id, StrangerAutomaton.makeAnyString());
 	}
-	
+
 	public void newConcreteString(int id, String string){
 		StrangerAutomaton automaton;
 		if(string == null)
@@ -44,18 +44,18 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 			return false;
 		return true;
 	}
-	
+
 	public void propagateSymbolicString(int id, int base){
 		symbolicStringMap.put(id, symbolicStringMap.get(base));
 	}
-	
+
 	public void append(int id, int base, int arg, int start, int end){
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
 		argAutomaton=argAutomaton.substring(start, end);
 		symbolicStringMap.put(getTempId(), argAutomaton);
 		append(id, base, getTempId());
 	}
-	
+
 	public void append(int id, int base, int arg){
 		newSymbolicString(id);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
@@ -70,19 +70,19 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		}
 		else{
 			symbolicStringMap.put(id, baseAutomaton.concatenate(argAutomaton));
-		}	
+		}
 	}
-	
+
 	public void substring(int id, int base, int start){
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
 		symbolicStringMap.put(id, baseAutomaton.prefix(start));
 	}
-	
+
 	public void substring(int id, int base, int start, int end){
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
 		symbolicStringMap.put(id, baseAutomaton.substring(start,end));
 	}
-	
+
 	public void setLength(int id, int base, int length){
 		StrangerAutomaton automaton;
 		if(length==0){
@@ -94,11 +94,11 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 			automaton = StrangerAutomaton.makeAnyStringL1ToL2(0, 0);
 			for(int i=0; i<=length; i++)
 				automaton=automaton.union(baseAutomaton.substring(0, i));
-			
+
 			symbolicStringMap.put(id, automaton);
 		}
 	}
-	
+
 	public void insert (int id, int base, int arg, int offset){
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
@@ -113,31 +113,31 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		}
 		symbolicStringMap.put(id, automaton);
 	}
-	
+
 	public boolean isSingleton(int id){
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(id);
 		return baseAutomaton.isTrueSingleton()!=null;
 	}
-	
+
 	public boolean isSound(int id, String actualValue){
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(id);
 		return baseAutomaton.checkIntersection(StrangerAutomaton.makeString(actualValue));
 	}
-	
+
 	public boolean isSingleton(int id, String actualValue){
 		return isSingleton(id);
 	}
-	
+
 	public String getSatisfiableResult(int id){
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(id);
 		return baseAutomaton.generateSatisfyingExample();
 	}
-	
+
 	public boolean isSatisfiable(int id){
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(id);
 		return !baseAutomaton.checkEmptiness();
 	}
-	
+
 	public void insert (int id, int base, int arg, int offset, int start, int end){
 		substring(getTempId(), arg, start, end);
 		insert(id, base, getTempId(), offset);
@@ -265,13 +265,13 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		setLast(base, arg);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
-		
+
 		if(result){
 			baseAutomaton=baseAutomaton.intersect(x);
 		}
 		else{
 			StrangerAutomaton empty=StrangerAutomaton.makeAnyStringL1ToL2(0, 0);
-			if(!(baseAutomaton.checkEquivalence(empty)&&!argAutomaton.checkEquivalence(empty))){		
+			if(!(baseAutomaton.checkEquivalence(empty)&&!argAutomaton.checkEquivalence(empty))){
 
 				StrangerAutomaton temp=baseAutomaton;
 				if(argAutomaton.isSingleton()!=null){
@@ -283,7 +283,7 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 				baseAutomaton=temp;
 			}
 		}
-		
+
 		symbolicStringMap.put(base, baseAutomaton);
 		symbolicStringMap.put(arg, argAutomaton);
 	}
@@ -296,14 +296,14 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	
 	public void endsWith(boolean result, int base, int arg){
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
-		
+
 		StrangerAutomaton x=StrangerAutomaton.makeAnyString().concatenate(argAutomaton);
 		assertCondition(result, base, arg, x);
 	}
 	
 	public void startsWith(boolean result, int base, int arg){
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
-		
+
 		StrangerAutomaton x=argAutomaton.concatenate(StrangerAutomaton.makeAnyString());
 		assertCondition(result, base, arg, x);
 	}
@@ -312,7 +312,7 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		setLast(base, arg);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
-		
+
 		if(result){
 			baseAutomaton=baseAutomaton.intersect(argAutomaton);
 			argAutomaton=argAutomaton.intersect(baseAutomaton);
@@ -326,7 +326,7 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 				argAutomaton=argAutomaton.intersect(baseAutomaton.complement());
 			baseAutomaton=temp;
 		}
-		
+
 		symbolicStringMap.put(base, baseAutomaton);
 		symbolicStringMap.put(arg, argAutomaton);
 	}
@@ -335,9 +335,9 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		setLast(base, arg);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
-		
+
 		baseAutomaton=baseAutomaton.equalsIgnoreCase(argAutomaton, result);
-		
+
 		symbolicStringMap.put(base, baseAutomaton);
 		symbolicStringMap.put(arg, argAutomaton);
 	}
@@ -351,7 +351,7 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		}
 		else{
 			baseAutomaton=baseAutomaton.intersect(StrangerAutomaton.makeEmptyString().complement());
-		}		
+		}
 		symbolicStringMap.put(base, baseAutomaton);
 	}
 	
@@ -378,7 +378,7 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	 * @param value String to be replaced.
 	 * @return Modified string.
 	 */
-	public String replaceExcapes(String value){
+	public String replaceEscapes(String value){
 		int newMap=255;
 
 		value=value.replace((char)0, (char)newMap);

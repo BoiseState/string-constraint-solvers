@@ -27,7 +27,7 @@ public class ConcreteSolver extends ExtendedSolver<String> {
 	}
 
 	@Override
-	public String replaceExcapes(String value) {
+	public String replaceEscapes(String value) {
 		//in concrete case all chars are legal
 		//at least in the given random set we generate
 		return value;

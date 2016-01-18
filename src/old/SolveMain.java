@@ -112,7 +112,8 @@ public class SolveMain {
 	 * @param graph The graph to traverse.
 	 * @param solve The solver to use.
 	 */
-	 public static void runSolver3(DirectedGraph<PrintConstraint, SymbolicEdge> graph, Solver solve){
+	 public static void runSolver3(DirectedGraph<PrintConstraint,SymbolicEdge> graph,
+								   Solver solve){
 		 Set <PrintConstraint> removeSet=new HashSet<PrintConstraint>();
 		 HashSet<PrintConstraint> processedSet=new HashSet<PrintConstraint>();
 

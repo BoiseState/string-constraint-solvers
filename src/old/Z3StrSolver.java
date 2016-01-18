@@ -80,7 +80,7 @@ public class Z3StrSolver extends SatSolver{
 	public void addRoot(String value, String actualValue, int id) {
 		addNewPastList(value, actualValue, id);
 
-	//	value=replaceExcapes(value);
+	//	value=replaceEscapes(value);
 		//value=addExcapes(value);
 		//actualValue=changeActualExcapes(actualValue);
 

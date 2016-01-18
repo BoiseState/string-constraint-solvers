@@ -48,7 +48,7 @@ public abstract class ExtendedSolver<T> {
 	 * @param value string with potentially invalid characters
 	 * @return argument sanitized from invalid characters
 	 */
-	public abstract String replaceExcapes(String value);
+	public abstract String replaceEscapes(String value);
 
 	/**
 	 * Used to propagate string values in cases where a symbolic
@@ -115,7 +115,7 @@ public abstract class ExtendedSolver<T> {
 	 * Interface for setCharAt(int offset, char ch)
 	 * @param id represents result.
 	 * @param base represents calling string.
-	 * @param arg represents charactoer argument.
+	 * @param arg represents character argument.
 	 */
 	public abstract void setCharAt(int id, int base, int arg, int offset);
 	
@@ -218,7 +218,7 @@ public abstract class ExtendedSolver<T> {
 	public abstract void isEmpty(boolean result, int base);
 
 	/**
-	 * Gets a statisfiable result for the symbolic string
+	 * Gets a satisfiable result for the symbolic string
 	 * @param id represents string to test
 	 * @return A satisfiable example
 	 */
