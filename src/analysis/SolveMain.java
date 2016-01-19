@@ -7,10 +7,7 @@
  */
 package analysis;
 
-import extendedSolvers.BlankSolver;
-import extendedSolvers.ConcreteSolver;
-import extendedSolvers.EStranger;
-import extendedSolvers.EZ3Str;
+import extendedSolvers.*;
 import org.jgrapht.DirectedGraph;
 import stringSymbolic.SymbolicEdge;
 
@@ -36,7 +33,9 @@ public class SolveMain {
             LinkedList<String> list =
                     new LinkedList<String>(Arrays.asList(args));
 
+            // remove option for processing
             String options = list.removeLast();
+
             if (options.startsWith("-")) {
 
                 // print help/usage information
@@ -50,7 +49,12 @@ public class SolveMain {
 
                 // print solver information
                 if (options.contains("s")) {
-                    System.out.println("Solvers: EJSA EStranger EZ3Str");
+                    System.out.println("Solvers:" +
+                                       " EJSA" +
+                                       " EStranger" +
+                                       " EZ3Str" +
+                                       " Concrete" +
+                                       " Blank");
                 }
 
                 // set debug mode
@@ -58,6 +62,8 @@ public class SolveMain {
                     debug = true;
                 }
             } else {
+
+                // replace removed option
                 list.addLast(options);
             }
 
@@ -92,29 +98,40 @@ public class SolveMain {
 
     private static Parser getParser(String solverName) {
 
-        // initialize parser as null
-        Parser parser = null;
-
         // convert solver name to lowercase
         String lc = solverName.toLowerCase();
 
-        // create parser for specified solver
-        if (lc.equals("blanksolver")) {
-            parser = new Parser(new BlankSolver());
+        // initialize extened solver as null
+        ExtendedSolver solver = null;
+
+        // create specified solver for parser
+        if (lc.equals("blank")) {
+
+            solver = new BlankSolver();
+
         } else if (lc.equals("ez3str")) {
-            parser = new Parser(new EZ3Str(5000,
-                                           "/usr/local/bin/Z3-str/Z3-str.py",
-                                           "str",
-                                           "tempZ3Str"));
-        } else if (lc.equals("strangersolver")) {
-            parser = new Parser(new EStranger());
-        } else if (lc.equals("jsasolver")) {
-            parser = new Parser(new ConcreteSolver());
-        } else if (lc.equals("concretesolver")) {
-            parser = new Parser(new ConcreteSolver());
+
+            solver = new EZ3Str(5000,
+                                "/usr/local/bin/Z3-str/Z3-str.py",
+                                "str",
+                                "tempZ3Str");
+
+        } else if (lc.equals("estranger")) {
+
+            solver = new EStranger();
+
+        } else if (lc.equals("ejsa")) {
+
+            solver = new EJSASolver();
+
+        } else if (lc.equals("concrete")) {
+
+            solver = new ConcreteSolver();
+
         }
 
-        return parser;
+        // return created parser
+        return new Parser(solver);
     }
 
     private static DirectedGraph<PrintConstraint, SymbolicEdge> GetGraph
@@ -131,7 +148,7 @@ public class SolveMain {
 
             // get graph object from stream
             graph = (DirectedGraph<PrintConstraint, SymbolicEdge>)
-                        in.readObject();
+                    in.readObject();
 
             // close stream objects
             in.close();
@@ -150,10 +167,12 @@ public class SolveMain {
 
     /**
      * Traverses the flow graph and solves PCs
-     * @param graph The graph to traverse.
+     *
+     * @param graph  The graph to traverse.
      * @param parser The solver to use.
      */
-    public static void runSolver(DirectedGraph<PrintConstraint, SymbolicEdge> graph,
+    public static void runSolver(DirectedGraph<PrintConstraint, SymbolicEdge>
+                                         graph,
                                  Parser parser) {
 
         // initialize sets
@@ -163,7 +182,7 @@ public class SolveMain {
         Set<PrintConstraint> roots = new HashSet<PrintConstraint>();
 
         // populate root and end sets
-        for(PrintConstraint constraint : graph.vertexSet()){
+        for (PrintConstraint constraint : graph.vertexSet()) {
 
             // if no in paths, node is a root node
             if (graph.inDegreeOf(constraint) == 0) {
@@ -176,67 +195,114 @@ public class SolveMain {
             }
         }
 
-        LinkedList<PrintConstraint> toBeAdded = new LinkedList<PrintConstraint>();
-        ArrayList<PrintConstraint> vertexSet = new ArrayList<PrintConstraint>(graph.vertexSet());
-        Collections.sort(vertexSet);
+        // initialize list of constraints
+        List<PrintConstraint> toBeAdded = new LinkedList<PrintConstraint>();
+
+        // initialize sorted list of vertices
+        List<PrintConstraint> vertices = new ArrayList<PrintConstraint>(graph.vertexSet());
+        Collections.sort(vertices);
 
         //Topological progression...
-        while (vertexSet.size() > 0) {
-            graph.removeAllVertices(removeSet);
-            vertexSet.removeAll(removeSet);
-            vertexSet.removeAll(toBeAdded);
-            processedSet.removeAll(removeSet);
-            removeSet = new HashSet<PrintConstraint>();
+        while (vertices.size() > 0) {
 
-            toBeAdded = new LinkedList<PrintConstraint>();
-            for (int i = 0; i < vertexSet.size(); i++) {
-                PrintConstraint next = vertexSet.get(i);
-                HashMap<String, Integer> sourceMap =
-                        new HashMap<String, Integer>();
-                if (!processedSet.contains(next)) {
+            // remove constraints from collections
+            graph.removeAllVertices(removeSet);
+            vertices.removeAll(removeSet);
+            vertices.removeAll(toBeAdded);
+            processedSet.removeAll(removeSet);
+
+            // clear collections
+            removeSet.clear();
+            toBeAdded.clear();
+
+            // for each vertex
+            for (PrintConstraint vertex : vertices) {
+
+                // initialize source map
+                Map<String, Integer> sourceMap = new HashMap<String, Integer>();
+
+                // if vertex not in processed set
+                if (!processedSet.contains(vertex)) {
+
+                    // set flag
                     boolean readyToProcess = true;
-                    Iterator<SymbolicEdge> edgeIt =
-                            graph.incomingEdgesOf(next).iterator();
-                    while (edgeIt.hasNext()) {
-                        SymbolicEdge edge = edgeIt.next();
+
+                    // for each incoming edge of the current vertex
+                    for (SymbolicEdge edge : graph.incomingEdgesOf(vertex)) {
+
+                        // get source of incoming edge
                         PrintConstraint source =
                                 (PrintConstraint) edge.getASource();
+
+                        // if source vertex not in processed set
                         if (!processedSet.contains(source)) {
+
+                            // unset flag
                             readyToProcess = false;
+
+                            // break out of incoming edges loop
                             break;
+
                         } else {
-                            sourceMap.put(edge.getType(), source.getId());
+
+                            // update source map with edge information
+                            String edgeType = edge.getType();
+                            int sourceId = source.getId();
+                            sourceMap.put(edgeType, sourceId);
                         }
-                    }
-                    if (readyToProcess) {
-                        next.setSourceMap(sourceMap);
-                        toBeAdded.add(next);
-                        break;
-                    } else {
-                    }
-                } else {
-                    Iterator<SymbolicEdge> edgeIt =
-                            graph.outgoingEdgesOf(next).iterator();
-                    boolean deleteNode = true;
-                    while (edgeIt.hasNext()) {
-                        SymbolicEdge edge = edgeIt.next();
-                        PrintConstraint target =
-                                (PrintConstraint) edge.getATarget();
-                        if (!processedSet.contains(target)) {
-                            deleteNode = false;
-                            break;
-                        }
-                    }
-                    if (deleteNode) {
-                        removeSet.add(next);
-                        parser.remove(next.getId());
                     }
 
+                    // if flag is still set
+                    if (readyToProcess) {
+
+                        // set the source map for the vertex
+                        vertex.setSourceMap(sourceMap);
+
+                        // current vertex queued for addition
+                        toBeAdded.add(vertex);
+
+                        // break out of the vertices loop
+                        break;
+                    }
+
+                } else {
+
+                    // set flag
+                    boolean deleteNode = true;
+
+                    // for each outgoing edge from the current vertex
+                    for (SymbolicEdge edge : graph.outgoingEdgesOf(vertex)) {
+
+                        // get the target vertex of the outgoing edge
+                        PrintConstraint target = (PrintConstraint) edge.getATarget();
+
+                        // if target vertex not in processed set
+                        if (!processedSet.contains(target)) {
+
+                            // unset flag
+                            deleteNode = false;
+
+                            // break out of outgoing edges loop
+                            break;
+                        }
+                    }
+
+                    // if flag set
+                    if (deleteNode) {
+
+                        // current vertex queued for removal
+                        removeSet.add(vertex);
+
+                        // remove vertex from parser
+                        int vertexId = vertex.getId();
+                        parser.remove(vertexId);
+                    }
                 }
             }
+
             // Collections.sort(toBeAdded);
             if (toBeAdded.size() > 0) {
-                PrintConstraint first = toBeAdded.getFirst();
+                PrintConstraint first = toBeAdded.get(0);
                 if (ends.contains(first)) {
                     parser.addEnd(first.getSplitValue(),
                                   first.getActualVal(),
@@ -255,6 +321,8 @@ public class SolveMain {
                 processedSet.add(first);
             }
         }
+
+        // shut down parser
         parser.shutDown();
     }
 }

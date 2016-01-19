@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class PrintConstraint implements Serializable, Comparable<PrintConstraint>{
 
@@ -201,8 +202,8 @@ public class PrintConstraint implements Serializable, Comparable<PrintConstraint
 	 * Used in processing to set the source map
 	 * @param sourceMap The new sourceMap for this constraint.
 	 */
-	public void setSourceMap(HashMap<String, Integer> sourceMap) {
-		this.sourceMap=sourceMap;
+	public void setSourceMap(Map<String, Integer> sourceMap) {
+		this.sourceMap = new HashMap<>(sourceMap);
 	}
 	/**
 	 * Used in processing to get the sourceMap.
