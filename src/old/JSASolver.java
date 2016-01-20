@@ -976,7 +976,7 @@ public class JSASolver extends SatSolver {
 	
 	/** Checks if the branching point is sat/unsat/unknown/timeout.
 	 * 
-	 * @param method name of the method.
+	 * @param string name of the method.
 	 * @param actualValue Actual value captured in DSE.
 	 * @param id id of the branching point.
 	 * @param sourceMap A map of source values.
@@ -1094,8 +1094,6 @@ public class JSASolver extends SatSolver {
 	/**
 	 * Depricated. Ensures the result is a character.
 	 * @param id The id of the constraint.
-	 * @param target
-	 * @param uniqueid
 	 * @return A string representing an ECLiPSe-str constant character.
 	 */
 	private Automaton grabChar(int id){

@@ -7,14 +7,9 @@
  */
 package analysis;
 
-import extendedSolvers.*;
 import org.jgrapht.DirectedGraph;
 import stringSymbolic.SymbolicEdge;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.RandomAccessFile;
 import java.util.*;
 
 @SuppressWarnings({"Duplicates", "unchecked"})
@@ -79,10 +74,11 @@ public class SolveMain {
         }
 
         // get constraint graph from filename
-        DirectedGraph<PrintConstraint, SymbolicEdge> graph = GetGraph(fileName);
+        DirectedGraph<PrintConstraint, SymbolicEdge> graph;
+        graph = CommandLineUtilities.getGraph(fileName);
 
         // create parser object from specified solver
-        Parser parser = getParser(solverName);
+        Parser parser = CommandLineUtilities.getParser(solverName);
 
         // if graph or parser not loaded, abort program
         if (graph == null || parser == null) {
@@ -94,75 +90,6 @@ public class SolveMain {
 
         // run solver with specified graph and solver
         runSolver(graph, parser);
-    }
-
-    private static Parser getParser(String solverName) {
-
-        // convert solver name to lowercase
-        String lc = solverName.toLowerCase();
-
-        // initialize extened solver as null
-        ExtendedSolver solver = null;
-
-        // create specified solver for parser
-        if (lc.equals("blank")) {
-
-            solver = new BlankSolver();
-
-        } else if (lc.equals("ez3str")) {
-
-            solver = new EZ3Str(5000,
-                                "/usr/local/bin/Z3-str/Z3-str.py",
-                                "str",
-                                "tempZ3Str");
-
-        } else if (lc.equals("estranger")) {
-
-            solver = new EStranger();
-
-        } else if (lc.equals("ejsa")) {
-
-            solver = new EJSASolver();
-
-        } else if (lc.equals("concrete")) {
-
-            solver = new ConcreteSolver();
-
-        }
-
-        // return created parser
-        return new Parser(solver);
-    }
-
-    private static DirectedGraph<PrintConstraint, SymbolicEdge> GetGraph
-            (String fileName) {
-
-        // initialize graph object as null
-        DirectedGraph<PrintConstraint, SymbolicEdge> graph = null;
-
-        try {
-            // get object stream from filename
-            RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
-            FileInputStream fin = new FileInputStream(raf.getFD());
-            ObjectInputStream in = new ObjectInputStream(fin);
-
-            // get graph object from stream
-            graph = (DirectedGraph<PrintConstraint, SymbolicEdge>)
-                    in.readObject();
-
-            // close stream objects
-            in.close();
-            fin.close();
-            raf.close();
-
-        } catch (IOException i) {
-            i.printStackTrace();
-        } catch (ClassNotFoundException c) {
-            System.out.println("Graph not found");
-            c.printStackTrace();
-        }
-
-        return graph;
     }
 
     /**
@@ -215,7 +142,7 @@ public class SolveMain {
             removeSet.clear();
             toBeAdded.clear();
 
-            // for each vertex
+            // for each vertex constraint
             for (PrintConstraint vertex : vertices) {
 
                 // initialize source map
@@ -300,24 +227,39 @@ public class SolveMain {
                 }
             }
 
+            // sort addition list before processing
             // Collections.sort(toBeAdded);
+
+            // if addition list contains constraints
             if (toBeAdded.size() > 0) {
+
+                // get first constraint in list
                 PrintConstraint first = toBeAdded.get(0);
+
+                // get constraint data
+                String string = first.getSplitValue();
+                String value = first.getActualVal();
+                int id = first.getId();
+                Map<String, Integer> sourceMap = first.getSourceMap();
+
+                // if constraint is an end node
                 if (ends.contains(first)) {
-                    parser.addEnd(first.getSplitValue(),
-                                  first.getActualVal(),
-                                  first.getId(),
-                                  first.getSourceMap());
+
+                    // add end
+                    parser.addEnd(string, value, id, sourceMap);
+
                 } else if (roots.contains(first)) {
-                    parser.addRoot(first.getSplitValue(),
-                                   first.getActualVal(),
-                                   first.getId());
+
+                    // add root
+                    parser.addRoot(string, value, id);
+
                 } else {
-                    parser.addOperation(first.getSplitValue(),
-                                        first.getActualVal(),
-                                        first.getId(),
-                                        first.getSourceMap());
+
+                    // add operation
+                    parser.addOperation(string, value, id, sourceMap);
                 }
+
+                // add constraint to processed list
                 processedSet.add(first);
             }
         }

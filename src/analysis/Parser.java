@@ -17,67 +17,107 @@ public class Parser {
 
     private boolean debug = true;
 
-    public Parser(ExtendedSolver solver) {
-        this.solver = solver;
+    static {
         actualVals = new HashMap<Integer, String>();
+    }
+
+    public Parser(ExtendedSolver solver) {
+
+        // set field from parameter
+        this.solver = solver;
+
+        // output header
         System.out.println("SING\tTSAT\tFSAT\tDISJOINT");
     }
 
+    /**
+     * Allows the setting of debug mode.
+     *
+     * @param debug boolean indicating if debug mode should be set
+     */
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
 
     public void addRoot(String value, String actualValue, int id) {
+
+        // if debug mode set
         if (debug) {
+
+            // output root information
             System.out.println("Root: " + value);
         }
+
+        // if actual value not null
         if (actualValue != null) {
+
+            // ensure string is in a valid format
             actualValue = solver.replaceEscapes(actualValue);
         }
+
+        // add actual value to map
         actualVals.put(id, actualValue);
         value = solver.replaceEscapes(value);
 
+        //
         if (value.startsWith("r") || value.startsWith("$r")) {
+
+            // create new symbolic string for id
             solver.newSymbolicString(id);
+
         } else {
+
+            // create new concrete string for id from actual value
             solver.newConcreteString(id, actualValue);
+
         }
     }
 
 
-    public void addOperation(String string, String actualVal, int id,
-                             HashMap<String, Integer> sourceMap) {
+    public void addOperation(String string,
+                             String actualVal,
+                             int id,
+                             Map<String, Integer> sourceMap) {
 
+        // if debug mode set
         if (debug) {
-            System.out.println("Operation: " +
-                               string +
-                               " " +
-                               actualVal +
-                               " " +
-                               id +
-                               " " +
-                               sourceMap);
+
+            // output operation information
+            String opInfo = String.format("Operation: %s | %s | %d | %s",
+                                          string,
+                                          actualVal,
+                                          id,
+                                          sourceMap);
+            System.out.println(opInfo);
         }
 
+        // ensure valid actual value
         actualVal = solver.replaceEscapes(actualVal);
         actualVals.put(id, actualVal);
 
+        // get base id from source map
         int base = sourceMap.get("t");
+
+        // get function name from string value
         String fName = string.split("!!")[0];
 
+        // get arg id from source map, -1 if none
         int arg = -1;
         if (sourceMap.get("s1") != null) {
             arg = sourceMap.get("s1");
         }
 
+        // ensure the operation can be completed
         if (!solver.isValidState(base, arg)) {
             solver.newSymbolicString(id);
             return;
         }
 
+        // process operation based on function name
         if ((fName.equals("append")) || fName.equals("concat")) {
 
             if (sourceMap.get("s1") == null) {
+                sourceMap.get("s1");
                 solver.newSymbolicString(sourceMap.get("s1"));
             }
 
@@ -195,17 +235,25 @@ public class Parser {
             solver.toLowerCase(id, base);
         } else if (fName.startsWith("replace")) {
 
+            // string.replaceAll(String regex, String replace)
+            // string.replaceFirst(String regex, String replace)
             if (fName.equals("replaceAll") ||
                 fName.equals("replaceFirst") ||
                 string.split("!!")[1].startsWith("II")) {
+
+                // set resulting automaton as any string
                 solver.newSymbolicString(id);
                 return;
             }
-            //TODO: Make this version work
+
+            // stringBuilder.replace(int start, int end, String str)
             if (sourceMap.size() != 3) {
+
+                // set resulting automaton as any string
                 solver.newSymbolicString(id);
                 return;
             }
+
             int argOne = sourceMap.get("s1");
             int argTwo = sourceMap.get("s2");
             if (string.split("!!")[1].equals("CC")) {
@@ -218,10 +266,16 @@ public class Parser {
         }
     }
 
-    public void addEnd(String string, String actualVal, int id,
-                       HashMap<String, Integer> sourceMap) {
+    public void addEnd(String string,
+                       String actualVal,
+                       int id,
+                       Map<String, Integer> sourceMap) {
+
+        // if debug mode set
         if (debug) {
-            System.out.println("End: " + string + " " + actualVal);
+
+            // output end information
+            System.out.println("End: " + string + " | " + actualVal);
         }
 
         actualVal = solver.replaceEscapes(actualVal);
@@ -237,6 +291,7 @@ public class Parser {
                                                        "solver");
                 }
             }
+
             if (sourceMap.containsKey("s1")) {
                 int arg = sourceMap.get("s1");
                 if (!solver.isSound(arg, actualVal)) {
@@ -257,7 +312,7 @@ public class Parser {
 
     private void calculateStats(String fName,
                                 String actualVal,
-                                HashMap<String, Integer> sourceMap) {
+                                Map<String, Integer> sourceMap) {
         int base = sourceMap.get("t");
         String stats = "";
         if (solver.isSingleton(base, actualVal) &&
@@ -302,13 +357,13 @@ public class Parser {
     /**
      * Assert a predicate on a symbolic value.
      *
-     * @param result      Is it a true or false predicate.
-     * @param method      The predicate method.
-     * @param sourceMap   The values involved.
+     * @param result    Is it a true or false predicate.
+     * @param method    The predicate method.
+     * @param sourceMap The values involved.
      */
     private void assertBooleanConstraint(String method,
                                          boolean result,
-                                         HashMap<String, Integer> sourceMap) {
+                                         Map<String, Integer> sourceMap) {
 
         // get function name
         String fName = method.split("!!")[0];

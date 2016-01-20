@@ -671,6 +671,7 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
 
     @Override
     public boolean isSound(int id, String actualValue) {
+
         // compute intersection of automaton and string value
         Automaton automaton = this.symbolicStringMap.get(id);
         Automaton value = BasicAutomata.makeString(actualValue);
