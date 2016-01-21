@@ -117,11 +117,12 @@ public class Parser {
         if ((fName.equals("append")) || fName.equals("concat")) {
 
             if (sourceMap.get("s1") == null) {
-                sourceMap.get("s1");
                 solver.newSymbolicString(sourceMap.get("s1"));
             }
 
             if (sourceMap.size() > 3) {
+
+                // if first two parameters are char array and int
                 if (string.split("!!")[1].startsWith("[CI")) {
                     arg = solver.getTempId();
                     solver.newSymbolicString(arg);
@@ -135,9 +136,17 @@ public class Parser {
                     solver.append(id, base, arg, start, end);
                     return;
                 }
-            } else if (string.split("!!")[1].equals("C")) {
-                createChar(sourceMap.get("s1"));
-            } else if (string.split("!!")[1].equals("Z")) {
+
+            }
+            // if only parameter is a char
+            else if (string.split("!!")[1].equals("C")) {
+
+                int charId = sourceMap.get("s1");
+                createChar(charId);
+
+            }
+            // if only param is a boolean
+            else if (string.split("!!")[1].equals("Z")) {
                 try {
                     int num =
                             Integer.parseInt(actualVals.get(sourceMap.get
@@ -237,17 +246,12 @@ public class Parser {
 
             // string.replaceAll(String regex, String replace)
             // string.replaceFirst(String regex, String replace)
+            // stringBuilder.replace(int start, int end, String str)
             if (fName.equals("replaceAll") ||
                 fName.equals("replaceFirst") ||
-                string.split("!!")[1].startsWith("II")) {
-
-                // set resulting automaton as any string
-                solver.newSymbolicString(id);
-                return;
-            }
-
-            // stringBuilder.replace(int start, int end, String str)
-            if (sourceMap.size() != 3) {
+                // first two params are int
+                string.split("!!")[1].startsWith("II") ||
+                sourceMap.size() != 3) {
 
                 // set resulting automaton as any string
                 solver.newSymbolicString(id);
@@ -256,11 +260,31 @@ public class Parser {
 
             int argOne = sourceMap.get("s1");
             int argTwo = sourceMap.get("s2");
+
+            // string.replace(char oldChar, char newChar)
+            // first two params are char
             if (string.split("!!")[1].equals("CC")) {
+
+                // set character representations
                 createChar(argOne);
                 createChar(argTwo);
+
             }
+            // string.replace(CharSequence target, CharSequence replacement)
+            else {
+
+                // get string representations
+                String str1 = actualVals.get(argOne);
+                String str2 = actualVals.get(argTwo);
+
+                // set string representations
+                solver.newConcreteString(argOne, str1);
+                solver.newConcreteString(argTwo, str2);
+            }
+
+            // perform solver specific operation
             solver.replace(id, base, argOne, argTwo);
+
         } else {
             solver.newSymbolicString(id);
         }
@@ -351,7 +375,8 @@ public class Parser {
      * @param id The id of the constraint.
      */
     private void createChar(int id) {
-        solver.newConcreteString(id, actualVals.get(id));
+        String val = actualVals.get(id);
+        solver.newConcreteString(id, val);
     }
 
     /**

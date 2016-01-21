@@ -8,14 +8,17 @@ pushd $project_dir
 class_path=$(bash ../scripts/set_class_path_var.sh)
 
 # ensure old results directory is ready
-mkdir -P results/old
+mkdir -p ./results/old
 
 # for each graph file
 for file in ./graphs/*.ser
 do
 
+    # get filename
+    f_name_ex=${file##*/}
+
     echo
-    echo $file
+    echo $f_name_ex
     echo
     echo
 

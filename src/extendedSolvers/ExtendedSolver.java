@@ -11,7 +11,8 @@ import java.util.Map;
  */
 public abstract class ExtendedSolver<T> {
 
-    protected Map<Integer, T> symbolicStringMap = new HashMap<Integer, T>();
+    protected Map<Integer, T> symbolicStringMap = new HashMap<>();
+    protected Map<Integer, String> concreteStringMap = new HashMap<>();
     protected T last = null;
     protected T lastArg = null;
 

@@ -177,4 +177,4 @@ release.properties
 ### Project Specfic Ignores
 
 graphs/
-Results.csv
+results/

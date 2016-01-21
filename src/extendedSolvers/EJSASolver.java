@@ -34,6 +34,7 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
         }
 
         this.symbolicStringMap.put(id, automaton);
+        this.concreteStringMap.put(id, string);
     }
 
     @Override
@@ -375,6 +376,13 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
         Automaton arg2Automaton = this.symbolicStringMap.get(arg2);
 
         // TODO: fix parser to allow implementation of JSA replace operation
+
+        // check args constants
+        if (arg1Automaton.getSingleton() != null &&
+            arg2Automaton.getSingleton() != null) {
+
+
+        }
 
         // store result automaton
         this.symbolicStringMap.put(id, baseAutomaton);

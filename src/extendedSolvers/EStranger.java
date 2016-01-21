@@ -12,7 +12,12 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	
 	public EStranger(){
 		//Set up Stranger
-		System.setProperty("jna.library.path","/usr/local/lib/libstranger.so");
+		if (System.getProperty("jna.library.path") == null) {
+
+			System.setProperty("jna.library.path",
+							   "/usr/local/lib/libstranger.so");
+		}
+
 		StrangerAutomaton.initialize(true);
 		PerfInfo perfInfo = new PerfInfo();
 		StrangerAutomaton.perfInfo = perfInfo;
