@@ -36,7 +36,7 @@ public class SolveMain {
 		String fileName="../sootOutput/" +
 				"graph.ser";
 		String solverName="JSASolver";
-		String properties="../properties.txt";
+		String properties="./properties.txt";
 		String tempFile="temp.txt";
 		boolean generateText=false;
 		if(args.length>0){

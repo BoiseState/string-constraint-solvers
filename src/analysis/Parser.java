@@ -116,10 +116,12 @@ public class Parser {
         // process operation based on function name
         if ((fName.equals("append")) || fName.equals("concat")) {
 
+            // TODO: figure this out, looks either useless or harmful
             if (sourceMap.get("s1") == null) {
                 solver.newSymbolicString(sourceMap.get("s1"));
             }
 
+            // if function has more than two arguments
             if (sourceMap.size() > 3) {
 
                 // if first two parameters are char array and int
@@ -271,16 +273,16 @@ public class Parser {
 
             }
             // string.replace(CharSequence target, CharSequence replacement)
-            else {
-
-                // get string representations
-                String str1 = actualVals.get(argOne);
-                String str2 = actualVals.get(argTwo);
-
-                // set string representations
-                solver.newConcreteString(argOne, str1);
-                solver.newConcreteString(argTwo, str2);
-            }
+//            else {
+//
+//                // get string representations
+//                String str1 = actualVals.get(argOne);
+//                String str2 = actualVals.get(argTwo);
+//
+//                // set string representations
+//                solver.newConcreteString(argOne, str1);
+//                solver.newConcreteString(argTwo, str2);
+//            }
 
             // perform solver specific operation
             solver.replace(id, base, argOne, argTwo);

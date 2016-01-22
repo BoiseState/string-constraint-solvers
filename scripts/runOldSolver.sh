@@ -5,7 +5,7 @@ project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 pushd $project_dir
 
 # load class path into class_path var
-class_path=$(bash ../scripts/set_class_path_var.sh)
+class_path=$(bash ./scripts/set_class_path_var.sh)
 
 # ensure old results directory is ready
 mkdir -p ./results/old
@@ -16,6 +16,7 @@ do
 
     # get filename
     f_name_ex=${file##*/}
+    f_name=${f_name_ex%%.ser}
 
     echo
     echo $f_name_ex
@@ -23,9 +24,12 @@ do
     echo
 
     java -cp "$class_path" \
-         -Xmx2g old.SolveMain \
+         -Xmx2g \
+         old.SolveMain \
          $file \
-         $1
+         $1 \
+         ./results/oldTemp.txt \
+         ./properties.txt | tee ./results/old/log_$f_name.txt
 
 done
 

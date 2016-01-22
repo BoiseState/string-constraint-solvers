@@ -372,16 +372,61 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
 
         // get automata
         Automaton baseAutomaton = this.symbolicStringMap.get(base);
-        Automaton arg1Automaton = this.symbolicStringMap.get(arg1);
-        Automaton arg2Automaton = this.symbolicStringMap.get(arg2);
-
-        // TODO: fix parser to allow implementation of JSA replace operation
+        String arg1String = this.concreteStringMap.get(arg1);
+        String arg2String = this.concreteStringMap.get(arg2);
 
         // check args constants
-        if (arg1Automaton.getSingleton() != null &&
-            arg2Automaton.getSingleton() != null) {
+        if (arg1String != null && arg2String != null) {
 
+            char oldChar;
+            char newChar;
+            boolean isOldUnknown = false;
+            boolean isNewUnknown = false;
 
+            // determine if old char is known
+            try {
+                int tempVal = Integer.parseInt(arg1String);
+
+                if (tempVal < 10 && tempVal >= 0) {
+                    isOldUnknown = true;
+                }
+
+                oldChar = ((char) tempVal);
+            } catch (NumberFormatException e) {
+                oldChar = arg1String.charAt(0);
+            }
+
+            // determine if new char is known
+            try {
+                int tempVal = Integer.parseInt(arg2String);
+
+                if (tempVal < 10 && tempVal >= 0) {
+                    isNewUnknown = true;
+                }
+
+                newChar = ((char) tempVal);
+            } catch (NumberFormatException e) {
+                newChar = arg2String.charAt(0);
+            }
+
+            // determine correct character replace operation
+            UnaryOperation replace;
+            if (isOldUnknown && isNewUnknown) {
+                replace = new Replace4();
+            } else if (isOldUnknown) {
+                replace = new Replace3(newChar);
+            } else if (isNewUnknown) {
+                replace = new Replace2(oldChar);
+            } else {
+                replace = new Replace1(oldChar, newChar);
+            }
+
+            // perform character replace operation
+            baseAutomaton = replace.op(baseAutomaton);
+
+        } else {
+            System.err.print("EJSASolver.replace: at least one concrete" +
+                             " string is null");
         }
 
         // store result automaton

@@ -11,12 +11,12 @@ class_path=$(bash ./scripts/set_class_path_var.sh)
 mkdir -p ./results/extended
 
 # for each graph file
-for file in ./graphs/htmlCleaner17.ser
+for file in ./graphs/*.ser
 do
 
     # get filename
     f_name_ex=${file##*/}
-    f_name=${filename%%.ser}
+    f_name=${f_name_ex%%.ser}
 
     echo
     echo $f_name_ex
@@ -25,8 +25,8 @@ do
 
     # execute solver
     java -cp "$class_path" \
-#         -Djna.library.path=
-         -Xmx2g analysis.SolveMain \
+         -Xmx2g \
+         analysis.SolveMain \
          $file \
          $1 | tee ./results/extended/log_$f_name.txt
 
