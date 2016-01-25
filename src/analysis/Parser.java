@@ -39,6 +39,12 @@ public class Parser {
         this.debug = debug;
     }
 
+    /**
+     * Parse a graph root node.
+     * @param value Value of a {@link analysis.PrintConstraint}.
+     * @param actualValue Actual value of a {@link analysis.PrintConstraint}.
+     * @param id Id of a {@link analysis.PrintConstraint}.
+     */
     public void addRoot(String value, String actualValue, int id) {
 
         // if debug mode set
@@ -179,7 +185,7 @@ public class Parser {
 
                 } catch (NumberFormatException e) {
 
-                    // could not parse int, create string automaton
+                    // could not parse int, create string symbolic string
                     // from actual value
                     int s1Id = sourceMap.get("s1");
                     String s1String = actualVals.get(s1Id);
@@ -192,13 +198,17 @@ public class Parser {
 
         } else if (fName.equals("<init>")) {
 
+            // if target and source ids exist and actual target value
+            // is the empty string
             if (sourceMap.get("t") != null &&
                 sourceMap.get("s1") != null &&
                 actualVals.get(sourceMap.get("t")).equals("")) {
 
+                // copy symbolic string
                 solver.propagateSymbolicString(id, base);
             } else {
 
+                // create new symbolic string
                 solver.newSymbolicString(id);
             }
 
@@ -208,90 +218,126 @@ public class Parser {
                    fName.equals("trimToSize") ||
                    (fName.equals("copyValueOf") && sourceMap.size() == 2)) {
 
+            // if no target
             if (!sourceMap.containsKey("t")) {
 
+                // copy symbolic string of arg
                 solver.propagateSymbolicString(id, arg);
 
             } else {
 
+                // copy symbolic string of base
                 solver.propagateSymbolicString(id, base);
 
             }
 
         } else if (string.startsWith("substring")) {
 
+            // string.substring(int beginIndex)
+            // stringBuilder.substring(int start)
             if (sourceMap.size() == 2) {
 
+                // get start index
                 int s1Id = sourceMap.get("s1");
                 String s1String = actualVals.get(s1Id);
                 int start = Integer.parseInt(s1String);
 
+                // if a substring requested
                 if (start != 0) {
+
+                    // perform substring operation
                     solver.substring(id, base, start);
                 }
-            } else {
+            }
+            // string.substring(int beginIndex, int endIndex)
+            // stringBuilder.substring(int start, int end)
+            else {
 
+                // get start and end indices
                 int s1Id = sourceMap.get("s1");
                 int s2Id = sourceMap.get("s2");
-
                 String s1String = actualVals.get(s1Id);
                 String s2String = actualVals.get(s2Id);
-
                 int start = Integer.parseInt(s1String);
                 int end = Integer.parseInt(s2String);
 
+                // perform substring operation
                 solver.substring(id, base, start, end);
             }
+
         } else if (fName.equals("setLength")) {
 
+            // get length
             int s1Id = sourceMap.get("s1");
             String s1String = actualVals.get(s1Id);
             int length = Integer.parseInt(s1String);
 
+            // perform set length operation
             solver.setLength(id, base, length);
         }
         //TODO implement other insert
         else if (fName.equals("insert")) {
 
+            // get arg id
             arg = sourceMap.get("s2");
+
+            // get offset id
             int offset = sourceMap.get("s1");
 
+            // stringBuilder.insert(int offset, char c)
             if (string.split("!!")[1].equals("IC")) {
 
+                // create arg symbolic string as char
                 createChar(arg);
 
-            } else if (string.split("!!")[1].startsWith("I[C")) {
+            }
+            // stringBuilder.insert(int offset, char[] str)
+            else if (string.split("!!")[1].startsWith("I[C")) {
 
+                // create arg symbolic string
                 solver.newSymbolicString(arg);
 
-            } else if (sourceMap.size() > 3) {
+            }
+            // stringBuilder.insert(int index, char[] str, int offset, int len)
+            // stringBuilder.insert(int dstOffset,
+            //                      CharSequence s,
+            //                      int start,
+            //                      int end)
+            else if (sourceMap.size() > 3) {
 
+                // get start and end indices
                 int s3Id = sourceMap.get("s3");
                 int s4Id = sourceMap.get("s4");
-
                 String s3String = actualVals.get(s3Id);
                 String s4String = actualVals.get(s4Id);
-
                 int start = Integer.parseInt(s3String);
                 int end = Integer.parseInt(s4String);
 
+                // perform insert operation
                 solver.insert(id, base, arg, offset, start, end);
 
             } else {
 
+                // perform insert operation
                 solver.insert(id, base, arg, offset);
 
             }
         } else if (fName.equals("setCharAt")) {
 
+            // get arg id
             arg = sourceMap.get("s2");
+
+            // create arg symbolic string as char
             createChar(arg);
 
+            // get offset
             int s1Id = sourceMap.get("s1");
             String s1String = actualVals.get(s1Id);
             int offset = Integer.parseInt(s1String);
 
+            // perform set char at operation
             solver.setCharAt(id, base, arg, offset);
+
         }
         //TODO: Check for 2 cases: Restricted any string and more then 2
         // leading white space chars
@@ -300,39 +346,45 @@ public class Parser {
         // hack fixes it (woo). Check should be done in strangerlib.
         else if (fName.equals("trim")) {
 
+            // perform trim operation
             solver.trim(id, base);
 
         } else if (fName.equals("delete")) {
 
+            // get start and end indices
             int s1Id = sourceMap.get("s1");
             int s2Id = sourceMap.get("s2");
-
             String s1String = actualVals.get(s1Id);
             String s2String = actualVals.get(s2Id);
-
             int start = Integer.parseInt(s1String);
             int end = Integer.parseInt(s2String);
 
+            // perform delete operation
             solver.delete(id, base, start, end);
 
         } else if (fName.equals("deleteCharAt")) {
 
+            // get location index
             int s1Id = sourceMap.get("s1");
             String s1String = actualVals.get(s1Id);
             int loc = Integer.parseInt(s1String);
 
+            // perform delete char at operation
             solver.deleteCharAt(id, base, loc);
 
         } else if (fName.equals("reverse")) {
 
+            // perform reverse operation
             solver.reverse(id, base);
 
         } else if (fName.equals("toUpperCase") && sourceMap.size() == 1) {
 
+            // perform uppercase operation
             solver.toUpperCase(id, base);
 
         } else if (fName.equals("toLowerCase") && sourceMap.size() == 1) {
 
+            // perform lowercase operation
             solver.toLowerCase(id, base);
 
         } else if (fName.startsWith("replace")) {
@@ -346,11 +398,12 @@ public class Parser {
                 string.split("!!")[1].startsWith("II") ||
                 sourceMap.size() != 3) {
 
-                // set resulting automaton as any string
+                // set resulting symbolic string as any string
                 solver.newSymbolicString(id);
                 return;
             }
 
+            // get argument ids
             int argOne = sourceMap.get("s1");
             int argTwo = sourceMap.get("s2");
 
@@ -358,7 +411,7 @@ public class Parser {
             // first two params are char
             if (string.split("!!")[1].equals("CC")) {
 
-                // set character representations
+                // create symbolic strings as characters
                 createChar(argOne);
                 createChar(argTwo);
 
@@ -379,6 +432,8 @@ public class Parser {
             solver.replace(id, base, argOne, argTwo);
 
         } else {
+
+            // create symbolic string
             solver.newSymbolicString(id);
         }
     }
@@ -502,10 +557,10 @@ public class Parser {
         // get function name
         String fName = method.split("!!")[0];
 
-        // get id of base automaton
+        // get id of base symbolic string
         int base = (sourceMap.get("t"));
 
-        // get id of second automaton if it exists
+        // get id of second symbolic string if it exists
         int arg = -1;
         if (sourceMap.get("s1") != null) {
             arg = sourceMap.get("s1");
