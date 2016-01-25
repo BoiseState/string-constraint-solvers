@@ -7,9 +7,14 @@
  */
 package analysis;
 
+import extendedSolvers.*;
 import org.jgrapht.DirectedGraph;
 import stringSymbolic.SymbolicEdge;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.RandomAccessFile;
 import java.util.*;
 
 @SuppressWarnings({"Duplicates", "unchecked"})
@@ -75,10 +80,10 @@ public class SolveMain {
 
         // get constraint graph from filename
         DirectedGraph<PrintConstraint, SymbolicEdge> graph;
-        graph = CommandLineUtilities.getGraph(fileName);
+        graph = getGraph(fileName);
 
         // create parser object from specified solver
-        Parser parser = CommandLineUtilities.getParser(solverName);
+        Parser parser = getParser(solverName);
 
         // if graph or parser not loaded, abort program
         if (graph == null || parser == null) {
@@ -90,6 +95,84 @@ public class SolveMain {
 
         // run solver with specified graph and solver
         runSolver(graph, parser);
+    }
+
+    static DirectedGraph<PrintConstraint, SymbolicEdge> getGraph
+            (String fileName) {
+
+        // initialize graph object as null
+        DirectedGraph<PrintConstraint, SymbolicEdge> graph = null;
+
+        try {
+            // get object stream from filename
+            RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
+            FileInputStream fin = new FileInputStream(raf.getFD());
+            ObjectInputStream in = new ObjectInputStream(fin);
+
+            // get graph object from stream
+            graph = (DirectedGraph<PrintConstraint, SymbolicEdge>)
+                    in.readObject();
+
+            // close stream objects
+            in.close();
+            fin.close();
+            raf.close();
+
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Graph not found");
+            c.printStackTrace();
+        }
+
+        return graph;
+    }
+
+    static Parser getParser(String solverName) {
+
+        // convert solver name to lowercase
+        String lc = solverName.toLowerCase();
+
+        // initialize extened solver as null
+        ExtendedSolver solver = null;
+
+        // create specified solver for parser
+        if (lc.equals("blank")) {
+
+            solver = new BlankSolver();
+
+        } else if (lc.equals("ez3str") ||
+                   lc.equals("z3str") ||
+                   lc.equals("ez3strsolver") ||
+                   lc.equals("z3strsolver")) {
+
+            solver = new EZ3Str(5000,
+                                "/usr/local/bin/Z3-str/Z3-str.py",
+                                "str",
+                                "tempZ3Str");
+
+        } else if (lc.equals("estranger") ||
+                   lc.equals("estrangersolver") ||
+                   lc.equals("stranger") ||
+                   lc.equals("strangersolver")) {
+
+            solver = new EStranger();
+
+        } else if (lc.equals("ejsa") ||
+                   lc.equals("ejsasolver") ||
+                   lc.equals("jsa") ||
+                   lc.equals("jsasolver")) {
+
+            solver = new EJSASolver();
+
+        } else if (lc.equals("concrete")) {
+
+            solver = new ConcreteSolver();
+
+        }
+
+        // return created parser
+        return new Parser(solver);
     }
 
     /**
@@ -126,7 +209,8 @@ public class SolveMain {
         List<PrintConstraint> toBeAdded = new LinkedList<PrintConstraint>();
 
         // initialize sorted list of vertices
-        List<PrintConstraint> vertices = new ArrayList<PrintConstraint>(graph.vertexSet());
+        List<PrintConstraint> vertices =
+                new ArrayList<PrintConstraint>(graph.vertexSet());
         Collections.sort(vertices);
 
         //Topological progression...
@@ -201,7 +285,8 @@ public class SolveMain {
                     for (SymbolicEdge edge : graph.outgoingEdgesOf(vertex)) {
 
                         // get the target vertex of the outgoing edge
-                        PrintConstraint target = (PrintConstraint) edge.getATarget();
+                        PrintConstraint target =
+                                (PrintConstraint) edge.getATarget();
 
                         // if target vertex not in processed set
                         if (!processedSet.contains(target)) {

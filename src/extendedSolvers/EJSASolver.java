@@ -707,7 +707,7 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
     @Override
     public boolean isSatisfiable(int id) {
         Automaton automaton = this.symbolicStringMap.get(id);
-        return automaton.isEmpty();
+        return !automaton.isEmpty();
     }
 
     @Override

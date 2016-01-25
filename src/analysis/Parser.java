@@ -116,7 +116,7 @@ public class Parser {
         // process operation based on function name
         if ((fName.equals("append")) || fName.equals("concat")) {
 
-            // TODO: figure this out, looks either useless or harmful
+            // TODO: figure this out
             if (sourceMap.get("s1") == null) {
                 solver.newSymbolicString(sourceMap.get("s1"));
             }
@@ -312,9 +312,10 @@ public class Parser {
                 int base = sourceMap.get("t");
                 if (!solver.isSound(base, actualVal)) {
                     System.err.println("Base not sound:");
-                    System.err.println(solver.getValue(base));
-                    throw new IllegalArgumentException("Invalid base in " +
-                                                       "solver");
+                    System.err.println("base: " + solver.getValue(base));
+                    System.err.println("actual value: " + actualVal);
+//                    throw new IllegalArgumentException("Invalid base in " +
+//                                                       "solver");
                 }
             }
 
@@ -323,7 +324,7 @@ public class Parser {
                 if (!solver.isSound(arg, actualVal)) {
                     System.err.println("Arg not sound:");
                     System.err.println(solver.getValue(arg));
-                    throw new IllegalArgumentException("Invalid arg in solver");
+//                    throw new IllegalArgumentException("Invalid arg in solver");
                 }
             }
         }
@@ -364,10 +365,21 @@ public class Parser {
         if (actualVal.equals("false")) {
             result = false;
         }
+
+        // branches disjoint?
         assertBooleanConstraint(fName, result, sourceMap);
         assertBooleanConstraint(fName, !result, sourceMap);
-        stats += solver.isSatisfiable(base);
+        String disjoint = "no";
+
+        if (solver.isSatisfiable(base)) {
+            disjoint = "yes";
+        }
+
+        stats += disjoint;
+
         solver.revertLastPredicate();
+
+        // output stats
         System.out.println(stats);
     }
 

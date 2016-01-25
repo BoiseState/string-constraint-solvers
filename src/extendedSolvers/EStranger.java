@@ -15,7 +15,7 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		if (System.getProperty("jna.library.path") == null) {
 
 			System.setProperty("jna.library.path",
-							   "/usr/local/lib/libstranger.so");
+							   "/usr/local/lib/libstranger.dylib");
 		}
 
 		StrangerAutomaton.initialize(true);
