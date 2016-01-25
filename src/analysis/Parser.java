@@ -124,103 +124,173 @@ public class Parser {
             // if function has more than two arguments
             if (sourceMap.size() > 3) {
 
+                // stringBuilder.append(char[] str, int offset, int len)
                 // if first two parameters are char array and int
                 if (string.split("!!")[1].startsWith("[CI")) {
+
+                    // set arg as new symbolic string
                     arg = solver.getTempId();
                     solver.newSymbolicString(arg);
-                } else {
-                    int start =
-                            Integer.parseInt(actualVals.get(sourceMap.get
-                                    ("s2")));
-                    int end =
-                            Integer.parseInt(actualVals.get(sourceMap.get
-                                    ("s3")));
+
+                }
+                // stringBuilder.append(CharSequence s, int start, int end)
+                else {
+
+                    // get start and end indices
+                    int s2Id = sourceMap.get("s2");
+                    int s3Id = sourceMap.get("s3");
+                    String s2String = actualVals.get(s2Id);
+                    String s3String = actualVals.get(s3Id);
+                    int start = Integer.parseInt(s2String);
+                    int end = Integer.parseInt(s3String);
+
+                    // perform operation and return
                     solver.append(id, base, arg, start, end);
                     return;
                 }
 
             }
+            // stringBuilder.append(char c)
             // if only parameter is a char
             else if (string.split("!!")[1].equals("C")) {
 
+                // create new char
                 int charId = sourceMap.get("s1");
                 createChar(charId);
 
             }
+            // stringBuilder.append(boolean b)
             // if only param is a boolean
             else if (string.split("!!")[1].equals("Z")) {
+
                 try {
-                    int num =
-                            Integer.parseInt(actualVals.get(sourceMap.get
-                                    ("s1")));
+
+                    // get num
+                    int s1Id = sourceMap.get("s1");
+                    String s1String = actualVals.get(s1Id);
+                    int num = Integer.parseInt(s1String);
+
+                    // convert byte code values to boolean strings
                     if (num == 1) {
                         solver.newConcreteString(arg, "true");
                     } else {
                         solver.newConcreteString(arg, "false");
                     }
+
                 } catch (NumberFormatException e) {
-                    solver.newConcreteString(arg,
-                                             actualVals.get(sourceMap.get
-                                                     ("s1")));
+
+                    // could not parse int, create string automaton
+                    // from actual value
+                    int s1Id = sourceMap.get("s1");
+                    String s1String = actualVals.get(s1Id);
+                    solver.newConcreteString(arg, s1String);
                 }
             }
+
+            // perform append operation
             solver.append(id, base, arg);
+
         } else if (fName.equals("<init>")) {
+
             if (sourceMap.get("t") != null &&
                 sourceMap.get("s1") != null &&
                 actualVals.get(sourceMap.get("t")).equals("")) {
+
                 solver.propagateSymbolicString(id, base);
             } else {
+
                 solver.newSymbolicString(id);
             }
+
         } else if (fName.equals("toString") ||
                    fName.equals("valueOf") ||
                    fName.equals("intern") ||
                    fName.equals("trimToSize") ||
                    (fName.equals("copyValueOf") && sourceMap.size() == 2)) {
+
             if (!sourceMap.containsKey("t")) {
+
                 solver.propagateSymbolicString(id, arg);
+
             } else {
+
                 solver.propagateSymbolicString(id, base);
+
             }
+
         } else if (string.startsWith("substring")) {
+
             if (sourceMap.size() == 2) {
-                int start =
-                        Integer.parseInt(actualVals.get(sourceMap.get("s1")));
+
+                int s1Id = sourceMap.get("s1");
+                String s1String = actualVals.get(s1Id);
+                int start = Integer.parseInt(s1String);
+
                 if (start != 0) {
                     solver.substring(id, base, start);
                 }
             } else {
-                int start =
-                        Integer.parseInt(actualVals.get(sourceMap.get("s1")));
-                int end = Integer.parseInt(actualVals.get(sourceMap.get("s2")));
+
+                int s1Id = sourceMap.get("s1");
+                int s2Id = sourceMap.get("s2");
+
+                String s1String = actualVals.get(s1Id);
+                String s2String = actualVals.get(s2Id);
+
+                int start = Integer.parseInt(s1String);
+                int end = Integer.parseInt(s2String);
+
                 solver.substring(id, base, start, end);
             }
         } else if (fName.equals("setLength")) {
-            int length = Integer.parseInt(actualVals.get(sourceMap.get("s1")));
+
+            int s1Id = sourceMap.get("s1");
+            String s1String = actualVals.get(s1Id);
+            int length = Integer.parseInt(s1String);
+
             solver.setLength(id, base, length);
         }
         //TODO implement other insert
         else if (fName.equals("insert")) {
+
             arg = sourceMap.get("s2");
             int offset = sourceMap.get("s1");
 
             if (string.split("!!")[1].equals("IC")) {
+
                 createChar(arg);
+
             } else if (string.split("!!")[1].startsWith("I[C")) {
+
                 solver.newSymbolicString(arg);
+
             } else if (sourceMap.size() > 3) {
-                int start =
-                        Integer.parseInt(actualVals.get(sourceMap.get("s3")));
-                int end = Integer.parseInt(actualVals.get(sourceMap.get("s4")));
+
+                int s3Id = sourceMap.get("s3");
+                int s4Id = sourceMap.get("s4");
+
+                String s3String = actualVals.get(s3Id);
+                String s4String = actualVals.get(s4Id);
+
+                int start = Integer.parseInt(s3String);
+                int end = Integer.parseInt(s4String);
+
                 solver.insert(id, base, arg, offset, start, end);
+
             } else {
+
                 solver.insert(id, base, arg, offset);
+
             }
         } else if (fName.equals("setCharAt")) {
+
             arg = sourceMap.get("s2");
             createChar(arg);
-            int offset = Integer.parseInt(actualVals.get(sourceMap.get("s1")));
+
+            int s1Id = sourceMap.get("s1");
+            String s1String = actualVals.get(s1Id);
+            int offset = Integer.parseInt(s1String);
+
             solver.setCharAt(id, base, arg, offset);
         }
         //TODO: Check for 2 cases: Restricted any string and more then 2
@@ -229,21 +299,42 @@ public class Parser {
         //For some reason it fails when it is any string of any length. This
         // hack fixes it (woo). Check should be done in strangerlib.
         else if (fName.equals("trim")) {
+
             solver.trim(id, base);
+
         } else if (fName.equals("delete")) {
-            int start = Integer.parseInt(actualVals.get(sourceMap.get("s1")));
-            int end = Integer.parseInt(actualVals.get(sourceMap.get("s2")));
+
+            int s1Id = sourceMap.get("s1");
+            int s2Id = sourceMap.get("s2");
+
+            String s1String = actualVals.get(s1Id);
+            String s2String = actualVals.get(s2Id);
+
+            int start = Integer.parseInt(s1String);
+            int end = Integer.parseInt(s2String);
+
             solver.delete(id, base, start, end);
+
         } else if (fName.equals("deleteCharAt")) {
-            int loc = Integer.parseInt(actualVals.get(sourceMap.get("s1")));
+
+            int s1Id = sourceMap.get("s1");
+            String s1String = actualVals.get(s1Id);
+            int loc = Integer.parseInt(s1String);
 
             solver.deleteCharAt(id, base, loc);
+
         } else if (fName.equals("reverse")) {
+
             solver.reverse(id, base);
+
         } else if (fName.equals("toUpperCase") && sourceMap.size() == 1) {
+
             solver.toUpperCase(id, base);
+
         } else if (fName.equals("toLowerCase") && sourceMap.size() == 1) {
+
             solver.toLowerCase(id, base);
+
         } else if (fName.startsWith("replace")) {
 
             // string.replaceAll(String regex, String replace)
@@ -324,7 +415,8 @@ public class Parser {
                 if (!solver.isSound(arg, actualVal)) {
                     System.err.println("Arg not sound:");
                     System.err.println(solver.getValue(arg));
-//                    throw new IllegalArgumentException("Invalid arg in solver");
+//                    throw new IllegalArgumentException("Invalid arg in
+// solver");
                 }
             }
         }
@@ -357,10 +449,12 @@ public class Parser {
         solver.revertLastPredicate();
 
         if (!actualVal.equals("true") && !actualVal.equals("false")) {
-            System.err.println(
-                    "warning constraint detected without true/false value");
+
+            System.err.println( "warning constraint detected without " +
+                                "true/false value");
             return;
         }
+
         boolean result = true;
         if (actualVal.equals("false")) {
             result = false;
@@ -369,10 +463,10 @@ public class Parser {
         // branches disjoint?
         assertBooleanConstraint(fName, result, sourceMap);
         assertBooleanConstraint(fName, !result, sourceMap);
-        String disjoint = "no";
 
+        String disjoint = "yes";
         if (solver.isSatisfiable(base)) {
-            disjoint = "yes";
+            disjoint = "no";
         }
 
         stats += disjoint;
@@ -389,6 +483,7 @@ public class Parser {
      * @param id The id of the constraint.
      */
     private void createChar(int id) {
+
         String val = actualVals.get(id);
         solver.newConcreteString(id, val);
     }
@@ -418,17 +513,29 @@ public class Parser {
 
         // assert the boolean constraint
         if (fName.equals("contains")) {
+
             solver.contains(result, base, arg);
+
         } else if (fName.equals("endsWith")) {
+
             solver.endsWith(result, base, arg);
+
         } else if (fName.equals("startsWith") && sourceMap.size() == 2) {
+
             solver.startsWith(result, base, arg);
+
         } else if (fName.equals("equals") || fName.equals("contentEquals")) {
+
             solver.equals(result, base, arg);
+
         } else if (fName.equals("equalsIgnoreCase")) {
+
             solver.equalsIgnoreCase(result, base, arg);
+
         } else if (fName.equals("isEmpty")) {
+
             solver.isEmpty(result, base);
+
         }
     }
 

@@ -712,9 +712,17 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
 
     @Override
     public boolean isSingleton(int id) {
+
+        // get automaton from id
         Automaton automaton = this.symbolicStringMap.get(id);
-        String singleton = automaton.getSingleton();
-        return singleton != null;
+
+        // get up to the first finite string, null if more
+        Set<String> strings = automaton.getFiniteStrings(1);
+
+        // return if single non-null string in automaton
+        return strings != null &&
+               strings.size() == 1 &&
+               strings.iterator().next() != null;
     }
 
     @Override

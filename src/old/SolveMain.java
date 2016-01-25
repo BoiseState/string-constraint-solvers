@@ -214,7 +214,7 @@ public class SolveMain {
         }
         solve.finishUp();
         solve.getStats();
-        solve.writeToFile();
+//        solve.writeToFile();
     }
 
     /**

@@ -887,7 +887,7 @@ public class JSASolver extends SatSolver {
                          "base: " +
                          ((Automaton) store.get(sourceMap.get("t")))
                                  .getShortestExample(
-                                 true) +
+                                         true) +
                          " ";
             if (arg != null) {
                 fileWrite += "arg: " + arg.getShortestExample(true);
@@ -954,12 +954,14 @@ public class JSASolver extends SatSolver {
                         if (Character.isUpperCase((char) c)) {
                             transitions.add(new Transition(Character
                                                                    .toLowerCase(
-                                    (char) c), dest));
+                                                                           (char) c),
+                                                           dest));
                         }
                         if (Character.isLowerCase((char) c)) {
                             transitions.add(new Transition(Character
                                                                    .toUpperCase(
-                                    (char) c), dest));
+                                                                           (char) c),
+                                                           dest));
                         }
                     }
                 }
@@ -1029,7 +1031,8 @@ public class JSASolver extends SatSolver {
     protected void constraintSatisfiability(String string,
                                             String actualValue,
                                             int id,
-                                            HashMap<String, Integer> sourceMap) {
+                                            HashMap<String, Integer>
+                                                    sourceMap) {
 
 
         if (!actualValue.equals("true") && !actualValue.equals("false")) {
@@ -1054,10 +1057,26 @@ public class JSASolver extends SatSolver {
         boolean falseSat = false;
         boolean disjoint = true;
 
-        if (((Automaton) store.get(sourceMap.get("t"))).getSingleton() != null &&
-            (sourceMap.get("s1") == null ||
-             ((Automaton) store.get(sourceMap.get("s1"))).getSingleton() != null)) {
+        Set<String> tStrings =
+                ((Automaton) store.get(sourceMap.get("t"))).getFiniteStrings(1);
+        Set<String> s1Strings = null;
+        if (sourceMap.get("s1") != null) {
+            s1Strings =
+                    ((Automaton) store.get(sourceMap.get("s1")))
+                            .getFiniteStrings(
+                            1);
+        }
 
+        // if target automaton contains only single non-null string
+        // and first parameter automaton is either null or also contains
+        // a single non-null string
+        if (tStrings != null &&
+            tStrings.size() == 1 &&
+            tStrings.iterator().next() != null &&
+            (s1Strings == null ||
+             (s1Strings.size() == 1 && s1Strings.iterator().next() != null))) {
+
+            // set singleton flag
             singleton = true;
         }
 
@@ -1148,11 +1167,14 @@ public class JSASolver extends SatSolver {
                                    sourceMap.get("s1") +
                                    ":" +
                                    actualVals.get(sourceMap.get("s1")));
-                System.err.println(((Automaton) store.get(sourceMap.get("t"))).run(
+                System.err.println(((Automaton) store.get(sourceMap.get("t"))
+                                   ).run(
                         actualVals.get(sourceMap.get("t"))) +
                                    "\t" +
-                                   ((Automaton) store.get(sourceMap.get("s1"))).run(
-                                           actualVals.get(sourceMap.get("s1"))));
+                                   ((Automaton) store.get(sourceMap.get("s1")
+                                   )).run(
+                                           actualVals.get(sourceMap.get("s1")
+                                           )));
                 System.exit(1);
                 System.err.println(pastLists.get(sourceMap.get("t")));
                 System.err.println(pastLists.get(sourceMap.get("s1")));
@@ -1180,10 +1202,12 @@ public class JSASolver extends SatSolver {
                                    sourceMap.get("s1") +
                                    ":" +
                                    actualVals.get(sourceMap.get("s1")));
-                System.err.println(((Automaton) store.get(sourceMap.get("t"))).getShortestExample(
+                System.err.println(((Automaton) store.get(sourceMap.get("t"))
+                                   ).getShortestExample(
                         true) +
                                    " " +
-                                   ((Automaton) store.get(sourceMap.get("s1"))).getShortestExample(
+                                   ((Automaton) store.get(sourceMap.get("s1")
+                                   )).getShortestExample(
                                            true));
                 System.exit(1);
             }
@@ -1278,7 +1302,8 @@ public class JSASolver extends SatSolver {
 //			}
 //			else{
 //				result=Automaton.makeChar(val1.charAt(0));
-//				//result=Automaton.makeChar((char)tempVal).union(Automaton.makeString(tempVal+""));
+//				//result=Automaton.makeChar((char)tempVal).union(Automaton
+// .makeString(tempVal+""));
 //			}
 //		}
 //		catch(NumberFormatException e){
