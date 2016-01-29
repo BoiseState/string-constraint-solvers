@@ -5,14 +5,17 @@ import dk.brics.automaton.State;
 import dk.brics.automaton.Transition;
 import dk.brics.string.stringoperations.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("Duplicates")
 public class JSASolver extends SatSolver {
     private int boolId;
+
+    private static int count;
+
+    static {
+        count = 1;
+    }
 
     private boolean verbose;
 
@@ -34,7 +37,11 @@ public class JSASolver extends SatSolver {
 //        }
 
         // output header in same format as new extended solver
-        System.out.println("SING\tTSAT\tFSAT\tDISJOINT");
+        System.out.println("#\t" +
+                           "SING\t" +
+                           "TSAT\t" +
+                           "FSAT\t" +
+                           "DISJOINT");
 
         boolId = 0;
     }
@@ -62,22 +69,32 @@ public class JSASolver extends SatSolver {
      * @param result      Is it a true or false predicate.
      * @param method      The predicate method.
      * @param actualValue The actual result.
-     * @param id          The predicate id.
+     * @param baseId          The predicate id.
      * @param sourceMap   The values involved.
      */
     protected void setConditionalLists(boolean result,
                                        String method,
                                        String actualValue,
-                                       int id,
+                                       int baseId,
+                                       int argId,
                                        HashMap<String, Integer> sourceMap) {
         String fName = method.split("!!")[0];
 
-        base = (Automaton) store.get(sourceMap.get("t"));
+        if (baseId > 0) {
+            base = (Automaton) store.get(baseId);
+        } else {
+            base = (Automaton) store.get(sourceMap.get("t"));
+        }
+
         arg = null;
 
         argNum = -1;
         if (sourceMap.get("s1") != null) {
-            arg = (Automaton) store.get(sourceMap.get("s1"));
+            if (argId > 0) {
+                arg = (Automaton) store.get(argId);
+            } else {
+                arg = (Automaton) store.get(sourceMap.get("s1"));
+            }
             argNum = sourceMap.get("s1");
         }
 
@@ -926,7 +943,7 @@ public class JSASolver extends SatSolver {
         if (actualValue.equals("false")) {
             result = false;
         }
-        setConditionalLists(result, method, actualValue, id, sourceMap);
+        setConditionalLists(result, method, actualValue, sourceMap);
         if (base != null) {
             store.put(sourceMap.get("t"), base);
         }
@@ -1051,20 +1068,22 @@ public class JSASolver extends SatSolver {
             sourceTime = time.get(id);
         }
 
+        // get target and source ids
+        Integer targetId = sourceMap.get("t");
+        Integer source1Id = sourceMap.get("s1");
+
         // initialize output flags
         boolean singleton = false;
-        boolean trueSat = false;
-        boolean falseSat = false;
+        boolean trueSat;
+        boolean falseSat;
         boolean disjoint = true;
 
         Set<String> tStrings =
-                ((Automaton) store.get(sourceMap.get("t"))).getFiniteStrings(1);
+                ((Automaton) store.get(targetId)).getFiniteStrings(1);
         Set<String> s1Strings = null;
-        if (sourceMap.get("s1") != null) {
+        if (source1Id != null) {
             s1Strings =
-                    ((Automaton) store.get(sourceMap.get("s1")))
-                            .getFiniteStrings(
-                            1);
+                    ((Automaton) store.get(source1Id)).getFiniteStrings(1);
         }
 
         // if target automaton contains only single non-null string
@@ -1073,28 +1092,30 @@ public class JSASolver extends SatSolver {
         if (tStrings != null &&
             tStrings.size() == 1 &&
             tStrings.iterator().next() != null &&
-            (s1Strings == null ||
-             (s1Strings.size() == 1 && s1Strings.iterator().next() != null))) {
+            (source1Id == null ||
+             (s1Strings != null &&
+              s1Strings.size() == 1 &&
+              s1Strings.iterator().next() != null))) {
 
             // set singleton flag
             singleton = true;
         }
 
         long startTime = System.nanoTime();
-        setConditionalLists(true, string, actualValue, id, sourceMap);
-        base.isEmpty();
+        setConditionalLists(true, string, actualValue, sourceMap);
+        trueSat = !base.isEmpty();
         long trueListTime = System.nanoTime() - startTime + sourceTime;
         Automaton trueBase = base;
         //TODO: Use arg in calculation
         startTime = System.nanoTime();
-        setConditionalLists(false, string, actualValue, id, sourceMap);
-        base.isEmpty();
+        setConditionalLists(false, string, actualValue, sourceMap);
+        falseSat = !base.isEmpty();
         long falseListTime = System.nanoTime() - startTime + sourceTime;
         constraintTime.put(id, trueListTime + falseListTime);
         Automaton falseBase = base;
 
         //check for unsoundness
-        if (!((Automaton) store.get(sourceMap.get("t"))).subsetOf(trueBase.union(
+        if (!((Automaton) store.get(targetId)).subsetOf(trueBase.union(
                 falseBase))) {
 
             numUnsound.add(id);
@@ -1105,7 +1126,7 @@ public class JSASolver extends SatSolver {
 
         //check for weird over approximations
         if (!trueBase.union(falseBase)
-                     .subsetOf(((Automaton) store.get(sourceMap.get("t"))))) {
+                     .subsetOf(((Automaton) store.get(targetId)))) {
 
             numOver.add(id);
             System.err.println("Over:" + string + " " + actualValue);
@@ -1121,7 +1142,7 @@ public class JSASolver extends SatSolver {
             if (base.getFiniteStrings(1) != null &&
                 (arg == null || (arg.getFiniteStrings(1) != null))) {
                 taint = false;
-                store.setTaint(sourceMap.get("t"), false);
+                store.setTaint(targetId, false);
 
                 if (argNum >= 0) {
                     store.setTaint(argNum, false);
@@ -1138,13 +1159,13 @@ public class JSASolver extends SatSolver {
 
             completeResult = "UNSAT";
             unsat.add(id);
-            System.err.println("JSAUNSAT");
-            System.exit(1);
+//            System.err.println("JSAUNSAT");
+//            System.exit(1);
 
         } else if (trueBase != null && trueBase.isEmpty()) {
 
             // set false branch
-            falseSat = true;
+//            falseSat = true;
 
             completeResult = "TRUEUNSAT";
             trueUnsat.add(id);
@@ -1160,30 +1181,30 @@ public class JSASolver extends SatSolver {
                                    " " +
                                    id +
                                    ": " +
-                                   sourceMap.get("t") +
+                                   targetId +
                                    ":" +
-                                   actualVals.get(sourceMap.get("t")) +
+                                   actualVals.get(targetId) +
                                    " " +
-                                   sourceMap.get("s1") +
+                                   source1Id +
                                    ":" +
-                                   actualVals.get(sourceMap.get("s1")));
-                System.err.println(((Automaton) store.get(sourceMap.get("t"))
+                                   actualVals.get(source1Id));
+                System.err.println(((Automaton) store.get(targetId)
                                    ).run(
-                        actualVals.get(sourceMap.get("t"))) +
+                        actualVals.get(targetId)) +
                                    "\t" +
-                                   ((Automaton) store.get(sourceMap.get("s1")
+                                   ((Automaton) store.get(source1Id
                                    )).run(
-                                           actualVals.get(sourceMap.get("s1")
+                                           actualVals.get(source1Id
                                            )));
                 System.exit(1);
-                System.err.println(pastLists.get(sourceMap.get("t")));
-                System.err.println(pastLists.get(sourceMap.get("s1")));
+                System.err.println(pastLists.get(targetId));
+                System.err.println(pastLists.get(source1Id));
             }
 
         } else if (falseBase != null && falseBase.isEmpty()) {
 
             // set true branch
-            trueSat = true;
+//            trueSat = true;
 
             completeResult = "FALSEUNSAT";
             falseUnsat.add(id);
@@ -1195,18 +1216,18 @@ public class JSASolver extends SatSolver {
                 System.err.println("\nInaccurate falseunsat" +
                                    id +
                                    ": " +
-                                   sourceMap.get("t") +
+                                   targetId +
                                    ":" +
-                                   actualVals.get(sourceMap.get("t")) +
+                                   actualVals.get(targetId) +
                                    " " +
-                                   sourceMap.get("s1") +
+                                   source1Id +
                                    ":" +
-                                   actualVals.get(sourceMap.get("s1")));
-                System.err.println(((Automaton) store.get(sourceMap.get("t"))
+                                   actualVals.get(source1Id));
+                System.err.println(((Automaton) store.get(targetId)
                                    ).getShortestExample(
                         true) +
                                    " " +
-                                   ((Automaton) store.get(sourceMap.get("s1")
+                                   ((Automaton) store.get(source1Id
                                    )).getShortestExample(
                                            true));
                 System.exit(1);
@@ -1231,19 +1252,51 @@ public class JSASolver extends SatSolver {
         } else {
 
             // set true and false branch
-            trueSat = true;
-            falseSat = true;
+//            trueSat = true;
+//            falseSat = true;
 
             sat.add(id);
             if (!toTaints.contains(id)) {
                 satTimeout.add(id);
             }
             completeResult = "SAT";
-
-            // check for disjoint branches
-            Automaton intersection = trueBase.intersection(falseBase);
-            disjoint = intersection.isEmpty();
         }
+
+        // save base and arg
+        Automaton savedBase = base;
+        Automaton savedArg = arg;
+
+        // get valid random id
+        Random r = new Random(System.nanoTime());
+        int newBaseId = 0;
+        int newArgId = 0;
+        do {
+            newBaseId = r.nextInt(10000);
+            newArgId = r.nextInt(10000);
+        } while (store.get(newBaseId) != null && store.get(newArgId) == null);
+
+        // check for disjoint branch
+        if (actualValue.equals("false")) {
+
+            setConditionalLists(false, string, actualValue, sourceMap);
+            store.put(newBaseId, base);
+            store.put(newArgId, arg);
+            setConditionalLists(true, string, actualValue, newBaseId, newArgId, sourceMap);
+        } else {
+
+            setConditionalLists(true, string, actualValue, sourceMap);
+            store.put(newBaseId, base);
+            store.put(newArgId, arg);
+            setConditionalLists(false, string, actualValue, newBaseId, newArgId, sourceMap);
+        }
+
+        store.remove(newBaseId);
+        store.remove(newArgId);
+        disjoint = base.isEmpty();
+
+        // restore base and arg
+        base = savedBase;
+        arg = savedArg;
 
         // output results in same format as new extended solvers
         String disjointLabel = "yes";
@@ -1252,11 +1305,13 @@ public class JSASolver extends SatSolver {
             disjointLabel = "no";
         }
 
-        System.out.format("%b\t%b\t%b\t%s\n",
+        System.out.format("%03d\t%b\t%b\t%b\t%s\n",
+                          count,
                           singleton,
                           trueSat,
                           falseSat,
                           disjointLabel);
+        count++;
 
 //        if (verbose) {
 //            System.out.print(++boolId + "\t" + fName + "\t" + completeResult);
@@ -1284,6 +1339,13 @@ public class JSASolver extends SatSolver {
 //                                 "\n");
 //            }
 //        }
+    }
+
+    private void setConditionalLists(boolean result,
+                                     String string,
+                                     String actualValue,
+                                     HashMap<String, Integer> sourceMap) {
+        this.setConditionalLists(result, string, actualValue, 0, 0, sourceMap);
     }
 
     /**

@@ -177,3 +177,4 @@ release.properties
 ### Project Specfic Ignores
 
 results/
+traceFile

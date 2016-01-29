@@ -97,4 +97,8 @@ public class StoreToFile {
 		//taintMap.remove(id);
 	}
 
+	public int size() {
+		return this.objMap.size();
+	}
+
 }

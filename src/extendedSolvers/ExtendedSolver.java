@@ -6,65 +6,36 @@ import java.util.Map;
 /**
  * Base class used to extend string constraint solvers.
  *
- * @param <T> The representation used to store a Path Condition.
+ * @param <TSymbolicString> The representation used to store a Path Condition.
  * @author Scott Kausler
  */
-public abstract class ExtendedSolver<T> {
+public abstract class ExtendedSolver<TSymbolicString> {
 
-    protected Map<Integer, T> symbolicStringMap = new HashMap<>();
     protected Map<Integer, String> concreteStringMap = new HashMap<>();
-    protected T last = null;
-    protected T lastArg = null;
-
-    protected int lastId = -1;
+    protected TSymbolicString last = null;
+    protected TSymbolicString lastArg = null;
     protected int lastArgId = -1;
+    protected int lastId = -1;
+    protected Map<Integer, TSymbolicString> symbolicStringMap = new HashMap<>();
 
     /**
-     * Used to check if the values involved are capable of being used in the
-     * coming operations. For example, in EStranger, the time required to solve
-     * constraints grows as more transitions appear in the automata.
+     * Checks if the parameter contains a predicate method.
      *
-     * @param base representation of calling string
-     * @param arg  representation of argument string
-     * @return
+     * @param string The name of the method to be checked.
+     * @return true if the parameter is a predicate.
      */
-    public boolean isValidState(int base, int arg) {
-        return true;
+    public static boolean containsBoolFunction(String string) {
+        String fName = string.split("!!")[0];
+        return fName.equals("equals") ||
+               fName.equals("contains") ||
+               fName.equals("contentEquals") ||
+               fName.equals("endsWith") ||
+               fName.equals("startsWith") ||
+               fName.equals("equalsIgnoreCase") ||
+               fName.equals("matches") ||
+               fName.equals("isEmpty") ||
+               fName.equals("regionMatches");
     }
-
-    /**
-     * Used to make a new symbolic string value
-     *
-     * @param id used to track the current symbolic string.
-     */
-    public abstract void newSymbolicString(int id);
-
-    /**
-     * Creates a new concrete string using the representation of the solver,
-     * e.g., "foo".
-     *
-     * @param id     used to track result
-     * @param string the concrete string to use
-     */
-    public abstract void newConcreteString(int id, String string);
-
-    /**
-     * Replaces possible invalid characters in the input value. Introduces
-     * over-approximation by mapping some characters to others.
-     *
-     * @param value string with potentially invalid characters
-     * @return argument sanitized from invalid characters
-     */
-    public abstract String replaceEscapes(String value);
-
-    /**
-     * Used to propagate string values in cases where a symbolic
-     * string is unmodified, i.e., toString().
-     *
-     * @param id   represents result.
-     * @param base represents value to propagate.
-     */
-    public abstract void propagateSymbolicString(int id, int base);
 
     /**
      * Interface for StringBuilder.append(CharSequence s, int start, int end).
@@ -86,28 +57,79 @@ public abstract class ExtendedSolver<T> {
     public abstract void append(int id, int base, int arg);
 
     /**
-     * Interface for substring(int start)
+     * Interface for contains(String arg)
      *
-     * @param id   represents result.
-     * @param base represents calling string.
+     * @param result used to assert the true or false branch
+     * @param base   represents calling string
+     * @param arg    represents string argument
      */
-    public abstract void substring(int id, int base, int start);
+    public abstract void contains(boolean result, int base, int arg);
 
     /**
-     * Interface for substring(int start, int end)
+     * Interface for delete(int start, int end)
      *
      * @param id   represents result.
      * @param base represents calling string.
      */
-    public abstract void substring(int id, int base, int start, int end);
+    public abstract void delete(int id, int base, int start, int end);
 
     /**
-     * Interface for setLength(int length)
+     * Interface for deleteCharAt(int loc)
      *
      * @param id   represents result.
      * @param base represents calling string.
      */
-    public abstract void setLength(int id, int base, int length);
+    public abstract void deleteCharAt(int id, int base, int loc);
+
+    /**
+     * Interface for endsWith(String arg)
+     *
+     * @param result used to assert the true or false branch
+     * @param base   represents calling string
+     * @param arg    represents string argument
+     */
+    public abstract void endsWith(boolean result, int base, int arg);
+
+    /**
+     * Interface for equals(String arg)
+     *
+     * @param result used to assert the true or false branch
+     * @param base   represents calling string
+     * @param arg    represents string argument
+     */
+    public abstract void equals(boolean result, int base, int arg);
+
+    /**
+     * Interface for equalsIgnoreCase(String arg)
+     *
+     * @param result used to assert the true or false branch
+     * @param base   represents calling string
+     * @param arg    represents string argument
+     */
+    public abstract void equalsIgnoreCase(boolean result, int base, int arg);
+
+    /**
+     * Gets a satisfiable result for the symbolic string
+     *
+     * @param id represents string to test
+     * @return A satisfiable example
+     */
+    public abstract String getSatisfiableResult(int id);
+
+    public int getTempId() {
+        return -1;
+    }
+
+    /**
+     * Used to get the value currently stored in the symbolic string map for
+     * the given id.
+     *
+     * @param id id used to get the value to return.
+     * @return the symbolic string value represented by the id.
+     */
+    public TSymbolicString getValue(int id) {
+        return symbolicStringMap.get(id);
+    }
 
     /**
      * Interface for insert(int offset, String str)
@@ -133,132 +155,12 @@ public abstract class ExtendedSolver<T> {
                                 int end);
 
     /**
-     * Interface for setCharAt(int offset, char ch)
-     *
-     * @param id   represents result.
-     * @param base represents calling string.
-     * @param arg  represents character argument.
-     */
-    public abstract void setCharAt(int id, int base, int arg, int offset);
-
-    /**
-     * Interface for trim()
-     *
-     * @param id   represents result.
-     * @param base represents calling string.
-     */
-    public abstract void trim(int id, int base);
-
-    /**
-     * Interface for delete(int start, int end)
-     *
-     * @param id   represents result.
-     * @param base represents calling string.
-     */
-    public abstract void delete(int id, int base, int start, int end);
-
-    /**
-     * Interface for deleteCharAt(int loc)
-     *
-     * @param id   represents result.
-     * @param base represents calling string.
-     */
-    public abstract void deleteCharAt(int id, int base, int loc);
-
-    /**
-     * Interface for reverse()
-     *
-     * @param id   represents result.
-     * @param base represents calling string.
-     */
-    public abstract void reverse(int id, int base);
-
-    /**
-     * Interface for toUpperCase()
-     *
-     * @param id   represents result.
-     * @param base represents calling string.
-     */
-    public abstract void toUpperCase(int id, int base);
-
-    /**
-     * Interface for toLowerCase()
-     *
-     * @param id   represents result.
-     * @param base represents calling string.
-     */
-    public abstract void toLowerCase(int id, int base);
-
-    /**
-     * Interface for replace(String argOne, String argTwo)
-     *
-     * @param id     represents result.
-     * @param base   represents calling string.
-     * @param argOne represents string to replace.
-     * @param argTwo represents replacement string.
-     */
-    public abstract void replace(int id, int base, int argOne, int argTwo);
-
-    /**
-     * Interface for contains(String arg)
-     *
-     * @param result used to assert the true or false branch
-     * @param base   represents calling string
-     * @param arg    represents string argument
-     */
-    public abstract void contains(boolean result, int base, int arg);
-
-    /**
-     * Interface for endsWith(String arg)
-     *
-     * @param result used to assert the true or false branch
-     * @param base   represents calling string
-     * @param arg    represents string argument
-     */
-    public abstract void endsWith(boolean result, int base, int arg);
-
-    /**
-     * Interface for startsWith(String arg)
-     *
-     * @param result used to assert the true or false branch
-     * @param base   represents calling string
-     * @param arg    represents string argument
-     */
-    public abstract void startsWith(boolean result, int base, int arg);
-
-    /**
-     * Interface for equals(String arg)
-     *
-     * @param result used to assert the true or false branch
-     * @param base   represents calling string
-     * @param arg    represents string argument
-     */
-    public abstract void equals(boolean result, int base, int arg);
-
-    /**
-     * Interface for equalsIgnoreCase(String arg)
-     *
-     * @param result used to assert the true or false branch
-     * @param base   represents calling string
-     * @param arg    represents string argument
-     */
-    public abstract void equalsIgnoreCase(boolean result, int base, int arg);
-
-    /**
      * Interface for isEmpty(String arg)
      *
      * @param result used to assert the true or false branch
      * @param base   represents calling string
      */
     public abstract void isEmpty(boolean result, int base);
-
-    /**
-     * Gets a satisfiable result for the symbolic string
-     *
-     * @param id represents string to test
-     * @return A satisfiable example
-     */
-    public abstract String getSatisfiableResult(int id);
 
     /**
      * Check if a symbolic string constraint is satisfiable
@@ -296,9 +198,44 @@ public abstract class ExtendedSolver<T> {
      */
     public abstract boolean isSound(int id, String actualValue);
 
-    public int getTempId() {
-        return -1;
+    /**
+     * Used to check if the values involved are capable of being used in the
+     * coming operations. For example, in EStranger, the time required to solve
+     * constraints grows as more transitions appear in the automata.
+     *
+     * @param base representation of calling string
+     * @param arg  representation of argument string
+     * @return boolean value indicating if the symbolic values can be used in
+     * the coming operations.
+     */
+    public boolean isValidState(int base, int arg) {
+        return true;
     }
+
+    /**
+     * Creates a new concrete string using the representation of the solver,
+     * e.g., "foo".
+     *
+     * @param id     used to track result
+     * @param string the concrete string to use
+     */
+    public abstract void newConcreteString(int id, String string);
+
+    /**
+     * Used to make a new symbolic string value
+     *
+     * @param id used to track the current symbolic string.
+     */
+    public abstract void newSymbolicString(int id);
+
+    /**
+     * Used to propagate string values in cases where a symbolic
+     * string is unmodified, i.e., toString().
+     *
+     * @param id   represents result.
+     * @param base represents value to propagate.
+     */
+    public abstract void propagateSymbolicString(int id, int base);
 
     /**
      * Remove a symbolic string that won't be used anymore.
@@ -312,41 +249,31 @@ public abstract class ExtendedSolver<T> {
     }
 
     /**
-     * Checks if the parameter contains a predicate method.
+     * Interface for replace(String argOne, String argTwo)
      *
-     * @param string The name of the method to be checked.
-     * @return true if the parameter is a predicate.
+     * @param id     represents result.
+     * @param base   represents calling string.
+     * @param argOne represents string to replace.
+     * @param argTwo represents replacement string.
      */
-    public static boolean containsBoolFunction(String string) {
-        String fName = string.split("!!")[0];
-        if (fName.equals("equals") ||
-            fName.equals("contains") ||
-            fName.equals("contentEquals") ||
-            fName.equals("endsWith") ||
-            fName.equals("startsWith") ||
-            fName.equals("equalsIgnoreCase") ||
-            fName.equals("matches") ||
-            fName.equals("isEmpty") ||
-            fName.equals("regionMatches")) {
-            return true;
-        }
-        return false;
-    }
+    public abstract void replace(int id, int base, int argOne, int argTwo);
 
     /**
-     * Sets the last base and argument for reverting the last predicate.
+     * Replaces possible invalid characters in the input value. Introduces
+     * over-approximation by mapping some characters to others.
      *
-     * @param base id of the current base.
-     * @param arg  id of the current arg
+     * @param value string with potentially invalid characters
+     * @return argument sanitized from invalid characters
      */
-    protected void setLast(int base, int arg) {
-        last = symbolicStringMap.get(base);
-        lastId = base;
-        if (arg > 0) {
-            lastArg = symbolicStringMap.get(arg);
-            lastArgId = arg;
-        }
-    }
+    public abstract String replaceEscapes(String value);
+
+    /**
+     * Interface for reverse()
+     *
+     * @param id   represents result.
+     * @param base represents calling string.
+     */
+    public abstract void reverse(int id, int base);
 
     /**
      * Used to undo the last predicate applied. Useful for checking
@@ -368,19 +295,89 @@ public abstract class ExtendedSolver<T> {
     }
 
     /**
-     * Used to get the value currently stored in the symbolic string map for
-     * the given id.
+     * Interface for setCharAt(int offset, char ch)
      *
-     * @param id id used to get the value to return.
-     * @return
+     * @param id   represents result.
+     * @param base represents calling string.
+     * @param arg  represents character argument.
      */
-    public T getValue(int id) {
-        return symbolicStringMap.get(id);
+    public abstract void setCharAt(int id, int base, int arg, int offset);
+
+    /**
+     * Sets the last base and argument for reverting the last predicate.
+     *
+     * @param base id of the current base.
+     * @param arg  id of the current arg
+     */
+    protected void setLast(int base, int arg) {
+        last = symbolicStringMap.get(base);
+        lastId = base;
+        if (arg > 0) {
+            lastArg = symbolicStringMap.get(arg);
+            lastArgId = arg;
+        }
     }
+
+    /**
+     * Interface for setLength(int length)
+     *
+     * @param id   represents result.
+     * @param base represents calling string.
+     */
+    public abstract void setLength(int id, int base, int length);
 
     /**
      * Used when a solver requires some sort of shut down task. For example
      * EZ3-str needs to shut down its executor
      */
     public abstract void shutDown();
+
+    /**
+     * Interface for startsWith(String arg)
+     *
+     * @param result used to assert the true or false branch
+     * @param base   represents calling string
+     * @param arg    represents string argument
+     */
+    public abstract void startsWith(boolean result, int base, int arg);
+
+    /**
+     * Interface for substring(int start)
+     *
+     * @param id   represents result.
+     * @param base represents calling string.
+     */
+    public abstract void substring(int id, int base, int start);
+
+    /**
+     * Interface for substring(int start, int end)
+     *
+     * @param id   represents result.
+     * @param base represents calling string.
+     */
+    public abstract void substring(int id, int base, int start, int end);
+
+    /**
+     * Interface for toLowerCase()
+     *
+     * @param id   represents result.
+     * @param base represents calling string.
+     */
+    public abstract void toLowerCase(int id, int base);
+
+    /**
+     * Interface for toUpperCase()
+     *
+     * @param id   represents result.
+     * @param base represents calling string.
+     */
+    public abstract void toUpperCase(int id, int base);
+
+    /**
+     * Interface for trim()
+     *
+     * @param id   represents result.
+     * @param base represents calling string.
+     */
+    public abstract void trim(int id, int base);
 }

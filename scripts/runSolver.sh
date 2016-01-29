@@ -11,12 +11,14 @@ class_path=$(bash ./scripts/set_class_path_var.sh)
 mkdir -p ./results/extended
 
 # for each graph file
-for file in ./graphs/*.ser
+# for file in ./graphs/*.ser
+for file in ./results/diff/*.txt
 do
 
     # get filename
     f_name_ex=${file##*/}
-    f_name=${f_name_ex%%.ser}
+    # f_name=${f_name_ex%%.ser}
+    f_name=${f_name_ex%%.txt}
 
     echo
     echo $f_name_ex
@@ -27,7 +29,7 @@ do
     java -cp "$class_path" \
          -Xmx2g \
          analysis.SolveMain \
-         $file \
+         ./graphs/$f_name.ser \
          $1 | tee ./results/extended/log_$f_name.txt
 
 done

@@ -82,19 +82,19 @@ public class SolveMain {
         DirectedGraph<PrintConstraint, SymbolicEdge> graph;
         graph = getGraph(fileName);
 
-        // create parser object from specified solver
-        Parser parser = getParser(solverName);
+        // get solver from solver name
+        ExtendedSolver solver = getSolver(solverName);
 
         // if graph or parser not loaded, abort program
-        if (graph == null || parser == null) {
+        if (graph == null || solver == null) {
             return;
         }
 
-        // set debug mode
-        parser.setDebug(debug);
+        // create parser from solver and graph
+        Parser parser = new Parser(solver, graph, debug);
 
         // run solver with specified graph and solver
-        runSolver(graph, parser);
+        parser.runSolver();
     }
 
     static DirectedGraph<PrintConstraint, SymbolicEdge> getGraph
@@ -128,12 +128,12 @@ public class SolveMain {
         return graph;
     }
 
-    static Parser getParser(String solverName) {
+    static ExtendedSolver getSolver(String solverName) {
 
         // convert solver name to lowercase
         String lc = solverName.toLowerCase();
 
-        // initialize extened solver as null
+        // initialize extend solver as null
         ExtendedSolver solver = null;
 
         // create specified solver for parser
@@ -172,184 +172,7 @@ public class SolveMain {
         }
 
         // return created parser
-        return new Parser(solver);
+        return solver;
     }
 
-    /**
-     * Traverses the flow graph and solves PCs
-     *
-     * @param graph  The graph to traverse.
-     * @param parser The solver to use.
-     */
-    public static void runSolver(DirectedGraph<PrintConstraint, SymbolicEdge>
-                                         graph,
-                                 Parser parser) {
-
-        // initialize sets
-        Set<PrintConstraint> removeSet = new HashSet<PrintConstraint>();
-        Set<PrintConstraint> processedSet = new HashSet<PrintConstraint>();
-        Set<PrintConstraint> ends = new HashSet<PrintConstraint>();
-        Set<PrintConstraint> roots = new HashSet<PrintConstraint>();
-
-        // populate root and end sets
-        for (PrintConstraint constraint : graph.vertexSet()) {
-
-            // if no in paths, node is a root node
-            if (graph.inDegreeOf(constraint) == 0) {
-                roots.add(constraint);
-            }
-
-            // if no out paths, node is an end node
-            if (graph.outDegreeOf(constraint) == 0) {
-                ends.add(constraint);
-            }
-        }
-
-        // initialize list of constraints
-        List<PrintConstraint> toBeAdded = new LinkedList<PrintConstraint>();
-
-        // initialize sorted list of vertices
-        List<PrintConstraint> vertices =
-                new ArrayList<PrintConstraint>(graph.vertexSet());
-        Collections.sort(vertices);
-
-        //Topological progression...
-        while (vertices.size() > 0) {
-
-            // remove constraints from collections
-            graph.removeAllVertices(removeSet);
-            vertices.removeAll(removeSet);
-            vertices.removeAll(toBeAdded);
-            processedSet.removeAll(removeSet);
-
-            // clear collections
-            removeSet.clear();
-            toBeAdded.clear();
-
-            // for each vertex constraint
-            for (PrintConstraint vertex : vertices) {
-
-                // initialize source map
-                Map<String, Integer> sourceMap = new HashMap<String, Integer>();
-
-                // if vertex not in processed set
-                if (!processedSet.contains(vertex)) {
-
-                    // set flag
-                    boolean readyToProcess = true;
-
-                    // for each incoming edge of the current vertex
-                    for (SymbolicEdge edge : graph.incomingEdgesOf(vertex)) {
-
-                        // get source of incoming edge
-                        PrintConstraint source =
-                                (PrintConstraint) edge.getASource();
-
-                        // if source vertex not in processed set
-                        if (!processedSet.contains(source)) {
-
-                            // unset flag
-                            readyToProcess = false;
-
-                            // break out of incoming edges loop
-                            break;
-
-                        } else {
-
-                            // update source map with edge information
-                            String edgeType = edge.getType();
-                            int sourceId = source.getId();
-                            sourceMap.put(edgeType, sourceId);
-                        }
-                    }
-
-                    // if flag is still set
-                    if (readyToProcess) {
-
-                        // set the source map for the vertex
-                        vertex.setSourceMap(sourceMap);
-
-                        // current vertex queued for addition
-                        toBeAdded.add(vertex);
-
-                        // break out of the vertices loop
-                        break;
-                    }
-
-                } else {
-
-                    // set flag
-                    boolean deleteNode = true;
-
-                    // for each outgoing edge from the current vertex
-                    for (SymbolicEdge edge : graph.outgoingEdgesOf(vertex)) {
-
-                        // get the target vertex of the outgoing edge
-                        PrintConstraint target =
-                                (PrintConstraint) edge.getATarget();
-
-                        // if target vertex not in processed set
-                        if (!processedSet.contains(target)) {
-
-                            // unset flag
-                            deleteNode = false;
-
-                            // break out of outgoing edges loop
-                            break;
-                        }
-                    }
-
-                    // if flag set
-                    if (deleteNode) {
-
-                        // current vertex queued for removal
-                        removeSet.add(vertex);
-
-                        // remove vertex from parser
-                        int vertexId = vertex.getId();
-                        parser.remove(vertexId);
-                    }
-                }
-            }
-
-            // sort addition list before processing
-            // Collections.sort(toBeAdded);
-
-            // if addition list contains constraints
-            if (toBeAdded.size() > 0) {
-
-                // get first constraint in list
-                PrintConstraint first = toBeAdded.get(0);
-
-                // get constraint data
-                String string = first.getSplitValue();
-                String value = first.getActualVal();
-                int id = first.getId();
-                Map<String, Integer> sourceMap = first.getSourceMap();
-
-                // if constraint is an end node
-                if (ends.contains(first)) {
-
-                    // add end
-                    parser.addEnd(string, value, id, sourceMap);
-
-                } else if (roots.contains(first)) {
-
-                    // add root
-                    parser.addRoot(string, value, id);
-
-                } else {
-
-                    // add operation
-                    parser.addOperation(string, value, id, sourceMap);
-                }
-
-                // add constraint to processed list
-                processedSet.add(first);
-            }
-        }
-
-        // shut down parser
-        parser.shutDown();
-    }
 }

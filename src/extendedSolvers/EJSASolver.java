@@ -759,7 +759,7 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
             Set<Transition> transitions = state.getTransitions();
 
             // for all transitions in current set of transitions
-            for (Transition t : new ArrayList<Transition>(transitions)) {
+            for (Transition t : new ArrayList<>(transitions)) {
 
                 // get transition values
                 char min = t.getMin();
