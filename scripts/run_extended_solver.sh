@@ -2,23 +2,26 @@
 
 # get directory of this script as current working directory
 project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
-pushd $project_dir
 
-# load class path into class_path var
-class_path=$(bash ./scripts/set_class_path_var.sh)
+# load useful functions
+. $project_dir/scripts/funcs.sh
+
+# get solver
+set_solver $1
+
+# get classpath
+set_classpath $project_dir
 
 # ensure extended solver results directory is ready
-mkdir -p ./results/extended
+mkdir -p $project_dir/results/$solver/extended
 
 # for each graph file
-# for file in ./graphs/*.ser
-for file in ./results/diff/*.txt
+for file in $project_dir/graphs/*.ser
 do
 
     # get filename
     f_name_ex=${file##*/}
-    # f_name=${f_name_ex%%.ser}
-    f_name=${f_name_ex%%.txt}
+    f_name=${f_name_ex%%.ser}
 
     echo
     echo $f_name_ex
@@ -29,9 +32,8 @@ do
     java -cp "$class_path" \
          -Xmx2g \
          analysis.SolveMain \
-         ./graphs/$f_name.ser \
-         $1 | tee ./results/extended/log_$f_name.txt
+         $project_dir/graphs/$f_name.ser \
+         $solver | \
+            tee $project_dir/results/$solver/extended/$f_name.txt
 
 done
-
-popd

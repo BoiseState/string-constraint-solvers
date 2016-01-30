@@ -3,8 +3,7 @@
 # get directory of this script as current working directory
 proj_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
-class_path="."
-class_path="$class_path:$proj_root/bin"
+class_path="$proj_root/bin"
 
 # for each jar file in lib directory
 for jar_file in $proj_root/lib/*.jar

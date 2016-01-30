@@ -2,26 +2,30 @@
 
 # get directory of this script as current working directory
 results_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../results" && pwd )"
-pushd $results_dir
 
-# output heading
-echo "Log files do not match for the following graph files:"
+# load useful functions
+. $results_dir/../scripts/funcs.sh
+
+# get solver
+set_solver $1
+
+# ensure extended solver results directory is ready
+mkdir -p $results_dir/$solver/diff/
 
 # clean diffs directory
-rm ./diff/*
+rm $results_dir/$solver/diff/*
 
-for file in ./extended/log_*.txt
+for file in $results_dir/$solver/extended/*.txt
 do
 
     # extract original graph name
     f_name_ex=${file##*/}
     f_name=${f_name_ex%%.txt}
-    graph_name=${f_name##log_}
     
     # execute diff
     diff -B \
-         ./extended/$f_name_ex \
-         ./old/$f_name_ex &>/dev/null
+         $results_dir/$solver/extended/$f_name_ex \
+         $results_dir/$solver/old/$f_name_ex &>/dev/null
 
     # if difference found
     if [ $? -ne 0 ]
@@ -29,14 +33,13 @@ do
 
         # output file name
         echo
-        echo "--- $graph_name ---"
+        echo "--- $f_name ---"
 
         # show side by side diff
         diff -B \
-             ./extended/$f_name_ex \
-             ./old/$f_name_ex | tee ./diff/$graph_name.txt
+             $results_dir/$solver/extended/$f_name_ex \
+             $results_dir/$solver/old/$f_name_ex | \
+                tee $results_dir/$solver/diff/$f_name.txt
     fi
 
 done
-
-popd

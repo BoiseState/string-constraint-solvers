@@ -16,40 +16,6 @@ import java.util.Set;
 public class EJSASolver extends ExtendedSolver<Automaton> {
 
     @Override
-    public void newSymbolicString(int id) {
-        Automaton automaton = BasicAutomata.makeAnyString();
-        this.symbolicStringMap.put(id, automaton);
-    }
-
-    @Override
-    public void newConcreteString(int id, String string) {
-        Automaton automaton;
-
-        if (string == null) {
-            automaton = BasicAutomata.makeEmpty();
-        } else if (string.equals("")) {
-            automaton = BasicAutomata.makeEmptyString();
-        } else {
-            automaton = BasicAutomata.makeString(string);
-        }
-
-        this.symbolicStringMap.put(id, automaton);
-        this.concreteStringMap.put(id, string);
-    }
-
-    @Override
-    public String replaceEscapes(String value) {
-        // all unicode characters supported
-        return value;
-    }
-
-    @Override
-    public void propagateSymbolicString(int id, int base) {
-        Automaton baseAutomaton = this.symbolicStringMap.get(base);
-        this.symbolicStringMap.put(id, baseAutomaton);
-    }
-
-    @Override
     public void append(int id, int base, int arg, int start, int end) {
 
         // get automata
@@ -82,58 +48,241 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
     }
 
     @Override
-    public void substring(int id, int base, int start) {
+    public void contains(boolean result, int base, int arg) {
 
-        // get automaton
-        Automaton automaton = this.symbolicStringMap.get(base);
+        // get automata
+        Automaton baseAutomaton = this.symbolicStringMap.get(base);
+        Automaton argAutomaton = this.symbolicStringMap.get(arg);
 
-        // get operation
-        PrecisePrefix prefix = new PrecisePrefix(start);
+        if (result) {
 
-        // perform operation
-        automaton = prefix.op(automaton);
+            //
+            AssertContainsOther contains = new AssertContainsOther();
+            baseAutomaton = contains.op(baseAutomaton, argAutomaton);
 
-        // store result automaton
-        this.symbolicStringMap.put(id, automaton);
-    }
-
-    @Override
-    public void substring(int id, int base, int start, int end) {
-
-        // get automaton
-        Automaton automaton = this.symbolicStringMap.get(base);
-
-        // get operation
-        PreciseSubstring substr = new PreciseSubstring(start, end);
-
-        // perform operation
-        automaton = substr.op(automaton);
-
-        // store result automaton
-        this.symbolicStringMap.put(id, automaton);
-    }
-
-    @Override
-    public void setLength(int id, int base, int length) {
-
-        // get automaton
-        Automaton automaton = this.symbolicStringMap.get(base);
-
-        if (length == 0) {
-
-            // set automaton as empty string automaton
-            automaton = BasicAutomata.makeEmptyString();
+            //
+            AssertContainedInOther cioOp = new AssertContainedInOther();
+            argAutomaton = cioOp.op(baseAutomaton, argAutomaton);
         } else {
 
-            // perform operation
-            Automaton anyStr = BasicAutomata.makeAnyString();
-            automaton = automaton.concatenate(anyStr);
-            AssertHasLength hasLength = new AssertHasLength(0, length);
-            automaton = hasLength.op(automaton);
+            // initialize temp as base
+            Automaton temp = baseAutomaton;
+
+            // if more than one finite string represented
+            // TODO: Check if getFiniteStrings method is used properly here
+            if (argAutomaton.getFiniteStrings(1) != null) {
+
+                //
+                Automaton x = BasicAutomata.makeAnyString();
+                x = x.concatenate(argAutomaton);
+                x = x.concatenate(BasicAutomata.makeAnyString());
+                temp = baseAutomaton.minus(x);
+            }
+
+            // if more than one finite string represented
+            if (baseAutomaton.getFiniteStrings(1) != null) {
+
+                //
+                Automaton complementBase = baseAutomaton.complement();
+                argAutomaton = argAutomaton.intersection(complementBase);
+            }
+
+            // set base from temp
+            baseAutomaton = temp;
+        }
+
+        // store result automaton
+        this.symbolicStringMap.put(base, baseAutomaton);
+        this.symbolicStringMap.put(arg, argAutomaton);
+    }
+
+    @Override
+    public void delete(int id, int base, int start, int end) {
+
+        // get automaton
+        Automaton automaton = this.symbolicStringMap.get(base);
+
+        if (start < end) {
+
+            // declare start automaton
+            Automaton startAutomaton;
+
+            // if start index is 0
+            if (start == 0) {
+
+                // set start automaton as empty string
+                startAutomaton = BasicAutomata.makeEmptyString();
+            } else {
+
+                // get start substring automaton
+                PreciseSuffix suffix = new PreciseSuffix(start);
+                startAutomaton = suffix.op(automaton);
+            }
+
+            // get end substring automaton
+            PrecisePrefix prefix = new PrecisePrefix(end);
+            Automaton endAutomaton = prefix.op(automaton);
+
+            // concat start and end automata
+            automaton = startAutomaton.concatenate(endAutomaton);
         }
 
         // store result automaton
         this.symbolicStringMap.put(id, automaton);
+    }
+
+    @Override
+    public void deleteCharAt(int id, int base, int loc) {
+
+        // get automaton
+        Automaton automaton = this.symbolicStringMap.get(base);
+
+        // get start substring automaton
+        PreciseSuffix suffix = new PreciseSuffix(loc);
+        Automaton startAutomaton = suffix.op(automaton);
+
+        // gt end substring automaton
+        PrecisePrefix prefix = new PrecisePrefix(loc + 1);
+        Automaton endAutomaton = prefix.op(automaton);
+
+        // concat start and end automata
+        automaton = startAutomaton.concatenate(endAutomaton);
+
+        // store result automaton
+        this.symbolicStringMap.put(id, automaton);
+    }
+
+    @Override
+    public void endsWith(boolean result, int base, int arg) {
+
+        // get automata
+        Automaton baseAutomaton = this.symbolicStringMap.get(base);
+        Automaton argAutomaton = this.symbolicStringMap.get(arg);
+
+        if (result) {
+
+            //
+            AssertEndsWith ends = new AssertEndsWith();
+            baseAutomaton = ends.op(baseAutomaton, argAutomaton);
+
+            //
+            Postfix postfix = new Postfix();
+            Automaton temp = postfix.op(baseAutomaton);
+            AssertContainedInOther cioOp = new AssertContainedInOther();
+            argAutomaton = cioOp.op(temp, argAutomaton);
+
+        } else {
+
+            // initialize temp as base
+            Automaton temp = baseAutomaton;
+
+            // if more than one finite string represented
+            if (argAutomaton.getFiniteStrings(1) != null) {
+
+                //
+                Automaton x = BasicAutomata.makeAnyString();
+                x = x.concatenate(argAutomaton);
+                temp = baseAutomaton.minus(x);
+            }
+
+            // if more than one finite string represented
+            if (baseAutomaton.getFiniteStrings(1) != null) {
+
+                //
+                Postfix postfix = new Postfix();
+                baseAutomaton = postfix.op(baseAutomaton);
+                Automaton argComplement = argAutomaton.complement();
+                argAutomaton = baseAutomaton.intersection(argComplement);
+            }
+
+            // set base from temp
+            baseAutomaton = temp;
+        }
+
+        // store result automaton
+        this.symbolicStringMap.put(base, baseAutomaton);
+        this.symbolicStringMap.put(arg, argAutomaton);
+    }
+
+    @Override
+    public void equals(boolean result, int base, int arg) {
+
+        // get automata
+        Automaton baseAutomaton = this.symbolicStringMap.get(base);
+        Automaton argAutomaton = this.symbolicStringMap.get(arg);
+
+        if (result) {
+
+            // equality branch result
+            AssertEquals eq = new AssertEquals();
+            baseAutomaton = eq.op(baseAutomaton, argAutomaton);
+
+            // not sure why setting arg as previous base
+            argAutomaton = baseAutomaton;
+        } else {
+
+            // inequality branch result
+            AssertNotEquals neq = new AssertNotEquals();
+            Automaton temp = neq.op(baseAutomaton, argAutomaton);
+
+            // set arg automaton
+            argAutomaton = neq.op(argAutomaton, baseAutomaton);
+
+            // if more than one finite string represented
+            if (baseAutomaton.getFiniteStrings(1) != null) {
+
+                //
+                Automaton baseComplement = baseAutomaton.complement();
+                argAutomaton = argAutomaton.intersection(baseComplement);
+            }
+
+            // set base from temp
+            baseAutomaton = temp;
+        }
+
+        // store result automaton
+        this.symbolicStringMap.put(base, baseAutomaton);
+        this.symbolicStringMap.put(arg, argAutomaton);
+    }
+
+    @Override
+    public void equalsIgnoreCase(boolean result, int base, int arg) {
+
+        // get automata
+        Automaton baseAutomaton = this.symbolicStringMap.get(base);
+        Automaton argAutomaton = this.symbolicStringMap.get(arg);
+
+        // get ignore case equivalent automata
+        Automaton baseIgnoreCase = ignoreCase(baseAutomaton);
+        Automaton argIgnoreCase = ignoreCase(argAutomaton);
+
+        if (result) {
+
+            // equality branch result
+            AssertEquals eq = new AssertEquals();
+            baseAutomaton = eq.op(baseAutomaton, argIgnoreCase);
+
+            // inequality branch result?
+            argAutomaton = eq.op(argAutomaton, baseIgnoreCase);
+        } else {
+
+            // inequality branch result
+            AssertNotEquals neq = new AssertNotEquals();
+            baseAutomaton = neq.op(baseAutomaton, argIgnoreCase);
+
+            // equality branch result?
+            argAutomaton = neq.op(argAutomaton, baseIgnoreCase);
+        }
+
+        // store result automaton
+        this.symbolicStringMap.put(base, baseAutomaton);
+        this.symbolicStringMap.put(arg, argAutomaton);
+    }
+
+    @Override
+    public String getSatisfiableResult(int id) {
+        Automaton automaton = this.symbolicStringMap.get(id);
+        return automaton.getShortestExample(true);
     }
 
     @Override
@@ -204,167 +353,91 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
     }
 
     @Override
-    public void setCharAt(int id, int base, int arg, int offset) {
+    public void isEmpty(boolean result, int base) {
 
-        // get automata
+        // get automaton
         Automaton baseAutomaton = this.symbolicStringMap.get(base);
-        Automaton argAutomaton = this.symbolicStringMap.get(arg);
 
-        if (offset >= 0) {
+        if (result) {
 
-            // get start substring
-            PreciseSubstring substr = new PreciseSubstring(0, offset);
-            Automaton startAutomaton = substr.op(baseAutomaton);
-
-            // get end substring
-            PrecisePrefix prefix = new PrecisePrefix(offset + 1);
-            Automaton endAutomaton = prefix.op(baseAutomaton);
-
-            // set character at offset
-            baseAutomaton = startAutomaton.concatenate(argAutomaton)
-                                          .concatenate(endAutomaton);
+            // empty branch result
+            AssertEmpty empty = new AssertEmpty();
+            baseAutomaton = empty.op(baseAutomaton);
         } else {
 
-            // get end substring
-            PrecisePrefix prefix = new PrecisePrefix(1);
-            Automaton endAutomaton = prefix.op(baseAutomaton);
-
-            // set first character
-            baseAutomaton = argAutomaton.concatenate(endAutomaton);
+            // not empty branch result
+            AssertNotEmpty notEmpty = new AssertNotEmpty();
+            baseAutomaton = notEmpty.op(baseAutomaton);
         }
 
         // store result automaton
+        this.symbolicStringMap.put(base, baseAutomaton);
+    }
+
+    @Override
+    public boolean isSatisfiable(int id) {
+        Automaton automaton = this.symbolicStringMap.get(id);
+        return !automaton.isEmpty();
+    }
+
+    @Override
+    public boolean isSingleton(int id) {
+
+        // get automaton from id
+        Automaton automaton = this.symbolicStringMap.get(id);
+
+        // get up to the first finite string, null if more
+        Set<String> strings = automaton.getFiniteStrings(1);
+
+        // return if single non-null string in automaton
+        return strings != null &&
+               strings.size() == 1 &&
+               strings.iterator().next() != null;
+    }
+
+    @Override
+    public boolean isSingleton(int id, String actualValue) {
+        return this.isSingleton(id);
+    }
+
+    @Override
+    public boolean isSound(int id, String actualValue) {
+
+        // compute intersection of automaton and string value
+        Automaton automaton = this.symbolicStringMap.get(id);
+        Automaton value = BasicAutomata.makeString(actualValue);
+        Automaton intersection = automaton.intersection(value);
+
+        // sound if intersection is not empty
+        return !intersection.isEmpty();
+    }
+
+    @Override
+    public void newConcreteString(int id, String string) {
+        Automaton automaton;
+
+        if (string == null) {
+            automaton = BasicAutomata.makeEmpty();
+        } else if (string.equals("")) {
+            automaton = BasicAutomata.makeEmptyString();
+        } else {
+            automaton = BasicAutomata.makeString(string);
+        }
+
+        this.symbolicStringMap.put(id, automaton);
+        this.concreteStringMap.put(id, string);
+    }
+
+    @Override
+    public void newSymbolicString(int id) {
+        Automaton automaton = BasicAutomata.makeAnyString();
+        this.symbolicStringMap.put(id, automaton);
+    }
+
+    @Override
+    public void propagateSymbolicString(int id, int base) {
+        Automaton baseAutomaton = this.symbolicStringMap.get(base);
         this.symbolicStringMap.put(id, baseAutomaton);
-    }
-
-    @Override
-    public void trim(int id, int base) {
-
-        // get automaton
-        Automaton automaton = this.symbolicStringMap.get(base);
-
-        // check automaton with length of one?
-        AssertHasLength hasLength = new AssertHasLength(1, 1);
-        Automaton temp = hasLength.op(automaton);
-
-        if (temp.equals(automaton)) {
-
-            // union empty string automaton?
-            Automaton emptyStr = BasicAutomata.makeEmptyString();
-            automaton = temp.union(emptyStr);
-        } else {
-
-            // perform operation
-            Trim trimOp = new Trim();
-            automaton = trimOp.op(automaton);
-        }
-
-        // store result automaton
-        this.symbolicStringMap.put(id, automaton);
-    }
-
-    @Override
-    public void delete(int id, int base, int start, int end) {
-
-        // get automaton
-        Automaton automaton = this.symbolicStringMap.get(base);
-
-        if (start < end) {
-
-            // declare start automaton
-            Automaton startAutomaton;
-
-            // if start index is 0
-            if (start == 0) {
-
-                // set start automaton as empty string
-                startAutomaton = BasicAutomata.makeEmptyString();
-            } else {
-
-                // get start substring automaton
-                PreciseSuffix suffix = new PreciseSuffix(start);
-                startAutomaton = suffix.op(automaton);
-            }
-
-            // get end substring automaton
-            PrecisePrefix prefix = new PrecisePrefix(end);
-            Automaton endAutomaton = prefix.op(automaton);
-
-            // concat start and end automata
-            automaton = startAutomaton.concatenate(endAutomaton);
-        }
-
-        // store result automaton
-        this.symbolicStringMap.put(id, automaton);
-    }
-
-    @Override
-    public void deleteCharAt(int id, int base, int loc) {
-
-        // get automaton
-        Automaton automaton = this.symbolicStringMap.get(base);
-
-        // get start substring automaton
-        PreciseSuffix suffix = new PreciseSuffix(loc);
-        Automaton startAutomaton = suffix.op(automaton);
-
-        // gt end substring automaton
-        PrecisePrefix prefix = new PrecisePrefix(loc + 1);
-        Automaton endAutomaton = prefix.op(automaton);
-
-        // concat start and end automata
-        automaton = startAutomaton.concatenate(endAutomaton);
-
-        // store result automaton
-        this.symbolicStringMap.put(id, automaton);
-    }
-
-    @Override
-    public void reverse(int id, int base) {
-
-        // get automaton
-        Automaton automaton = this.symbolicStringMap.get(base);
-
-        // get operation
-        Reverse op = new Reverse();
-
-        // perform operation
-        Automaton resultAutomaton = op.op(automaton);
-
-        // store result automaton
-        this.symbolicStringMap.put(id, resultAutomaton);
-    }
-
-    @Override
-    public void toUpperCase(int id, int base) {
-
-        // get automaton
-        Automaton automaton = this.symbolicStringMap.get(base);
-
-        // get operation
-        ToUpperCase op = new ToUpperCase();
-
-        // perform operation
-        Automaton resultAutomaton = op.op(automaton);
-
-        // store result automaton
-        this.symbolicStringMap.put(id, resultAutomaton);
-    }
-
-    @Override
-    public void toLowerCase(int id, int base) {
-
-        // get automaton
-        Automaton automaton = this.symbolicStringMap.get(base);
-
-        // get operation
-        ToLowerCase op = new ToLowerCase();
-
-        // perform operation
-        Automaton resultAutomaton = op.op(automaton);
-
-        // store result automaton
-        this.symbolicStringMap.put(id, resultAutomaton);
     }
 
     @Override
@@ -434,117 +507,91 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
     }
 
     @Override
-    public void contains(boolean result, int base, int arg) {
-
-        // set current base and args
-        this.setLast(base, arg);
-
-        // get automata
-        Automaton baseAutomaton = this.symbolicStringMap.get(base);
-        Automaton argAutomaton = this.symbolicStringMap.get(arg);
-
-        if (result) {
-
-            //
-            AssertContainsOther contains = new AssertContainsOther();
-            baseAutomaton = contains.op(baseAutomaton, argAutomaton);
-
-            //
-            AssertContainedInOther cioOp = new AssertContainedInOther();
-            argAutomaton = cioOp.op(baseAutomaton, argAutomaton);
-        } else {
-
-            // initialize temp as base
-            Automaton temp = baseAutomaton;
-
-            // if more than one finite string represented
-            // TODO: Check if getFiniteStrings method is used properly here
-            if (argAutomaton.getFiniteStrings(1) != null) {
-
-                //
-                Automaton x = BasicAutomata.makeAnyString();
-                x = x.concatenate(argAutomaton);
-                x = x.concatenate(BasicAutomata.makeAnyString());
-                temp = baseAutomaton.minus(x);
-            }
-
-            // if more than one finite string represented
-            if (baseAutomaton.getFiniteStrings(1) != null) {
-
-                //
-                Automaton complementBase = baseAutomaton.complement();
-                argAutomaton = argAutomaton.intersection(complementBase);
-            }
-
-            // set base from temp
-            baseAutomaton = temp;
-        }
-
-        // store result automaton
-        this.symbolicStringMap.put(base, baseAutomaton);
-        this.symbolicStringMap.put(arg, argAutomaton);
+    public String replaceEscapes(String value) {
+        // all unicode characters supported
+        return value;
     }
 
     @Override
-    public void endsWith(boolean result, int base, int arg) {
+    public void reverse(int id, int base) {
 
-        // set current base and args
-        this.setLast(base, arg);
+        // get automaton
+        Automaton automaton = this.symbolicStringMap.get(base);
+
+        // get operation
+        Reverse op = new Reverse();
+
+        // perform operation
+        Automaton resultAutomaton = op.op(automaton);
+
+        // store result automaton
+        this.symbolicStringMap.put(id, resultAutomaton);
+    }
+
+    @Override
+    public void setCharAt(int id, int base, int arg, int offset) {
 
         // get automata
         Automaton baseAutomaton = this.symbolicStringMap.get(base);
         Automaton argAutomaton = this.symbolicStringMap.get(arg);
 
-        if (result) {
+        if (offset >= 0) {
 
-            //
-            AssertEndsWith ends = new AssertEndsWith();
-            baseAutomaton = ends.op(baseAutomaton, argAutomaton);
+            // get start substring
+            PreciseSubstring substr = new PreciseSubstring(0, offset);
+            Automaton startAutomaton = substr.op(baseAutomaton);
 
-            //
-            Postfix postfix = new Postfix();
-            Automaton temp = postfix.op(baseAutomaton);
-            AssertContainedInOther cioOp = new AssertContainedInOther();
-            argAutomaton = cioOp.op(temp, argAutomaton);
+            // get end substring
+            PrecisePrefix prefix = new PrecisePrefix(offset + 1);
+            Automaton endAutomaton = prefix.op(baseAutomaton);
 
+            // set character at offset
+            baseAutomaton = startAutomaton.concatenate(argAutomaton)
+                                          .concatenate(endAutomaton);
         } else {
 
-            // initialize temp as base
-            Automaton temp = baseAutomaton;
+            // get end substring
+            PrecisePrefix prefix = new PrecisePrefix(1);
+            Automaton endAutomaton = prefix.op(baseAutomaton);
 
-            // if more than one finite string represented
-            if (argAutomaton.getFiniteStrings(1) != null) {
-
-                //
-                Automaton x = BasicAutomata.makeAnyString();
-                x = x.concatenate(argAutomaton);
-                temp = baseAutomaton.minus(x);
-            }
-
-            // if more than one finite string represented
-            if (baseAutomaton.getFiniteStrings(1) != null) {
-
-                //
-                Postfix postfix = new Postfix();
-                baseAutomaton = postfix.op(baseAutomaton);
-                Automaton argComplement = argAutomaton.complement();
-                argAutomaton = baseAutomaton.intersection(argComplement);
-            }
-
-            // set base from temp
-            baseAutomaton = temp;
+            // set first character
+            baseAutomaton = argAutomaton.concatenate(endAutomaton);
         }
 
         // store result automaton
-        this.symbolicStringMap.put(base, baseAutomaton);
-        this.symbolicStringMap.put(arg, argAutomaton);
+        this.symbolicStringMap.put(id, baseAutomaton);
+    }
+
+    @Override
+    public void setLength(int id, int base, int length) {
+
+        // get automaton
+        Automaton automaton = this.symbolicStringMap.get(base);
+
+        if (length == 0) {
+
+            // set automaton as empty string automaton
+            automaton = BasicAutomata.makeEmptyString();
+        } else {
+
+            // perform operation
+            Automaton anyStr = BasicAutomata.makeAnyString();
+            automaton = automaton.concatenate(anyStr);
+            AssertHasLength hasLength = new AssertHasLength(0, length);
+            automaton = hasLength.op(automaton);
+        }
+
+        // store result automaton
+        this.symbolicStringMap.put(id, automaton);
+    }
+
+    @Override
+    public void shutDown() {
+
     }
 
     @Override
     public void startsWith(boolean result, int base, int arg) {
-
-        // set current base and args
-        this.setLast(base, arg);
 
         // get automata
         Automaton baseAutomaton = this.symbolicStringMap.get(base);
@@ -593,158 +640,93 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
     }
 
     @Override
-    public void equals(boolean result, int base, int arg) {
-
-        // set current base and args
-        this.setLast(base, arg);
-
-        // get automata
-        Automaton baseAutomaton = this.symbolicStringMap.get(base);
-        Automaton argAutomaton = this.symbolicStringMap.get(arg);
-
-        if (result) {
-
-            // equality branch result
-            AssertEquals eq = new AssertEquals();
-            baseAutomaton = eq.op(baseAutomaton, argAutomaton);
-
-            // not sure why setting arg as previous base
-            argAutomaton = baseAutomaton;
-        } else {
-
-            // inequality branch result
-            AssertNotEquals neq = new AssertNotEquals();
-            Automaton temp = neq.op(baseAutomaton, argAutomaton);
-
-            // set arg automaton
-            argAutomaton = neq.op(argAutomaton, baseAutomaton);
-
-            // if more than one finite string represented
-            if (baseAutomaton.getFiniteStrings(1) != null) {
-
-                //
-                Automaton baseComplement = baseAutomaton.complement();
-                argAutomaton = argAutomaton.intersection(baseComplement);
-            }
-
-            // set base from temp
-            baseAutomaton = temp;
-        }
-
-        // store result automaton
-        this.symbolicStringMap.put(base, baseAutomaton);
-        this.symbolicStringMap.put(arg, argAutomaton);
-    }
-
-    @Override
-    public void equalsIgnoreCase(boolean result, int base, int arg) {
-
-        // set current base and args
-        this.setLast(base, arg);
-
-        // get automata
-        Automaton baseAutomaton = this.symbolicStringMap.get(base);
-        Automaton argAutomaton = this.symbolicStringMap.get(arg);
-
-        // get ignore case equivalent automata
-        Automaton baseIgnoreCase = ignoreCase(baseAutomaton);
-        Automaton argIgnoreCase = ignoreCase(argAutomaton);
-
-        if (result) {
-
-            // equality branch result
-            AssertEquals eq = new AssertEquals();
-            baseAutomaton = eq.op(baseAutomaton, argIgnoreCase);
-
-            // inequality branch result?
-            argAutomaton = eq.op(argAutomaton, baseIgnoreCase);
-        } else {
-
-            // inequality branch result
-            AssertNotEquals neq = new AssertNotEquals();
-            baseAutomaton = neq.op(baseAutomaton, argIgnoreCase);
-
-            // equality branch result?
-            argAutomaton = neq.op(argAutomaton, baseIgnoreCase);
-        }
-
-        // store result automaton
-        this.symbolicStringMap.put(base, baseAutomaton);
-        this.symbolicStringMap.put(arg, argAutomaton);
-    }
-
-    @Override
-    public void isEmpty(boolean result, int base) {
-
-        // set current base and args
-        this.setLast(base, -1);
+    public void substring(int id, int base, int start) {
 
         // get automaton
-        Automaton baseAutomaton = this.symbolicStringMap.get(base);
+        Automaton automaton = this.symbolicStringMap.get(base);
 
-        if (result) {
+        // get operation
+        PrecisePrefix prefix = new PrecisePrefix(start);
 
-            // empty branch result
-            AssertEmpty empty = new AssertEmpty();
-            baseAutomaton = empty.op(baseAutomaton);
+        // perform operation
+        automaton = prefix.op(automaton);
+
+        // store result automaton
+        this.symbolicStringMap.put(id, automaton);
+    }
+
+    @Override
+    public void substring(int id, int base, int start, int end) {
+
+        // get automaton
+        Automaton automaton = this.symbolicStringMap.get(base);
+
+        // get operation
+        PreciseSubstring substr = new PreciseSubstring(start, end);
+
+        // perform operation
+        automaton = substr.op(automaton);
+
+        // store result automaton
+        this.symbolicStringMap.put(id, automaton);
+    }
+
+    @Override
+    public void toLowerCase(int id, int base) {
+
+        // get automaton
+        Automaton automaton = this.symbolicStringMap.get(base);
+
+        // get operation
+        ToLowerCase op = new ToLowerCase();
+
+        // perform operation
+        Automaton resultAutomaton = op.op(automaton);
+
+        // store result automaton
+        this.symbolicStringMap.put(id, resultAutomaton);
+    }
+
+    @Override
+    public void toUpperCase(int id, int base) {
+
+        // get automaton
+        Automaton automaton = this.symbolicStringMap.get(base);
+
+        // get operation
+        ToUpperCase op = new ToUpperCase();
+
+        // perform operation
+        Automaton resultAutomaton = op.op(automaton);
+
+        // store result automaton
+        this.symbolicStringMap.put(id, resultAutomaton);
+    }
+
+    @Override
+    public void trim(int id, int base) {
+
+        // get automaton
+        Automaton automaton = this.symbolicStringMap.get(base);
+
+        // check automaton with length of one?
+        AssertHasLength hasLength = new AssertHasLength(1, 1);
+        Automaton temp = hasLength.op(automaton);
+
+        if (temp.equals(automaton)) {
+
+            // union empty string automaton?
+            Automaton emptyStr = BasicAutomata.makeEmptyString();
+            automaton = temp.union(emptyStr);
         } else {
 
-            // not empty branch result
-            AssertNotEmpty notEmpty = new AssertNotEmpty();
-            baseAutomaton = notEmpty.op(baseAutomaton);
+            // perform operation
+            Trim trimOp = new Trim();
+            automaton = trimOp.op(automaton);
         }
 
         // store result automaton
-        this.symbolicStringMap.put(base, baseAutomaton);
-    }
-
-    @Override
-    public String getSatisfiableResult(int id) {
-        Automaton automaton = this.symbolicStringMap.get(id);
-        return automaton.getShortestExample(true);
-    }
-
-    @Override
-    public boolean isSatisfiable(int id) {
-        Automaton automaton = this.symbolicStringMap.get(id);
-        return !automaton.isEmpty();
-    }
-
-    @Override
-    public boolean isSingleton(int id) {
-
-        // get automaton from id
-        Automaton automaton = this.symbolicStringMap.get(id);
-
-        // get up to the first finite string, null if more
-        Set<String> strings = automaton.getFiniteStrings(1);
-
-        // return if single non-null string in automaton
-        return strings != null &&
-               strings.size() == 1 &&
-               strings.iterator().next() != null;
-    }
-
-    @Override
-    public boolean isSingleton(int id, String actualValue) {
-        return this.isSingleton(id);
-    }
-
-    @Override
-    public boolean isSound(int id, String actualValue) {
-
-        // compute intersection of automaton and string value
-        Automaton automaton = this.symbolicStringMap.get(id);
-        Automaton value = BasicAutomata.makeString(actualValue);
-        Automaton intersection = automaton.intersection(value);
-
-        // sound if intersection is not empty
-        return !intersection.isEmpty();
-    }
-
-    @Override
-    public void shutDown() {
-
+        this.symbolicStringMap.put(id, automaton);
     }
 
     static private Automaton ignoreCase(Automaton automaton) {

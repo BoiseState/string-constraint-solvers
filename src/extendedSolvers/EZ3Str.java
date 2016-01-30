@@ -310,7 +310,6 @@ public class EZ3Str extends ExtendedSolver<StringBuilder>{
 
 	@Override
 	public void contains(boolean result, int base, int arg) {
-		setLast(base, arg);
 		StringBuilder builder = getValue(base).append(getValue(arg));
 		
 		if(result){
@@ -325,7 +324,6 @@ public class EZ3Str extends ExtendedSolver<StringBuilder>{
 
 	@Override
 	public void endsWith(boolean result, int base, int arg) {
-		setLast(base, arg);
 		StringBuilder builder = getValue(base).append(getValue(arg));
 		String id = base + "_" + arg;
 		
@@ -344,7 +342,6 @@ public class EZ3Str extends ExtendedSolver<StringBuilder>{
 
 	@Override
 	public void startsWith(boolean result, int base, int arg) {
-		setLast(base, arg);
 		StringBuilder builder = getValue(base).append(getValue(arg));
 		String id = base + "_" + arg;
 
@@ -368,7 +365,6 @@ public class EZ3Str extends ExtendedSolver<StringBuilder>{
 
 	@Override
 	public void equals(boolean result, int base, int arg) {
-		setLast(base, arg);
 		StringBuilder builder = getValue(base).append(getValue(arg));
 		
 		if(result){
@@ -383,12 +379,10 @@ public class EZ3Str extends ExtendedSolver<StringBuilder>{
 
 	@Override
 	public void equalsIgnoreCase(boolean result, int base, int arg) {
-		setLast(base, arg);
 	}
 
 	@Override
 	public void isEmpty(boolean result, int base) {
-		setLast(base, -1);
 		StringBuilder builder = getValue(base);
 		
 		if(result){

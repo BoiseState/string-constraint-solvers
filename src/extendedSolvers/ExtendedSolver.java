@@ -38,7 +38,8 @@ public abstract class ExtendedSolver<TSymbolicString> {
     }
 
     /**
-     * Interface for StringBuilder.append(CharSequence s, int start, int end).
+     * Interface for the
+     * {@link java.lang.StringBuilder#append(CharSequence, int, int)} method.
      *
      * @param id   represents result.
      * @param base represents calling string.
@@ -47,8 +48,38 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public abstract void append(int id, int base, int arg, int start, int end);
 
     /**
-     * Interface for StringBuilder.append(CharSequence s) and
-     * String.concat(String)
+     * Interface for the following methods:
+     * <ul>
+     *     <li>{@link java.lang.StringBuffer#append(AbstractStringBuilder)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(boolean)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(char)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(char[])}</li>
+     *     <li>{@link java.lang.StringBuffer#append(char[], int, int)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(CharSequence)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(CharSequence, int, int)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(double)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(float)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(int)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(long)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(Object)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(String)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(StringBuffer)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(AbstractStringBuilder)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(boolean)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(char)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(char[])}</li>
+     *     <li>{@link java.lang.StringBuilder#append(char[], int, int)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(CharSequence)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(CharSequence, int, int)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(double)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(float)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(int)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(long)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(Object)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(String)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(StringBuffer)}</li>
+     *     <li>{@link java.lang.String#concat(String)}</li>
+     * </ul>
      *
      * @param id   represents result.
      * @param base represents calling string.
@@ -57,7 +88,8 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public abstract void append(int id, int base, int arg);
 
     /**
-     * Interface for contains(String arg)
+     * Interface for the {@link java.lang.String#contains(CharSequence)}
+     * method.
      *
      * @param result used to assert the true or false branch
      * @param base   represents calling string
@@ -66,7 +98,8 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public abstract void contains(boolean result, int base, int arg);
 
     /**
-     * Interface for delete(int start, int end)
+     * Interface for the {@link java.lang.StringBuffer#delete(int, int)} and
+     * {@link java.lang.StringBuilder#delete(int, int)} methods
      *
      * @param id   represents result.
      * @param base represents calling string.
@@ -74,7 +107,8 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public abstract void delete(int id, int base, int start, int end);
 
     /**
-     * Interface for deleteCharAt(int loc)
+     * Interface for the {@link java.lang.StringBuffer#deleteCharAt(int)} and
+     * {@link java.lang.StringBuilder#deleteCharAt(int)} methods.
      *
      * @param id   represents result.
      * @param base represents calling string.
@@ -82,7 +116,7 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public abstract void deleteCharAt(int id, int base, int loc);
 
     /**
-     * Interface for endsWith(String arg)
+     * Interface for the {@link java.lang.String#endsWith(String)} method.
      *
      * @param result used to assert the true or false branch
      * @param base   represents calling string
@@ -91,7 +125,12 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public abstract void endsWith(boolean result, int base, int arg);
 
     /**
-     * Interface for equals(String arg)
+     * Interface for the following methods:
+     * <ul>
+     *     <li>{@link java.lang.String#equals(Object)}</li>
+     *     <li>{@link java.lang.String#contentEquals(CharSequence)}</li>
+     *     <li>{@link java.lang.String#contentEquals(StringBuffer)}</li>
+     * </ul>
      *
      * @param result used to assert the true or false branch
      * @param base   represents calling string
@@ -100,7 +139,8 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public abstract void equals(boolean result, int base, int arg);
 
     /**
-     * Interface for equalsIgnoreCase(String arg)
+     * Interface for the {@link java.lang.String#equalsIgnoreCase(String)}
+     * method.
      *
      * @param result used to assert the true or false branch
      * @param base   represents calling string
@@ -132,7 +172,25 @@ public abstract class ExtendedSolver<TSymbolicString> {
     }
 
     /**
-     * Interface for insert(int offset, String str)
+     * Interface for the following methods:
+     * <ul>
+     *     <li>{@link java.lang.StringBuffer#insert(int, CharSequence)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, boolean)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, double)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, float)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, int)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, long)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, Object)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, String)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, CharSequence)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, boolean)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, double)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, float)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, int)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, long)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, Object)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, String)}</li>
+     * </ul>
      *
      * @param id   represents result.
      * @param base represents calling string.
@@ -141,7 +199,10 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public abstract void insert(int id, int base, int arg, int offset);
 
     /**
-     * Interface for insert(int offset, String str, int start, int end)
+     * Interface for the
+     * {@link java.lang.StringBuffer#insert(int, CharSequence, int, int)} and
+     * {@link java.lang.StringBuilder#insert(int, CharSequence, int, int)}
+     * methods.
      *
      * @param id   represents result.
      * @param base represents calling string.
@@ -155,7 +216,7 @@ public abstract class ExtendedSolver<TSymbolicString> {
                                 int end);
 
     /**
-     * Interface for isEmpty(String arg)
+     * Interface for the {@link java.lang.String#isEmpty()} method.
      *
      * @param result used to assert the true or false branch
      * @param base   represents calling string
@@ -230,7 +291,26 @@ public abstract class ExtendedSolver<TSymbolicString> {
 
     /**
      * Used to propagate string values in cases where a symbolic
-     * string is unmodified, i.e., toString().
+     * string is unmodified in the following methods:
+     * <ul>
+     *     <li>{@link java.lang.String#copyValueOf(char[])}</li>
+     *     <li>{@link java.lang.String#copyValueOf(char[], int, int)}</li>
+     *     <li>{@link java.lang.String#intern()}</li>
+     *     <li>{@link java.lang.String#toString}</li>
+     *     <li>{@link java.lang.String#valueOf(boolean)}</li>
+     *     <li>{@link java.lang.String#valueOf(char)}</li>
+     *     <li>{@link java.lang.String#valueOf(char[])}</li>
+     *     <li>{@link java.lang.String#valueOf(char[], int, int)}</li>
+     *     <li>{@link java.lang.String#valueOf(double)}</li>
+     *     <li>{@link java.lang.String#valueOf(float)}</li>
+     *     <li>{@link java.lang.String#valueOf(int)}</li>
+     *     <li>{@link java.lang.String#valueOf(long)}</li>
+     *     <li>{@link java.lang.String#valueOf(Object)}</li>
+     *     <li>{@link java.lang.StringBuffer#toString()}</li>
+     *     <li>{@link java.lang.StringBuffer#trimToSize()}</li>
+     *     <li>{@link java.lang.StringBuilder#toString()}</li>
+     *     <li>{@link java.lang.StringBuilder#trimToSize()}</li>
+     * </ul>
      *
      * @param id   represents result.
      * @param base represents value to propagate.
@@ -268,7 +348,8 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public abstract String replaceEscapes(String value);
 
     /**
-     * Interface for reverse()
+     * Interface for the {@link java.lang.StringBuffer#reverse()} and
+     * {@link java.lang.StringBuilder#reverse()} methods.
      *
      * @param id   represents result.
      * @param base represents calling string.
@@ -309,7 +390,7 @@ public abstract class ExtendedSolver<TSymbolicString> {
      * @param base id of the current base.
      * @param arg  id of the current arg
      */
-    protected void setLast(int base, int arg) {
+    public void setLast(int base, int arg) {
         last = symbolicStringMap.get(base);
         lastId = base;
         if (arg > 0) {

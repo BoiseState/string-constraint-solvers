@@ -267,7 +267,6 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	}
 	
 	private void assertCondition(boolean result, int base, int arg, StrangerAutomaton x){
-		setLast(base, arg);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
 
@@ -314,7 +313,6 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	}
 	
 	public void equals(boolean result, int base, int arg){
-		setLast(base, arg);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
 
@@ -337,7 +335,6 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	}
 	
 	public void equalsIgnoreCase(boolean result, int base, int arg){
-		setLast(base, arg);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
 
@@ -348,7 +345,6 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 	}
 	
 	public void isEmpty(boolean result, int base){
-		setLast(base, -1);
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
 
 		if(result){

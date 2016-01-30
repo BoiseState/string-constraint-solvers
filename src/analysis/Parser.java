@@ -17,7 +17,8 @@ public class Parser {
     DirectedGraph<PrintConstraint, SymbolicEdge> graph;
     ExtendedSolver solver;
     private int count;
-    private boolean debug = true;
+    private boolean debug;
+    private int maxGraphId;
 
     public Parser(ExtendedSolver solver,
                   DirectedGraph<PrintConstraint, SymbolicEdge> graph,
@@ -29,7 +30,8 @@ public class Parser {
         this.debug = debug;
 
         // initialize fields
-        count = 1;
+        this.count = 1;
+        this.maxGraphId = 0;
 
         // output header
         System.out.println("#\t" +
@@ -308,14 +310,6 @@ public class Parser {
 
             processInit(constraint);
 
-        } else if (fName.equals("toString") ||
-                   fName.equals("valueOf") ||
-                   fName.equals("intern") ||
-                   fName.equals("trimToSize") ||
-                   (fName.equals("copyValueOf") && sourceMap.size() == 2)) {
-
-            processPropagation(constraint);
-
         } else if (string.startsWith("substring")) {
 
             processSubstring(constraint);
@@ -356,6 +350,10 @@ public class Parser {
             // perform reverse operation
             solver.reverse(id, base);
 
+        } else if (fName.startsWith("replace")) {
+
+            processReplace(constraint);
+
         } else if (fName.equals("toUpperCase") && sourceMap.size() == 1) {
 
             // perform uppercase operation
@@ -366,9 +364,13 @@ public class Parser {
             // perform lowercase operation
             solver.toLowerCase(id, base);
 
-        } else if (fName.startsWith("replace")) {
+        } else if (fName.equals("toString") ||
+                   fName.equals("valueOf") ||
+                   fName.equals("intern") ||
+                   fName.equals("trimToSize") ||
+                   (fName.equals("copyValueOf") && sourceMap.size() == 2)) {
 
-            processReplace(constraint);
+            processPropagation(constraint);
 
         } else {
 
@@ -377,6 +379,43 @@ public class Parser {
         }
     }
 
+    /**
+     * Determine and symbolically execute the correct append or concatenate
+     * operation:
+     * <ul>
+     *     <li>{@link java.lang.StringBuffer#append(AbstractStringBuilder)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(boolean)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(char)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(char[])}</li>
+     *     <li>{@link java.lang.StringBuffer#append(char[], int, int)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(CharSequence)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(CharSequence, int, int)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(double)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(float)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(int)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(long)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(Object)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(String)}</li>
+     *     <li>{@link java.lang.StringBuffer#append(StringBuffer)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(AbstractStringBuilder)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(boolean)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(char)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(char[])}</li>
+     *     <li>{@link java.lang.StringBuilder#append(char[], int, int)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(CharSequence)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(CharSequence, int, int)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(double)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(float)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(int)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(long)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(Object)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(String)}</li>
+     *     <li>{@link java.lang.StringBuilder#append(StringBuffer)}</li>
+     *     <li>{@link java.lang.String#concat(String)}</li>
+     * </ul>
+     *
+     * @param constraint The constraint corresponding to the operation.
+     */
     private void processAppend(PrintConstraint constraint) {
 
         // get constraint info as variables
@@ -391,9 +430,10 @@ public class Parser {
             arg = sourceMap.get("s1");
         }
 
-        // TODO: figure this out
+        // if argument not set
         if (sourceMap.get("s1") == null) {
-            solver.newSymbolicString(sourceMap.get("s1"));
+            arg = this.generateNextId();
+            solver.newSymbolicString(arg);
         }
 
         // if function has more than two arguments
@@ -498,6 +538,15 @@ public class Parser {
         solver.newConcreteString(id, val);
     }
 
+    /**
+     * Determine and symbolically execute the correct append or concatenate
+     * operation:
+     * <ul>
+     *     <li>{@link java.lang.StringBuffer#delete(int, int)}</li>
+     *     <li>{@link java.lang.StringBuilder#delete(int, int)}</li>
+     * </ul>
+     * @param constraint The constraint corresponding to the operation.
+     */
     private void processDelete(PrintConstraint constraint) {
 
         // get constraint info as variables
@@ -517,6 +566,15 @@ public class Parser {
         solver.delete(id, base, start, end);
     }
 
+    /**
+     * Determine and symbolically execute the correct append or concatenate
+     * operation:
+     * <ul>
+     *     <li>{@link java.lang.StringBuffer#deleteCharAt(int)}</li>
+     *     <li>{@link java.lang.StringBuilder#deleteCharAt(int)}</li>
+     * </ul>
+     * @param constraint The constraint corresponding to the operation.
+     */
     private void processDeleteCharAt(PrintConstraint constraint) {
 
         // get constraint info as variables
@@ -533,6 +591,16 @@ public class Parser {
         solver.deleteCharAt(id, base, loc);
     }
 
+    /**
+     * Determine and symbolically execute the correct append or concatenate
+     * operation:
+     * <ul>
+     *     <li>{@link java.lang.String#String()}</li>
+     *     <li>{@link java.lang.StringBuffer#StringBuffer()}</li>
+     *     <li>{@link java.lang.StringBuilder#StringBuilder()}</li>
+     * </ul>
+     * @param constraint The constraint corresponding to the operation.
+     */
     private void processInit(PrintConstraint constraint) {
 
         // get constraint info as variables
@@ -555,6 +623,37 @@ public class Parser {
         }
     }
 
+    /**
+     * Determine and symbolically execute the correct append or concatenate
+     * operation:
+     * <ul>
+     *     <li>{@link java.lang.StringBuffer#insert(int, CharSequence)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, CharSequence, int, int)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, char[], int, int)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, boolean)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, char)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, char[])}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, double)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, float)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, int)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, long)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, Object)}</li>
+     *     <li>{@link java.lang.StringBuffer#insert(int, String)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, CharSequence)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, CharSequence, int, int)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, char[], int, int)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, boolean)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, char)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, char[])}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, double)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, float)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, int)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, long)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, Object)}</li>
+     *     <li>{@link java.lang.StringBuilder#insert(int, String)}</li>
+     * </ul>
+     * @param constraint The constraint corresponding to the operation.
+     */
     private void processInsert(PrintConstraint constraint) {
 
         // get constraint info as variables
@@ -611,6 +710,30 @@ public class Parser {
         }
     }
 
+    /**
+     * Determine and symbolically execute the correct append or concatenate
+     * operation:
+     * <ul>
+     *     <li>{@link java.lang.String#copyValueOf(char[])}</li>
+     *     <li>{@link java.lang.String#copyValueOf(char[], int, int)}</li>
+     *     <li>{@link java.lang.String#intern()}</li>
+     *     <li>{@link java.lang.String#toString}</li>
+     *     <li>{@link java.lang.String#valueOf(boolean)}</li>
+     *     <li>{@link java.lang.String#valueOf(char)}</li>
+     *     <li>{@link java.lang.String#valueOf(char[])}</li>
+     *     <li>{@link java.lang.String#valueOf(char[], int, int)}</li>
+     *     <li>{@link java.lang.String#valueOf(double)}</li>
+     *     <li>{@link java.lang.String#valueOf(float)}</li>
+     *     <li>{@link java.lang.String#valueOf(int)}</li>
+     *     <li>{@link java.lang.String#valueOf(long)}</li>
+     *     <li>{@link java.lang.String#valueOf(Object)}</li>
+     *     <li>{@link java.lang.StringBuffer#toString()}</li>
+     *     <li>{@link java.lang.StringBuffer#trimToSize()}</li>
+     *     <li>{@link java.lang.StringBuilder#toString()}</li>
+     *     <li>{@link java.lang.StringBuilder#trimToSize()}</li>
+     * </ul>
+     * @param constraint The constraint corresponding to the operation.
+     */
     private void processPropagation(PrintConstraint constraint) {
 
         // get constraint info as variables
@@ -638,6 +761,19 @@ public class Parser {
         }
     }
 
+    /**
+     * Determine and symbolically execute the correct append or concatenate
+     * operation:
+     * <ul>
+     *     <li>{@link java.lang.String#replace(char, char)}</li>
+     *     <li>{@link java.lang.String#replace(CharSequence, CharSequence)}</li>
+     *     <li>{@link java.lang.String#replaceAll(String, String)}</li>
+     *     <li>{@link java.lang.String#replaceFirst(String, String)}</li>
+     *     <li>{@link java.lang.StringBuffer#replace(int, int, String)}</li>
+     *     <li>{@link java.lang.StringBuilder#replace(int, int, String)}</li>
+     * </ul>
+     * @param constraint The constraint corresponding to the operation.
+     */
     private void processReplace(PrintConstraint constraint) {
 
         // get constraint info as variables
@@ -690,6 +826,15 @@ public class Parser {
         solver.replace(id, base, argOne, argTwo);
     }
 
+    /**
+     * Determine and symbolically execute the correct append or concatenate
+     * operation:
+     * <ul>
+     *     <li>{@link java.lang.StringBuffer#setCharAt(int, char)}</li>
+     *     <li>{@link java.lang.StringBuilder#setCharAt(int, char)}</li>
+     * </ul>
+     * @param constraint The constraint corresponding to the operation.
+     */
     private void processSetCharAt(PrintConstraint constraint) {
 
         // get constraint info as variables
@@ -714,6 +859,15 @@ public class Parser {
         solver.setCharAt(id, base, arg, offset);
     }
 
+    /**
+     * Determine and symbolically execute the correct append or concatenate
+     * operation:
+     * <ul>
+     *     <li>{@link java.lang.StringBuffer#setLength(int)}</li>
+     *     <li>{@link java.lang.StringBuilder#setLength(int)}</li>
+     * </ul>
+     * @param constraint The constraint corresponding to the operation.
+     */
     private void processSetLength(PrintConstraint constraint) {
 
         // get constraint info as variables
@@ -730,6 +884,19 @@ public class Parser {
         solver.setLength(id, base, length);
     }
 
+    /**
+     * Determine and symbolically execute the correct append or concatenate
+     * operation:
+     * <ul>
+     *     <li>{@link java.lang.String#subSequence(int, int)}</li>
+     *     <li>{@link java.lang.String#substring(int)}</li>
+     *     <li>{@link java.lang.String#substring(int, int)}</li>
+     *     <li>{@link java.lang.StringBuffer#subSequence(int, int)}</li>
+     *     <li>{@link java.lang.StringBuffer#substring(int)}</li>
+     *     <li>{@link java.lang.StringBuffer#substring(int, int)}</li>
+     * </ul>
+     * @param constraint The constraint corresponding to the operation.
+     */
     private void processSubstring(PrintConstraint constraint) {
 
         // get constraint info as variables
@@ -828,10 +995,16 @@ public class Parser {
     private void calculateStats(PrintConstraint constraint) {
 
         // get constraint info as variables
-        String actualVal = constraint.getActualVal();
         Map<String, Integer> sourceMap = constraint.getSourceMap();
-        int base = sourceMap.get("t");
         StringBuilder stats = new StringBuilder();
+        String actualVal = constraint.getActualVal();
+        int base = sourceMap.get("t");
+
+        // get id of second symbolic string if it exists
+        int arg = -1;
+        if (sourceMap.get("s1") != null) {
+            arg = sourceMap.get("s1");
+        }
 
         // determine if symbolic strings are singletons
         if (solver.isSingleton(base, actualVal) &&
@@ -842,12 +1015,18 @@ public class Parser {
             stats.append("false\t");
         }
 
+        // store symbolic string values
+        solver.setLast(base, arg);
+
         // test if true branch is SAT
         assertBooleanConstraint(true, constraint);
         stats.append(solver.isSatisfiable(base)).append("\t");
 
         // revert symbolic string values
         solver.revertLastPredicate();
+
+        // store symbolic string values
+        solver.setLast(base, arg);
 
         // test if false branch is SAT
         assertBooleanConstraint(false, constraint);
@@ -869,6 +1048,9 @@ public class Parser {
         if (actualVal.equals("false")) {
             result = false;
         }
+
+        // store symbolic string values
+        solver.setLast(base, arg);
 
         // branches disjoint?
         assertBooleanConstraint(result, constraint);
@@ -895,7 +1077,22 @@ public class Parser {
     }
 
     /**
-     * Assert a predicate on a symbolic value.
+     * Assert a predicate on a symbolic value from the following boolean
+     * function:
+     * <ul>
+     *     <li>{@link java.lang.String#contains(CharSequence)}</li>
+     *     <li>{@link java.lang.String#contentEquals(CharSequence)}</li>
+     *     <li>{@link java.lang.String#contentEquals(StringBuffer)}</li>
+     *     <li>{@link java.lang.String#endsWith(String)}</li>
+     *     <li>{@link java.lang.String#equals(Object)}</li>
+     *     <li>{@link java.lang.String#equalsIgnoreCase(String)}</li>
+     *     <li>{@link java.lang.String#isEmpty()}</li>
+     *     <li>{@link java.lang.String#matches(String)}</li>
+     *     <li>{@link java.lang.String#regionMatches(boolean, int, String, int, int)}</li>
+     *     <li>{@link java.lang.String#regionMatches(int, String, int, int)}</li>
+     *     <li>{@link java.lang.String#startsWith(String)}</li>
+     *     <li>{@link java.lang.String#startsWith(String, int)}</li>
+     * </ul>
      *
      * @param result     Is it a true or false predicate.
      * @param constraint The the boolean constraint which is being asserted.
@@ -917,6 +1114,7 @@ public class Parser {
             arg = sourceMap.get("s1");
         }
 
+        // TODO: add starts with for sourceMap size 3 (two args)
         // assert the boolean constraint
         if (fName.equals("contains")) {
 
@@ -943,6 +1141,26 @@ public class Parser {
             solver.isEmpty(result, base);
 
         }
+    }
+
+    private int generateNextId() {
+
+        // lazy load id set
+        if (this.maxGraphId <= 0) {
+
+            // get set of all print constraint ids
+            for (PrintConstraint constraint : graph.vertexSet()) {
+                if (constraint.getId() > this.maxGraphId) {
+                    this.maxGraphId = constraint.getId();
+                }
+            }
+        }
+
+        // increment max graph id for next valid id
+        this.maxGraphId++;
+
+        // return valid new id
+        return this.maxGraphId;
     }
 
     static {
