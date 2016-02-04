@@ -9,21 +9,13 @@ import java.util.*;
 
 @SuppressWarnings("Duplicates")
 public class JSASolver extends SatSolver {
-    private int boolId;
-
     private static int count;
-
-    static {
-        count = 1;
-    }
-
-    private boolean verbose;
-
     protected HashMap<Integer, Long> time;
-    private Automaton base;
     private Automaton arg;
     private int argNum;
-
+    private Automaton base;
+    private int boolId;
+    private boolean verbose;
     public JSASolver(boolean verbose, String properties, String tempFile) {
         super("JSA", "", "", properties, tempFile);
         time = new HashMap<Integer, Long>();
@@ -44,246 +36,6 @@ public class JSASolver extends SatSolver {
                            "DISJOINT");
 
         boolId = 0;
-    }
-
-    public void getStats() {
-
-//        String result = "********************************\n";
-//        result += "JSASolver Stats:\n";
-//        result += "Sat: " + sat + "\n";
-//        result += "Unsat: " + unsat + "\n";
-//        result += "True Unsat: " + trueUnsat + "\n";
-//        result += "False Unsat: " + falseUnsat + "\n";
-//        result += "Unknown: " + unknown + "\n";
-//        result += "Num Hotspots: " + hotSpots + "\n";
-//        result += "CorrectHot: " + correctHotspot + "\n";
-//        result += "Hotspot time: " + hotSpotTime + "\n";
-//        result += "Num Unsound: " + numUnsound + "\n";
-//        result += "Operations: " + numOperations + "\n";
-//        fileWrite += result;
-    }
-
-    /**
-     * Assert a predicate on a symbolic value. Does not store the result.
-     *
-     * @param result      Is it a true or false predicate.
-     * @param method      The predicate method.
-     * @param actualValue The actual result.
-     * @param baseId          The predicate id.
-     * @param sourceMap   The values involved.
-     */
-    protected void setConditionalLists(boolean result,
-                                       String method,
-                                       String actualValue,
-                                       int baseId,
-                                       int argId,
-                                       HashMap<String, Integer> sourceMap) {
-        String fName = method.split("!!")[0];
-
-        if (baseId > 0) {
-            base = (Automaton) store.get(baseId);
-        } else {
-            base = (Automaton) store.get(sourceMap.get("t"));
-        }
-
-        arg = null;
-
-        argNum = -1;
-        if (sourceMap.get("s1") != null) {
-            if (argId > 0) {
-                arg = (Automaton) store.get(argId);
-            } else {
-                arg = (Automaton) store.get(sourceMap.get("s1"));
-            }
-            argNum = sourceMap.get("s1");
-        }
-
-        if (fName.equals("contains")) {
-
-            if (result) {
-                AssertContainsOther c = new AssertContainsOther();
-                base = doOp(base, arg, c);
-                AssertContainedInOther o = new AssertContainedInOther();
-                arg = doOp(arg, base, o);
-            } else {
-                Automaton temp = base;
-                if (arg.getFiniteStrings(1) != null) {
-                    Automaton x = Automaton.makeAnyString()
-                                           .concatenate(arg)
-                                           .concatenate(Automaton
-                                                                .makeAnyString());
-                    temp = base.minus(x);
-                }
-                if (base.getFiniteStrings(1) != null) {
-                    arg = arg.intersection(base.complement());
-                }
-                base = temp;
-            }
-        } else if (fName.equals("endsWith")) {
-            if (result) {
-                AssertEndsWith e = new AssertEndsWith();
-                base = doOp(base, arg, e);
-
-                Postfix p = new Postfix();
-                Automaton temp = doOp(base, p);
-
-                AssertContainedInOther o = new AssertContainedInOther();
-                arg = doOp(temp, arg, o);
-            } else {
-                Set<String> strings = arg.getFiniteStrings(1);
-                Automaton temp = base;
-                if (strings != null) {
-                    temp = base.minus(Automaton.makeAnyString()
-                                               .concatenate(arg));
-                }
-
-                if (base.getFiniteStrings(1) != null) {
-                    Postfix p = new Postfix();
-                    base = doOp(base, p);
-
-                    arg = base.intersection(arg.complement());
-                }
-                base = temp;
-            }
-        } else if (fName.equals("equalsIgnoreCase")) {
-            Automaton a = ignoreCase(arg);
-            Automaton b = ignoreCase(base);
-            //TODO: optimize for negation.
-            if (result) {
-                AssertEquals e = new AssertEquals();
-                base = doOp(base, a, e);
-                arg = doOp(arg, b, e);
-            } else {
-                AssertNotEquals n = new AssertNotEquals();
-                base = doOp(base, a, n);
-                arg = doOp(arg, b, n);
-            }
-
-        } else if (fName.equals("equals") || fName.equals("contentEquals")) {
-            if (result) {
-                AssertEquals e = new AssertEquals();
-                base = doOp(base, arg, e);
-                arg = base;
-            } else {
-                AssertNotEquals n = new AssertNotEquals();
-                Automaton temp = doOp(base, arg, n);
-                arg = doOp(arg, base, n);
-                if (base.getFiniteStrings(1) != null) {
-                    arg = arg.intersection(base.complement());
-                }
-                base = temp;
-            }
-        } else if (fName.equals("isEmpty")) {
-            if (result) {
-                AssertEmpty l = new AssertEmpty();
-                base = doOp(base, l);
-            } else {
-                AssertNotEmpty n = new AssertNotEmpty();
-                base = doOp(base, n);
-            }
-        }
-        //TODO some sort of approximation of this
-        else if (fName.equals("matches")) {
-        } else if (fName.equals("regionMatches")) {
-            if (sourceMap.size() == 5) {
-                argNum = sourceMap.get("s2");
-            } else {
-                argNum = sourceMap.get("s3");
-            }
-
-            int off = 0;
-            Automaton argOne;
-            if (sourceMap.get("s5") != null) {
-                off++;
-                arg = (Automaton) store.get(sourceMap.get("s3"));
-                argOne = arg;
-                if (actualVals.get(sourceMap.get("s1")).equals("true")) {
-                    argOne = ignoreCase(arg);
-                }
-            } else {
-                arg = (Automaton) store.get(sourceMap.get("s2"));
-                argOne = arg;
-            }
-            int toffset = Integer.valueOf(actualVals.get(sourceMap.get("s" +
-                                                                       (off +
-                                                                        1))));
-            int ooffset = Integer.valueOf(actualVals.get(sourceMap.get("s" +
-                                                                       (off +
-                                                                        3))));
-            int len = Integer.valueOf(actualVals.get(sourceMap.get("s" +
-                                                                   (off + 4))));
-
-            Postfix p = new Postfix();
-            Automaton baseOne = doOp(base, p);
-            argOne = doOp(argOne, p);
-
-            if (result) {
-                AssertHasLength l = new AssertHasLength(0, len + toffset);
-                baseOne = doOp(baseOne, l);
-
-                l = new AssertHasLength(0, len + ooffset);
-                argOne = doOp(argOne, l);
-
-                AssertEquals e = new AssertEquals();
-                Automaton temp = doOp(baseOne, argOne, e);
-
-                AssertContainsOther c = new AssertContainsOther();
-                base = doOp(base, arg, c);
-                arg = doOp(temp, arg, c);
-            } else {
-                //TODO find an approximation of this
-                //There are some problems with approximating this. Noteably,
-                // the substring we are using is definite.
-//				AssertHasNotLength nl=new AssertHasNotLength(0, len+toffset);
-//				Automaton tempBase=doOp(baseOne, nl);
-//				
-//				nl=new AssertHasNotLength(0, len+ooffset);
-//				Automaton tempArg=doOp(argOne,nl);
-//				
-//				AssertNotEquals n=new AssertNotEquals();
-//				auto=doOp(baseOne, argOne, n);
-//				autoArg=doOp(argOne, baseOne, n);
-//				
-//				AssertEquals e=new AssertEquals();
-//				Automaton temp=doOp(tempBase, tempArg, e);
-//				auto=auto.union(temp);
-//				autoArg=autoArg.union(temp);
-            }
-        } else if (fName.equals("startsWith") && sourceMap.size() == 2) {
-//			if(sourceMap.size()>2){
-//				int offset=Integer.parseInt(actualVals.get(sourceMap.get
-// ("s2")));
-//				PrecisePrefix p=new PrecisePrefix(offset);
-//				base=doOp(base, p);
-//			}
-
-            if (result) {
-                AssertStartsWith e = new AssertStartsWith();
-                base = doOp(base, arg, e);
-
-                Prefix p = new Prefix();
-                Automaton temp = doOp(base, p);
-
-                AssertContainedInOther o = new AssertContainedInOther();
-                arg = doOp(arg, temp, o);
-            } else {
-
-                Set<String> strings = arg.getFiniteStrings(1);
-                Automaton temp = base;
-                if (strings != null) {
-                    temp =
-                            base.minus(arg.concatenate(Automaton
-                                                               .makeAnyString
-                                                                       ()));
-                }
-
-                strings = base.getFiniteStrings(1);
-                if (strings != null) {
-                    arg = arg.intersection(base.complement());
-                }
-                base = temp;
-            }
-        }
     }
 
     /**
@@ -323,6 +75,44 @@ public class JSASolver extends SatSolver {
         uop.op(a);
         uop = new Substring();
         uop.op(a);
+    }
+
+    /**
+     * An extended ignoreCase operation for equalsIgnoreCase.
+     *
+     * @param arg The automaton where the operation should be applied.
+     * @return The result of the ignoreCase operation.
+     */
+    protected Automaton ignoreCase(Automaton arg) {
+        Automaton b = arg.clone();
+        for (State s : b.getStates()) {
+            Set<Transition> transitions = s.getTransitions();
+            for (Transition t : new ArrayList<Transition>(transitions)) {
+                char min = t.getMin();
+                char max = t.getMax();
+                State dest = t.getDest();
+                if (min != Character.MIN_VALUE || max != Character.MAX_VALUE) {
+                    for (int c = min; c <= max; c++) {
+                        if (Character.isUpperCase((char) c)) {
+                            transitions.add(new Transition(Character
+                                                                   .toLowerCase(
+                                                                           (char) c),
+                                                           dest));
+                        }
+                        if (Character.isLowerCase((char) c)) {
+                            transitions.add(new Transition(Character
+                                                                   .toUpperCase(
+                                                                           (char) c),
+                                                           dest));
+                        }
+                    }
+                }
+            }
+        }
+        b.setDeterministic(false);
+        b.reduce();
+        b.minimize();
+        return b;
     }
 
     @Override
@@ -377,7 +167,9 @@ public class JSASolver extends SatSolver {
             if (sourceMap.get("s1") == null) {
                 a2 = Automaton.makeAnyString();
             } else {
-                a2 = ((Automaton) store.get(sourceMap.get("s1"))).clone();
+                int s1Id = sourceMap.get("s1");
+                Automaton s1Automaton = (Automaton) store.get(s1Id);
+                a2 = s1Automaton.clone();
             }
             if (string.split("!!")[1].equals("C")) {
                 a2 = grabChar(sourceMap.get("s1"));
@@ -458,7 +250,7 @@ public class JSASolver extends SatSolver {
 //					Substring t=new Substring();
 //					auto=doOp(auto, t);
 //				}
-//				
+//
 //
 //				int length=argTwo-argOne;
 //				AssertHasLength l=new AssertHasLength(length, length);
@@ -806,120 +598,81 @@ public class JSASolver extends SatSolver {
         updateTime(id, sourceMap, endTime - startTime);
     }
 
+    @Override
+    public void remove(int id) {
+        store.remove(id);
+    }
+
+    @Override
+    public void finishUp() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void getStats() {
+
+//        String result = "********************************\n";
+//        result += "JSASolver Stats:\n";
+//        result += "Sat: " + sat + "\n";
+//        result += "Unsat: " + unsat + "\n";
+//        result += "True Unsat: " + trueUnsat + "\n";
+//        result += "False Unsat: " + falseUnsat + "\n";
+//        result += "Unknown: " + unknown + "\n";
+//        result += "Num Hotspots: " + hotSpots + "\n";
+//        result += "CorrectHot: " + correctHotspot + "\n";
+//        result += "Hotspot time: " + hotSpotTime + "\n";
+//        result += "Num Unsound: " + numUnsound + "\n";
+//        result += "Operations: " + numOperations + "\n";
+//        fileWrite += result;
+    }
+
     /**
-     * Collects results for a branching point.
+     * Incrementally updates the time required to solve the constraint.
      *
-     * @param method      The method encountered.
-     * @param actualValue the actual value.
-     * @param id          Id of the branching point.
-     * @param sourceMap   Values involved.
+     * @param id             id of this constraint.
+     * @param sourceMap      Source values
+     * @param additionalTime Time to solve this constraint.
      */
-    protected void solveBooleanConstraint(String method,
-                                          String actualValue,
-                                          int id,
-                                          HashMap<String, Integer> sourceMap) {
-        if (!actualValue.equals("true") && !actualValue.equals("false")) {
-            System.err.println(
-                    "warning constraint detected without true/false value");
-            return;
+    protected void updateTime(int id,
+                              HashMap<String, Integer> sourceMap,
+                              long additionalTime) {
+        long previous = additionalTime;
+        Iterator<Integer> it = sourceMap.values().iterator();
+        while (it.hasNext()) {
+            int sourceId = it.next();
+            if (time.containsKey(sourceId)) {
+                previous += time.get(sourceId);
+            }
         }
-        String fName = method.split("!!")[0];
+        tempTime = previous;
+        time.put(id, previous);
+    }
 
-        if (!SatSolver.containsBoolFunction(fName)) {
-            return;
-        }
-
-//		if(!actualValue.equals("true")&& !actualValue.equals("false")){
-//			System.err.println("Warning: actualValue not true or false");
-//			return;
+    /**
+     * Depricated. Ensures the result is a character.
+     *
+     * @param id The id of the constraint.
+     * @return A string representing an ECLiPSe-str constant character.
+     */
+    private Automaton grabChar(int id) {
+//		String val1=actualVals.get(id);
+//		Automaton result;
+//		try{
+//			int tempVal=Integer.parseInt(val1);
+//			if(!(tempVal<10 && tempVal >=0)){
+//				result=Automaton.makeChar((char)tempVal);
+//			}
+//			else{
+//				result=Automaton.makeChar(val1.charAt(0));
+//				//result=Automaton.makeChar((char)tempVal).union(Automaton
+// .makeString(tempVal+""));
+//			}
 //		}
-//
-//			String result;
-        boolean isConcrete = true;
-        Automaton base = (Automaton) store.get(sourceMap.get("t"));
-
-        String baseActual = actualVals.get(sourceMap.get("t"));
-
-        Set<String> baseStrings = base.getFiniteStrings(1);
-        if (!(baseStrings != null)) {
-            isConcrete = false;
-            base = base.intersection(Automaton.makeString(baseActual));
-        }
-
-
-//			//This line of code looks extremely unsafe...but there should be
-// at least one string or else you would be calling a function on a null value.
-//			String baseGuess=base.getFiniteStrings().iterator().next();
-//			
-        Automaton arg;
-        String argActual;
-        if (fName.equals("regionMatches")) {
-            if (sourceMap.size() == 5) {
-                arg = (Automaton) store.get(sourceMap.get("s2"));
-                argActual = actualVals.get(sourceMap.get("s2"));
-            } else {
-                arg = (Automaton) store.get(sourceMap.get("s3"));
-                argActual = actualVals.get(sourceMap.get("s3"));
-            }
-        } else {
-            argActual = actualVals.get(sourceMap.get("s1"));
-            if (argActual != null) {
-                arg = (Automaton) store.get(sourceMap.get("s1"));
-            } else {
-                arg = null;
-            }
-        }
-        //			String argGuess=null;
-        if (arg != null) {
-            Set<String> argStrings = arg.getFiniteStrings(1);
-
-            if (!(argStrings != null)) {
-                isConcrete = false;
-                arg = arg.intersection(Automaton.makeString(argActual));
-                //				if(base.isEmpty()){
-                //					fileWrite+="empty: "+actualValue+" "+base
-                // .isEmpty()+" "+arg.isEmpty()+" "+constraints.get(sourceMap
-                // .get("t")).getShortestExample(true)+constraints.get
-                // (sourceMap.get("s1")).getShortestExample(true)+"\n";
-                //					incorrectBool++;
-                //					return;
-                //				}
-            }
-//					argGuess=arg.getShortestExample(true);
-        }
-//				result=this.getBooleanResult(fName, baseGuess, argGuess,
-// sourceMap);
-
-        if (base.getFiniteStrings(1) != null &&
-            (arg == null || arg.getFiniteStrings(1) != null)) {
-            if (isConcrete) {
-                correctConstraint.add(id);
-            } else {
-                unknownConstraint.add(id);
-            }
-        } else {
-            fileWrite += "JSA incorrect: " + method + " " + actualValue;
-            fileWrite += id +
-                         " " +
-                         "base: " +
-                         ((Automaton) store.get(sourceMap.get("t")))
-                                 .getShortestExample(
-                                         true) +
-                         " ";
-            if (arg != null) {
-                fileWrite += "arg: " + arg.getShortestExample(true);
-            }
-            fileWrite += "\n" +
-                         actualVals.get(sourceMap.get("t")) +
-                         " " +
-                         actualVals.get(sourceMap.get("s1")) +
-                         " " +
-                         isConcrete +
-                         "\n";
-            incorrectConstraint.add(id);
-            System.err.println(fileWrite);
-            System.exit(-1);
-        }
+//		catch(NumberFormatException e){
+//			result=Automaton.makeChar(val1.charAt(0));
+//		}
+//		return result;
+        return Automaton.makeString(actualVals.get(id));
     }
 
     /**
@@ -949,91 +702,6 @@ public class JSASolver extends SatSolver {
         }
         if (arg != null) {
             store.put(argNum, arg);
-        }
-    }
-
-    /**
-     * An extended ignoreCase operation for equalsIgnoreCase.
-     *
-     * @param arg The automaton where the operation should be applied.
-     * @return The result of the ignoreCase operation.
-     */
-    protected Automaton ignoreCase(Automaton arg) {
-        Automaton b = arg.clone();
-        for (State s : b.getStates()) {
-            Set<Transition> transitions = s.getTransitions();
-            for (Transition t : new ArrayList<Transition>(transitions)) {
-                char min = t.getMin();
-                char max = t.getMax();
-                State dest = t.getDest();
-                if (min != Character.MIN_VALUE || max != Character.MAX_VALUE) {
-                    for (int c = min; c <= max; c++) {
-                        if (Character.isUpperCase((char) c)) {
-                            transitions.add(new Transition(Character
-                                                                   .toLowerCase(
-                                                                           (char) c),
-                                                           dest));
-                        }
-                        if (Character.isLowerCase((char) c)) {
-                            transitions.add(new Transition(Character
-                                                                   .toUpperCase(
-                                                                           (char) c),
-                                                           dest));
-                        }
-                    }
-                }
-            }
-        }
-        b.setDeterministic(false);
-        b.reduce();
-        b.minimize();
-        return b;
-    }
-
-    @Override
-    public void remove(int id) {
-        store.remove(id);
-    }
-
-    /**
-     * Incrementally updates the time required to solve the constraint.
-     *
-     * @param id             id of this constraint.
-     * @param sourceMap      Source values
-     * @param additionalTime Time to solve this constraint.
-     */
-    protected void updateTime(int id,
-                              HashMap<String, Integer> sourceMap,
-                              long additionalTime) {
-        long previous = additionalTime;
-        Iterator<Integer> it = sourceMap.values().iterator();
-        while (it.hasNext()) {
-            int sourceId = it.next();
-            if (time.containsKey(sourceId)) {
-                previous += time.get(sourceId);
-            }
-        }
-        tempTime = previous;
-        time.put(id, previous);
-    }
-
-    /**
-     * Used in a predicate method to add time to sources.
-     *
-     * @param sourceMap      Sources to add time to.
-     * @param additionalTime Addition time to add.
-     */
-    protected void updateSourceTime(HashMap<String, Integer> sourceMap,
-                                    long additionalTime) {
-        Iterator<Integer> it = sourceMap.values().iterator();
-        while (it.hasNext()) {
-            int sourceId = it.next();
-            long previous = 0;
-            if (time.containsKey(sourceId)) {
-                previous = time.get(sourceId);
-            }
-            previous = previous + additionalTime;
-            time.put(sourceId, previous);
         }
     }
 
@@ -1078,8 +746,11 @@ public class JSASolver extends SatSolver {
         boolean falseSat;
         boolean disjoint = true;
 
-        Set<String> tStrings =
-                ((Automaton) store.get(targetId)).getFiniteStrings(1);
+        Automaton tAutomaton = ((Automaton) store.get(targetId));
+        Set<String> tStrings = null;
+        if (tAutomaton != null) {
+            tStrings = tAutomaton.getFiniteStrings(1);
+        }
         Set<String> s1Strings = null;
         if (source1Id != null) {
             s1Strings =
@@ -1341,46 +1012,6 @@ public class JSASolver extends SatSolver {
 //        }
     }
 
-    private void setConditionalLists(boolean result,
-                                     String string,
-                                     String actualValue,
-                                     HashMap<String, Integer> sourceMap) {
-        this.setConditionalLists(result, string, actualValue, 0, 0, sourceMap);
-    }
-
-    /**
-     * Depricated. Ensures the result is a character.
-     *
-     * @param id The id of the constraint.
-     * @return A string representing an ECLiPSe-str constant character.
-     */
-    private Automaton grabChar(int id) {
-//		String val1=actualVals.get(id);
-//		Automaton result;
-//		try{
-//			int tempVal=Integer.parseInt(val1);
-//			if(!(tempVal<10 && tempVal >=0)){
-//				result=Automaton.makeChar((char)tempVal);
-//			}
-//			else{
-//				result=Automaton.makeChar(val1.charAt(0));
-//				//result=Automaton.makeChar((char)tempVal).union(Automaton
-// .makeString(tempVal+""));
-//			}
-//		}
-//		catch(NumberFormatException e){
-//			result=Automaton.makeChar(val1.charAt(0));
-//		}
-//		return result;
-        return Automaton.makeString(actualVals.get(id));
-    }
-
-    @Override
-    public void finishUp() {
-        // TODO Auto-generated method stub
-
-    }
-
     /**
      * Checks if the automaton at the point given represents any string.
      *
@@ -1389,5 +1020,375 @@ public class JSASolver extends SatSolver {
      */
     public boolean isAnyString(int id) {
         return ((Automaton) store.get(id)).isTotal();
+    }
+
+    private void setConditionalLists(boolean result,
+                                     String string,
+                                     String actualValue,
+                                     HashMap<String, Integer> sourceMap) {
+        this.setConditionalLists(result, string, actualValue, 0, 0, sourceMap);
+    }
+
+    /**
+     * Assert a predicate on a symbolic value. Does not store the result.
+     *
+     * @param result      Is it a true or false predicate.
+     * @param method      The predicate method.
+     * @param actualValue The actual result.
+     * @param baseId          The predicate id.
+     * @param sourceMap   The values involved.
+     */
+    protected void setConditionalLists(boolean result,
+                                       String method,
+                                       String actualValue,
+                                       int baseId,
+                                       int argId,
+                                       HashMap<String, Integer> sourceMap) {
+        String fName = method.split("!!")[0];
+
+        if (baseId > 0) {
+            base = (Automaton) store.get(baseId);
+        } else {
+            base = (Automaton) store.get(sourceMap.get("t"));
+        }
+
+        arg = null;
+
+        argNum = -1;
+        if (sourceMap.get("s1") != null) {
+            if (argId > 0) {
+                arg = (Automaton) store.get(argId);
+            } else {
+                arg = (Automaton) store.get(sourceMap.get("s1"));
+            }
+            argNum = sourceMap.get("s1");
+        }
+
+        if (fName.equals("contains")) {
+
+            if (result) {
+                AssertContainsOther c = new AssertContainsOther();
+                base = doOp(base, arg, c);
+                AssertContainedInOther o = new AssertContainedInOther();
+                arg = doOp(arg, base, o);
+            } else {
+                Automaton temp = base;
+                if (arg.getFiniteStrings(1) != null) {
+                    Automaton x = Automaton.makeAnyString()
+                                           .concatenate(arg)
+                                           .concatenate(Automaton
+                                                                .makeAnyString());
+                    temp = base.minus(x);
+                }
+                if (base.getFiniteStrings(1) != null) {
+                    arg = arg.intersection(base.complement());
+                }
+                base = temp;
+            }
+        } else if (fName.equals("endsWith")) {
+            if (result) {
+                AssertEndsWith e = new AssertEndsWith();
+                base = doOp(base, arg, e);
+
+                Postfix p = new Postfix();
+                Automaton temp = doOp(base, p);
+
+                AssertContainedInOther o = new AssertContainedInOther();
+                arg = doOp(temp, arg, o);
+            } else {
+                Set<String> strings = arg.getFiniteStrings(1);
+                Automaton temp = base;
+                if (strings != null) {
+                    temp = base.minus(Automaton.makeAnyString()
+                                               .concatenate(arg));
+                }
+
+                if (base.getFiniteStrings(1) != null) {
+                    Postfix p = new Postfix();
+                    base = doOp(base, p);
+
+                    arg = base.intersection(arg.complement());
+                }
+                base = temp;
+            }
+        } else if (fName.equals("equalsIgnoreCase")) {
+            Automaton a = ignoreCase(arg);
+            Automaton b = ignoreCase(base);
+            //TODO: optimize for negation.
+            if (result) {
+                AssertEquals e = new AssertEquals();
+                base = doOp(base, a, e);
+                arg = doOp(arg, b, e);
+            } else {
+                AssertNotEquals n = new AssertNotEquals();
+                base = doOp(base, a, n);
+                arg = doOp(arg, b, n);
+            }
+
+        } else if (fName.equals("equals") || fName.equals("contentEquals")) {
+            if (result) {
+                AssertEquals e = new AssertEquals();
+                base = doOp(base, arg, e);
+                arg = base;
+            } else {
+                AssertNotEquals n = new AssertNotEquals();
+                Automaton temp = doOp(base, arg, n);
+                arg = doOp(arg, base, n);
+                if (base.getFiniteStrings(1) != null) {
+                    arg = arg.intersection(base.complement());
+                }
+                base = temp;
+            }
+        } else if (fName.equals("isEmpty")) {
+            if (result) {
+                AssertEmpty l = new AssertEmpty();
+                base = doOp(base, l);
+            } else {
+                AssertNotEmpty n = new AssertNotEmpty();
+                base = doOp(base, n);
+            }
+        }
+        //TODO some sort of approximation of this
+        else if (fName.equals("matches")) {
+        } else if (fName.equals("regionMatches")) {
+            if (sourceMap.size() == 5) {
+                argNum = sourceMap.get("s2");
+            } else {
+                argNum = sourceMap.get("s3");
+            }
+
+            int off = 0;
+            Automaton argOne;
+            if (sourceMap.get("s5") != null) {
+                off++;
+                arg = (Automaton) store.get(sourceMap.get("s3"));
+                argOne = arg;
+                if (actualVals.get(sourceMap.get("s1")).equals("true")) {
+                    argOne = ignoreCase(arg);
+                }
+            } else {
+                arg = (Automaton) store.get(sourceMap.get("s2"));
+                argOne = arg;
+            }
+            int toffset = Integer.valueOf(actualVals.get(sourceMap.get("s" +
+                                                                       (off +
+                                                                        1))));
+            int ooffset = Integer.valueOf(actualVals.get(sourceMap.get("s" +
+                                                                       (off +
+                                                                        3))));
+            int len = Integer.valueOf(actualVals.get(sourceMap.get("s" +
+                                                                   (off + 4))));
+
+            Postfix p = new Postfix();
+            Automaton baseOne = doOp(base, p);
+            argOne = doOp(argOne, p);
+
+            if (result) {
+                AssertHasLength l = new AssertHasLength(0, len + toffset);
+                baseOne = doOp(baseOne, l);
+
+                l = new AssertHasLength(0, len + ooffset);
+                argOne = doOp(argOne, l);
+
+                AssertEquals e = new AssertEquals();
+                Automaton temp = doOp(baseOne, argOne, e);
+
+                AssertContainsOther c = new AssertContainsOther();
+                base = doOp(base, arg, c);
+                arg = doOp(temp, arg, c);
+            } else {
+                //TODO find an approximation of this
+                //There are some problems with approximating this. Noteably,
+                // the substring we are using is definite.
+//				AssertHasNotLength nl=new AssertHasNotLength(0, len+toffset);
+//				Automaton tempBase=doOp(baseOne, nl);
+//
+//				nl=new AssertHasNotLength(0, len+ooffset);
+//				Automaton tempArg=doOp(argOne,nl);
+//
+//				AssertNotEquals n=new AssertNotEquals();
+//				auto=doOp(baseOne, argOne, n);
+//				autoArg=doOp(argOne, baseOne, n);
+//
+//				AssertEquals e=new AssertEquals();
+//				Automaton temp=doOp(tempBase, tempArg, e);
+//				auto=auto.union(temp);
+//				autoArg=autoArg.union(temp);
+            }
+        } else if (fName.equals("startsWith") && sourceMap.size() == 2) {
+//			if(sourceMap.size()>2){
+//				int offset=Integer.parseInt(actualVals.get(sourceMap.get
+// ("s2")));
+//				PrecisePrefix p=new PrecisePrefix(offset);
+//				base=doOp(base, p);
+//			}
+
+            if (result) {
+                AssertStartsWith e = new AssertStartsWith();
+                base = doOp(base, arg, e);
+
+                Prefix p = new Prefix();
+                Automaton temp = doOp(base, p);
+
+                AssertContainedInOther o = new AssertContainedInOther();
+                arg = doOp(arg, temp, o);
+            } else {
+
+                Set<String> strings = arg.getFiniteStrings(1);
+                Automaton temp = base;
+                if (strings != null) {
+                    temp =
+                            base.minus(arg.concatenate(Automaton
+                                                               .makeAnyString
+                                                                       ()));
+                }
+
+                strings = base.getFiniteStrings(1);
+                if (strings != null) {
+                    arg = arg.intersection(base.complement());
+                }
+                base = temp;
+            }
+        }
+    }
+
+    /**
+     * Collects results for a branching point.
+     *
+     * @param method      The method encountered.
+     * @param actualValue the actual value.
+     * @param id          Id of the branching point.
+     * @param sourceMap   Values involved.
+     */
+    protected void solveBooleanConstraint(String method,
+                                          String actualValue,
+                                          int id,
+                                          HashMap<String, Integer> sourceMap) {
+        if (!actualValue.equals("true") && !actualValue.equals("false")) {
+            System.err.println(
+                    "warning constraint detected without true/false value");
+            return;
+        }
+        String fName = method.split("!!")[0];
+
+        if (!SatSolver.containsBoolFunction(fName)) {
+            return;
+        }
+
+//		if(!actualValue.equals("true")&& !actualValue.equals("false")){
+//			System.err.println("Warning: actualValue not true or false");
+//			return;
+//		}
+//
+//			String result;
+        boolean isConcrete = true;
+        Automaton base = (Automaton) store.get(sourceMap.get("t"));
+
+        String baseActual = actualVals.get(sourceMap.get("t"));
+
+        Set<String> baseStrings = base.getFiniteStrings(1);
+        if (!(baseStrings != null)) {
+            isConcrete = false;
+            base = base.intersection(Automaton.makeString(baseActual));
+        }
+
+
+//			//This line of code looks extremely unsafe...but there should be
+// at least one string or else you would be calling a function on a null value.
+//			String baseGuess=base.getFiniteStrings().iterator().next();
+//
+        Automaton arg;
+        String argActual;
+        if (fName.equals("regionMatches")) {
+            if (sourceMap.size() == 5) {
+                arg = (Automaton) store.get(sourceMap.get("s2"));
+                argActual = actualVals.get(sourceMap.get("s2"));
+            } else {
+                arg = (Automaton) store.get(sourceMap.get("s3"));
+                argActual = actualVals.get(sourceMap.get("s3"));
+            }
+        } else {
+            argActual = actualVals.get(sourceMap.get("s1"));
+            if (argActual != null) {
+                arg = (Automaton) store.get(sourceMap.get("s1"));
+            } else {
+                arg = null;
+            }
+        }
+        //			String argGuess=null;
+        if (arg != null) {
+            Set<String> argStrings = arg.getFiniteStrings(1);
+
+            if (!(argStrings != null)) {
+                isConcrete = false;
+                arg = arg.intersection(Automaton.makeString(argActual));
+                //				if(base.isEmpty()){
+                //					fileWrite+="empty: "+actualValue+" "+base
+                // .isEmpty()+" "+arg.isEmpty()+" "+constraints.get(sourceMap
+                // .get("t")).getShortestExample(true)+constraints.get
+                // (sourceMap.get("s1")).getShortestExample(true)+"\n";
+                //					incorrectBool++;
+                //					return;
+                //				}
+            }
+//					argGuess=arg.getShortestExample(true);
+        }
+//				result=this.getBooleanResult(fName, baseGuess, argGuess,
+// sourceMap);
+
+        if (base.getFiniteStrings(1) != null &&
+            (arg == null || arg.getFiniteStrings(1) != null)) {
+            if (isConcrete) {
+                correctConstraint.add(id);
+            } else {
+                unknownConstraint.add(id);
+            }
+        } else {
+            fileWrite += "JSA incorrect: " + method + " " + actualValue;
+            fileWrite += id +
+                         " " +
+                         "base: " +
+                         ((Automaton) store.get(sourceMap.get("t")))
+                                 .getShortestExample(
+                                         true) +
+                         " ";
+            if (arg != null) {
+                fileWrite += "arg: " + arg.getShortestExample(true);
+            }
+            fileWrite += "\n" +
+                         actualVals.get(sourceMap.get("t")) +
+                         " " +
+                         actualVals.get(sourceMap.get("s1")) +
+                         " " +
+                         isConcrete +
+                         "\n";
+            incorrectConstraint.add(id);
+            System.err.println(fileWrite);
+            System.exit(-1);
+        }
+    }
+
+    /**
+     * Used in a predicate method to add time to sources.
+     *
+     * @param sourceMap      Sources to add time to.
+     * @param additionalTime Addition time to add.
+     */
+    protected void updateSourceTime(HashMap<String, Integer> sourceMap,
+                                    long additionalTime) {
+        Iterator<Integer> it = sourceMap.values().iterator();
+        while (it.hasNext()) {
+            int sourceId = it.next();
+            long previous = 0;
+            if (time.containsKey(sourceId)) {
+                previous = time.get(sourceId);
+            }
+            previous = previous + additionalTime;
+            time.put(sourceId, previous);
+        }
+    }
+
+    static {
+        count = 1;
     }
 }

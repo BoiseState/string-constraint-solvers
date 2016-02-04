@@ -15,8 +15,19 @@ set_classpath $project_dir
 # ensure old results directory is ready
 mkdir -p $project_dir/results/$solver/old
 
+# get graph files to parse
+if [ -z "$2" ] ; then
+
+    files=`ls $project_dir/graphs/*.ser`
+
+else
+
+    files="$project_dir/graphs/$2.ser"
+
+fi
+
 # for each graph file
-for file in ./graphs/*.ser
+for file in $files
 do
 
     # get filename
@@ -34,7 +45,9 @@ do
          $file \
          $1 \
          $project_dir/results/oldTemp.txt \
-         $project_dir/properties.txt | \
+         $project_dir/properties.txt \
+         -t \
+         2>&1 | \
             tee $project_dir/results/$solver/old/$f_name.txt
 
 done

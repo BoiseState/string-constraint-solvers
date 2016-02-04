@@ -176,5 +176,7 @@ release.properties
 
 ### Project Specfic Ignores
 
+graphs/dot/
+graphs/png/
 results/
 traceFile

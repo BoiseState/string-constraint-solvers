@@ -30,7 +30,7 @@ function set_solver {
 
           solver='z3strsolver'
 
-    elif [ "$solver" == "" ] ; then
+    elif [ "$solver" == '' ] ; then
 
           solver='jsasolver'
 

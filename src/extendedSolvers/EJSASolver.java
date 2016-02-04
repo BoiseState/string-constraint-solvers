@@ -56,13 +56,13 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
 
         if (result) {
 
-            //
+            // get satisfying base automaton
             AssertContainsOther contains = new AssertContainsOther();
             baseAutomaton = contains.op(baseAutomaton, argAutomaton);
 
-            //
+            // get satisfying arg automaton
             AssertContainedInOther cioOp = new AssertContainedInOther();
-            argAutomaton = cioOp.op(baseAutomaton, argAutomaton);
+            argAutomaton = cioOp.op(argAutomaton, baseAutomaton);
         } else {
 
             // initialize temp as base
@@ -72,17 +72,20 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
             // TODO: Check if getFiniteStrings method is used properly here
             if (argAutomaton.getFiniteStrings(1) != null) {
 
-                //
+                // generate automaton for any string containing strings
+                // from arg automaton
                 Automaton x = BasicAutomata.makeAnyString();
                 x = x.concatenate(argAutomaton);
                 x = x.concatenate(BasicAutomata.makeAnyString());
+
+                // get satisfying base automaton
                 temp = baseAutomaton.minus(x);
             }
 
             // if more than one finite string represented
             if (baseAutomaton.getFiniteStrings(1) != null) {
 
-                //
+                // get satisfying arg automaton
                 Automaton complementBase = baseAutomaton.complement();
                 argAutomaton = argAutomaton.intersection(complementBase);
             }
@@ -161,11 +164,11 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
 
         if (result) {
 
-            //
+            // get satisfying base automaton
             AssertEndsWith ends = new AssertEndsWith();
             baseAutomaton = ends.op(baseAutomaton, argAutomaton);
 
-            //
+            // get satisfying arg automaton
             Postfix postfix = new Postfix();
             Automaton temp = postfix.op(baseAutomaton);
             AssertContainedInOther cioOp = new AssertContainedInOther();
@@ -179,7 +182,7 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
             // if more than one finite string represented
             if (argAutomaton.getFiniteStrings(1) != null) {
 
-                //
+                // get satisfying arg automaton
                 Automaton x = BasicAutomata.makeAnyString();
                 x = x.concatenate(argAutomaton);
                 temp = baseAutomaton.minus(x);
@@ -188,9 +191,11 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
             // if more than one finite string represented
             if (baseAutomaton.getFiniteStrings(1) != null) {
 
-                //
+                // get satisfying base automaton
                 Postfix postfix = new Postfix();
                 baseAutomaton = postfix.op(baseAutomaton);
+
+                // get satisfying arg automaton
                 Automaton argComplement = argAutomaton.complement();
                 argAutomaton = baseAutomaton.intersection(argComplement);
             }
@@ -213,25 +218,25 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
 
         if (result) {
 
-            // equality branch result
+            // get satisfying base automaton
             AssertEquals eq = new AssertEquals();
             baseAutomaton = eq.op(baseAutomaton, argAutomaton);
 
-            // not sure why setting arg as previous base
+            // get satisfying arg automaton
             argAutomaton = baseAutomaton;
         } else {
 
-            // inequality branch result
+            // get satisfying base automaton
             AssertNotEquals neq = new AssertNotEquals();
             Automaton temp = neq.op(baseAutomaton, argAutomaton);
 
-            // set arg automaton
+            // get satisfying arg automaton
             argAutomaton = neq.op(argAutomaton, baseAutomaton);
 
             // if more than one finite string represented
             if (baseAutomaton.getFiniteStrings(1) != null) {
 
-                //
+                // get satisfying arg automaton
                 Automaton baseComplement = baseAutomaton.complement();
                 argAutomaton = argAutomaton.intersection(baseComplement);
             }
@@ -258,19 +263,19 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
 
         if (result) {
 
-            // equality branch result
+            // get satisfying base automaton
             AssertEquals eq = new AssertEquals();
             baseAutomaton = eq.op(baseAutomaton, argIgnoreCase);
 
-            // inequality branch result?
+            // get satisfying arg automaton
             argAutomaton = eq.op(argAutomaton, baseIgnoreCase);
         } else {
 
-            // inequality branch result
+            // get satisfying base automaton
             AssertNotEquals neq = new AssertNotEquals();
             baseAutomaton = neq.op(baseAutomaton, argIgnoreCase);
 
-            // equality branch result?
+            // get satisfying arg automaton
             argAutomaton = neq.op(argAutomaton, baseIgnoreCase);
         }
 
@@ -360,12 +365,12 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
 
         if (result) {
 
-            // empty branch result
+            // get satisfying automaton
             AssertEmpty empty = new AssertEmpty();
             baseAutomaton = empty.op(baseAutomaton);
         } else {
 
-            // not empty branch result
+            // get satisfying automaton
             AssertNotEmpty notEmpty = new AssertNotEmpty();
             baseAutomaton = notEmpty.op(baseAutomaton);
         }
@@ -449,7 +454,10 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
         String arg2String = this.concreteStringMap.get(arg2);
 
         // check args constants
-        if (arg1String != null && arg2String != null) {
+        if (arg1String != null &&
+            arg1String.length() == 1 &&
+            arg2String != null &&
+            arg2String.length() == 1) {
 
             char oldChar;
             char newChar;
@@ -497,7 +505,15 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
             // perform character replace operation
             baseAutomaton = replace.op(baseAutomaton);
 
-        } else {
+        } else if (arg1String != null && arg2String != null) {
+
+            // get operation
+            Replace6 replace = new Replace6(arg1String, arg2String);
+
+            // perform operation
+            baseAutomaton = replace.op(baseAutomaton);
+
+        }else {
             System.err.print("EJSASolver.replace: at least one concrete" +
                              " string is null");
         }
@@ -599,11 +615,11 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
 
         if (result) {
 
-            //
+            // get satisfying base automaton
             AssertStartsWith starts = new AssertStartsWith();
             baseAutomaton = starts.op(baseAutomaton, argAutomaton);
 
-            //
+            // get satisfying arg automaton
             Prefix prefix = new Prefix();
             Automaton temp = prefix.op(baseAutomaton);
             AssertContainedInOther cioOp = new AssertContainedInOther();
@@ -616,7 +632,7 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
             // if more than one finite string represented
             if (argAutomaton.getFiniteStrings(1) != null) {
 
-                //
+                // get satisfying base automaton
                 Automaton x = BasicAutomata.makeAnyString();
                 x = argAutomaton.concatenate(x);
                 temp = baseAutomaton.minus(x);
@@ -625,7 +641,7 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
             // if more than one finite string represented
             if (baseAutomaton.getFiniteStrings(1) != null) {
 
-                //
+                // get satisfying arg automaton
                 Automaton baseComplement = baseAutomaton.complement();
                 argAutomaton = argAutomaton.intersection(baseComplement);
             }

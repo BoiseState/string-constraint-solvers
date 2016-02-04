@@ -9,24 +9,38 @@ package old;
 
 import analysis.PrintConstraint;
 import org.jgrapht.DirectedGraph;
+import org.jgrapht.ext.DOTExporter;
 import stringSymbolic.SymbolicEdge;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 public class SolveMain {
 
     /**
      * @param args See README in source file or Usage: print statement using
-	 *                "-u".
+     *             "-u".
      * @throws Exception
      */
     public static void main(String[] args)
             throws Exception {
-        String fileName = "../sootOutput/" +
-                          "graph.ser";
+
+        URL main = SolveMain.class.getResource("SolveMain.class");
+        if (!"file".equalsIgnoreCase(main.getProtocol())) {
+            String errMsg = "SolveMain class is not stored in a file.";
+            throw new IllegalStateException(errMsg);
+        }
+        File classFile = new File(main.getPath());
+        File projRootDirFile = classFile.getParentFile()
+                                        .getParentFile()
+                                        .getParentFile();
+
+        String filepath = String.format("%s/graphs/beasties01.ser",
+                                        projRootDirFile.getAbsolutePath());
         String solverName = "JSASolver";
-        String properties = "./properties.txt";
+        String properties = String.format("%s/properties.txt",
+                                          projRootDirFile.getAbsolutePath());
         String tempFile = "temp.txt";
         boolean generateText = false;
         if (args.length > 0) {
@@ -38,8 +52,8 @@ public class SolveMain {
                 if (options.contains("u")) {
                     System.out.println(
                             "Usage: <graph file> <solver name> (temp file) " +
-							"(properties file) (-<generate text output>(t) " +
-							"<solvers>(s) <usage>u)");
+                            "(properties file) (-<generate text output>(t) " +
+                            "<solvers>(s) <usage>u)");
                     System.out.println(
                             "Example: sootOutput/graph.ser JSASolver -td");
                 }
@@ -53,7 +67,7 @@ public class SolveMain {
                 list.addLast(options);
             }
             if (list.size() > 0) {
-                fileName = list.removeFirst();
+                filepath = list.removeFirst();
             }
             if (list.size() > 0) {
                 solverName = list.removeFirst();
@@ -67,13 +81,13 @@ public class SolveMain {
         }
         DirectedGraph<PrintConstraint, SymbolicEdge> graph = null;
         try {
-//            System.out.println(fileName);
-            RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
+//            System.out.println(filepath);
+            RandomAccessFile raf = new RandomAccessFile(filepath, "rw");
             FileInputStream fin = new FileInputStream(raf.getFD());
             ObjectInputStream in = new ObjectInputStream(fin);
             graph =
                     (DirectedGraph<PrintConstraint, SymbolicEdge>) in
-							.readObject();
+                            .readObject();
             in.close();
             fin.close();
             raf.close();
@@ -98,19 +112,38 @@ public class SolveMain {
         } else {
             solve = new StrangerSolver(true, properties, tempFile);
         }
+
         if (generateText) {
-            generateGraphFile(graph);
+
+            String dotDirPath = String.format("%s/graphs/dot",projRootDirFile);
+            File dotDir = new File(dotDirPath);
+            if (dotDir.exists() && dotDir.isFile()) {
+                dotDir.delete();
+                dotDir.mkdir();
+            } else if (!dotDir.exists()) {
+                dotDir.mkdir();
+            }
+
+            String graphFileName = new File(filepath).getName();
+            int extIndex = graphFileName.lastIndexOf('.');
+            graphFileName = graphFileName.substring(0, extIndex);
+
+            String graphDotFilepath = String.format("%s/%s-graph.dot",
+                                                    dotDirPath,
+                                                    graphFileName);
+            generateGraphFile(graph, graphDotFilepath);
         }
         runSolver3(graph, solve);
     }
 
     /**
      * Traverses the flow graph and solves PCs
+     *
      * @param graph The graph to traverse.
      * @param solve The solver to use.
      */
     public static void runSolver3(DirectedGraph<PrintConstraint,
-			SymbolicEdge> graph,
+            SymbolicEdge> graph,
                                   Solver solve) {
         Set<PrintConstraint> removeSet = new HashSet<PrintConstraint>();
         HashSet<PrintConstraint> processedSet = new HashSet<PrintConstraint>();
@@ -219,6 +252,7 @@ public class SolveMain {
 
     /**
      * Used to calculate the height of the graph at a source vertex.
+     *
      * @param graph The graph
      * @param first The vertex to check.
      * @return An integer representing the height at that vertex.
@@ -234,7 +268,7 @@ public class SolveMain {
             Set<SymbolicEdge> newSet = new HashSet<SymbolicEdge>();
             for (SymbolicEdge e : edgeSet) {
                 newSet.addAll(graph.outgoingEdgesOf((PrintConstraint) e
-						.getATarget()));
+                        .getATarget()));
             }
             edgeSet = newSet;
         }
@@ -243,47 +277,65 @@ public class SolveMain {
 
     /**
      * Creates a text file depicting the graph.
-     * @param graph The graph to be described.
+     *
+     * @param graph    The graph to be described.
+     * @param filepath
      */
     public static void generateGraphFile(DirectedGraph<PrintConstraint,
-			SymbolicEdge> graph) {
-        Iterator<SymbolicEdge> it = graph.edgeSet().iterator();
-        StringBuilder graphString = new StringBuilder();
-        while (it.hasNext()) {
-            SymbolicEdge edge = it.next();
-            PrintConstraint source = ((PrintConstraint) edge.getASource());
-            PrintConstraint target = ((PrintConstraint) edge.getATarget());
-            graphString.append(source.getSplitValue() +
-                               "!:" +
-                               source.getActualVal() +
-                               "!:-" +
-                               source.getId() +
-                               " -> " +
-                               target.getSplitValue() +
-                               "!:" +
-                               target.getActualVal() +
-                               "!:-" +
-                               target.getId() +
-                               " [" +
-                               edge.getType() +
-                               "];\n");
+            SymbolicEdge> graph, String filepath) {
+
+        try {
+            Writer dotWriter = new FileWriter(filepath);
+
+            DOTExporter<PrintConstraint, SymbolicEdge> dotExporter =
+                    new DOTExporter<>(new ConstraintIdProvider(),
+                                      new ConstraintNameProvider(),
+                                      new EdgeInfoProvider());
+
+            dotExporter.export(dotWriter, graph);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
 
-        File textFile = new File("graph.txt");
-        FileWriter fileWriter;
-        try {
-            fileWriter = new FileWriter(textFile);
-            fileWriter.write(graphString.toString());
-            fileWriter.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        Iterator<SymbolicEdge> it = graph.edgeSet().iterator();
+//        StringBuilder graphString = new StringBuilder();
+//        while (it.hasNext()) {
+//            SymbolicEdge edge = it.next();
+//            PrintConstraint source = ((PrintConstraint) edge.getASource());
+//            PrintConstraint target = ((PrintConstraint) edge.getATarget());
+//            graphString.append(source.getSplitValue() +
+//                               "!:" +
+//                               source.getActualVal() +
+//                               "!:-" +
+//                               source.getId() +
+//                               " -> " +
+//                               target.getSplitValue() +
+//                               "!:" +
+//                               target.getActualVal() +
+//                               "!:-" +
+//                               target.getId() +
+//                               " [" +
+//                               edge.getType() +
+//                               "];\n");
+//        }
+//
+//        File textFile = new File(filepath);
+//        FileWriter fileWriter;
+//        try {
+//            fileWriter = new FileWriter(textFile);
+//            fileWriter.write(graphString.toString());
+//            fileWriter.close();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 
     }
 
     /**
      * Processes a string for GraphVis (dot) by removing special characters.
+     *
      * @param target The string to be modified.
      * @return The modified version of the string.
      */
@@ -334,8 +386,10 @@ public class SolveMain {
     }
 
     /**
-     * Processes a string as a literal for GraphViz (dot) by replacing certain characters
+     * Processes a string as a literal for GraphViz (dot) by replacing
+     * certain characters
      * with others.
+     *
      * @param target The string to be modified.
      * @return The modified version of the string.
      */
