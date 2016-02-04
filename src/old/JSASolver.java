@@ -207,13 +207,13 @@ public class JSASolver extends SatSolver {
                  fName.equals("intern") ||
                  fName.equals("trimToSize") ||
                  (fName.equals("copyValueOf") && sourceMap.size() == 2)) {
-            if (id == 99) {
-                System.err.println(actualVal +
-                                   " " +
-                                   actualVals.get(sourceMap.get("s1")) +
-                                   " " +
-                                   actualVals.get(sourceMap.get("t")));
-            }
+//            if (id == 99) {
+//                System.err.println(actualVal +
+//                                   " " +
+//                                   actualVals.get(sourceMap.get("s1")) +
+//                                   " " +
+//                                   actualVals.get(sourceMap.get("t")));
+//            }
             if (sourceMap.containsKey("t")) {
                 auto = ((Automaton) store.get(sourceMap.get("t"))).clone();
             } else {
@@ -1284,7 +1284,8 @@ public class JSASolver extends SatSolver {
         boolean isConcrete = true;
         Automaton base = (Automaton) store.get(sourceMap.get("t"));
 
-        String baseActual = actualVals.get(sourceMap.get("t"));
+        int tId = sourceMap.get("t");
+        String baseActual = actualVals.get(tId);
 
         Set<String> baseStrings = base.getFiniteStrings(1);
         if (!(baseStrings != null)) {

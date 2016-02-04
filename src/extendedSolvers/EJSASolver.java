@@ -727,7 +727,8 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
 
         // check automaton with length of one?
         AssertHasLength hasLength = new AssertHasLength(1, 1);
-        Automaton temp = hasLength.op(automaton);
+        Automaton hasLenAuto = hasLength.op(automaton);
+        Automaton temp = automaton.intersection(hasLenAuto);
 
         if (temp.equals(automaton)) {
 
