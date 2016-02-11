@@ -16,7 +16,6 @@ public class Parser {
     public static Map<Integer, String> actualVals;
     DirectedGraph<PrintConstraint, SymbolicEdge> graph;
     ExtendedSolver solver;
-    private int count;
     private boolean debug;
     private int maxGraphId;
 
@@ -30,14 +29,13 @@ public class Parser {
         this.debug = debug;
 
         // initialize fields
-        this.count = 1;
         this.maxGraphId = 0;
 
         // output header
-        System.out.println("#\t" +
-                           "SING\t" +
-                           "TSAT\t" +
-                           "FSAT\t" +
+        System.out.println("ID    \t" +
+                           "SING \t" +
+                           "TSAT \t" +
+                           "FSAT \t" +
                            "DISJOINT");
     }
 
@@ -1027,7 +1025,7 @@ public class Parser {
         if (solver.isSingleton(base, actualVal) &&
             (sourceMap.get("s1") == null ||
              solver.isSingleton(sourceMap.get("s1"), actualVal))) {
-            stats.append("true\t");
+            stats.append("true \t");
         } else {
             stats.append("false\t");
         }
@@ -1037,7 +1035,11 @@ public class Parser {
 
         // test if true branch is SAT
         assertBooleanConstraint(true, constraint);
-        stats.append(solver.isSatisfiable(base)).append("\t");
+        if (solver.isSatisfiable(base)) {
+            stats.append("true \t");
+        } else {
+            stats.append("false\t");
+        }
 
         // revert symbolic string values
         solver.revertLastPredicate();
@@ -1047,7 +1049,11 @@ public class Parser {
 
         // test if false branch is SAT
         assertBooleanConstraint(false, constraint);
-        stats.append(solver.isSatisfiable(base)).append("\t");
+        if (solver.isSatisfiable(base)) {
+            stats.append("true \t");
+        } else {
+            stats.append("false\t");
+        }
 
         // revert symbolic string values
         solver.revertLastPredicate();
@@ -1087,8 +1093,7 @@ public class Parser {
         solver.revertLastPredicate();
 
         // output count and increment
-        System.out.format("%03d\t", count);
-        count++;
+        System.out.format("%06d\t", constraint.getId());
 
         // output stats
         System.out.println(stats);

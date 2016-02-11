@@ -34,7 +34,7 @@ do
          $project_dir/results/oldTemp.txt \
          $project_dir/properties.txt \
          2>&1 | \
-            tee $project_dir/results/old/log_$f_name.txt
+            tee $project_dir/results/$solver/old/$f_name.txt
 
     echo
     echo '--- New Extended Solver ---'
@@ -47,6 +47,6 @@ do
          $project_dir/graphs/$f_name.ser \
          $solver \
          2>&1 | \
-            tee $project_dir/results/extended/log_$f_name.txt
+            tee $project_dir/results/$solver/extended/$f_name.txt
 
 done

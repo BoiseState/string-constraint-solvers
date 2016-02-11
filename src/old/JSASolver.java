@@ -9,7 +9,6 @@ import java.util.*;
 
 @SuppressWarnings("Duplicates")
 public class JSASolver extends SatSolver {
-    private static int count;
     protected HashMap<Integer, Long> time;
     private Automaton arg;
     private int argNum;
@@ -29,10 +28,10 @@ public class JSASolver extends SatSolver {
 //        }
 
         // output header in same format as new extended solver
-        System.out.println("#\t" +
-                           "SING\t" +
-                           "TSAT\t" +
-                           "FSAT\t" +
+        System.out.println("ID    \t" +
+                           "SING \t" +
+                           "TSAT \t" +
+                           "FSAT \t" +
                            "DISJOINT");
 
         boolId = 0;
@@ -741,10 +740,10 @@ public class JSASolver extends SatSolver {
         Integer source1Id = sourceMap.get("s1");
 
         // initialize output flags
-        boolean singleton = false;
-        boolean trueSat;
-        boolean falseSat;
-        boolean disjoint = true;
+        String singleton = "false";
+        String trueSat = "false";
+        String falseSat = "false";
+        String disjoint = "no";
 
         Automaton tAutomaton = ((Automaton) store.get(targetId));
         Set<String> tStrings = null;
@@ -769,18 +768,22 @@ public class JSASolver extends SatSolver {
               s1Strings.iterator().next() != null))) {
 
             // set singleton flag
-            singleton = true;
+            singleton = "true ";
         }
 
         long startTime = System.nanoTime();
         setConditionalLists(true, string, actualValue, sourceMap);
-        trueSat = !base.isEmpty();
+        if (!base.isEmpty()) {
+            trueSat = "true ";
+        }
         long trueListTime = System.nanoTime() - startTime + sourceTime;
         Automaton trueBase = base;
         //TODO: Use arg in calculation
         startTime = System.nanoTime();
         setConditionalLists(false, string, actualValue, sourceMap);
-        falseSat = !base.isEmpty();
+        if (!base.isEmpty()) {
+            falseSat = "true ";
+        }
         long falseListTime = System.nanoTime() - startTime + sourceTime;
         constraintTime.put(id, trueListTime + falseListTime);
         Automaton falseBase = base;
@@ -963,26 +966,20 @@ public class JSASolver extends SatSolver {
 
         store.remove(newBaseId);
         store.remove(newArgId);
-        disjoint = base.isEmpty();
+        if (base.isEmpty()) {
+            disjoint = "yes";
+        }
 
         // restore base and arg
         base = savedBase;
         arg = savedArg;
 
-        // output results in same format as new extended solvers
-        String disjointLabel = "yes";
-
-        if (!disjoint) {
-            disjointLabel = "no";
-        }
-
-        System.out.format("%03d\t%b\t%b\t%b\t%s\n",
-                          count,
+        System.out.format("%06d\t%s\t%s\t%s\t%s\n",
+                          id,
                           singleton,
                           trueSat,
                           falseSat,
-                          disjointLabel);
-        count++;
+                          disjoint);
 
 //        if (verbose) {
 //            System.out.print(++boolId + "\t" + fName + "\t" + completeResult);
@@ -1387,9 +1384,5 @@ public class JSASolver extends SatSolver {
             previous = previous + additionalTime;
             time.put(sourceId, previous);
         }
-    }
-
-    static {
-        count = 1;
     }
 }

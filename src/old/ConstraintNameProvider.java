@@ -9,7 +9,8 @@ public class ConstraintNameProvider implements
     @Override
     public String getVertexName(PrintConstraint constraint) {
         String value = constraint.getValue();
-        value = value.replaceAll("[^\\\\]\\\\\"", "\\\"");
+        value = value.replace("\\\"", "\"").replace("\"", "\\\"");
+//        value = value.replaceAll("[^\\\\]\\\\\"", "\\\"");
         return String.format("%s!-!%d", value, constraint.getId());
     }
 }
