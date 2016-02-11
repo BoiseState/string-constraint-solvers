@@ -2,7 +2,10 @@ package analysis;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import extendedSolvers.ConcreteSolver;
 import extendedSolvers.ExtendedSolver;
 
 /**
@@ -15,12 +18,20 @@ public class Parser {
 	ExtendedSolver solver;
 	public static Map<Integer, String> actualVals;
 	
+	//counts the number of solutions (model counts)
+	//for each predicate id.
+	public Map<Integer, Integer> countMatch;
+	
+	public Map<Integer, Integer> countUnMatch;
+	
 	private boolean debug = true;
 	
 	public Parser(ExtendedSolver solver) {
 		this.solver = solver;
 		actualVals = new HashMap<Integer, String>();
 		System.out.println("SING\tTSAT\tFSAT\tDISJOINT");
+		countMatch = new HashMap<Integer,Integer>();
+		countUnMatch = new HashMap<Integer,Integer>();
 	}
 	
 	public void setDebug(boolean debug) {
@@ -241,40 +252,70 @@ public class Parser {
 
 		String fName=string.split("!!")[0];
 
+		System.out.println("id " + id + " " + fName);
 		if(ExtendedSolver.containsBoolFunction(fName)){
-			calculateStats(fName, actualVal, sourceMap);
+			calculateStats(fName, actualVal, sourceMap, id);
 
 		}
 	}
 	
+	
 	private void calculateStats(String fName, String actualVal,
-			HashMap<String, Integer> sourceMap){
+			HashMap<String, Integer> sourceMap, int nodeId){
 		int base = sourceMap.get("t");
 		String stats = "";
+		//first stats count whether it is singelton, i.e., only one solution
+		//or a concrete string
 		if(solver.isSingleton(base, actualVal) && (sourceMap.get("s1")==null || 
 				solver.isSingleton(sourceMap.get("s1"), actualVal)))
-			stats += "true\t";
+			stats += "true\t"; 
 		else
 			stats += "false\t";
+		//checks whether is has solutions for the true branch
 		assertBooleanConstraint(fName, true, sourceMap);
 		stats += solver.isSatisfiable(base)+"\t";
+		//revert for the next operation
 		solver.revertLastPredicate();
+		//checks whether it has solutions for the false branch
 		assertBooleanConstraint(fName, false, sourceMap);
 		stats += solver.isSatisfiable(base)+"\t";
 		solver.revertLastPredicate();
+		//revert for the next operation
 		
 		if(!actualVal.equals("true")&& !actualVal.equals("false")){
 			System.err.println("warning constraint detected without true/false value");
 			return;
 		}
+		//determine the branch taken on the concrete run
 		boolean result=true;
 		if(actualVal.equals("false"))
 			result=false;
 		assertBooleanConstraint(fName, result, sourceMap);
+		//check for the concrete solver:
+		if(solver instanceof ConcreteSolver){
+			ConcreteSolver cs = (ConcreteSolver) solver;
+			//base is still feasible but the result is unsatisfiable
+			//means that not the same branch was taken as in
+			//the concrete run
+			if(!cs.isSatisfiable(base)){
+				System.out.println("Concrete does not match actual " + result + " for " + nodeId);
+				//add base to infeasible map
+				countUnMatch.put(nodeId,1);
+			} else {
+				//do the count if the same branch has been taken as in actual run
+				countMatch.put(nodeId, 1);
+				//System.out.println("nodeId " + nodeId + " " + 1);
+			}			
+		}
+		//don't revert as it was actually happens in the concrete trace
 		assertBooleanConstraint(fName, !result, sourceMap);
+		//use the opposite branch for determining disjointness
 		stats += solver.isSatisfiable(base);
+		//revert for the disjointness check
 		solver.revertLastPredicate();
-		System.out.println(stats);
+		
+		//need to create some kind of interface for it.
+		//System.out.println(stats + "\t" + base);
 	}
 	
 	/**
@@ -331,5 +372,12 @@ public class Parser {
 
 	public void shutDown() {
 		solver.shutDown();
+		for(Entry<Integer, Integer> es : countMatch.entrySet()){
+			System.out.println(es.getKey() + "\t" + es.getValue());
+		}
+		System.out.println("----------");
+		for(Entry<Integer, Integer> es : countUnMatch.entrySet()){
+			System.out.println(es.getKey() + "\t" + es.getValue());
+		}
 	}
 }
