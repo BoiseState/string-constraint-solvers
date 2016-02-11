@@ -1006,7 +1006,7 @@ System.err.println(pastLists.get(valId));
 	 * @return Modified string.
 	 */
 	public static String replaceExcapes(String value){
-//		value=SatSolver.replaceExcapes(value);
+//		value=SatSolver.replaceEscapes(value);
 		int newMap=255;
 
 		value=value.replace((char)0, (char)newMap);
