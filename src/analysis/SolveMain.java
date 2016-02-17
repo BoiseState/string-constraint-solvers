@@ -167,7 +167,7 @@ public class SolveMain {
 
         } else if (lc.equals("concrete")) {
 
-            solver = new ConcreteSolver();
+            solver = new ConcreteSolver(2);
 
         }
 
