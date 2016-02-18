@@ -84,21 +84,41 @@ public class ConcreteSolver extends ModelCountSolver<ConcreteValue> {
 		ConcreteValue argCV = symbolicStringMap.get(arg);
 		//first check for feasibility
 		if(baseCV.isFeasible() && argCV.isFeasible()){
+			StringBuilder baseStr;
+			StringBuilder argStr;
 			//the actual call to the method
 			//Retrieve the base and the arg strings
 			if(baseCV.getValue() == null || argCV.getValue() == null){
-				System.out.println("Map " + symbolicStringMap + " b " + base + " a " + arg);
+				//System.out.println("Map " + symbolicStringMap + " b " + base + " a " + arg);
 				//actual concrete value
-				System.out.println("acutal val for base " + Parser.actualVals.containsKey(base) + " " + Parser.actualVals.get(base));
-				System.out.println("acutal val for arg " + Parser.actualVals.containsKey(arg) + " " + Parser.actualVals.get(arg) +
-						" result " + Parser.actualVals.containsKey(id) + " " + Parser.actualVals.get(id));
+				//System.out.println("acutal val for base " + Parser.actualVals.containsKey(base) + " " + Parser.actualVals.get(base));
+				//System.out.println("acutal val for arg " + Parser.actualVals.containsKey(arg) + " " + Parser.actualVals.get(arg) +
+				//		" result " + Parser.actualVals.containsKey(id) + " " + Parser.actualVals.get(id));
 				//We can create a new value based on the concrete one and have arg
 				//to have that concrete value
+				String actualVal = Parser.actualVals.get(id);
+				if(baseCV.getValue() != null && argCV.getValue() == null){
+					String baseVal = baseCV.getValue();
+					//System.out.println("actualVal " + actualVal + " baseVal " + baseVal);
+					//now get the proper offset
+					String retrivedVal = actualVal.substring(baseVal.length(), actualVal.length());
+					//System.out.println("retrived " + retrivedVal);
+					//fix arg
+					argCV.setValue(retrivedVal);
+				} else if (baseCV.getValue() == null && argCV.getValue() != null){
+					System.err.println("Base is null -- unhandeled");
+					System.exit(1);
+				} else {
+					//both of them are null
+					System.err.println("Both base and arg are null - use concrete values -- unhandeled");
+					System.exit(1);
+				}
 				
-			}
+			} 
 			
-			StringBuilder baseStr = new StringBuilder(baseCV.getValue());
-			StringBuilder argStr = new StringBuilder(argCV.getValue());
+			//do regular
+			 baseStr = new StringBuilder(baseCV.getValue());
+			 argStr = new StringBuilder(argCV.getValue());
 			String resultStr = baseStr.append(argStr).toString();
 			//put result into the map for that id
 			symbolicStringMap.put(id, new ConcreteValue(resultStr));

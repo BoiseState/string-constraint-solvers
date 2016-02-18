@@ -46,6 +46,10 @@ public class ConcreteValue {
 		return new ConcreteValue(value, feasible);
 	}
 	
+	public void setValue(String s){
+		value = s;
+	}
+	
 	
 	@Override
 	public boolean equals(Object o){
