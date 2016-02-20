@@ -187,7 +187,10 @@ public class ConcreteSolver extends ModelCountSolver<ConcreteValue> {
 		ConcreteValue argCV = symbolicStringMap.get(arg);
 		if(baseCV.isFeasible() && argCV.isFeasible()){
 			StringBuilder baseStr = new StringBuilder(baseCV.getValue());
-					String argStr = baseCV.getValue();
+					String argStr = argCV.getValue();
+					System.out.println("base " + Parser.actualVals.get(base) + " arg " + Parser.actualVals.get(arg) + " "
+							+ " offset " + offset + " idActual " + Parser.actualVals.get(id) + "\n basStr " + baseStr + 
+							" argStr " + argStr);
 					String resultStr = baseStr.insert(offset, argStr).toString();
 					//put result into the map for that id
 					symbolicStringMap.put(id, new ConcreteValue(resultStr));
