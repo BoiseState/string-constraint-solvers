@@ -193,6 +193,8 @@ public class ConcreteSolver extends ModelCountSolver<ConcreteValue> {
 							" argStr " + argStr);
 					String resultStr = baseStr.insert(offset, argStr).toString();
 					//put result into the map for that id
+					System.out.println("Result is " + resultStr);
+					System.exit(1);
 					symbolicStringMap.put(id, new ConcreteValue(resultStr));
 		} else {
 			symbolicStringMap.put(id, new ConcreteValue());

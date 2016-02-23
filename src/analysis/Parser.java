@@ -665,10 +665,12 @@ public class Parser {
         int base = sourceMap.get("t");
 
         // get offset id
-        int offset = sourceMap.get("s1");
+       // int offset = sourceMap.get("s1"); eas: it is a bug
+        int offset = Integer.parseInt(actualVals.get(sourceMap.get("s1")));
 
         // get arg id
         int arg = sourceMap.get("s2");
+
 
         //TODO implement other insert
 
