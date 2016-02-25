@@ -15,6 +15,13 @@ import java.util.Set;
 @SuppressWarnings("Duplicates")
 public class EJSASolver extends ExtendedSolver<Automaton> {
 
+    public EJSASolver() {
+
+        // setup automaton options
+        // set minimization algorithm as huffman
+        Automaton.setMinimization(0);
+    }
+
     @Override
     public void append(int id, int base, int arg, int start, int end) {
 
