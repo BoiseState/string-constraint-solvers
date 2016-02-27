@@ -1,5 +1,6 @@
 package analysis;
 
+import extendedSolvers.ConcreteSolver;
 import extendedSolvers.ExtendedSolver;
 import org.jgrapht.DirectedGraph;
 import stringSymbolic.SymbolicEdge;
@@ -293,7 +294,6 @@ public class Parser {
 
         // ensure the operation can be completed
         if (!solver.isValidState(base, arg)) {
-
             // return after setting new symbolic string
             solver.newSymbolicString(id);
             return;
@@ -366,14 +366,54 @@ public class Parser {
                    fName.equals("valueOf") ||
                    fName.equals("intern") ||
                    fName.equals("trimToSize") ||
-                   (fName.equals("copyValueOf") && sourceMap.size() == 2)) {
-
+                   (fName.equals("copyValueOf") && sourceMap.size() == 2) ||
+                   fName.equals("length") ||
+                   fName.equals("charAt")){
             processPropagation(constraint);
 
         } else {
 
             // create symbolic string
             solver.newSymbolicString(id);
+        }
+        
+//        if(id == 106325 || id == 106323 || id == 106321 || id == 106318 || id == 106319 || id == 106316 
+//        		|| id == 106314){
+//    		System.out.println(id + " " + base + " " + actualVals.get(base) + " " + string);
+//    	}
+        
+        if(solver instanceof ConcreteSolver && ConcreteSolver.DEBUG){
+        	//check the actual and concrete values
+        	ConcreteSolver cs = (ConcreteSolver) solver;
+        	String calString = cs.getValue(id).getValue();
+        	if(fName.equals("length")){
+        		calString = String.valueOf(calString.length());
+        	}
+        	if(fName.equals("charAt")){
+        		int index = Integer.parseInt(actualVals.get(arg));
+        		if(calString != null && index < calString.length()){
+        			calString = String.valueOf(calString.charAt(index));
+        		}
+        	}
+        	
+        	String actString = actualVals.get(id);
+        	if(!actString.equals(calString)){
+        		System.err.println(id  + " Concrete and Actual do not match \t" + calString + "\t" + actString 
+        				+ "\t" + constraint + " base " + base + " " +
+        				actualVals.get(base) + " args " + arg + " " + actualVals.get(arg));
+        		//System.exit(2);
+        		//fix it for toString
+        		if(fName.endsWith("toString")){
+        			System.err.println("Fixing toString()");
+        			solver.newConcreteString(id, actString);
+        			calString = cs.getValue(id).getValue();
+        			if(!actString.equals(calString)){
+        				System.err.println("Did not fix toString!!!");
+        			}
+        		}
+        		
+        	}
+        	
         }
     }
 
@@ -608,6 +648,8 @@ public class Parser {
         Map<String, Integer> sourceMap = constraint.getSourceMap();
         int id = constraint.getId();
         int base = sourceMap.get("t");
+        
+        //System.out.println("processInit " + id + " val " + actualVals.get(id));
 
         // if target and source ids exist and actual target value
         // is the empty string
@@ -895,6 +937,7 @@ public class Parser {
         int s1Id = sourceMap.get("s1");
         String s1String = actualVals.get(s1Id);
         int length = Integer.parseInt(s1String);
+        //System.out.println("Lenght " + length + " " + base + " " + actualVals.get(base).isEmpty());
 
         // perform set length operation
         solver.setLength(id, base, length);
@@ -999,6 +1042,8 @@ public class Parser {
                 }
             }
         }
+        
+      
 
         // if solver contains boolean function name
         String fName = string.split("!!")[0];
