@@ -1,0 +1,11 @@
+[
+  {
+    "id" : 0,
+    "actualValue": "string",
+    "num": 0,
+    "sourceConstraints": [ 0, 1 ],
+    "timeStamp": 0,
+    "type": 0,
+    "value": "string"
+  }
+]
