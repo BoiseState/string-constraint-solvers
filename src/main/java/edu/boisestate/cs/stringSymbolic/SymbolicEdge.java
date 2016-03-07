@@ -4,7 +4,10 @@
  */
 package edu.boisestate.cs.stringSymbolic;
 
+import edu.boisestate.cs.analysis.PrintConstraint;
 import org.jgrapht.graph.DefaultEdge;
+
+import java.lang.reflect.Field;
 
 public class SymbolicEdge extends DefaultEdge{
 
@@ -13,8 +16,8 @@ public class SymbolicEdge extends DefaultEdge{
 	 * An additional type to be used as a label.
 	 */
 	private String type;
-	
-	public void setType(String type)
+
+    public void setType(String type)
 	{
 		this.type=type;
 	}

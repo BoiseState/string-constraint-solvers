@@ -967,9 +967,6 @@ public class Parser {
         int id = constraint.getId();
         Map<String, Integer> sourceMap = constraint.getSourceMap();
 
-        // output constraint id
-        System.out.format("%06d\t", constraint.getId());
-
         // if debug mode set
         if (debug) {
 
@@ -1026,6 +1023,9 @@ public class Parser {
         if (sourceMap.get("s1") != null) {
             arg = sourceMap.get("s1");
         }
+
+        // output constraint id
+        stats.append(String.format("%06d\t", constraint.getId()));
 
         // determine if symbolic strings are singletons
         if (solver.isSingleton(base, actualVal) &&
