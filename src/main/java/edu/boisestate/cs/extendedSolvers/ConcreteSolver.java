@@ -1,5 +1,8 @@
 package edu.boisestate.cs.extendedSolvers;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import edu.boisestate.cs.analysis.Parser;
 
@@ -15,14 +18,19 @@ public class ConcreteSolver extends ModelCountSolver<ConcreteValue> {
 	//this set never decreases in size
 	//this set is only updated on the predicates methods
 	//each method first need to check weather 
-	//id is in the ifeasible set
-	//if it is then don't do any calcuations
+	//id is in the infeasible set
+	//if it is then don't do any calculations
 	//and do not update the count for that id, i.e., make it 0
 
 	//	public boolean isFeasible(int id){
 	//		//return !infeasible.contains(id);
 	//		return symbolicStringMap.get(id).isFeasible();
 	//	}
+	
+	//in debug mode it will check weather the resulting
+	//value is the same as the actual value collected
+	//only applicable in re-run mode
+	public static boolean DEBUG = true;
 
 	public ConcreteSolver(int setBound) {
 		super(setBound);
@@ -37,14 +45,21 @@ public class ConcreteSolver extends ModelCountSolver<ConcreteValue> {
 		//String s = RandomString.randomString();
 		//get actual value for now
 		String s = Parser.actualVals.get(id);
-		System.out.println(id + " - " + s);
+//		System.out.println("New " + id + " - " + s);
+//		if(id == 106319 || id == 106316 || id == 106314){
+//			System.out.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+//			System.exit(2);
+		//	System.out.println("New " + id + " - " + s);
+		//}
 		symbolicStringMap.put(id, new ConcreteValue(s));
 
 	}
 
 	@Override
 	public void newConcreteString(int id, String string) {
-		//System.out.println("Concr " + id + " " + string);
+//		if(id == 4182){ 
+//			System.out.println("Concr " + id + " " + string);
+//			}
 		symbolicStringMap.put(id, new ConcreteValue(string));
 
 	}
@@ -54,6 +69,20 @@ public class ConcreteSolver extends ModelCountSolver<ConcreteValue> {
 		//take the value of base and put it into id
 		ConcreteValue baseStr = symbolicStringMap.get(base);
 		symbolicStringMap.put(id, baseStr.copy());
+		//System.out.println("propagate " + base + " to " + id + " as " + baseStr.getValue() + " to " + 
+		//symbolicStringMap.get(id).getValue());
+	}
+	
+	public void charAt(int id, int base, int index){
+		ConcreteValue baseCV = symbolicStringMap.get(base);
+		if(baseCV.isFeasible()){
+			String resultStr = String.valueOf(baseCV.getValue().charAt(index));
+			System.out.println(id + " " + base + " " + baseCV.getValue() + " " + index + " " + resultStr);
+			symbolicStringMap.put(id, new ConcreteValue(resultStr));
+		} else {
+			symbolicStringMap.put(id, new ConcreteValue());
+		}
+		
 	}
 
 	@Override
@@ -118,6 +147,9 @@ public class ConcreteSolver extends ModelCountSolver<ConcreteValue> {
 			//do regular
 			 baseStr = new StringBuilder(baseCV.getValue());
 			 argStr = new StringBuilder(argCV.getValue());
+//			 if(id==106331){
+//				 System.out.println(base + " " + baseStr + " " + arg + " " + argStr);
+//			 }
 			String resultStr = baseStr.append(argStr).toString();
 			//put result into the map for that id
 			symbolicStringMap.put(id, new ConcreteValue(resultStr));
@@ -187,13 +219,13 @@ public class ConcreteSolver extends ModelCountSolver<ConcreteValue> {
 		if(baseCV.isFeasible() && argCV.isFeasible()){
 			StringBuilder baseStr = new StringBuilder(baseCV.getValue());
 					String argStr = argCV.getValue();
-					System.out.println("base " + Parser.actualVals.get(base) + " arg " + Parser.actualVals.get(arg) + " "
-									   + " offset " + offset + " idActual " + Parser.actualVals.get(id) + "\n basStr " + baseStr +
-									   " argStr " + argStr);
+//					System.out.println("base " + Parser.actualVals.get(base) + " arg " + Parser.actualVals.get(arg) + " "
+//							+ " offset " + offset + " idActual " + Parser.actualVals.get(id) + "\n basStr " + baseStr + 
+//							" argStr " + argStr);
 					String resultStr = baseStr.insert(offset, argStr).toString();
 					//put result into the map for that id
-					System.out.println("Result is " + resultStr);
-					System.exit(1);
+//					System.out.println("Result is " + resultStr);
+//					System.exit(1);
 					symbolicStringMap.put(id, new ConcreteValue(resultStr));
 		} else {
 			symbolicStringMap.put(id, new ConcreteValue());
@@ -357,7 +389,7 @@ public class ConcreteSolver extends ModelCountSolver<ConcreteValue> {
 		//			infeasible.add(id);
 		//		}
 		ConcreteValue baseCV = symbolicStringMap.get(base);
-		System.out.println(baseCV);
+		//System.out.println(baseCV);
 		if(baseCV.isFeasible()){
 			String retStr = baseCV.getValue().toLowerCase();
 			symbolicStringMap.put(id, new ConcreteValue(retStr));
