@@ -1,4 +1,4 @@
-package edu.boisestate.cs.extendedSolvers;
+package edu.boisestate.cs.solvers;
 
 //Special class to hold the values
 //of concrete strings together

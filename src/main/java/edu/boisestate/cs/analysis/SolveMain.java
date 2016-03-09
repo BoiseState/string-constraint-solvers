@@ -8,7 +8,7 @@
 package edu.boisestate.cs.analysis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.boisestate.cs.extendedSolvers.*;
+import edu.boisestate.cs.solvers.*;
 import edu.boisestate.cs.stringSymbolic.SymbolicEdge;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -26,6 +26,7 @@ public class SolveMain {
         // set default options
         String fileName = "../graphs/beasties01.ser";
         String solverName = "ejsa";
+        String reportType = "SAT";
         boolean debug = false;
 
         if (args.length > 0) {
@@ -42,8 +43,9 @@ public class SolveMain {
                 // print help/usage information
                 if (options.contains("u") || options.contains("h")) {
                     System.out.println(
-                            "Usage: <graph file> <solver name> (-<solvers>(s)" +
-                            " <usage>u <debugMode>d)");
+                            "Usage: <graph file> <solver name> <report type> " +
+                            "(-<solvers>(s) <usage>u <debugMode>d <report " +
+                            "types>(r))");
                     System.out.println(
                             "Example: sootOutput/graph.ser StrangerSolver -sd");
                 }
@@ -52,11 +54,17 @@ public class SolveMain {
                 if (options.contains("s")) {
                     System.out.println("Solvers:" +
                                        " EJSA" +
-                                       " EJSAModelCount" +
                                        " EStranger" +
                                        " EZ3Str" +
                                        " Concrete" +
                                        " Blank");
+                }
+
+                // print report information
+                if (options.contains("r")) {
+                    System.out.println("Report Types:" +
+                                       " SAT" +
+                                       " ModelCount");
                 }
 
                 // set debug mode
@@ -78,6 +86,11 @@ public class SolveMain {
             if (list.size() > 0) {
                 solverName = list.removeFirst();
             }
+
+            // get report type
+            if (list.size() > 0) {
+                reportType = list.removeFirst();
+            }
         }
 
         // get constraint graph from filename
@@ -92,11 +105,20 @@ public class SolveMain {
             return;
         }
 
-        // create parser from solver and graph
-        Parser parser = new Parser(solver, graph, debug);
+        // get parser
+        Parser parser = getParser(solver, debug);
+
+        // get reporter
+        Reporter reporter =
+                getReporter(reportType, graph, parser, solver, debug);
+
+        // if reporter not loaded, abort program
+        if (reporter == null) {
+            return;
+        }
 
         // run solver with specified graph and solver
-        parser.runSolver();
+        reporter.run();
     }
 
     static DirectedGraph<PrintConstraint, SymbolicEdge> getGraph
@@ -118,7 +140,8 @@ public class SolveMain {
 
         // initialize lists for processing
         Map<Integer, PrintConstraint> constraintMap = new HashMap<>();
-        Map<PrintConstraint, List<Integer>> sourceConstraintMap = new HashMap<>();
+        Map<PrintConstraint, List<Integer>> sourceConstraintMap =
+                new HashMap<>();
 
         try {
 
@@ -158,7 +181,7 @@ public class SolveMain {
             for (PrintConstraint constraint : sourceConstraintMap.keySet()) {
 
                 // for each constraint id
-                for(int id : sourceConstraintMap.get(constraint)) {
+                for (int id : sourceConstraintMap.get(constraint)) {
 
                     // get source constraint
                     PrintConstraint sourceConstraint = constraintMap.get(id);
@@ -172,10 +195,10 @@ public class SolveMain {
             }
 
             // get edge data from json file
-            List<Map<String,Object>> edgeData =
+            List<Map<String, Object>> edgeData =
                     mapper.readValue(edgesFile, List.class);
 
-            for (Map<String,Object> obj : edgeData) {
+            for (Map<String, Object> obj : edgeData) {
 
                 // get symbolic edge data
                 int sourceId = (Integer) obj.get("source");
@@ -188,28 +211,10 @@ public class SolveMain {
                 SymbolicEdge edge = graph.addEdge(source, target);
                 edge.setType(type);
             }
-
-//            // get object stream from filename
-//            RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
-//            FileInputStream fin = new FileInputStream(raf.getFD());
-//            ObjectInputStream in = new ObjectInputStream(fin);
-//
-//            // get graph object from stream
-//            graph = (DirectedGraph<PrintConstraint, SymbolicEdge>)
-//                    in.readObject();
-//
-//            // close stream objects
-//            in.close();
-//            fin.close();
-//            raf.close();
 //
         } catch (IOException i) {
             i.printStackTrace();
         }
-//        catch (ClassNotFoundException c) {
-//            System.out.println("Graph not found");
-//            c.printStackTrace();
-//        }
 
         return graph;
     }
@@ -249,14 +254,7 @@ public class SolveMain {
                    lc.equals("jsa") ||
                    lc.equals("jsasolver")) {
 
-            solver = new EJSASolver();
-
-        } else if (lc.equals("ejsamodelcount") ||
-                   lc.equals("ejsamodelcountsolver") ||
-                   lc.equals("jsamodelcount") ||
-                   lc.equals("jsamodelcountsolver")) {
-
-            solver = new EJSASolver();
+            solver = new EJSASolver(BOUND);
 
         } else if (lc.equals("concrete")) {
 
@@ -266,6 +264,56 @@ public class SolveMain {
 
         // return created parser
         return solver;
+    }
+
+    private static Parser getParser(ExtendedSolver solver, boolean debug) {
+        return new Parser(solver, debug);
+    }
+
+    private static Reporter getReporter(String reportType,
+                                        DirectedGraph<PrintConstraint,
+                                                SymbolicEdge> graph,
+                                        Parser parser,
+                                        ExtendedSolver solver,
+                                        boolean debug) {
+
+        // convert report type to lowercase
+        String lc = reportType.toLowerCase();
+
+        // initialize reporter as null
+        Reporter reporter = null;
+
+        if (lc.equals("modelcount") ||
+            lc.equals("model count") ||
+            lc.equals("mc") ||
+            lc.equals("m c")) {
+
+            // ensure solver is model count solver
+            if (solver instanceof ModelCountSolver) {
+
+                // cast solver
+                ModelCountSolver mcSolver = (ModelCountSolver) solver;
+
+                // create reporter from parameters
+                reporter = new ModelCountReporter(graph,
+                                                  parser,
+                                                  mcSolver,
+                                                  debug);
+            }
+
+        } else if (lc.equals("sat") ||
+                   lc.equals("unsat") ||
+                   lc.equals("satisfiable") ||
+                   lc.equals("unsatisfiable") ||
+                   lc.equals("satisfiability") ||
+                   lc.equals("unsatisfiability")) {
+
+            // create reporter from parameters
+            reporter = new SATReporter(graph, parser, solver, debug);
+        }
+
+        // return reporter
+        return reporter;
     }
 
 }

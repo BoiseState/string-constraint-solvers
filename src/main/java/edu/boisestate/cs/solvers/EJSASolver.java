@@ -1,25 +1,93 @@
-package edu.boisestate.cs.extendedSolvers;
+package edu.boisestate.cs.solvers;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import dk.brics.automaton.State;
 import dk.brics.automaton.Transition;
 import dk.brics.string.stringoperations.*;
+import edu.boisestate.cs.modelCount.StringModelCounter;
 import edu.boisestate.cs.stringOperations.PrecisePrefix;
 import edu.boisestate.cs.stringOperations.PreciseSubstring;
 import edu.boisestate.cs.stringOperations.PreciseSuffix;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Set;
 
 @SuppressWarnings("Duplicates")
-public class EJSASolver extends ExtendedSolver<Automaton> {
+public class EJSASolver extends ModelCountSolver<Automaton> {
 
     public EJSASolver() {
+        super(0);
 
         // setup automaton options
         // set minimization algorithm as huffman
         Automaton.setMinimization(0);
+    }
+
+    public EJSASolver(int bound) {
+        super(bound);
+
+        // setup automaton options
+        // set minimization algorithm as huffman
+        Automaton.setMinimization(0);
+    }
+
+    static private Automaton ignoreCase(Automaton automaton) {
+
+        // clone automaton
+        Automaton clone = automaton.clone();
+
+        // for all states
+        for (State state : clone.getStates()) {
+
+            // all transitions from state
+            Set<Transition> transitions = state.getTransitions();
+
+            // for all transitions in current set of transitions
+            for (Transition t : new ArrayList<>(transitions)) {
+
+                // get transition values
+                char min = t.getMin();
+                char max = t.getMax();
+                State dest = t.getDest();
+
+                // if transition represents subset of characters
+                if (min != Character.MIN_VALUE || max != Character.MAX_VALUE) {
+
+                    // for each character represented in transition
+                    for (int i = min; i <= max; i++) {
+
+                        // get i as char
+                        char c = (char) i;
+
+                        // if char is uppercase
+                        if (Character.isUpperCase(c)) {
+
+                            // add corresponding lowercase transition
+                            char lc = Character.toLowerCase(c);
+                            Transition lcTrans = new Transition(lc, dest);
+                            transitions.add(lcTrans);
+                        }
+
+                        // if char is lowercase
+                        if (Character.isLowerCase(c)) {
+
+                            // add corresponding uppercase transition
+                            char uc = Character.toUpperCase(c);
+                            Transition ucTrans = new Transition(uc, dest);
+                            transitions.add(ucTrans);
+                        }
+                    }
+                }
+            }
+        }
+
+        clone.setDeterministic(false);
+        clone.reduce();
+        clone.minimize();
+
+        return clone;
     }
 
     @Override
@@ -520,7 +588,7 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
             // perform operation
             baseAutomaton = replace.op(baseAutomaton);
 
-        }else {
+        } else {
             System.err.print("EJSASolver.replace: at least one concrete" +
                              " string is null");
         }
@@ -753,60 +821,31 @@ public class EJSASolver extends ExtendedSolver<Automaton> {
         this.symbolicStringMap.put(id, automaton);
     }
 
-    static private Automaton ignoreCase(Automaton automaton) {
+    @Override
+    public int getModelCount(int id) {
 
-        // clone automaton
-        Automaton clone = automaton.clone();
+        // get automaton
+        Automaton automaton = this.symbolicStringMap.get(id);
 
-        // for all states
-        for (State state : clone.getStates()) {
+        // get model count
+        BigInteger count = StringModelCounter.ModelCount(automaton, this.bound);
 
-            // all transitions from state
-            Set<Transition> transitions = state.getTransitions();
+        // return count as an integer
+        return count.intValue();
+    }
 
-            // for all transitions in current set of transitions
-            for (Transition t : new ArrayList<>(transitions)) {
+    @Override
+    public Set<String> getAllVales(int id) {
 
-                // get transition values
-                char min = t.getMin();
-                char max = t.getMax();
-                State dest = t.getDest();
+        // get automaton
+        Automaton automaton = this.symbolicStringMap.get(id);
 
-                // if transition represents subset of characters
-                if (min != Character.MIN_VALUE || max != Character.MAX_VALUE) {
+        // bound automaton
+        Automaton boundingAutomaton = Automaton.makeAnyChar();
+        boundingAutomaton = boundingAutomaton.repeat(0, this.bound);
+        Automaton boundedAutomaton = automaton.intersection(boundingAutomaton);
 
-                    // for each character represented in transition
-                    for (int i = min; i <= max; i++) {
-
-                        // get i as char
-                        char c = (char) i;
-
-                        // if char is uppercase
-                        if (Character.isUpperCase(c)) {
-
-                            // add corresponding lowercase transition
-                            char lc = Character.toLowerCase(c);
-                            Transition lcTrans = new Transition(lc, dest);
-                            transitions.add(lcTrans);
-                        }
-
-                        // if char is lowercase
-                        if (Character.isLowerCase(c)) {
-
-                            // add corresponding uppercase transition
-                            char uc = Character.toUpperCase(c);
-                            Transition ucTrans = new Transition(uc, dest);
-                            transitions.add(ucTrans);
-                        }
-                    }
-                }
-            }
-        }
-
-        clone.setDeterministic(false);
-        clone.reduce();
-        clone.minimize();
-
-        return clone;
+        // return all finite strings
+        return boundedAutomaton.getFiniteStrings();
     }
 }

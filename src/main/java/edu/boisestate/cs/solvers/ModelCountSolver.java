@@ -1,4 +1,4 @@
-package edu.boisestate.cs.extendedSolvers;
+package edu.boisestate.cs.solvers;
 
 import java.util.Set;
 

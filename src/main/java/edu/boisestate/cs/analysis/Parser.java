@@ -1,9 +1,10 @@
 package edu.boisestate.cs.analysis;
 
-import edu.boisestate.cs.extendedSolvers.ConcreteSolver;
-import edu.boisestate.cs.extendedSolvers.ExtendedSolver;
+import edu.boisestate.cs.solvers.ConcreteSolver;
+import edu.boisestate.cs.solvers.ExtendedSolver;
 import edu.boisestate.cs.stringSymbolic.SymbolicEdge;
 import org.jgrapht.DirectedGraph;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 
 import java.util.*;
 
@@ -15,239 +16,68 @@ import java.util.*;
 public class Parser {
 
     public static Map<Integer, String> actualVals;
-    DirectedGraph<PrintConstraint, SymbolicEdge> graph;
     ExtendedSolver solver;
     private boolean debug;
     private int maxGraphId;
 
     public Parser(ExtendedSolver solver,
-                  DirectedGraph<PrintConstraint, SymbolicEdge> graph,
                   boolean debug) {
 
         // set field from parameter
         this.solver = solver;
-        this.graph = graph;
         this.debug = debug;
 
         // initialize fields
         this.maxGraphId = 0;
-
-        // output header
-        System.out.println("ID    \t" +
-                           "SING \t" +
-                           "TSAT \t" +
-                           "FSAT \t" +
-                           "DISJOINT");
     }
 
-    /**
-     * Traverses the flow graph and solves PCs
-     */
-    public void runSolver() {
-
-        // initialize sets
-        Set<PrintConstraint> removeSet = new HashSet<>();
-        Set<PrintConstraint> processedSet = new HashSet<>();
-        Set<PrintConstraint> ends = new HashSet<>();
-        Set<PrintConstraint> roots = new HashSet<>();
-
-        // populate root and end sets
-        for (PrintConstraint constraint : graph.vertexSet()) {
-
-            // if no in paths, node is a root node
-            if (graph.inDegreeOf(constraint) == 0) {
-                roots.add(constraint);
-            }
-
-            // if no out paths, node is an end node
-            if (graph.outDegreeOf(constraint) == 0) {
-                ends.add(constraint);
-            }
-        }
-
-        // initialize list of constraints
-        List<PrintConstraint> toBeAdded = new LinkedList<>();
-
-        // initialize sorted list of vertices
-        List<PrintConstraint> vertices = new ArrayList<>(graph.vertexSet());
-        Collections.sort(vertices);
-
-        //Topological progression...
-        while (vertices.size() > 0) {
-
-            // remove constraints from collections
-            graph.removeAllVertices(removeSet);
-            vertices.removeAll(removeSet);
-            vertices.removeAll(toBeAdded);
-            processedSet.removeAll(removeSet);
-
-            // clear collections
-            removeSet.clear();
-            toBeAdded.clear();
-
-            // for each vertex constraint
-            for (PrintConstraint vertex : vertices) {
-
-                // initialize source map
-                Map<String, Integer> sourceMap = new HashMap<>();
-
-                // if vertex not in processed set
-                if (!processedSet.contains(vertex)) {
-
-                    // set flag
-                    boolean readyToProcess = true;
-
-                    // for each incoming edge of the current vertex
-                    for (SymbolicEdge edge : graph.incomingEdgesOf(vertex)) {
-
-                        // get source of incoming edge
-                        PrintConstraint source =
-                                (PrintConstraint) edge.getASource();
-
-                        // if source vertex not in processed set
-                        if (!processedSet.contains(source)) {
-
-                            // unset flag
-                            readyToProcess = false;
-
-                            // break out of incoming edges loop
-                            break;
-
-                        } else {
-
-                            // update source map with edge information
-                            String edgeType = edge.getType();
-                            int sourceId = source.getId();
-                            sourceMap.put(edgeType, sourceId);
-                        }
-                    }
-
-                    // if flag is still set
-                    if (readyToProcess) {
-
-                        // set the source map for the vertex
-                        vertex.setSourceMap(sourceMap);
-
-                        // current vertex queued for addition
-                        toBeAdded.add(vertex);
-
-                        // break out of the vertices loop
-                        break;
-                    }
-
-                } else {
-
-                    // set flag
-                    boolean deleteNode = true;
-
-                    // for each outgoing edge from the current vertex
-                    for (SymbolicEdge edge : graph.outgoingEdgesOf(vertex)) {
-
-                        // get the target vertex of the outgoing edge
-                        PrintConstraint target =
-                                (PrintConstraint) edge.getATarget();
-
-                        // if target vertex not in processed set
-                        if (!processedSet.contains(target)) {
-
-                            // unset flag
-                            deleteNode = false;
-
-                            // break out of outgoing edges loop
-                            break;
-                        }
-                    }
-
-                    // if flag set
-                    if (deleteNode) {
-
-                        // current vertex queued for removal
-                        removeSet.add(vertex);
-
-                        // remove vertex from parser
-                        int vertexId = vertex.getId();
-                        solver.remove(vertexId);
-                    }
-                }
-            }
-
-            // sort addition list before processing
-            // Collections.sort(toBeAdded);
-
-            // if addition list contains constraints
-            if (toBeAdded.size() > 0) {
-
-                // get first constraint in list
-                PrintConstraint first = toBeAdded.get(0);
-
-                // if constraint is an end node
-                if (ends.contains(first)) {
-
-                    // add end
-                    this.addEnd(first);
-
-                } else if (roots.contains(first)) {
-
-                    // add root
-                    this.addRoot(first);
-
-                } else {
-
-                    // add operation
-                    this.addOperation(first);
-                }
-
-                // add constraint to processed list
-                processedSet.add(first);
-            }
-        }
-
-        // shut down solver
-        solver.shutDown();
-    }
-
-    /**
-     * Parse a graph root node.
-     *
-     * @param constraint The root node constraint.
-     */
-    public void addRoot(PrintConstraint constraint) {
+    public boolean addEnd(PrintConstraint constraint) {
 
         // get constraint info as variables
-        String value = constraint.getSplitValue();
-        String actualValue = constraint.getActualVal();
+        String string = constraint.getSplitValue();
+        String actualVal = constraint.getActualVal();
         int id = constraint.getId();
+        Map<String, Integer> sourceMap = constraint.getSourceMap();
 
         // if debug mode set
         if (debug) {
 
-            // output root information
-            System.out.println("Root: " + value);
+            // output end information
+            System.out.println("End: " + string + " | " + actualVal);
         }
 
-        // if actual value not null
-        if (actualValue != null) {
+        // ensure valid actual value
+        actualVal = solver.replaceEscapes(actualVal);
+        actualVals.put(id, actualVal);
 
-            // ensure string is in a valid format
-            actualValue = solver.replaceEscapes(actualValue);
+        if (debug) {
+            if (sourceMap.containsKey("t")) {
+                int base = sourceMap.get("t");
+                if (!solver.isSound(base, actualVal)) {
+                    System.err.println("Base not sound:");
+                    System.err.println("base: " + solver.getValue(base));
+                    System.err.println("actual value: " + actualVal);
+//                    throw new IllegalArgumentException("Invalid base in " +
+//                                                       "solver");
+                }
+            }
+
+            if (sourceMap.containsKey("s1")) {
+                int arg = sourceMap.get("s1");
+                if (!solver.isSound(arg, actualVal)) {
+                    System.err.println("Arg not sound:");
+                    System.err.println(solver.getValue(arg));
+//                    throw new IllegalArgumentException("Invalid arg in
+// solver");
+                }
+            }
         }
 
-        // add actual value to map
-        actualVals.put(id, actualValue);
-        value = solver.replaceEscapes(value);
 
-        //
-        if (value.startsWith("r") || value.startsWith("$r")) {
+        // if solver contains boolean function name
+        String fName = string.split("!!")[0];
 
-            // create new symbolic string for id
-            solver.newSymbolicString(id);
-
-        } else {
-
-            // create new concrete string for id from actual value
-            solver.newConcreteString(id, actualValue);
-
-        }
+        return ExtendedSolver.containsBoolFunction(fName);
     }
 
     /**
@@ -368,7 +198,7 @@ public class Parser {
                    fName.equals("trimToSize") ||
                    (fName.equals("copyValueOf") && sourceMap.size() == 2) ||
                    fName.equals("length") ||
-                   fName.equals("charAt")){
+                   fName.equals("charAt")) {
             processPropagation(constraint);
 
         } else {
@@ -376,45 +206,194 @@ public class Parser {
             // create symbolic string
             solver.newSymbolicString(id);
         }
-        
-//        if(id == 106325 || id == 106323 || id == 106321 || id == 106318 || id == 106319 || id == 106316 
+
+//        if(id == 106325 || id == 106323 || id == 106321 || id == 106318 ||
+// id == 106319 || id == 106316
 //        		|| id == 106314){
-//    		System.out.println(id + " " + base + " " + actualVals.get(base) + " " + string);
+//    		System.out.println(id + " " + base + " " + actualVals.get(base) +
+// " " + string);
 //    	}
-        
-        if(solver instanceof ConcreteSolver && ConcreteSolver.DEBUG){
-        	//check the actual and concrete values
-        	ConcreteSolver cs = (ConcreteSolver) solver;
-        	String calString = cs.getValue(id).getValue();
-        	if(fName.equals("length")){
-        		calString = String.valueOf(calString.length());
-        	}
-        	if(fName.equals("charAt")){
-        		int index = Integer.parseInt(actualVals.get(arg));
-        		if(calString != null && index < calString.length()){
-        			calString = String.valueOf(calString.charAt(index));
-        		}
-        	}
-        	
-        	String actString = actualVals.get(id);
-        	if(!actString.equals(calString)){
-        		System.err.println(id  + " Concrete and Actual do not match \t" + calString + "\t" + actString 
-        				+ "\t" + constraint + " base " + base + " " +
-        				actualVals.get(base) + " args " + arg + " " + actualVals.get(arg));
-        		//System.exit(2);
-        		//fix it for toString
-        		if(fName.endsWith("toString")){
-        			System.err.println("Fixing toString()");
-        			solver.newConcreteString(id, actString);
-        			calString = cs.getValue(id).getValue();
-        			if(!actString.equals(calString)){
-        				System.err.println("Did not fix toString!!!");
-        			}
-        		}
-        		
-        	}
-        	
+
+        if (solver instanceof ConcreteSolver && ConcreteSolver.DEBUG) {
+            //check the actual and concrete values
+            ConcreteSolver cs = (ConcreteSolver) solver;
+            String calString = cs.getValue(id).getValue();
+            if (fName.equals("length")) {
+                calString = String.valueOf(calString.length());
+            }
+            if (fName.equals("charAt")) {
+                int index = Integer.parseInt(actualVals.get(arg));
+                if (calString != null && index < calString.length()) {
+                    calString = String.valueOf(calString.charAt(index));
+                }
+            }
+
+            String actString = actualVals.get(id);
+            if (!actString.equals(calString)) {
+                System.err.println(id +
+                                   " Concrete and Actual do not match \t" +
+                                   calString +
+                                   "\t" +
+                                   actString
+                                   +
+                                   "\t" +
+                                   constraint +
+                                   " base " +
+                                   base +
+                                   " " +
+                                   actualVals.get(base) +
+                                   " args " +
+                                   arg +
+                                   " " +
+                                   actualVals.get(arg));
+                //System.exit(2);
+                //fix it for toString
+                if (fName.endsWith("toString")) {
+                    System.err.println("Fixing toString()");
+                    solver.newConcreteString(id, actString);
+                    calString = cs.getValue(id).getValue();
+                    if (!actString.equals(calString)) {
+                        System.err.println("Did not fix toString!!!");
+                    }
+                }
+
+            }
+
         }
+    }
+
+    /**
+     * Parse a graph root node.
+     *
+     * @param constraint The root node constraint.
+     */
+    public void addRoot(PrintConstraint constraint) {
+
+        // get constraint info as variables
+        String value = constraint.getSplitValue();
+        String actualValue = constraint.getActualVal();
+        int id = constraint.getId();
+
+        // if debug mode set
+        if (debug) {
+
+            // output root information
+            System.out.println("Root: " + value);
+        }
+
+        // if actual value not null
+        if (actualValue != null) {
+
+            // ensure string is in a valid format
+            actualValue = solver.replaceEscapes(actualValue);
+        }
+
+        // add actual value to map
+        actualVals.put(id, actualValue);
+        value = solver.replaceEscapes(value);
+
+        // if labeled as root value
+        if (value.startsWith("r") || value.startsWith("$r")) {
+
+            // create new symbolic string for id
+            solver.newSymbolicString(id);
+
+        } else {
+
+            // create new concrete string for id from actual value
+            solver.newConcreteString(id, actualValue);
+
+        }
+    }
+
+    /**
+     * Assert a predicate on a symbolic value from the following boolean
+     * function:
+     * <ul>
+     * <li>{@link java.lang.String#contains(CharSequence)}</li>
+     * <li>{@link java.lang.String#contentEquals(CharSequence)}</li>
+     * <li>{@link java.lang.String#contentEquals(StringBuffer)}</li>
+     * <li>{@link java.lang.String#endsWith(String)}</li>
+     * <li>{@link java.lang.String#equals(Object)}</li>
+     * <li>{@link java.lang.String#equalsIgnoreCase(String)}</li>
+     * <li>{@link java.lang.String#isEmpty()}</li>
+     * <li>{@link java.lang.String#matches(String)}</li>
+     * <li>{@link java.lang.String#regionMatches(boolean, int, String, int, int)}</li>
+     * <li>{@link java.lang.String#regionMatches(int, String, int, int)}</li>
+     * <li>{@link java.lang.String#startsWith(String)}</li>
+     * <li>{@link java.lang.String#startsWith(String, int)}</li>
+     * </ul>
+     *
+     * @param result     Is it a true or false predicate.
+     * @param constraint The the boolean constraint which is being asserted.
+     */
+    public void assertBooleanConstraint(boolean result,
+                                        PrintConstraint constraint) {
+
+        // get constraint info as variables
+        String string = constraint.getSplitValue();
+        String fName = string.split("!!")[0];
+        Map<String, Integer> sourceMap = constraint.getSourceMap();
+
+        // get id of base symbolic string
+        int base = (sourceMap.get("t"));
+
+        // get id of second symbolic string if it exists
+        int arg = -1;
+        if (sourceMap.get("s1") != null) {
+            arg = sourceMap.get("s1");
+        }
+
+        // TODO: add starts with for sourceMap size 3 (two args)
+        // assert the boolean constraint
+        if (fName.equals("contains")) {
+
+            solver.contains(result, base, arg);
+
+        } else if (fName.equals("endsWith")) {
+
+            solver.endsWith(result, base, arg);
+
+        } else if (fName.equals("startsWith") && sourceMap.size() == 2) {
+
+            solver.startsWith(result, base, arg);
+
+        } else if (fName.equals("equals") || fName.equals("contentEquals")) {
+
+            solver.equals(result, base, arg);
+
+        } else if (fName.equals("equalsIgnoreCase")) {
+
+            solver.equalsIgnoreCase(result, base, arg);
+
+        } else if (fName.equals("isEmpty")) {
+
+            solver.isEmpty(result, base);
+
+        }
+    }
+
+    /**
+     * Deprecated. Ensures the result is a character.
+     *
+     * @param id The id of the constraint.
+     */
+    private void createChar(int id) {
+
+        // get string representing char from actual values
+        String val = actualVals.get(id);
+
+        // create new symbolic string from char string
+        solver.newConcreteString(id, val);
+    }
+
+    private int generateNextId() {
+
+        // increment max graph id for next valid id
+        this.maxGraphId++;
+
+        // return valid new id
+        return this.maxGraphId;
     }
 
     /**
@@ -563,20 +542,6 @@ public class Parser {
     }
 
     /**
-     * Deprecated. Ensures the result is a character.
-     *
-     * @param id The id of the constraint.
-     */
-    private void createChar(int id) {
-
-        // get string representing char from actual values
-        String val = actualVals.get(id);
-
-        // create new symbolic string from char string
-        solver.newConcreteString(id, val);
-    }
-
-    /**
      * Determine and symbolically execute the correct append or concatenate
      * operation:
      * <ul>
@@ -648,8 +613,9 @@ public class Parser {
         Map<String, Integer> sourceMap = constraint.getSourceMap();
         int id = constraint.getId();
         int base = sourceMap.get("t");
-        
-        //System.out.println("processInit " + id + " val " + actualVals.get(id));
+
+        //System.out.println("processInit " + id + " val " + actualVals.get
+        // (id));
 
         // if target and source ids exist and actual target value
         // is the empty string
@@ -707,7 +673,7 @@ public class Parser {
         int base = sourceMap.get("t");
 
         // get offset id
-       // int offset = sourceMap.get("s1"); eas: it is a bug
+        // int offset = sourceMap.get("s1"); eas: it is a bug
         int offset = Integer.parseInt(actualVals.get(sourceMap.get("s1")));
 
         // get arg id
@@ -937,7 +903,8 @@ public class Parser {
         int s1Id = sourceMap.get("s1");
         String s1String = actualVals.get(s1Id);
         int length = Integer.parseInt(s1String);
-        //System.out.println("Lenght " + length + " " + base + " " + actualVals.get(base).isEmpty());
+        //System.out.println("Lenght " + length + " " + base + " " +
+        // actualVals.get(base).isEmpty());
 
         // perform set length operation
         solver.setLength(id, base, length);
@@ -1001,236 +968,14 @@ public class Parser {
         }
     }
 
-    public void addEnd(PrintConstraint constraint) {
-
-        // get constraint info as variables
-        String string = constraint.getSplitValue();
-        String actualVal = constraint.getActualVal();
-        int id = constraint.getId();
-        Map<String, Integer> sourceMap = constraint.getSourceMap();
-
-        // if debug mode set
-        if (debug) {
-
-            // output end information
-            System.out.println("End: " + string + " | " + actualVal);
-        }
-
-        // ensure valid actual value
-        actualVal = solver.replaceEscapes(actualVal);
-        actualVals.put(id, actualVal);
-
-        if (debug) {
-            if (sourceMap.containsKey("t")) {
-                int base = sourceMap.get("t");
-                if (!solver.isSound(base, actualVal)) {
-                    System.err.println("Base not sound:");
-                    System.err.println("base: " + solver.getValue(base));
-                    System.err.println("actual value: " + actualVal);
-//                    throw new IllegalArgumentException("Invalid base in " +
-//                                                       "solver");
-                }
-            }
-
-            if (sourceMap.containsKey("s1")) {
-                int arg = sourceMap.get("s1");
-                if (!solver.isSound(arg, actualVal)) {
-                    System.err.println("Arg not sound:");
-                    System.err.println(solver.getValue(arg));
-//                    throw new IllegalArgumentException("Invalid arg in
-// solver");
-                }
-            }
-        }
-        
-      
-
-        // if solver contains boolean function name
-        String fName = string.split("!!")[0];
-        if (ExtendedSolver.containsBoolFunction(fName)) {
-
-            // calculate stats
-            calculateStats(constraint);
-        }
-    }
-
-    private void calculateStats(PrintConstraint constraint) {
-
-        // get constraint info as variables
-        Map<String, Integer> sourceMap = constraint.getSourceMap();
-        StringBuilder stats = new StringBuilder();
-        String actualVal = constraint.getActualVal();
-        int base = sourceMap.get("t");
-
-        // get id of second symbolic string if it exists
-        int arg = -1;
-        if (sourceMap.get("s1") != null) {
-            arg = sourceMap.get("s1");
-        }
-
-        // output constraint id
-        stats.append(String.format("%06d\t", constraint.getId()));
-
-        // determine if symbolic strings are singletons
-        if (solver.isSingleton(base, actualVal) &&
-            (sourceMap.get("s1") == null ||
-             solver.isSingleton(sourceMap.get("s1"), actualVal))) {
-            stats.append("true \t");
-        } else {
-            stats.append("false\t");
-        }
-
-        // store symbolic string values
-        solver.setLast(base, arg);
-
-        // test if true branch is SAT
-        assertBooleanConstraint(true, constraint);
-        if (solver.isSatisfiable(base)) {
-            stats.append("true \t");
-        } else {
-            stats.append("false\t");
-        }
-
-        // revert symbolic string values
-        solver.revertLastPredicate();
-
-        // store symbolic string values
-        solver.setLast(base, arg);
-
-        // test if false branch is SAT
-        assertBooleanConstraint(false, constraint);
-        if (solver.isSatisfiable(base)) {
-            stats.append("true \t");
-        } else {
-            stats.append("false\t");
-        }
-
-        // revert symbolic string values
-        solver.revertLastPredicate();
-
-        // if actual execution did not produce either true or false
-        if (!actualVal.equals("true") && !actualVal.equals("false")) {
-
-            System.err.println("warning constraint detected without " +
-                               "true/false value");
-            return;
-        }
-
-        // determine result of actual execution
-        boolean result = true;
-        if (actualVal.equals("false")) {
-            result = false;
-        }
-
-        // branches disjoint?
-        assertBooleanConstraint(result, constraint);
-
-        // store symbolic string values
-        solver.setLast(base, arg);
-
-        assertBooleanConstraint(!result, constraint);
-
-        // set yes or no for disjoint branches
-        String disjoint = "yes";
-        if (solver.isSatisfiable(base)) {
-            disjoint = "no";
-        }
-
-        // add disjoint result to output string
-        stats.append(disjoint);
-
-        // revert symbolic string values
-        solver.revertLastPredicate();
-
-        // output stats
-        System.out.println(stats);
-    }
-
     /**
-     * Assert a predicate on a symbolic value from the following boolean
-     * function:
-     * <ul>
-     * <li>{@link java.lang.String#contains(CharSequence)}</li>
-     * <li>{@link java.lang.String#contentEquals(CharSequence)}</li>
-     * <li>{@link java.lang.String#contentEquals(StringBuffer)}</li>
-     * <li>{@link java.lang.String#endsWith(String)}</li>
-     * <li>{@link java.lang.String#equals(Object)}</li>
-     * <li>{@link java.lang.String#equalsIgnoreCase(String)}</li>
-     * <li>{@link java.lang.String#isEmpty()}</li>
-     * <li>{@link java.lang.String#matches(String)}</li>
-     * <li>{@link java.lang.String#regionMatches(boolean, int, String, int, int)}</li>
-     * <li>{@link java.lang.String#regionMatches(int, String, int, int)}</li>
-     * <li>{@link java.lang.String#startsWith(String)}</li>
-     * <li>{@link java.lang.String#startsWith(String, int)}</li>
-     * </ul>
-     *
-     * @param result     Is it a true or false predicate.
-     * @param constraint The the boolean constraint which is being asserted.
+     * Traverses the flow graph and solves PCs
      */
-    private void assertBooleanConstraint(boolean result,
-                                         PrintConstraint constraint) {
-
-        // get constraint info as variables
-        String string = constraint.getSplitValue();
-        String fName = string.split("!!")[0];
-        Map<String, Integer> sourceMap = constraint.getSourceMap();
-
-        // get id of base symbolic string
-        int base = (sourceMap.get("t"));
-
-        // get id of second symbolic string if it exists
-        int arg = -1;
-        if (sourceMap.get("s1") != null) {
-            arg = sourceMap.get("s1");
-        }
-
-        // TODO: add starts with for sourceMap size 3 (two args)
-        // assert the boolean constraint
-        if (fName.equals("contains")) {
-
-            solver.contains(result, base, arg);
-
-        } else if (fName.equals("endsWith")) {
-
-            solver.endsWith(result, base, arg);
-
-        } else if (fName.equals("startsWith") && sourceMap.size() == 2) {
-
-            solver.startsWith(result, base, arg);
-
-        } else if (fName.equals("equals") || fName.equals("contentEquals")) {
-
-            solver.equals(result, base, arg);
-
-        } else if (fName.equals("equalsIgnoreCase")) {
-
-            solver.equalsIgnoreCase(result, base, arg);
-
-        } else if (fName.equals("isEmpty")) {
-
-            solver.isEmpty(result, base);
-
-        }
+    public void runSolver() {
     }
 
-    private int generateNextId() {
-
-        // lazy load id set
-        if (this.maxGraphId <= 0) {
-
-            // get set of all print constraint ids
-            for (PrintConstraint constraint : graph.vertexSet()) {
-                if (constraint.getId() > this.maxGraphId) {
-                    this.maxGraphId = constraint.getId();
-                }
-            }
-        }
-
-        // increment max graph id for next valid id
-        this.maxGraphId++;
-
-        // return valid new id
-        return this.maxGraphId;
+    public void setMaxGraphId(int maxGraphId) {
+        this.maxGraphId = maxGraphId;
     }
 
     static {

@@ -1,4 +1,4 @@
-package edu.boisestate.cs.extendedSolvers;
+package edu.boisestate.cs.solvers;
 
 
 import edu.ucsb.cs.www.vlab.stranger.PerfInfo;

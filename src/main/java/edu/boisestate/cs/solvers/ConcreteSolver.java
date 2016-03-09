@@ -1,12 +1,8 @@
-package edu.boisestate.cs.extendedSolvers;
+package edu.boisestate.cs.solvers;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 import edu.boisestate.cs.analysis.Parser;
-
-import java.util.Set;
 
 
 public class ConcreteSolver extends ModelCountSolver<ConcreteValue> {

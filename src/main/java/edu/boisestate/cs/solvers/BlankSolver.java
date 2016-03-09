@@ -1,4 +1,4 @@
-package edu.boisestate.cs.extendedSolvers;
+package edu.boisestate.cs.solvers;
 
 /**
  * The most basic instantiation of an ExtendedSolver. 

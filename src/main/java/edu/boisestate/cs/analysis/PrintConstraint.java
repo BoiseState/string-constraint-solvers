@@ -24,9 +24,9 @@ public class PrintConstraint implements Serializable,
     private HashMap<String, Integer> sourceMap;
 
     /**
-     *
-     * @param value The name of the vertex (e.g., the symbolic value or sting
-	 *                 method name)
+     * @param value     The name of the vertex (e.g., the symbolic value or
+     *                  sting
+     *                  method name)
      * @param actualVal The actual value gathered from the program execution.
      */
     public PrintConstraint(String value, String actualVal) {
@@ -42,9 +42,11 @@ public class PrintConstraint implements Serializable,
 
     /**
      * Used to make a unique copy of a previous constraint, i.e., when a
-	 * symbolic value is reused.
+     * symbolic value is reused.
+     *
      * @param oldConstraint The constraint to make a copy of
-     * @param actualVal The actual value gathered from the program execution.
+     * @param actualVal     The actual value gathered from the program
+     *                      execution.
      */
     public PrintConstraint(PrintConstraint oldConstraint, String actualVal) {
         this.value = oldConstraint.value;
@@ -82,16 +84,18 @@ public class PrintConstraint implements Serializable,
 
     /**
      * Sets the source of this vertex in the flow graph.
+     *
      * @param source The new source
      */
     public void setSource(PrintConstraint source) {
-        if(!this.sourceConstraints.contains(source)) {
+        if (!this.sourceConstraints.contains(source)) {
             sourceConstraints.add(source);
         }
     }
 
     /**
      * Sets the type of the constraint, e.g., is it a parameter?
+     *
      * @param type An integer value representing the new source
      */
     public void setType(int type) {
@@ -100,10 +104,11 @@ public class PrintConstraint implements Serializable,
 
     /**
      * At vertex may have a different source at different points in execution
-	 * . Thus this method looks for the last source that
+     * . Thus this method looks for the last source that
      * existed depending on the argument.
+     *
      * @param num1 Denotes the unique id of the point with which we are
-	 *                looking for the source.
+     *             looking for the source.
      * @return The source depending on the argument.
      */
     public PrintConstraint getSource(int num1) {
@@ -151,15 +156,15 @@ public class PrintConstraint implements Serializable,
 
     /**
      * The value, (or name) of the vertex is a sting with lots of information
-	 * . Thus, this method separates out the first part.
+     * . Thus, this method separates out the first part.
+     *
      * @return The first part of the vertex's value
      */
     public String getSplitValue() {
-        return value.split("!:!")[0];
+        return this.value.split("!:!")[0];
     }
 
     /**
-     *
      * @return The value(name of this vertex)
      */
     public String getValue() {
@@ -168,14 +173,13 @@ public class PrintConstraint implements Serializable,
 
     /**
      * @param actualVal The new actual string value for this vertex gatered
-	 *                     using DSE.
+     *                  using DSE.
      */
     public void setActualVal(String actualVal) {
         this.actualVal = actualVal;
     }
 
     /**
-     *
      * @return The actual value of the vertex.
      */
     public String getActualVal() {
@@ -220,8 +224,10 @@ public class PrintConstraint implements Serializable,
 //		return longStamp.compareTo(o.timeStamp);
     }
 
-    /**Creates a PrintConstraint representing toString(for use with dual
-	 * constraints in one method). Represents a special case of string method.
+    /**
+     * Creates a PrintConstraint representing toString(for use with dual
+     * constraints in one method). Represents a special case of string method.
+     *
      * @param source The source of the constraint
      * @return A new PrintConstriant representing toString.
      */
@@ -240,6 +246,7 @@ public class PrintConstraint implements Serializable,
 
     /**
      * Used in processing to set the source map
+     *
      * @param sourceMap The new sourceMap for this constraint.
      */
     public void setSourceMap(Map<String, Integer> sourceMap) {
@@ -248,6 +255,7 @@ public class PrintConstraint implements Serializable,
 
     /**
      * Used in processing to get the sourceMap.
+     *
      * @return The soruceMap
      */
     public HashMap<String, Integer> getSourceMap() {
