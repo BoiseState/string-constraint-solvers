@@ -4,10 +4,10 @@ import java.util.Set;
 
 public abstract class ModelCountSolver<TSymbolicString> extends ExtendedSolver<TSymbolicString>{
 	
-	int bound;
+	int initialBound;
 	
 	public ModelCountSolver(int setBound){
-		bound = setBound;
+		initialBound = setBound;
 		
 	}
 	

@@ -32,7 +32,6 @@ public class SATReporter extends Reporter {
 
         // get constraint info as variables
         Map<String, Integer> sourceMap = constraint.getSourceMap();
-        StringBuilder stats = new StringBuilder();
         String actualVal = constraint.getActualVal();
         int base = sourceMap.get("t");
 
@@ -42,16 +41,16 @@ public class SATReporter extends Reporter {
             arg = sourceMap.get("s1");
         }
 
-        // output constraint id
-        stats.append(String.format("%6d\t", constraint.getId()));
+        // initialize boolean flags
+        boolean isSingleton = false;
+        boolean trueSat = false;
+        boolean falseSat = false;
 
         // determine if symbolic strings are singletons
         if (solver.isSingleton(base, actualVal) &&
             (sourceMap.get("s1") == null ||
              solver.isSingleton(sourceMap.get("s1"), actualVal))) {
-            stats.append("true \t");
-        } else {
-            stats.append("false\t");
+            isSingleton = true;
         }
 
         // store symbolic string values
@@ -60,9 +59,7 @@ public class SATReporter extends Reporter {
         // test if true branch is SAT
         parser.assertBooleanConstraint(true, constraint);
         if (solver.isSatisfiable(base)) {
-            stats.append("true \t");
-        } else {
-            stats.append("false\t");
+            trueSat = true;
         }
 
         // revert symbolic string values
@@ -74,9 +71,7 @@ public class SATReporter extends Reporter {
         // test if false branch is SAT
         parser.assertBooleanConstraint(false, constraint);
         if (solver.isSatisfiable(base)) {
-            stats.append("true \t");
-        } else {
-            stats.append("false\t");
+            falseSat = true;
         }
 
         // revert symbolic string values
@@ -110,13 +105,15 @@ public class SATReporter extends Reporter {
             disjoint = "no";
         }
 
-        // add disjoint result to output string
-        stats.append(disjoint);
-
         // revert symbolic string values
         solver.revertLastPredicate();
 
         // output stats
-        System.out.println(stats);
+        System.out.format("%6d\t%5b\t%5b\t%5b\t%8s\n",
+                          constraint.getId(),
+                          isSingleton,
+                          trueSat,
+                          falseSat,
+                          disjoint);
     }
 }

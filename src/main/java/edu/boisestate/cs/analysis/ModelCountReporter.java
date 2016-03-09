@@ -1,6 +1,5 @@
 package edu.boisestate.cs.analysis;
 
-import edu.boisestate.cs.solvers.ExtendedSolver;
 import edu.boisestate.cs.solvers.ModelCountSolver;
 import edu.boisestate.cs.stringSymbolic.SymbolicEdge;
 import org.jgrapht.DirectedGraph;
@@ -27,6 +26,10 @@ public class ModelCountReporter extends Reporter {
 
         // output header
         System.out.println("    ID\t" +
+                           " SING\t" +
+                           " TSAT\t" +
+                           " FSAT\t" +
+                           "DISJOINT\t" +
                            " IN COUNT\t" +
                            "  T COUNT\t" +
                            "  F COUNT\t" +
@@ -49,6 +52,18 @@ public class ModelCountReporter extends Reporter {
             arg = sourceMap.get("s1");
         }
 
+        // initialize boolean flags
+        boolean isSingleton = false;
+        boolean trueSat = false;
+        boolean falseSat = false;
+
+        // determine if symbolic strings are singletons
+        if (solver.isSingleton(base, actualVal) &&
+            (sourceMap.get("s1") == null ||
+             solver.isSingleton(sourceMap.get("s1"), actualVal))) {
+            isSingleton = true;
+        }
+
         int initialCount = this.modelCountSolver.getModelCount(base);
 
         // store symbolic string values
@@ -56,6 +71,9 @@ public class ModelCountReporter extends Reporter {
 
         // test if true branch is SAT
         parser.assertBooleanConstraint(true, constraint);
+        if (solver.isSatisfiable(base)) {
+            trueSat = true;
+        }
 
         int trueModelCount = this.modelCountSolver.getModelCount(base);
 
@@ -67,6 +85,9 @@ public class ModelCountReporter extends Reporter {
 
         // test if false branch is SAT
         parser.assertBooleanConstraint(false, constraint);
+        if (solver.isSatisfiable(base)) {
+            falseSat = true;
+        }
 
         int falseModelCount = this.modelCountSolver.getModelCount(base);
 
@@ -96,14 +117,24 @@ public class ModelCountReporter extends Reporter {
         parser.assertBooleanConstraint(!result, constraint);
 
         // set yes or no for disjoint branches
+        String disjoint = "yes";
+        if (solver.isSatisfiable(base)) {
+            disjoint = "no";
+        }
+
+        // set yes or no for disjoint branches
         int overlap = this.modelCountSolver.getModelCount(base);
 
         // revert symbolic string values
         solver.revertLastPredicate();
 
         // output stats
-        System.out.format("%6d\t%9d\t%9d\t%9d\t%9d\n",
+        System.out.format("%6d\t%5b\t%5b\t%5b\t%8s\t%9d\t%9d\t%9d\t%9d\n",
                           constraint.getId(),
+                          isSingleton,
+                          trueSat,
+                          falseSat,
+                          disjoint,
                           initialCount,
                           trueModelCount,
                           falseModelCount,
