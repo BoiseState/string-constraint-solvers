@@ -63,7 +63,7 @@ abstract public class Reporter {
 
         // create priority queue structure for topological iteration
         Queue<PrintConstraint> queue =
-                new PriorityQueue<>(new PrintConstraintComparator());
+                new PriorityQueue<>(0, new PrintConstraintComparator());
 
         // create topological iterator for graph
         TopologicalOrderIterator<PrintConstraint, SymbolicEdge> iterator =
