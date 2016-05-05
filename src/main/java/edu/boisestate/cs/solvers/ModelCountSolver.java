@@ -2,26 +2,39 @@ package edu.boisestate.cs.solvers;
 
 import java.util.Set;
 
-public abstract class ModelCountSolver<TSymbolicString> extends ExtendedSolver<TSymbolicString>{
-	
-	int initialBound;
-	
-	public ModelCountSolver(int setBound){
-		initialBound = setBound;
-		
-	}
-	
-	//return the number of solutions for given
-	//node in the graph
-	public abstract int getModelCount(int id);
-	
-	//return a single value if exists
-	//from the given number of the solutions
-//	public String getSingleValue(int id);
-	
-	//enumerates all possible values for 
-	//a given node
-	public abstract Set<String> getAllVales(int id);
+public interface ModelCountSolver {
+
+    /**
+     * Get the number of solutions represented by the symbolic string model.
+     *
+     * @param id
+     *         the identifier of the symbolic string
+     *
+     * @return number of solutions for a given node in the graph
+     */
+    int getModelCount(int id);
+
+//    /**
+//     * Get a single string value if it exists from the solutions represented by
+//     * the symbolic string.
+//     *
+//     * @param id
+//     *         the identifier of the symbolic string
+//     *
+//     * @return the single string value if it exists, otherwise null.
+//     */
+//    String getSingleValue(int id);
+
+    /**
+     * Enumerates all possible values for a given symbolic string
+     *
+     * @param id
+     *         the identifier of the symbolic string
+     *
+     * @return a set of all possible string values represented by the symbolic
+     * string
+     */
+    Set<String> getAllVales(int id);
 
 
 }

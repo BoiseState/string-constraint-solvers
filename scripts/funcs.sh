@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 function set_solver {
 
@@ -17,6 +18,12 @@ function set_solver {
            "$solver" == 'ejsasolver' ] ; then
         
           solver='jsasolver'
+
+    elif [ "$solver" == 'mcjsa' -o \
+           "$solver" == 'mcejsa' -o \
+           "$solver" == 'mcejsasolver' ] ; then
+
+          solver='mcjsasolver'
 
     elif [ "$solver" == 'stranger' -o \
            "$solver" == 'estranger' -o \
@@ -43,8 +50,11 @@ function set_classpath {
     # get project root directory from argument
     proj_root_dir=$1
 
-    # begin classpath
+    # begin classpath with bin directory
     class_path="$proj_root_dir/bin"
+
+    # add target directory for maven build configuration
+    class_path="$class_path:$proj_root_dir/target/classes"
 
     # for each jar file in lib directory
     for jar_file in $proj_root_dir/lib/*.jar

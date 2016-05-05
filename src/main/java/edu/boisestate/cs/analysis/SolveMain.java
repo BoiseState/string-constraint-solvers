@@ -9,7 +9,6 @@ package edu.boisestate.cs.analysis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.boisestate.cs.solvers.*;
-import edu.boisestate.cs.stringSymbolic.SymbolicEdge;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
@@ -254,7 +253,14 @@ public class SolveMain {
                    lc.equals("jsa") ||
                    lc.equals("jsasolver")) {
 
-            solver = new EJSASolver(BOUND);
+            solver = new EJSASolver();
+
+        } else if (lc.equals("mcejsa") ||
+                   lc.equals("mcejsasolver") ||
+                   lc.equals("mcjsa") ||
+                   lc.equals("mcjsasolver")) {
+
+            solver = new MCJSASolver(BOUND);
 
         } else if (lc.equals("concrete")) {
 
@@ -295,10 +301,11 @@ public class SolveMain {
                 ModelCountSolver mcSolver = (ModelCountSolver) solver;
 
                 // create reporter from parameters
-                reporter = new ModelCountReporter(graph,
-                                                  parser,
-                                                  mcSolver,
-                                                  debug);
+                reporter = new MCReporter(graph,
+                                          parser,
+                                          solver,
+                                          debug,
+                                          mcSolver);
             }
 
         } else if (lc.equals("sat") ||

@@ -1,7 +1,6 @@
 package edu.boisestate.cs.analysis;
 
 import edu.boisestate.cs.solvers.ExtendedSolver;
-import edu.boisestate.cs.stringSymbolic.SymbolicEdge;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
@@ -63,7 +62,7 @@ abstract public class Reporter {
 
         // create priority queue structure for topological iteration
         Queue<PrintConstraint> queue =
-                new PriorityQueue<>(0, new PrintConstraintComparator());
+                new PriorityQueue<>(1, new PrintConstraintComparator());
 
         // create topological iterator for graph
         TopologicalOrderIterator<PrintConstraint, SymbolicEdge> iterator =

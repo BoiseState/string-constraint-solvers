@@ -6,3 +6,4 @@
   - root
   - boolean constraint (end)
   - operation
+4. Command pattern for string operations

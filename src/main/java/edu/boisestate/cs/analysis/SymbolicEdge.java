@@ -2,7 +2,7 @@
  * Represents an edge in a SymbolicGraph
  * @author Scott Kausler
  */
-package edu.boisestate.cs.stringSymbolic;
+package edu.boisestate.cs.analysis;
 
 import edu.boisestate.cs.analysis.PrintConstraint;
 import org.jgrapht.graph.DefaultEdge;

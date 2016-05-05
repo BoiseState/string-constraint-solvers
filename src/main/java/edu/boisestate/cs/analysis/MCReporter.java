@@ -1,39 +1,26 @@
 package edu.boisestate.cs.analysis;
 
+import edu.boisestate.cs.solvers.ExtendedSolver;
 import edu.boisestate.cs.solvers.ModelCountSolver;
-import edu.boisestate.cs.stringSymbolic.SymbolicEdge;
 import org.jgrapht.DirectedGraph;
 
 import java.util.Map;
 
-public class ModelCountReporter extends Reporter {
+public class MCReporter
+        extends Reporter {
 
     private final ModelCountSolver modelCountSolver;
 
-    protected ModelCountReporter(DirectedGraph<PrintConstraint, SymbolicEdge>
-                                         graph,
-                                 Parser parser,
-                                 ModelCountSolver solver,
-                                 boolean debug) {
+    protected MCReporter(DirectedGraph<PrintConstraint, SymbolicEdge>
+                                 graph,
+                         Parser parser,
+                         ExtendedSolver extendedSolver,
+                         boolean debug,
+                         ModelCountSolver modelCountSolver) {
 
-        super(graph, parser, solver, debug);
+        super(graph, parser, extendedSolver, debug);
 
-        this.modelCountSolver = solver;
-    }
-
-    @Override
-    protected void outputHeader() {
-
-        // output header
-        System.out.println("    ID\t" +
-                           " SING\t" +
-                           " TSAT\t" +
-                           " FSAT\t" +
-                           "DISJOINT\t" +
-                           " IN COUNT\t" +
-                           "  T COUNT\t" +
-                           "  F COUNT\t" +
-                           "  OVERLAP");
+        this.modelCountSolver = modelCountSolver;
     }
 
     @Override
@@ -129,15 +116,37 @@ public class ModelCountReporter extends Reporter {
         solver.revertLastPredicate();
 
         // output stats
-        System.out.format("%6d\t%5b\t%5b\t%5b\t%8s\t%9d\t%9d\t%9d\t%9d\n",
-                          constraint.getId(),
-                          isSingleton,
-                          trueSat,
-                          falseSat,
-                          disjoint,
-                          initialCount,
-                          trueModelCount,
-                          falseModelCount,
-                          overlap);
+        float truePercent = 100 * (float) trueModelCount / (float) initialCount;
+        float falsePercent = 100 * (float) falseModelCount / (float) initialCount;
+        System.out.format(
+                "%6d\t%5b\t%5b\t%5b\t%8s\t%9d\t%9d\t%5.1f\t%9d\t%5.1f\t%9d\n",
+                constraint.getId(),
+                isSingleton,
+                trueSat,
+                falseSat,
+                disjoint,
+                initialCount,
+                trueModelCount,
+                truePercent,
+                falseModelCount,
+                falsePercent,
+                overlap);
+    }
+
+    @Override
+    protected void outputHeader() {
+
+        // output header
+        System.out.println("    ID\t" +
+                           " SING\t" +
+                           " TSAT\t" +
+                           " FSAT\t" +
+                           "DISJOINT\t" +
+                           " IN COUNT\t" +
+                           "  T COUNT\t" +
+                           "T PER\t" +
+                           "  F COUNT\t" +
+                           "F PER\t" +
+                           "  OVERLAP");
     }
 }

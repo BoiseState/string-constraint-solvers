@@ -4,7 +4,7 @@ import edu.boisestate.cs.analysis.PrintConstraint;
 import edu.boisestate.cs.old.ConstraintIdProvider;
 import edu.boisestate.cs.old.ConstraintNameProvider;
 import edu.boisestate.cs.old.EdgeInfoProvider;
-import edu.boisestate.cs.stringSymbolic.SymbolicEdge;
+import edu.boisestate.cs.analysis.SymbolicEdge;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.ext.DOTExporter;
 

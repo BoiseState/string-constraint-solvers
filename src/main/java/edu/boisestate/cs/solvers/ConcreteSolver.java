@@ -5,7 +5,7 @@ import java.util.Set;
 import edu.boisestate.cs.analysis.Parser;
 
 
-public class ConcreteSolver extends ModelCountSolver<ConcreteValue> {
+public class ConcreteSolver extends ExtendedSolver<ConcreteValue> implements ModelCountSolver {
 
 	//this set keeps track of id's that should not
 	//be computed because the input was not 

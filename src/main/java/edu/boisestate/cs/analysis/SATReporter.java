@@ -1,7 +1,6 @@
 package edu.boisestate.cs.analysis;
 
 import edu.boisestate.cs.solvers.ExtendedSolver;
-import edu.boisestate.cs.stringSymbolic.SymbolicEdge;
 import org.jgrapht.DirectedGraph;
 
 import java.util.Map;
