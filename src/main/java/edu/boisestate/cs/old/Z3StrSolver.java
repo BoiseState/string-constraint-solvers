@@ -136,7 +136,7 @@ public class Z3StrSolver extends SatSolver{
 		
 		numOperations++;
 		
-		if((fName.equals("append"))||fName.equals("concat")){
+		if((fName.equals("concatenate"))||fName.equals("concat")){
 
 			 auto=new ArrayList<String>(((ArrayList<String>) store.get(sourceMap.get("t"))));
 
@@ -284,7 +284,7 @@ public class Z3StrSolver extends SatSolver{
 //			}
 //
 //			 String end=null;
-//			if(targetVal==null || targetVal.contains("@")){
+//			if(targetVal==null || targetVal.containsString("@")){
 ////				auto.add("(declare-variable i"+id+" Int)\n");
 ////				//auto.add("(assert (= i"+id+" (+ (Length "+newVal+") (Length s"+sourceMap.get("t")+"))))\n");
 ////				end="i"+id;
@@ -326,7 +326,7 @@ public class Z3StrSolver extends SatSolver{
 //	
 //
 //			String end;
-//			if(targetVal==null || targetVal.contains("@")){
+//			if(targetVal==null || targetVal.containsString("@")){
 //				auto.add("(declare-variable i"+id+" Int)\n");
 //				end="i"+id;
 //			}
@@ -362,7 +362,7 @@ public class Z3StrSolver extends SatSolver{
 //				symbolics.remove(id);
 //				return;
 //			}
-//			if(targetVal==null||targetVal.contains("@")){
+//			if(targetVal==null||targetVal.containsString("@")){
 //				makeStringSymbolic(id);
 //				return;
 //			}
@@ -417,7 +417,7 @@ public class Z3StrSolver extends SatSolver{
 //
 //			boolean makeEmpty=false;
 //			String end;
-//			if(targetVal==null || targetVal.contains("@")){
+//			if(targetVal==null || targetVal.containsString("@")){
 //				auto.add("(declare-variable i"+id+" Int)\n");
 //				end="i"+id;
 //			}
@@ -583,19 +583,19 @@ public class Z3StrSolver extends SatSolver{
 //								targetVal=value[1];
 //						}
 //					}
-//					if(oldVal.contains("@")||newVal.contains("@")){
+//					if(oldVal.containsString("@")||newVal.containsString("@")){
 //						makeStringSymbolic(id);
 //						return;
 //					}
 //				}
-//				if(!newVal.contains(oldVal)){
+//				if(!newVal.containsString(oldVal)){
 //					solveString.add("(declare-variable s"+id+" String)\n");
 //					if(targetVal.length()==0){
 //						solveString.add("(assert (= s"+sourceMap.get("t")+" s"+id+"))\n");
 //					}
 //					else{
 //						int numTargets=0;
-//						while(targetVal.contains(oldVal)){
+//						while(targetVal.containsString(oldVal)){
 //							numTargets++;
 //							int index=targetVal.indexOf(oldVal);
 //							String valOne=targetVal.substring(0, index);
@@ -907,7 +907,7 @@ public class Z3StrSolver extends SatSolver{
 //					System.err.println("result:" +execResult);
 //					System.err.println(actualValue);
 //				}
-//				if(execResult.contains(">> SAT")){
+//				if(execResult.containsString(">> SAT")){
 //					//fileWrite+="unknown-"+id+": approximation-"+target+"\nactualVal-"+actualValue+" "+"\n";
 //					numUnknown++;
 //				}
@@ -972,7 +972,7 @@ public class Z3StrSolver extends SatSolver{
 					argNum=sourceMap.get("s1");
 				}
 
-			if (fName.equals("contains")) {
+			if (fName.equals("containsString")) {
 				base=mergeLists(base, arg);
 				//contained in
 
@@ -1000,7 +1000,7 @@ public class Z3StrSolver extends SatSolver{
 				}
 				else{
 
-//					if(concreteVals.contains(sourceMap.get("s1"))){
+//					if(concreteVals.containsString(sourceMap.get("s1"))){
 //						base.add("(assert (not (= (Substring s"+sourceMap.get("t")+" (- (Length s"+sourceMap.get("t")+") (Length s"+sourceMap.get("s1")+")) (Length s"+sourceMap.get("s1")+")) s"+sourceMap.get("s1")+")))\n");
 //					}else{
 						base.add("(declare-variable i"+id+"_1 Int)\n");
@@ -1715,7 +1715,7 @@ public class Z3StrSolver extends SatSolver{
 
 				base.add("(assert (= snew"+sourceMap.get("t")+" stemp))\n");
 
-			if (fName.equals("contains")) {
+			if (fName.equals("containsString")) {
 				base=mergeLists(base, arg);
 				//contained in
 					

@@ -35,7 +35,7 @@ public abstract class ExtendedSolver<TSymbolicString> {
     }
 
     /**
-     * Checks if the parameter contains a predicate method.
+     * Checks if the parameter containsString a predicate method.
      *
      * @param string
      *         The name of the method to be checked.
@@ -45,7 +45,7 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public static boolean containsBoolFunction(String string) {
         String fName = string.split("!!")[0];
         return fName.equals("equals") ||
-               fName.equals("contains") ||
+               fName.equals("containsString") ||
                fName.equals("contentEquals") ||
                fName.equals("endsWith") ||
                fName.equals("startsWith") ||

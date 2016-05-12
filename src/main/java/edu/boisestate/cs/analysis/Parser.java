@@ -71,7 +71,7 @@ public class Parser {
         }
 
 
-        // if solver contains boolean function name
+        // if solver containsString boolean function name
         String fName = string.split("!!")[0];
 
         return ExtendedSolver.containsBoolFunction(fName);
@@ -127,7 +127,7 @@ public class Parser {
         }
 
         // process operation based on function name
-        if ((fName.equals("append")) || fName.equals("concat")) {
+        if ((fName.equals("concatenate")) || fName.equals("concat")) {
 
             processAppend(constraint);
 
@@ -343,7 +343,7 @@ public class Parser {
 
         // TODO: add starts with for sourceMap size 3 (two args)
         // assert the boolean constraint
-        if (fName.equals("contains")) {
+        if (fName.equals("containsString")) {
 
             solver.contains(result, base, arg);
 
@@ -394,7 +394,7 @@ public class Parser {
     }
 
     /**
-     * Determine and symbolically execute the correct append or concatenate
+     * Determine and symbolically execute the correct concatenate or concatenate
      * operation:
      * <ul>
      * <li>{@link java.lang.StringBuffer#append(AbstractStringBuilder)}</li>
@@ -453,7 +453,7 @@ public class Parser {
         // if function has more than two arguments
         if (sourceMap.size() > 3) {
 
-            // stringBuilder.append(char[] str, int offset, int len)
+            // stringBuilder.concatenate(char[] str, int offset, int len)
             // if first two parameters are char array and int
             if (string.split("!!")[1].startsWith("[CI")) {
 
@@ -462,7 +462,7 @@ public class Parser {
                 solver.newSymbolicString(arg);
 
             }
-            // stringBuilder.append(CharSequence s, int start, int end)
+            // stringBuilder.concatenate(CharSequence s, int start, int end)
             else {
 
                 // get start and end indices
@@ -479,7 +479,7 @@ public class Parser {
             }
 
         }
-        // stringBuilder.append(char c)
+        // stringBuilder.concatenate(char c)
         // if only parameter is a char
         else if (string.split("!!")[1].equals("C")) {
 
@@ -488,7 +488,7 @@ public class Parser {
             createChar(charId);
 
         }
-        // stringBuilder.append(boolean b)
+        // stringBuilder.concatenate(boolean b)
         // if only param is a boolean
         else if (string.split("!!")[1].equals("Z")) {
 
@@ -515,7 +515,7 @@ public class Parser {
                 solver.newConcreteString(arg, s1String);
             }
         }
-        // stringBuilder.append(String str)
+        // stringBuilder.concatenate(String str)
         // if only param is a string
         else if (string.split("!!")[1].equals("Ljava/lang/String;") &&
                  arg != -1 && solver.getValue(arg) == null) {
@@ -534,12 +534,12 @@ public class Parser {
             }
         }
 
-        // perform append operation
+        // perform concatenate operation
         solver.append(id, base, arg);
     }
 
     /**
-     * Determine and symbolically execute the correct append or concatenate
+     * Determine and symbolically execute the correct concatenate or concatenate
      * operation:
      * <ul>
      * <li>{@link java.lang.StringBuffer#delete(int, int)}</li>
@@ -568,7 +568,7 @@ public class Parser {
     }
 
     /**
-     * Determine and symbolically execute the correct append or concatenate
+     * Determine and symbolically execute the correct concatenate or concatenate
      * operation:
      * <ul>
      * <li>{@link java.lang.StringBuffer#deleteCharAt(int)}</li>
@@ -594,7 +594,7 @@ public class Parser {
     }
 
     /**
-     * Determine and symbolically execute the correct append or concatenate
+     * Determine and symbolically execute the correct concatenate or concatenate
      * operation:
      * <ul>
      * <li>{@link java.lang.String#String()}</li>
@@ -630,7 +630,7 @@ public class Parser {
     }
 
     /**
-     * Determine and symbolically execute the correct append or concatenate
+     * Determine and symbolically execute the correct concatenate or concatenate
      * operation:
      * <ul>
      * <li>{@link java.lang.StringBuffer#insert(int, CharSequence)}</li>
@@ -720,7 +720,7 @@ public class Parser {
     }
 
     /**
-     * Determine and symbolically execute the correct append or concatenate
+     * Determine and symbolically execute the correct concatenate or concatenate
      * operation:
      * <ul>
      * <li>{@link java.lang.String#copyValueOf(char[])}</li>
@@ -772,7 +772,7 @@ public class Parser {
     }
 
     /**
-     * Determine and symbolically execute the correct append or concatenate
+     * Determine and symbolically execute the correct concatenate or concatenate
      * operation:
      * <ul>
      * <li>{@link java.lang.String#replace(char, char)}</li>
@@ -846,7 +846,7 @@ public class Parser {
     }
 
     /**
-     * Determine and symbolically execute the correct append or concatenate
+     * Determine and symbolically execute the correct concatenate or concatenate
      * operation:
      * <ul>
      * <li>{@link java.lang.StringBuffer#setCharAt(int, char)}</li>
@@ -880,7 +880,7 @@ public class Parser {
     }
 
     /**
-     * Determine and symbolically execute the correct append or concatenate
+     * Determine and symbolically execute the correct concatenate or concatenate
      * operation:
      * <ul>
      * <li>{@link java.lang.StringBuffer#setLength(int)}</li>
@@ -908,7 +908,7 @@ public class Parser {
     }
 
     /**
-     * Determine and symbolically execute the correct append or concatenate
+     * Determine and symbolically execute the correct concatenate or concatenate
      * operation:
      * <ul>
      * <li>{@link java.lang.String#subSequence(int, int)}</li>

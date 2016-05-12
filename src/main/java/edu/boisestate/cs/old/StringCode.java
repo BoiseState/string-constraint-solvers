@@ -173,7 +173,7 @@ public class StringCode implements Solver{
 
 	/**
 	 * Returns a string of the operations encountered so far.
-	 * @param sourceMap The sources that contains the operations.
+	 * @param sourceMap The sources that containsString the operations.
 	 * @return The arraylist of all merged operations.
 	 */
 	private ArrayList<String> getOperation(HashMap<String, Integer> sourceMap){
@@ -257,8 +257,8 @@ public class StringCode implements Solver{
 		Iterator<Entry<String,String>> entryIt=stringAssignments.entrySet().iterator();
 		while(entryIt.hasNext()){
 			Entry e=entryIt.next();
-//			if(builderSet.contains(e.getKey()))
-//				intro.append("StringBuilder "+e.getKey()+"=new StringBuilder(\""+e.getValue()+"\");");
+//			if(builderSet.containsString(e.getKey()))
+//				intro.concatenate("StringBuilder "+e.getKey()+"=new StringBuilder(\""+e.getValue()+"\");");
 //			else
 			leftOverTemp.remove(e.getKey());
 			String value=e.getValue().toString();

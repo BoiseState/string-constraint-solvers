@@ -6,4 +6,5 @@
   - root
   - boolean constraint (end)
   - operation
-4. Command pattern for string operations
+4. Create and Update Javadoc documentation.
+5. Create appropriate github documentation for project.

@@ -19,7 +19,7 @@ public class ConcreteSolver extends ExtendedSolver<ConcreteValue> implements Mod
 	//and do not update the count for that id, i.e., make it 0
 
 	//	public boolean isFeasible(int id){
-	//		//return !infeasible.contains(id);
+	//		//return !infeasible.containsString(id);
 	//		return symbolicStringMap.get(id).isFeasible();
 	//	}
 	
@@ -440,7 +440,7 @@ public class ConcreteSolver extends ExtendedSolver<ConcreteValue> implements Mod
 		//		//if the current result is different
 		//		//from the result of the actual trace
 		//		//then set the base to null
-		//		setToNull(result,baseStr.contains(argStr),base);
+		//		setToNull(result,baseStr.containsString(argStr),base);
 		//		} else {
 		//			infeasible.add(base);
 		//		}

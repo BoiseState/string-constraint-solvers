@@ -169,7 +169,7 @@ public class StrangerSolver extends SatSolver {
 		}
 		
 		long startTime= System.nanoTime();
-		if((fName.equals("append"))||fName.equals("concat")){
+		if((fName.equals("concatenate"))||fName.equals("concat")){
 //			if(id==probId){
 //				System.err.println("Op: "+string+" ID: "+id+" "+actualVal);
 //				System.err.println(sourceMap.get("t")+" "+sourceMap.get("s1"));
@@ -462,7 +462,7 @@ public class StrangerSolver extends SatSolver {
 		//argTwo=StrangerAutomaton.makeAnyString();
 //			String s1=argOne.isSingleton();
 //			String s2=argTwo.isSingleton();
-//			if(s1!=null && s2 !=null && s2.contains(s1)){
+//			if(s1!=null && s2 !=null && s2.containsString(s1)){
 //				argTwo=StrangerAutomaton.makeAnyString();
 //			}
 //			String s=auto.generateSatisfyingExample();
@@ -624,7 +624,7 @@ public class StrangerSolver extends SatSolver {
 			argNum=sourceMap.get("s1");
 		}
 
-		if (fName.equals("contains")) {
+		if (fName.equals("containsString")) {
 			StrangerAutomaton x=StrangerAutomaton.makeAnyString().concatenate(arg).concatenate(StrangerAutomaton.makeAnyString());
 
 			if(result){

@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /*
- * Stemp->append
+ * Stemp->concatenate
  * T->transformToList
  * CASE->change case
  */
@@ -152,7 +152,7 @@ public class ECLIPSESolver extends SatSolver{
 				target=new ArrayList<String>(((ArrayList<String>) store.get(sourceMap.get("t"))));
 		target.add("str_len(S"+id+",_)");
 		
-		if((fName.equals("append"))||fName.equals("concat")){
+		if((fName.equals("concatenate"))||fName.equals("concat")){
 				String newVal;
 				ArrayList<String> arg;
 				 if(sourceMap.get("s1")==null){
@@ -190,7 +190,7 @@ public class ECLIPSESolver extends SatSolver{
 				}
 				target=mergeLists(target,arg);
 
-				target.add("append(S"+sourceMap.get("t")+","+newVal+",S"+id+")");
+				target.add("concatenate(S"+sourceMap.get("t")+","+newVal+",S"+id+")");
 				store.put(id, target);
 		}
 		else if(fName.equals("<init>")){
@@ -253,7 +253,7 @@ public class ECLIPSESolver extends SatSolver{
 				target.add("str_len(S2L"+id+",_)");
 				target.add("N_"+id+"<"+argOne);
 
-				target.add("append(S"+sourceMap.get("t")+",S2L"+id+",S1L"+id+")");
+				target.add("concatenate(S"+sourceMap.get("t")+",S2L"+id+",S1L"+id+")");
 				target.add("(S"+id+"=[];str_substr(S1L"+id+",1,N_"+id+",S"+id+"))");
 			}
 			store.put(id, target);
@@ -300,12 +300,12 @@ public class ECLIPSESolver extends SatSolver{
 			else
 				target.add("str_substr(S"+sourceMap.get("t")+",1,"+offset+",I1N"+id+")");
 			
-			target.add("append(S"+sourceMap.get("t")+",I2N1_"+id+", I2N2_"+id+")");
+			target.add("concatenate(S"+sourceMap.get("t")+",I2N1_"+id+", I2N2_"+id+")");
 			target.add("str_len(S"+sourceMap.get("t")+",LEN"+id+")");
 			target.add("I2N"+id+"=[];str_substr(I2N2_"+id+","+(offset+1)+",LEN"+id+",I2N"+id+")");
 			
-			target.add("append(I1N"+id+","+newVal+", I3N"+id+")");
-			target.add("append(I3N"+id+","+"I2N"+id+",S"+id+")");
+			target.add("concatenate(I1N"+id+","+newVal+", I3N"+id+")");
+			target.add("concatenate(I3N"+id+","+"I2N"+id+",S"+id+")");
 			store.put(id, target);
 		}
 		else if(fName.equals("setCharAt")){
@@ -324,13 +324,13 @@ public class ECLIPSESolver extends SatSolver{
 			else
 				target.add("str_substr(S"+sourceMap.get("t")+",1,"+(offset)+",I1N"+id+")");
 			
-			target.add("append(S"+sourceMap.get("t")+",I2N1_"+id+", I2N2_"+id+")");
+			target.add("concatenate(S"+sourceMap.get("t")+",I2N1_"+id+", I2N2_"+id+")");
 			target.add("str_len(S"+sourceMap.get("t")+",LEN"+id+")");
 			target.add("END"+id+"=LEN"+id+"-"+offset+2);
 			target.add("(I2N"+id+"=[];str_substr(I2N2_"+id+","+(offset+1)+",LEN"+id+",I2N"+id+"))");
 			
-			target.add("append(I1N"+id+","+newVal+", I3N"+id+")");
-			target.add("append(I3N"+id+","+"I2N"+id+",S"+id+")");
+			target.add("concatenate(I1N"+id+","+newVal+", I3N"+id+")");
+			target.add("concatenate(I3N"+id+","+"I2N"+id+",S"+id+")");
 			store.put(id, target);
 		}
 		else if(fName.equals("trim")){
@@ -342,7 +342,7 @@ public class ECLIPSESolver extends SatSolver{
 //				String targetVal;
 //				targetVal=getTargetString(sourceMap.get("t"));
 //				target.add("str_len(S"+sourceMap.get("t")+",_)");
-//				if(targetVal.contains("-1")){
+//				if(targetVal.containsString("-1")){
 //					target.add("str_substr(S"+sourceMap.get("t")+",_,_,S"+id+")");
 //					store.put(id, target);
 //					return;
@@ -409,7 +409,7 @@ public class ECLIPSESolver extends SatSolver{
 			
 			target.add("(I2N"+id+"=[];str_substr(S"+sourceMap.get("t")+","+
 					(offset2+1)+",N"+sourceMap.get("t")+",I2N"+id+"))");
-			target.add("append(I1N"+id+","+"I2N"+id+",S"+id+")");
+			target.add("concatenate(I1N"+id+","+"I2N"+id+",S"+id+")");
 			store.put(id, target);
 		}
 		else if(fName.equals("deleteCharAt")){
@@ -424,7 +424,7 @@ public class ECLIPSESolver extends SatSolver{
 			
 			target.add("(I2N"+id+"=[];str_substr(S"+sourceMap.get("t")+","+
 					(offset+2)+",NLEN"+id+",I2N"+id+"))");
-			target.add("append(I1N"+id+","+"I2N"+id+",S"+id+")");
+			target.add("concatenate(I1N"+id+","+"I2N"+id+",S"+id+")");
 			store.put(id, target);
 		}
 		else if(fName.equals("reverse")){
@@ -497,8 +497,8 @@ public class ECLIPSESolver extends SatSolver{
 //					else
 //						solveString.add(" S"+j+"_2_"+id+"=[]");
 //
-//					solveString.add("append(S"+j+"_1_"+id+","+newVal+",S"+j+"_3_"+id+")");
-//					solveString.add("append(S"+j+"_3_"+id+",S"+j+"_2_"+id+",S"+(j+1)+"_"+id+")");
+//					solveString.add("concatenate(S"+j+"_1_"+id+","+newVal+",S"+j+"_3_"+id+")");
+//					solveString.add("concatenate(S"+j+"_3_"+id+",S"+j+"_2_"+id+",S"+(j+1)+"_"+id+")");
 //					
 //					j++;
 //					solveString.add("str_len(S"+j+"_"+id+",N"+j+"_N"+id+")");
@@ -575,7 +575,7 @@ public class ECLIPSESolver extends SatSolver{
 			}
 			else if(next != -1)
 				auto.add(caseName+"_2_"+i+"=["+next+"]");
-			auto.add("append("+caseName+"_1_"+(i-1)+","+caseName+"_2_"+i+","+caseName+"_1_"+i+")");
+			auto.add("concatenate("+caseName+"_1_"+(i-1)+","+caseName+"_2_"+i+","+caseName+"_1_"+i+")");
 			i++;
 		}
 		auto.add("str_len(S"+id+",_)");
@@ -703,7 +703,7 @@ public class ECLIPSESolver extends SatSolver{
 			argNum=sourceMap.get("s1");
 		}
 
-		if (fName.equals("contains")) {
+		if (fName.equals("containsString")) {
 			base=mergeLists(base, arg);
 			//contained in
 

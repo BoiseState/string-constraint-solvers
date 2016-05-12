@@ -5,7 +5,7 @@
 
   <groupId>edu.boisestate.cs</groupId>
   <artifactId>string-constraint-solvers</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>jar</packaging>
 
   <name>string-constraint-solvers</name>
@@ -63,6 +63,11 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>2.7.2</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.3.1</version>
     </dependency>
   </dependencies>
 

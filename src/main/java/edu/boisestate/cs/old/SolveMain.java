@@ -304,7 +304,7 @@ public class SolveMain {
 //            SymbolicEdge edge = it.next();
 //            PrintConstraint source = ((PrintConstraint) edge.getASource());
 //            PrintConstraint target = ((PrintConstraint) edge.getATarget());
-//            graphString.append(source.getSplitValue() +
+//            graphString.concatenate(source.getSplitValue() +
 //                               "!:" +
 //                               source.getActualVal() +
 //                               "!:-" +

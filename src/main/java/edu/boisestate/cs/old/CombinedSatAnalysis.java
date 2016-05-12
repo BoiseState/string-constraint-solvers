@@ -36,7 +36,7 @@ public class CombinedSatAnalysis implements Solver{
 	private ArrayList<Integer> completes;
 	private ArrayList<Integer> containsCompletes;
 	private ArrayList<Integer> singletonUnsat;
-	private String[] bpArray={"equalsIgnoreCase", "equals", "contains", "contentEquals", "endsWith", "startsWith", "matches", "isEmpty", "regionMatches"};
+	private String[] bpArray={"equalsIgnoreCase", "equals", "containsString", "contentEquals", "endsWith", "startsWith", "matches", "isEmpty", "regionMatches"};
 	private int[] bpToCount={0,0,0,0,0,0,0,0,0};
 	private ArrayList<Integer> newTops;
 	private int newTotalTop;
@@ -297,7 +297,7 @@ public class CombinedSatAnalysis implements Solver{
 					else{
 				//	if(currentSolver.getTaint()){
 						updateTotal=true;
-						if(fName.equals("contains")||fName.equals("startsWith")||fName.equals("endsWith"))
+						if(fName.equals("containsString")||fName.equals("startsWith")||fName.equals("endsWith"))
 							containsCompletes.set(i, containsCompletes.get(i)+1);
 						else
 							completes.set(i, completes.get(i)+1);

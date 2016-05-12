@@ -163,7 +163,7 @@ public class JSASolver extends SatSolver {
         Automaton auto = null;
 
         long startTime = System.nanoTime();
-        if ((fName.equals("append")) || fName.equals("concat")) {
+        if ((fName.equals("concatenate")) || fName.equals("concat")) {
             auto = ((Automaton) store.get(sourceMap.get("t"))).clone();
             Automaton a2;
             if (sourceMap.get("s1") == null) {
@@ -759,8 +759,8 @@ public class JSASolver extends SatSolver {
                     ((Automaton) store.get(source1Id)).getFiniteStrings(1);
         }
 
-        // if target automaton contains only single non-null string
-        // and first parameter automaton is either null or also contains
+        // if target automaton containsString only single non-null string
+        // and first parameter automaton is either null or also containsString
         // a single non-null string
         if (tStrings != null &&
             tStrings.size() == 1 &&
@@ -1064,7 +1064,7 @@ public class JSASolver extends SatSolver {
             argNum = sourceMap.get("s1");
         }
 
-        if (fName.equals("contains")) {
+        if (fName.equals("containsString")) {
 
             if (result) {
                 AssertContainsOther c = new AssertContainsOther();

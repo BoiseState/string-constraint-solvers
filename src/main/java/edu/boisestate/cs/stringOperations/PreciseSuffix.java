@@ -1,5 +1,5 @@
 /**
- * An extended EJSA operation for a more precise suffix operation.
+ * An extended EJSA operation for a more precise prefix operation.
  */
 package edu.boisestate.cs.stringOperations;
 

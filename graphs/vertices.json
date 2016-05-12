@@ -6,6 +6,12 @@
     "sourceConstraints": [ 0, 1 ],
     "timeStamp": 0,
     "type": 0,
-    "value": "string"
+    "value": "string",
+    "incomingEdges": [
+      {
+        "source": 0,
+        "type": "strings"
+      }
+    ]
   }
 ]

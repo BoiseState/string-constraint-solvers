@@ -1,5 +1,7 @@
 #! /usr/bin/env bash
 
+# <script> <solver> <reporter> <extensionless graph file> 
+
 # get directory of this script as current working directory
 project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
@@ -9,6 +11,9 @@ project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 # get solver
 set_solver $1
 
+# get reporter
+set_reporter $2
+
 # get classpath
 set_classpath $project_dir
 
@@ -16,13 +21,13 @@ set_classpath $project_dir
 mkdir -p $project_dir/results/$solver/extended
 
 # get graph files to parse
-if [ -z "$2" ] ; then
+if [ -z "$3" ] ; then
 
     files=`ls $project_dir/graphs/*.ser`
 
 else
 
-    files="$project_dir/graphs/$2.ser"
+    files="$project_dir/graphs/$3.ser"
 
 fi
 
@@ -35,16 +40,16 @@ do
     f_name=${f_name_ex%%.ser}
 
     echo
-    echo $f_name_ex
-    echo
+    echo $f_name
     echo
 
     # execute solver
     java -cp "$class_path" \
          -Xmx2g \
-         analysis.SolveMain \
-         $project_dir/graphs/$f_name.ser \
-         $solver \
+         edu.boisestate.cs.analysis.SolveMain \
+         $project_dir/graphs/$f_name.json \
+         $solver_args \
+         $reporter_args \
          2>&1 | \
             tee $project_dir/results/$solver/extended/$f_name.txt
 

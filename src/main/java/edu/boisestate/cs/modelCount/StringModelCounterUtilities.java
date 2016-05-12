@@ -18,7 +18,7 @@ public class StringModelCounterUtilities {
                 && initialString.length() > 0
                 && initialString.endsWith(String.valueOf(minChar))) {
 
-            // append regex count symbol to end
+            // concatenate regex count symbol to end
             currentString = initialString + "{2}";
 
         }
@@ -59,7 +59,7 @@ public class StringModelCounterUtilities {
                 && initialString.matches(String.format("\\[%c-%c\\]$",
                                                        minChar,
                                                        maxChar))) {
-            // append regex count symbol to end
+            // concatenate regex count symbol to end
             currentString = initialString + "{2}";
         }
         // if range char transition and string not empty and

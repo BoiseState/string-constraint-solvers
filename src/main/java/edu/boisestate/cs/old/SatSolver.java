@@ -190,7 +190,7 @@ public abstract class SatSolver implements Solver{
 		return pastLists.get(id);
 	}
 	/**
-	 * Check if a pastList contains a value.
+	 * Check if a pastList containsString a value.
 	 * @param id
 	 * @param val
 	 * @return
@@ -518,8 +518,8 @@ public abstract class SatSolver implements Solver{
 		String result=null;
 		if(baseGuess==null)
 			return null;
-		if(fName.equals("contains")||fName.equals("contentEquals")||fName.equals("endsWith")||fName.equals("startsWith")||fName.equals("equals")||fName.equals("equalsIgnoreCase")||fName.equals("matches")){
-			if(fName.equals("contains")){
+		if(fName.equals("containsString")||fName.equals("contentEquals")||fName.equals("endsWith")||fName.equals("startsWith")||fName.equals("equals")||fName.equals("equalsIgnoreCase")||fName.equals("matches")){
+			if(fName.equals("containsString")){
 				result= Boolean.toString(baseGuess.contains(argGuess));
 			}
 			else if(fName.equals("contentEquals")){
@@ -599,19 +599,19 @@ public abstract class SatSolver implements Solver{
 		}
 	
 	/**
-	 * Checks if the parameter contains a predicate method.
+	 * Checks if the parameter containsString a predicate method.
 	 * @param string The name of the method to be checked.
 	 * @return true if the parameter is a predicate.
 	 */
 	protected static boolean containsBoolFunction(String string){
 		String fName=string.split("!!")[0];
-		if(fName.equals("equals")||fName.equals("contains")||fName.equals("contentEquals")||fName.equals("endsWith")||fName.equals("startsWith")
+		if(fName.equals("equals")||fName.equals("containsString")||fName.equals("contentEquals")||fName.equals("endsWith")||fName.equals("startsWith")
 				||fName.equals("equalsIgnoreCase")||fName.equals("matches")||fName.equals("isEmpty")||fName.equals("regionMathes"))
 			return true;
 		return false;
 	}
 	/**
-	 * Checks if the parameter contains a hybrid integer method.
+	 * Checks if the parameter containsString a hybrid integer method.
 	 * @param string The name of the method to be checked.
 	 * @return true if the parameter is an integer method.
 	 */
@@ -662,7 +662,7 @@ public abstract class SatSolver implements Solver{
 		String fName = string.split("!!")[0];
 		if(!(fName.equals("toString")|| fName.equals("valueOf")||fName.equals("intern")||fName.equals("trimToSize")||fName.equals("copyValueOf")
 			//	don't include if concat is precise
-			//	|| (fName.equals("append")&&sourceMap.size()==2)||fName.equals("concat")
+			//	|| (fName.equals("concatenate")&&sourceMap.size()==2)||fName.equals("concat")
 				))
 			store.setTaint(id, true);
 	}
