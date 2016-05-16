@@ -3,7 +3,7 @@ package edu.boisestate.cs;
 public class Settings {
 
     public static final int DEFAULT_BOUNDING_LENGTH = 10;
-
+    private String alphabetDeclaration;
     /**
      * Version of the automaton model used with JSA family of string constraint
      * solvers: <ol> <li>Unbounded automaton model</li> <li>Bounded automaton
@@ -12,10 +12,14 @@ public class Settings {
      */
     private int automatonModelVersion;
     private boolean debug;
+    private String graphFilePath;
     private int initialBoundingLength;
     private Reporter reporter;
     private Solver solver;
-    private String graphFilePath;
+
+    public String getAlphabetDeclaration() {
+        return alphabetDeclaration;
+    }
 
     public int getAutomatonModelVersion() {
         return automatonModelVersion;
@@ -23,6 +27,10 @@ public class Settings {
 
     public boolean getDebug() {
         return debug;
+    }
+
+    public String getGraphFilePath() {
+        return graphFilePath;
     }
 
     public int getInitialBoundingLength() {
@@ -37,8 +45,8 @@ public class Settings {
         return solver;
     }
 
-    public String getGraphFilePath() {
-        return graphFilePath;
+    public void setAlphabetDeclaration(String alphabetDeclaration) {
+        this.alphabetDeclaration = alphabetDeclaration;
     }
 
     public void setAutomatonModelVersion(int automatonModelVersion) {
@@ -47,6 +55,10 @@ public class Settings {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public void setGraphFilePath(String graphFilePath) {
+        this.graphFilePath = graphFilePath;
     }
 
     public void setInitialBoundingLength(int initialBoundingLength) {
@@ -61,13 +73,10 @@ public class Settings {
         this.solver = solver;
     }
 
-    public void setGraphFilePath(String graphFilePath) {
-        this.graphFilePath = graphFilePath;
-    }
-
     public Settings() {
 
         // initialize fields with default values
+        this.alphabetDeclaration = " -~"; // ascii visual characters
         this.automatonModelVersion = 1;
         this.debug = false;
         this.initialBoundingLength = DEFAULT_BOUNDING_LENGTH;
@@ -77,9 +86,10 @@ public class Settings {
     }
 
     public enum Reporter {
-        SAT ("SAT"),
-        MODEL_COUNT ("Model Count");
+        SAT("SAT"),
+        MODEL_COUNT("Model Count");
 
+        public static Reporter DEFAULT = Reporter.SAT;
         private final String name;
 
         Reporter(String name) {
@@ -90,17 +100,16 @@ public class Settings {
         public String toString() {
             return name.toLowerCase().replace(' ', '-');
         }
-
-        public static Reporter DEFAULT = Reporter.SAT;
     }
 
     public enum Solver {
-        BLANK ("Blank"),
-        CONCRETE ("Concrete"),
-        JSA ("JSA"),
-        STRANGER ("Stranger"),
-        Z3 ("Z3");
+        BLANK("Blank"),
+        CONCRETE("Concrete"),
+        JSA("JSA"),
+        STRANGER("Stranger"),
+        Z3("Z3");
 
+        public static Solver DEFAULT = Solver.JSA;
         private final String name;
 
         Solver(String name) {
@@ -111,7 +120,5 @@ public class Settings {
         public String toString() {
             return name.toLowerCase().replace(' ', '-');
         }
-
-        public static Solver DEFAULT = Solver.JSA;
     }
 }

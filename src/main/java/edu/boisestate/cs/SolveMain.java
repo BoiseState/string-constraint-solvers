@@ -26,8 +26,6 @@ import java.util.*;
 @SuppressWarnings({"Duplicates", "unchecked"})
 public class SolveMain {
 
-    public static final int BOUND = 10;
-
     public static void main(String[] args) {
 
         Settings settings = processArgs(args);
@@ -273,7 +271,7 @@ public class SolveMain {
             AutomatonModelFactory factory =
                     AutomatonModelFactory.getInstance(modelVersion);
 
-            solver = new AggregateEJSASolver(factory, boundingLength);
+            solver = new ModelEJSASolver(factory, boundingLength);
 
         } else if (selectedSolver == Settings.Solver.JSA &&
                    modelVersion == 3 &&
@@ -283,7 +281,7 @@ public class SolveMain {
             AutomatonModelFactory factory =
                     AutomatonModelFactory.getInstance(modelVersion);
 
-            solver = new AggregateMCJSASolver(factory, boundingLength);
+            solver = new ModelMCJSASolver(factory, boundingLength);
 
 //        } else if (selectedSolver == Settings.Solver.JSA &&
 //                   modelVersion == 4 &&
