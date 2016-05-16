@@ -15,9 +15,9 @@ public interface AutomatonModel
 
     AutomatonModel intersect(AutomatonModel arg);
 
-    AutomatonModel clone();
-
     AutomatonModel minus(AutomatonModel x);
 
     AutomatonModel complement();
+
+    AutomatonModel clone();
 }

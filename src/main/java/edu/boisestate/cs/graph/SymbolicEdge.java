@@ -2,12 +2,9 @@
  * Represents an edge in a SymbolicGraph
  * @author Scott Kausler
  */
-package edu.boisestate.cs.analysis;
+package edu.boisestate.cs.graph;
 
-import edu.boisestate.cs.analysis.PrintConstraint;
 import org.jgrapht.graph.DefaultEdge;
-
-import java.lang.reflect.Field;
 
 public class SymbolicEdge extends DefaultEdge{
 

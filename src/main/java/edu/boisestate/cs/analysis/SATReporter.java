@@ -1,5 +1,8 @@
 package edu.boisestate.cs.analysis;
 
+import edu.boisestate.cs.Parser;
+import edu.boisestate.cs.graph.PrintConstraint;
+import edu.boisestate.cs.graph.SymbolicEdge;
 import edu.boisestate.cs.solvers.ExtendedSolver;
 import org.jgrapht.DirectedGraph;
 
@@ -7,10 +10,10 @@ import java.util.Map;
 
 public class SATReporter extends Reporter {
 
-    protected SATReporter(DirectedGraph<PrintConstraint, SymbolicEdge> graph,
-                          Parser parser,
-                          ExtendedSolver solver,
-                          boolean debug) {
+    public SATReporter(DirectedGraph<PrintConstraint, SymbolicEdge> graph,
+                       Parser parser,
+                       ExtendedSolver solver,
+                       boolean debug) {
 
         super(graph, parser, solver, debug);
     }

@@ -1,7 +1,7 @@
 package edu.boisestate.cs.old;
 
 import org.jgrapht.ext.EdgeNameProvider;
-import edu.boisestate.cs.analysis.SymbolicEdge;
+import edu.boisestate.cs.graph.SymbolicEdge;
 
 public class EdgeInfoProvider implements EdgeNameProvider<SymbolicEdge> {
 

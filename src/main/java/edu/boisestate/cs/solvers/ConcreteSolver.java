@@ -2,7 +2,7 @@ package edu.boisestate.cs.solvers;
 
 import java.util.Set;
 
-import edu.boisestate.cs.analysis.Parser;
+import edu.boisestate.cs.Parser;
 
 
 public class ConcreteSolver extends ExtendedSolver<ConcreteValue> implements ModelCountSolver {

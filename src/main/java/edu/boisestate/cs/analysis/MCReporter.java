@@ -1,5 +1,8 @@
 package edu.boisestate.cs.analysis;
 
+import edu.boisestate.cs.Parser;
+import edu.boisestate.cs.graph.PrintConstraint;
+import edu.boisestate.cs.graph.SymbolicEdge;
 import edu.boisestate.cs.solvers.ExtendedSolver;
 import edu.boisestate.cs.solvers.ModelCountSolver;
 import org.jgrapht.DirectedGraph;
@@ -11,12 +14,12 @@ public class MCReporter
 
     private final ModelCountSolver modelCountSolver;
 
-    protected MCReporter(DirectedGraph<PrintConstraint, SymbolicEdge>
-                                 graph,
-                         Parser parser,
-                         ExtendedSolver extendedSolver,
-                         boolean debug,
-                         ModelCountSolver modelCountSolver) {
+    public MCReporter(DirectedGraph<PrintConstraint, SymbolicEdge>
+                              graph,
+                      Parser parser,
+                      ExtendedSolver extendedSolver,
+                      boolean debug,
+                      ModelCountSolver modelCountSolver) {
 
         super(graph, parser, extendedSolver, debug);
 

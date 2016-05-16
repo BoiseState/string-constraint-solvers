@@ -1,4 +1,4 @@
-package edu.boisestate.cs.analysis;
+package edu.boisestate.cs;
 
 public class Settings {
 

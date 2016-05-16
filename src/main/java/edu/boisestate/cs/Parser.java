@@ -1,5 +1,6 @@
-package edu.boisestate.cs.analysis;
+package edu.boisestate.cs;
 
+import edu.boisestate.cs.graph.PrintConstraint;
 import edu.boisestate.cs.solvers.ConcreteSolver;
 import edu.boisestate.cs.solvers.ExtendedSolver;
 

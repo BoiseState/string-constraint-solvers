@@ -4,7 +4,7 @@
  *
  * @author Scott Kausler
  */
-package edu.boisestate.cs.analysis;
+package edu.boisestate.cs.graph;
 
 import java.io.Serializable;
 import java.util.*;

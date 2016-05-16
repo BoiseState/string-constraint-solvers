@@ -1,4 +1,4 @@
-package edu.boisestate.cs.modelCount;
+package edu.boisestate.cs;
 
 public class MinMaxPair
         implements Comparable<MinMaxPair> {

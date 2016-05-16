@@ -1,4 +1,4 @@
-package edu.boisestate.cs.analysis;
+package edu.boisestate.cs.graph;
 
 import java.util.Comparator;
 

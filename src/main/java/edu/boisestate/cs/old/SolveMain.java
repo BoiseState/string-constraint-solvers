@@ -7,8 +7,8 @@
  */
 package edu.boisestate.cs.old;
 
-import edu.boisestate.cs.analysis.PrintConstraint;
-import edu.boisestate.cs.analysis.SymbolicEdge;
+import edu.boisestate.cs.graph.PrintConstraint;
+import edu.boisestate.cs.graph.SymbolicEdge;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.ext.DOTExporter;
 

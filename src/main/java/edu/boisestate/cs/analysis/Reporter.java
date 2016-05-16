@@ -1,5 +1,9 @@
 package edu.boisestate.cs.analysis;
 
+import edu.boisestate.cs.Parser;
+import edu.boisestate.cs.graph.PrintConstraint;
+import edu.boisestate.cs.graph.PrintConstraintComparator;
+import edu.boisestate.cs.graph.SymbolicEdge;
 import edu.boisestate.cs.solvers.ExtendedSolver;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
