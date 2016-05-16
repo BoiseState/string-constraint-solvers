@@ -5,6 +5,8 @@ public interface AutomatonModel
 
     String getAcceptedStringExample();
 
+    int getBound();
+
     boolean isEmpty();
 
     boolean isSingleton();
@@ -18,6 +20,8 @@ public interface AutomatonModel
     AutomatonModel minus(AutomatonModel x);
 
     AutomatonModel complement();
+
+    void setBound();
 
     AutomatonModel clone();
 }

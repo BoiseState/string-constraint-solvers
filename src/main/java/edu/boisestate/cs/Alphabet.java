@@ -1,6 +1,5 @@
 package edu.boisestate.cs;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -10,7 +9,17 @@ public class Alphabet {
 
     private final Set<MinMaxPair> charRanges;
     private final Set<Character> symbolSet;
-    private boolean rangeUpdateNeeded;
+
+    public Set<MinMaxPair> getCharRanges() {
+
+        // lazy access pattern
+        if (charRanges.size() > 0) {
+            return charRanges;
+        }
+
+        this.createCharRanges();
+        return charRanges;
+    }
 
     public Set<Character> getSymbolSet() {
         return symbolSet;
@@ -21,7 +30,6 @@ public class Alphabet {
         // initialize fields
         this.symbolSet = new TreeSet<>();
         this.charRanges = new TreeSet<>();
-        this.rangeUpdateNeeded = false;
     }
 
     public Alphabet(String symbolString) {

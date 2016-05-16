@@ -3,7 +3,6 @@ package edu.boisestate.cs;
 public class Settings {
 
     public static final int DEFAULT_BOUNDING_LENGTH = 10;
-    private String alphabetDeclaration;
     /**
      * Version of the automaton model used with JSA family of string constraint
      * solvers: <ol> <li>Unbounded automaton model</li> <li>Bounded automaton
@@ -14,11 +13,18 @@ public class Settings {
     private boolean debug;
     private String graphFilePath;
     private int initialBoundingLength;
+    private String minAlphabet;
     private Reporter reporter;
     private Solver solver;
+    private String alphabetDeclaration;
+    private int alphabetSize;
 
     public String getAlphabetDeclaration() {
         return alphabetDeclaration;
+    }
+
+    public int getAlphabetSize() {
+        return alphabetSize;
     }
 
     public int getAutomatonModelVersion() {
@@ -37,6 +43,10 @@ public class Settings {
         return initialBoundingLength;
     }
 
+    public String getMinAlphabet() {
+        return minAlphabet;
+    }
+
     public Reporter getReporter() {
         return reporter;
     }
@@ -47,6 +57,10 @@ public class Settings {
 
     public void setAlphabetDeclaration(String alphabetDeclaration) {
         this.alphabetDeclaration = alphabetDeclaration;
+    }
+
+    public void setAlphabetSize(int alphabetSize) {
+        this.alphabetSize = alphabetSize;
     }
 
     public void setAutomatonModelVersion(int automatonModelVersion) {
@@ -65,6 +79,10 @@ public class Settings {
         this.initialBoundingLength = initialBoundingLength;
     }
 
+    public void setMinAlphabet(String minAlphabet) {
+        this.minAlphabet = minAlphabet;
+    }
+
     public void setReporter(Reporter reporter) {
         this.reporter = reporter;
     }
@@ -77,9 +95,11 @@ public class Settings {
 
         // initialize fields with default values
         this.alphabetDeclaration = " -~"; // ascii visual characters
+        this.alphabetSize = 94; // number of ascii visual characters
         this.automatonModelVersion = 1;
         this.debug = false;
         this.initialBoundingLength = DEFAULT_BOUNDING_LENGTH;
+        this.minAlphabet = " -~"; // ascii visual characters
         this.reporter = Reporter.DEFAULT;
         this.solver = Solver.DEFAULT;
         this.graphFilePath = "./graphs/beasties01.json";

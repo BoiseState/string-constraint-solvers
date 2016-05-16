@@ -37,7 +37,7 @@ public class SolveMain {
 
         // get constraint graph from filename
         DirectedGraph<PrintConstraint, SymbolicEdge> graph;
-        graph = getGraph(settings.getGraphFilePath());
+        graph = getGraph(settings);
 
         // get solver from solver name
         ExtendedSolver solver = getSolver(settings);
@@ -67,7 +67,7 @@ public class SolveMain {
     }
 
     private static DirectedGraph<PrintConstraint, SymbolicEdge> getGraph
-            (String filePath) {
+            (Settings settings) {
 
         // initialize graph object as null
         DirectedGraph<PrintConstraint, SymbolicEdge> graph =
@@ -77,7 +77,7 @@ public class SolveMain {
         ObjectMapper mapper = new ObjectMapper();
 
         // initialize json file object
-        File graphFile = new File(filePath);
+        File graphFile = new File(settings.getGraphFilePath());
 
         // initialize lists for processing
         Map<Integer, PrintConstraint> constraintMap = new HashMap<>();
@@ -87,9 +87,22 @@ public class SolveMain {
 
         try {
 
-            // get constraint data from json file
+
+            // get graph data from json file
+            Map<String, Object> graphData =
+                    mapper.readValue(graphFile, Map.class);
+
+            // add alphabet data to settings
+            Map<String, Object> alphabetData =
+                    (Map<String, Object>) graphData.get("alphabet");
+            String minAlphabet = (String) alphabetData.get("declaration");
+            settings.setMinAlphabet(minAlphabet);
+            int alphabetSize = (int) alphabetData.get("size");
+            settings.setAlphabetSize(alphabetSize);
+
+            // get constraint data from graph data
             List<Map<String, Object>> vertexData =
-                    mapper.readValue(graphFile, List.class);
+                    (List<Map<String, Object>>) graphData.get("vertices");
 
             for (Map<String, Object> obj : vertexData) {
 

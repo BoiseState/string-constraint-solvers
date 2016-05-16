@@ -15,7 +15,7 @@ ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(logging.DEBUG)
 
 formatter = logging.Formatter(
-    '[%(name)s:%(levelname)s]: %(message)s')
+    u'[%(name)s:%(levelname)s]: %(message)s')
 ch.setFormatter(formatter)
 
 log.addHandler(ch)
@@ -25,7 +25,6 @@ SPECIAL_CHARS = [u'\b', u'\f', u'\n', u'\r', u'\t', u'\'', u'\"', u'\\\\']
 
 
 def display_special_char(character):
-
     # return display equivalent for each character
     if character == '\b':
         return '\\b'
@@ -43,15 +42,15 @@ def display_special_char(character):
         return '\\"'
     elif character == '\\\\':
         return '\\\\\\\\'
+    else:
+        return character
 
 
 def replace_special_chars_to_display(string):
-
     # replace special chars
     for c in SPECIAL_CHARS:
         replacement = display_special_char(c)
         string = string.replace(c, replacement)
-        # string = string.encode('unicode_escape')
 
     return string
 
@@ -62,48 +61,85 @@ def analyze_graph(vertices):
 
     # process each vertex
     for vertex in vertices:
+        log.debug('*** Vertex {0:4d} ***'.format(vertex['id']))
 
         # get string value for analysis
         value = vertex['actualValue']
 
-        # log debug information
-        log.debug('*** Vertex {0:4d} ***'.format(vertex['id']))
-        log.debug('String Value : "{0}"'.format(
-            replace_special_chars_to_display(value)))
+        # determine if value is None/null
+        if value is None:
+            log.debug(u'String Value : None')
+        else:
+            log.debug(u'String Value : "{0}"'.format(
+                replace_special_chars_to_display(value)))
 
-        # extract and store control characters
-        for special_c in SPECIAL_CHARS:
-            if special_c in value:
-                log.debug('Special Character Found: {0}'.format(
-                    display_special_char(special_c)))
-                alphabet.add(special_c)
-                value = value.replace(special_c,
-                                      display_special_char(special_c))
+            # extract and store control characters
+            for special_c in SPECIAL_CHARS:
+                if special_c in value:
+                    log.debug(u'Special Character Found: {0}'.format(
+                        display_special_char(special_c)))
+                    alphabet.add(ord(special_c))
+                    value = value.replace(special_c,
+                                          display_special_char(special_c))
 
-        # process each char and its index
-        for i, c in enumerate(value):
-            # log.debug('Index {0:3d}: \'{1}\''.format(i, c))
-            alphabet.add(c)
+            # process each char and its index
+            for i, c in enumerate(value):
+                log.debug(u'Index {0:3d}: \'{1}\''.format(i, c))
+                alphabet.add(ord(c))
 
     # log alphabet information
-    log.debug('Alphabet: {0}'.format(alphabet))
+    for sym in alphabet:
+        log.debug(u'Alphabet Symbol: {0:d} = {1}'.format(sym,
+                                                        display_special_char(
+                                                            unichr(sym))))
 
     # return alphabet set
-    return alphabet
+    return sorted(alphabet)
 
 
 def create_alphabet_declaration(alphabet):
+    # initialize variables
+    ranges = list()
+    prev = alphabet.pop(0)
+    start = prev
 
     # process each symbol
-    # for sym in alphabet:
+    for sym in alphabet:
 
-    return ''
+        # if starting new range
+        if sym - prev != 1:
+            # add previous range pair
+            range_pair = (start, prev)
+            ranges.append(range_pair)
 
+            # set new min
+            start = sym
 
+        # set prev from current sym
+        prev = sym
+
+    # add final range pair
+    range_pair = (start, prev)
+    ranges.append(range_pair)
+
+    # transform range pairs into strings
+    range_strings = list()
+    for s, e in ranges:
+        if s == e:
+            range_strings.append(unichr(s))
+        else:
+            range_string = u'{0}-{1}'.format(unichr(s), unichr(e))
+            range_strings.append(range_string)
+
+    # print debug information
+    for s in range_strings:
+        log.debug(u'Alphabet Sub-range: {0}'.format(s))
+
+    # return single string of ranges
+    return ','.join(range_strings)
 
 
 def main(arguments):
-
     # process command line args
     parser = argparse.ArgumentParser(prog=__doc__,
                                      description='Analyze a string constraint '
@@ -111,7 +147,6 @@ def main(arguments):
                                                  'alphabet')
 
     parser.add_argument('graph_file',
-                        type=argparse.FileType('r'),
                         help="The json file which contains the string "
                              "constraint graph gathered from dynamic symbolic "
                              "execution.",
@@ -128,22 +163,38 @@ def main(arguments):
     if args.debug:
         log.setLevel(logging.DEBUG)
         ch.setLevel(logging.DEBUG)
+        log.debug('Args: {0}'.format(args))
 
     # process graph file
-    with args.graph_file as graph_file:
+    with open(args.graph_file, 'r') as graph_file:
 
         # load graph file data
         data = json.load(graph_file)
 
-        # analyze graph vertices for alphabet
-        alphabet = set()
+        # get vertices from graph file
         if isinstance(data, dict):
-            alphabet = analyze_graph(data['vertices'])
+            vertices = data['vertices']
         else:
-            alphabet = analyze_graph(data)
+            vertices = data
 
-        # create alphabet declaration from set
-        declaration = create_alphabet_declaration(alphabet)
+    # analyze graph vertices for alphabet
+    alphabet = analyze_graph(vertices)
+
+    # create alphabet declaration from set
+    declaration = create_alphabet_declaration(alphabet)
+
+    # get graph file structure
+    graph = {
+        'vertices': vertices,
+        'alphabet': {
+            'declaration': declaration,
+            'size': len(alphabet)
+        }
+    }
+
+    # write out update graph file
+    with open(args.graph_file, 'w') as graph_file:
+        json.dump(graph, graph_file)
 
 
 if __name__ == '__main__':
