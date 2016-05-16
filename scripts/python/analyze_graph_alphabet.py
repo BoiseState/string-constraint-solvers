@@ -20,6 +20,41 @@ ch.setFormatter(formatter)
 
 log.addHandler(ch)
 
+# initialize special character list
+SPECIAL_CHARS = [u'\b', u'\f', u'\n', u'\r', u'\t', u'\'', u'\"', u'\\\\']
+
+
+def display_special_char(character):
+
+    # return display equivalent for each character
+    if character == '\b':
+        return '\\b'
+    elif character == '\f':
+        return '\\f'
+    elif character == '\n':
+        return '\\n'
+    elif character == '\r':
+        return '\\r'
+    elif character == '\t':
+        return '\\t'
+    elif character == '\'':
+        return '\\\''
+    elif character == '\"':
+        return '\\"'
+    elif character == '\\\\':
+        return '\\\\\\\\'
+
+
+def replace_special_chars_to_display(string):
+
+    # replace special chars
+    for c in SPECIAL_CHARS:
+        replacement = display_special_char(c)
+        string = string.replace(c, replacement)
+        # string = string.encode('unicode_escape')
+
+    return string
+
 
 def analyze_graph(vertices):
     # initialize return set of characters
@@ -31,19 +66,44 @@ def analyze_graph(vertices):
         # get string value for analysis
         value = vertex['actualValue']
 
-        # extract and store control characters
+        # log debug information
         log.debug('*** Vertex {0:4d} ***'.format(vertex['id']))
-        log.debug('String Value : "{0}"'.format(value))
+        log.debug('String Value : "{0}"'.format(
+            replace_special_chars_to_display(value)))
+
+        # extract and store control characters
+        for special_c in SPECIAL_CHARS:
+            if special_c in value:
+                log.debug('Special Character Found: {0}'.format(
+                    display_special_char(special_c)))
+                alphabet.add(special_c)
+                value = value.replace(special_c,
+                                      display_special_char(special_c))
 
         # process each char and its index
         for i, c in enumerate(value):
-            log.debug('Index {0:3d}: \'{1}\''.format(i, c))
+            # log.debug('Index {0:3d}: \'{1}\''.format(i, c))
+            alphabet.add(c)
+
+    # log alphabet information
+    log.debug('Alphabet: {0}'.format(alphabet))
 
     # return alphabet set
     return alphabet
 
 
+def create_alphabet_declaration(alphabet):
+
+    # process each symbol
+    # for sym in alphabet:
+
+    return ''
+
+
+
+
 def main(arguments):
+
     # process command line args
     parser = argparse.ArgumentParser(prog=__doc__,
                                      description='Analyze a string constraint '
@@ -81,6 +141,9 @@ def main(arguments):
             alphabet = analyze_graph(data['vertices'])
         else:
             alphabet = analyze_graph(data)
+
+        # create alphabet declaration from set
+        declaration = create_alphabet_declaration(alphabet)
 
 
 if __name__ == '__main__':
