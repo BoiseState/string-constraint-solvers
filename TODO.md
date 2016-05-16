@@ -7,4 +7,4 @@
   - boolean constraint (end)
   - operation
 4. Create and Update Javadoc documentation.
-5. Create appropriate github documentation for project.
+5. Create appropriate Github documentation for project.
