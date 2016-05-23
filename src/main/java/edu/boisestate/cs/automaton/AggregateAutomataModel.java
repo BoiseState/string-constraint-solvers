@@ -14,11 +14,11 @@ public class AggregateAutomataModel
         return automata;
     }
 
-    public AggregateAutomataModel(Automaton[] automata) {
+    AggregateAutomataModel(Automaton[] automata) {
         setAutomata(automata);
     }
 
-    void setAutomata(Automaton[] automata) {
+    private void setAutomata(Automaton[] automata) {
 
         // create automata array from parameter
         this.automata = new Automaton[automata.length];
@@ -27,37 +27,6 @@ public class AggregateAutomataModel
         for (int i = 0; i < automata.length; i++) {
             Automaton clone = automata[i].clone();
             this.automata[i] = clone;
-        }
-    }
-
-    public AggregateAutomataModel(String string) {
-
-        // make automaton model from string
-        Automaton automaton;
-
-        if (string == null) {
-            automaton = BasicAutomata.makeEmpty();
-        } else if (string.equals("")) {
-            automaton = BasicAutomata.makeEmptyString();
-        } else {
-            automaton = BasicAutomata.makeString(string);
-        }
-
-        // create automaton array
-        this.automata = new Automaton[1];
-        this.automata[0] = automaton;
-    }
-
-    public AggregateAutomataModel(int boundingLength) {
-
-        // create automata array from bounding length size
-        this.automata = new Automaton[boundingLength];
-
-        // fill automata array with appropriately length automata
-        Automaton anyAutomaton = BasicAutomata.makeAnyString();
-        for (int i = 0; i < boundingLength; i++) {
-            Automaton boundedAutomaton = boundAutomaton(anyAutomaton, i);
-            this.automata[i] = boundedAutomaton;
         }
     }
 

@@ -1,14 +1,20 @@
 package edu.boisestate.cs.automaton;
 
 import dk.brics.automaton.Automaton;
+import dk.brics.automaton.BasicAutomata;
 
 import java.util.Set;
 
 public class UnboundedAutomatonModel
         implements AutomatonModel {
 
-    private int bound;
     private Automaton model;
+
+    UnboundedAutomatonModel(Automaton model) {
+
+        // set model from parameter
+        this.model = model;
+    }
 
     @Override
     public AutomatonModel clone() {
@@ -17,16 +23,6 @@ public class UnboundedAutomatonModel
 
     @Override
     public AutomatonModel complement() {
-        return null;
-    }
-
-    @Override
-    public boolean equals() {
-        return false;
-    }
-
-    @Override
-    public AutomatonModel union(AutomatonModel arg) {
         return null;
     }
 
@@ -41,13 +37,18 @@ public class UnboundedAutomatonModel
     }
 
     @Override
+    public boolean equals() {
+        return false;
+    }
+
+    @Override
     public String getAcceptedStringExample() {
         return null;
     }
 
     @Override
     public int getBound() {
-        return this.bound;
+        return 0;
     }
 
     @Override
@@ -79,6 +80,11 @@ public class UnboundedAutomatonModel
 
     @Override
     public void setBound(int newBound) {
-        this.bound = newBound;
+        // nothing to do
+    }
+
+    @Override
+    public AutomatonModel union(AutomatonModel arg) {
+        return null;
     }
 }

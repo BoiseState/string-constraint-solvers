@@ -20,8 +20,6 @@ public abstract class AutomatonModelFactory {
             BoundedAutomatonModelFactory.setInstance(alphabet);
         } else if (modelVersion == 3) {
             AggregateAutomatonModelFactory.setInstance(alphabet);
-        } else if (modelVersion == 4) {
-            WeightedAutomatonModelFactory.setInstance(alphabet);
         }
 
         return instance;

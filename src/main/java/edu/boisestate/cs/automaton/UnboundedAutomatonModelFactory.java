@@ -1,35 +1,53 @@
 package edu.boisestate.cs.automaton;
 
+import dk.brics.automaton.Automaton;
+import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
 
 public class UnboundedAutomatonModelFactory
         extends AutomatonModelFactory {
 
-    private UnboundedAutomatonModelFactory(Alphabet alphabet) {
-        this.alphabet = alphabet;
-    }
-
     static void setInstance(Alphabet alphabet) {
         instance = new UnboundedAutomatonModelFactory(alphabet);
     }
 
-    @Override
-    public AutomatonModel createString(String string) {
-        return null;
+    private UnboundedAutomatonModelFactory(Alphabet alphabet) {
+        this.alphabet = alphabet;
     }
 
     @Override
     public AutomatonModel createAnyString(int boundingLength) {
-        return null;
+        throw new UnsupportedOperationException(
+                "An UnboundedAutomatonModel can not have a bounding length");
     }
 
     @Override
     public AutomatonModel createAnyString() {
-        return null;
+
+        // create any string automaton
+        Automaton anyString = BasicAutomata.makeAnyString();
+
+        // return model from automaton
+        return new UnboundedAutomatonModel(anyString);
     }
 
     @Override
     public AutomatonModel createEmptyString() {
-        return null;
+
+        // create empty string automaton
+        Automaton emptyString = BasicAutomata.makeEmptyString();
+
+        // return model from automaton
+        return new UnboundedAutomatonModel(emptyString);
+    }
+
+    @Override
+    public AutomatonModel createString(String string) {
+
+        // create string automaton
+        Automaton stringAutomaton = BasicAutomata.makeString(string);
+
+        // return model from automaton
+        return new UnboundedAutomatonModel(stringAutomaton);
     }
 }
