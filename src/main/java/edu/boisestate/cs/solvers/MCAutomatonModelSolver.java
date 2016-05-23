@@ -4,16 +4,16 @@ import edu.boisestate.cs.automaton.AutomatonModelFactory;
 
 import java.util.Set;
 
-public class ModelMCJSASolver
-        extends ModelEJSASolver
+public class MCAutomatonModelSolver
+        extends AutomatonModelSolver
         implements ModelCountSolver {
 
-    public ModelMCJSASolver(AutomatonModelFactory modelFactory) {
+    public MCAutomatonModelSolver(AutomatonModelFactory modelFactory) {
         super(modelFactory);
     }
 
-    public ModelMCJSASolver(AutomatonModelFactory modelFactory,
-                            int initialBound) {
+    public MCAutomatonModelSolver(AutomatonModelFactory modelFactory,
+                                  int initialBound) {
         super(modelFactory, initialBound);
     }
 

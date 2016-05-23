@@ -5,7 +5,8 @@ import edu.boisestate.cs.automaton.AutomatonModel;
 /**
  *
  */
-public class AssertContainedIn extends Operation{
+public class AssertContainedInOther
+        extends Operation{
 
     private final AutomatonModel containingModel;
 
@@ -13,7 +14,7 @@ public class AssertContainedIn extends Operation{
      * Constructs operation for true contained in other string.
      * @param containingModel The model representing the string which containing string.
      */
-    public AssertContainedIn(AutomatonModel containingModel) {
+    public AssertContainedInOther(AutomatonModel containingModel) {
         this.containingModel = containingModel;
     }
 

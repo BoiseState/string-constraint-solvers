@@ -5,7 +5,7 @@ import edu.boisestate.cs.automaton.AutomatonModel;
 /**
  *
  */
-public class Postfix extends Operation {
+public class Trim extends Operation {
 
     /**
      * Execute the symbolic operation on the provided automaton model.

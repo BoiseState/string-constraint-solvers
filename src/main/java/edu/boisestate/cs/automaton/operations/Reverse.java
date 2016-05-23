@@ -5,14 +5,7 @@ import edu.boisestate.cs.automaton.AutomatonModel;
 /**
  *
  */
-public class Prefix extends Operation {
-
-    /**
-     * Construct prefix operation.
-     * @param end The index of the string that terminates the prefix substring.
-     */
-    public Prefix(int end) {
-    }
+public class Reverse extends Operation {
 
     /**
      * Execute the symbolic operation on the provided automaton model.

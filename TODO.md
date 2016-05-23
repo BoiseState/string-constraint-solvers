@@ -6,5 +6,6 @@
   - root
   - boolean constraint (end)
   - operation
-4. Create and Update Javadoc documentation.
-5. Create appropriate Github documentation for project.
+4. Partial solving of constratin graph with subset of minimal alphabet.
+5. Create and Update Javadoc documentation.
+6. Create appropriate Github documentation for project.

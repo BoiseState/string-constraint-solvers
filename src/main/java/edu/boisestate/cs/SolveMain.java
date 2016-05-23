@@ -15,7 +15,6 @@ import edu.boisestate.cs.automaton.AutomatonModelFactory;
 import edu.boisestate.cs.graph.PrintConstraint;
 import edu.boisestate.cs.graph.SymbolicEdge;
 import edu.boisestate.cs.solvers.*;
-import org.apache.commons.cli.*;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
@@ -28,46 +27,77 @@ public class SolveMain {
 
     public static void main(String[] args) {
 
-        Settings settings = processArgs(args);
+        Settings settings = CommandLine.processArgs(args);
 
         // ensure arguments processed properly before continuing
         if (settings == null) {
             return;
         }
 
-        // get constraint graph from filename
-        DirectedGraph<PrintConstraint, SymbolicEdge> graph;
-        graph = getGraph(settings);
+        // initialize components object
+        Components components = new Components();
 
-        // get solver from solver name
-        ExtendedSolver solver = getSolver(settings);
+        // load constraint graph
+        loadGraph(components, settings);
+
+        // load alphabet
+        loadAlphabet(components, settings);
+
+        // load solver
+        loadSolver(components, settings);
 
         // if graph or parser not loaded, abort program
-        if (graph == null || solver == null) {
+        if (components.getGraph() == null || components.getSolver() == null) {
             return;
         }
 
-        // get parser
-        Parser parser = getParser(solver, settings.getDebug());
+        // load parser
+        loadParser(components, settings);
 
-        // get reporter
-        Reporter reporter = getReporter(settings.getReporter(),
-                                        graph,
-                                        parser,
-                                        solver,
-                                        settings.getDebug());
+        // load reporter
+        loadReporter(components, settings);
 
         // if reporter not loaded, abort program
-        if (reporter == null) {
+        if (components.getReporter() == null) {
             return;
         }
 
-        // run solver with specified graph and solver
-        reporter.run();
+        // run reporter
+        components.getReporter().run();
     }
 
-    private static DirectedGraph<PrintConstraint, SymbolicEdge> getGraph
-            (Settings settings) {
+    private static void loadAlphabet(Components components, Settings settings) {
+
+        // declare alphabet variable
+        Alphabet alphabet = null;
+
+        // if alphabet declared
+        if (settings.getAlphabetDeclaration() != null) {
+
+            // create alphabet from declaration
+            alphabet = new Alphabet(settings.getAlphabetDeclaration());
+
+            // if alphabet is not superset of minimal alphabet
+            if (!alphabet.isSuperset(settings.getMinAlphabet())) {
+
+                // reset alphabet to null
+                alphabet = null;
+            }
+        }
+
+        // if alphabet not already set
+        if (alphabet == null) {
+
+            // create alphabet from minimum required alphabet
+            alphabet = new Alphabet(settings.getMinAlphabet());
+        }
+
+        // store alphabet
+        components.setAlphabet(alphabet);
+
+    }
+
+    private static void loadGraph(Components components, Settings settings) {
 
         // initialize graph object as null
         DirectedGraph<PrintConstraint, SymbolicEdge> graph =
@@ -87,7 +117,6 @@ public class SolveMain {
 
         try {
 
-
             // get graph data from json file
             Map<String, Object> graphData =
                     mapper.readValue(graphFile, Map.class);
@@ -97,8 +126,6 @@ public class SolveMain {
                     (Map<String, Object>) graphData.get("alphabet");
             String minAlphabet = (String) alphabetData.get("declaration");
             settings.setMinAlphabet(minAlphabet);
-            int alphabetSize = (int) alphabetData.get("size");
-            settings.setAlphabetSize(alphabetSize);
 
             // get constraint data from graph data
             List<Map<String, Object>> vertexData =
@@ -142,7 +169,6 @@ public class SolveMain {
                 }
             }
 
-
             // set sourceConstraints for each constraint
             for (PrintConstraint constraint : sourceConstraintMap.keySet()) {
 
@@ -178,24 +204,33 @@ public class SolveMain {
             i.printStackTrace();
         }
 
-        return graph;
+        // store graph as component
+        components.setGraph(graph);
     }
 
-    private static Parser getParser(ExtendedSolver solver, boolean debug) {
-        return new Parser(solver, debug);
+    private static void loadParser(Components components, Settings settings) {
+
+        // create and store parser as component
+        components.setParser(new Parser(components.getSolver(),
+                                        settings.getDebug()));
+
     }
 
-    private static Reporter getReporter(Settings.Reporter reportType,
-                                        DirectedGraph<PrintConstraint,
-                                                SymbolicEdge> graph,
-                                        Parser parser,
-                                        ExtendedSolver solver,
-                                        boolean debug) {
+    private static void loadReporter(Components components,
+                                         Settings settings) {
+
+        // get values from settings
+        Settings.ReportType reportType = settings.getReportType();
+        boolean debug = settings.getDebug();
+        DirectedGraph<PrintConstraint, SymbolicEdge> graph =
+                components.getGraph();
+        Parser parser = components.getParser();
+        ExtendedSolver solver = components.getSolver();
 
         // initialize reporter as null
         Reporter reporter = null;
 
-        if (reportType == Settings.Reporter.MODEL_COUNT) {
+        if (reportType == Settings.ReportType.MODEL_COUNT) {
 
             // ensure solver is model count solver
             if (solver instanceof ModelCountSolver) {
@@ -211,90 +246,91 @@ public class SolveMain {
                                           mcSolver);
             }
 
-        } else if (reportType == Settings.Reporter.SAT) {
+        } else if (reportType == Settings.ReportType.SAT) {
 
             // create reporter from parameters
             reporter = new SATReporter(graph, parser, solver, debug);
         }
 
-        // return reporter
-        return reporter;
+        // store reporter
+        components.setReporter(reporter);
     }
 
-    private static ExtendedSolver getSolver(Settings settings) {
+    private static void loadSolver(Components components, Settings settings) {
 
         // get needed info from settings object
-        Settings.Solver selectedSolver = settings.getSolver();
-        Settings.Reporter reporter = settings.getReporter();
+        Settings.SolverType selectedSolver = settings.getSolverType();
+        Settings.ReportType reportType = settings.getReportType();
         int modelVersion = settings.getAutomatonModelVersion();
         int boundingLength = settings.getInitialBoundingLength();
+        Alphabet alphabet = components.getAlphabet();
 
         // initialize extend solver as null
         ExtendedSolver solver = null;
 
         // create specified solver for parser
-        if (selectedSolver == Settings.Solver.BLANK) {
+        if (selectedSolver == Settings.SolverType.BLANK) {
 
             solver = new BlankSolver();
 
-        } else if (selectedSolver == Settings.Solver.CONCRETE) {
+        } else if (selectedSolver == Settings.SolverType.CONCRETE) {
 
             solver = new ConcreteSolver(2);
 
-        } else if (selectedSolver == Settings.Solver.STRANGER) {
+        } else if (selectedSolver == Settings.SolverType.STRANGER) {
 
             solver = new EStranger();
 
-        } else if (selectedSolver == Settings.Solver.Z3) {
+        } else if (selectedSolver == Settings.SolverType.Z3) {
 
             solver = new EZ3Str(5000,
                                 "/usr/local/bin/Z3-str/Z3-str.py",
                                 "str",
                                 "tempZ3Str");
 
-        } else if (selectedSolver == Settings.Solver.JSA &&
+        } else if (selectedSolver == Settings.SolverType.JSA &&
                    modelVersion == 1 &&
-                   reporter == Settings.Reporter.SAT) {
+                   reportType == Settings.ReportType.SAT) {
 
             solver = new UnboundedEJSASolver(boundingLength);
 
-        } else if (selectedSolver == Settings.Solver.JSA &&
+        } else if (selectedSolver == Settings.SolverType.JSA &&
                    modelVersion == 1 &&
-                   reporter == Settings.Reporter.MODEL_COUNT) {
+                   reportType == Settings.ReportType.MODEL_COUNT) {
 
             solver = new UnboundedMCJSASolver(boundingLength);
 
-        } else if (selectedSolver == Settings.Solver.JSA &&
+        } else if (selectedSolver == Settings.SolverType.JSA &&
                    modelVersion == 2 &&
-                   reporter == Settings.Reporter.SAT) {
+                   reportType == Settings.ReportType.SAT) {
 
             solver = new BoundedEJSASolver(boundingLength);
 
-        } else if (selectedSolver == Settings.Solver.JSA &&
+        } else if (selectedSolver == Settings.SolverType.JSA &&
                    modelVersion == 2 &&
-                   reporter == Settings.Reporter.MODEL_COUNT) {
+                   reportType == Settings.ReportType.MODEL_COUNT) {
 
             solver = new BoundedMCJSASolver(boundingLength);
 
-        } else if (selectedSolver == Settings.Solver.JSA &&
+        } else if (selectedSolver == Settings.SolverType.JSA &&
                    modelVersion == 3 &&
-                   reporter == Settings.Reporter.SAT) {
+                   reportType == Settings.ReportType.SAT) {
 
             // get model factory
             AutomatonModelFactory factory =
-                    AutomatonModelFactory.getInstance(modelVersion);
+                    AutomatonModelFactory.getInstance(alphabet, modelVersion);
 
-            solver = new ModelEJSASolver(factory, boundingLength);
+            solver = new AutomatonModelSolver(factory, boundingLength);
 
-        } else if (selectedSolver == Settings.Solver.JSA &&
+        } else if (selectedSolver == Settings.SolverType.JSA &&
                    modelVersion == 3 &&
-                   reporter == Settings.Reporter.MODEL_COUNT) {
+                   reportType == Settings.ReportType.MODEL_COUNT) {
 
             // get model factory
             AutomatonModelFactory factory =
-                    AutomatonModelFactory.getInstance(modelVersion);
+                    AutomatonModelFactory.getInstance(alphabet, modelVersion);
 
-            solver = new ModelMCJSASolver(factory, boundingLength);
+            solver = new MCAutomatonModelSolver(factory, boundingLength);
 
 //        } else if (selectedSolver == Settings.Solver.JSA &&
 //                   modelVersion == 4 &&
@@ -310,251 +346,8 @@ public class SolveMain {
 //
         }
 
-        // return created parser
-        return solver;
-    }
-
-    private static boolean isValidGraphFile(String filePath) {
-        File graphFile = new File(filePath);
-        return graphFile.exists() && filePath.endsWith(".json");
-    }
-
-    private static void printHelp(Options options) {
-
-        // create formatter
-        HelpFormatter formatter = new HelpFormatter();
-
-        formatter.setSyntaxPrefix("USAGE:\n");
-
-        String appClass = "java " + SolveMain.class.getName();
-
-        String header = "\nRun string constraint solver on specified control" +
-                        " flow graph. The default string constraint solver " +
-                        "is " +
-                        Settings.Solver.DEFAULT +
-                        ". The default reporter is " +
-                        Settings.Reporter.DEFAULT +
-                        ".\n\nOPTIONS:\n";
-
-        String footer = "\nSee the code repository at https://github.com/" +
-                        "BoiseState/string-constraint-solvers for more " +
-                        "details.\n";
-
-        formatter.printHelp(appClass + " <Graph File>",
-                            header,
-                            options,
-                            footer,
-                            true);
-    }
-
-    private static Settings processArgs(String[] args) {
-
-        // create command line option objects
-        Option solver = Option.builder("s")
-                              .longOpt("solver")
-                              .desc("The solver that will be used to solve " +
-                                    "string constraints:\n" +
-                                    Settings.Solver.BLANK +
-                                    " - The blank solver used for testing" +
-                                    ".\n" +
-                                    Settings.Solver.CONCRETE +
-                                    " - The concrete solver which provides an" +
-                                    " oracle for other solvers.\n" +
-                                    Settings.Solver.JSA +
-                                    " - The Java String Analyzer solver which" +
-                                    " comes from the dk.brics automaton and " +
-                                    "string libraries.\n" +
-                                    Settings.Solver.STRANGER +
-                                    " - The STRANGER string constraint solver" +
-                                    ".\n" +
-                                    Settings.Solver.Z3 +
-                                    " - The Z3 rule based string constraint " +
-                                    "solver.\n\nThe default solver is " +
-                                    Settings.Solver.DEFAULT +
-                                    "\n")
-                              .hasArg()
-                              .numberOfArgs(1)
-                              .argName("solver")
-                              .build();
-        Option reporter = Option.builder("r")
-                                .longOpt("reporter")
-                                .desc("The reporter used to gather " +
-                                      "information for each string constraint" +
-                                      ":\n" +
-                                      Settings.Reporter.SAT +
-                                      " - Reports on the satisfiability of " +
-                                      "each string constraint in the " +
-                                      "specified graph\n" +
-                                      Settings.Reporter.MODEL_COUNT +
-                                      " - Reports on the number and percent " +
-                                      "of" +
-                                      " string instances for each branch " +
-                                      "leaving the string constraint, " +
-                                      "includes satisfiability.\n\nThe " +
-                                      "default reporter is " +
-                                      Settings.Reporter.DEFAULT +
-                                      "\n")
-                                .hasArg()
-                                .numberOfArgs(1)
-                                .argName("reporter")
-                                .build();
-
-        Option debug = Option.builder("d")
-                             .longOpt("debug")
-                             .desc("Runs the solver framework in debug mode." +
-                                   " Default value is false.")
-                             .build();
-        Option help = Option.builder("h")
-                            .longOpt("help")
-                            .desc("Display this message.")
-                            .build();
-        Option length = Option.builder("l")
-                              .longOpt("length")
-                              .desc("Initial bounding length of the " +
-                                    "underlying finite state automata if " +
-                                    "used for representing symbolic strings." +
-                                    " Default value is " +
-                                    Settings.DEFAULT_BOUNDING_LENGTH + ".")
-                              .hasArg()
-                              .numberOfArgs(1)
-                              .argName("length")
-                              .build();
-        Option modelVersion = Option.builder("v")
-                                    .longOpt("model-version")
-                                    .desc("The version of the automaton model" +
-                                          " used by the JSA string constraint" +
-                                          " solver:\n1 - Unbounded " +
-                                          "automaton model\n2 - Bounded " +
-                                          "automaton model\n3 - Aggregate " +
-                                          "bounded automata model\n4 - " +
-                                          "Proposed accurate automaton model")
-                                    .hasArg()
-                                    .numberOfArgs(1)
-                                    .argName("version")
-                                    .build();
-
-        // create options object
-        Options options = new Options();
-        options.addOption(debug);
-        options.addOption(help);
-        options.addOption(length);
-        options.addOption(modelVersion);
-        options.addOption(solver);
-        options.addOption(reporter);
-
-        // create parser
-        CommandLineParser parser = new DefaultParser();
-        CommandLine commandLine;
-
-        // attempt to parse command line arguments
-        try {
-            commandLine = parser.parse(options, args);
-        } catch (ParseException e) {
-            System.err.format(
-                    "Error processing command line arguments. Reason: %s",
-                    e.getMessage());
-            return null;
-        }
-
-        // create settings object
-        Settings settings = new Settings();
-
-        // process help option
-        if (commandLine.hasOption("h")) {
-            printHelp(options);
-            return null;
-        }
-
-        // process additional arguments
-        List<String> argsList = commandLine.getArgList();
-        if (argsList.size() != 1 ||
-            argsList.get(0) == null ||
-            !isValidGraphFile(argsList.get(0))) {
-            System.err.println(
-                    "Invalid arguments have been specified, please consult " +
-                    "usage documentation for help with the -h or --help " +
-                    "option");
-
-            return null;
-        }
-
-        // get vertices and edges files from unprocessed arguments list
-        settings.setGraphFilePath(argsList.get(0));
-
-        // process debug option
-        if (commandLine.hasOption("d")) {
-            settings.setDebug(true);
-        }
-
-        if (commandLine.hasOption("l")) {
-
-            // set initial bounding length from option value
-            String optionValue = commandLine.getOptionValue("l");
-            int boundingLength = Integer.parseInt(optionValue);
-            settings.setInitialBoundingLength(boundingLength);
-        }
-
-        if (commandLine.hasOption("v")) {
-
-            // set initial bounding length from option value
-            String optionValue = commandLine.getOptionValue("v");
-            int version = Integer.parseInt(optionValue);
-            settings.setAutomatonModelVersion(version);
-        }
-
-        // process solver option
-        if (commandLine.hasOption("s")) {
-
-            // get solver choice from option value
-            String optionValue = commandLine.getOptionValue("s");
-            String choice = optionValue.toLowerCase();
-
-            if (choice.equals("blank")) {
-                settings.setSolver(Settings.Solver.BLANK);
-            } else if (choice.equals("concrete")) {
-                settings.setSolver(Settings.Solver.CONCRETE);
-            } else if (choice.equals("jsa")) {
-                settings.setSolver(Settings.Solver.JSA);
-            } else if (choice.equals("stranger")) {
-                settings.setSolver(Settings.Solver.STRANGER);
-            } else if (choice.equals("z3")) {
-                settings.setSolver(Settings.Solver.Z3);
-            } else {
-                String errorMessage = String.format(
-                        "The specified solver \"%s\" is not a recognized " +
-                        "string constraint solver, please use the -h or " +
-                        "--help option to see the valid solvers",
-                        choice);
-                System.err.println(errorMessage);
-                return null;
-            }
-        }
-
-        // process reporter
-        if (commandLine.hasOption("r")) {
-
-            // get reporter choice from option value
-            String optionValue = commandLine.getOptionValue("r");
-            String choice = optionValue.toLowerCase();
-
-            if (choice.equals("sat")) {
-                settings.setReporter(Settings.Reporter.SAT);
-            } else if (choice.equals("model-count")) {
-                settings.setReporter(Settings.Reporter.MODEL_COUNT);
-            } else {
-
-                String errorMessage = String.format(
-                        "The specified solver \"%s\" is not a recognized " +
-                        "reporter, please use the -h or --help option to see " +
-                        "the valid reporters",
-                        choice);
-                System.err.println(errorMessage);
-                return null;
-            }
-        }
-
-        // return updated settings object
-        return settings;
+        // store created solver
+        components.setSolver(solver);
     }
 
 }

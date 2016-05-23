@@ -1,19 +1,27 @@
 package edu.boisestate.cs.automaton;
 
+import edu.boisestate.cs.Alphabet;
+
 public abstract class AutomatonModelFactory {
 
     static protected AutomatonModelFactory instance = null;
+    protected Alphabet alphabet;
 
-    static public AutomatonModelFactory getInstance(int modelVersion) {
+    public Alphabet getAlphabet() {
+        return this.alphabet;
+    }
+
+    static public AutomatonModelFactory getInstance(Alphabet alphabet,
+                                                    int modelVersion) {
 
         if (modelVersion == 1) {
-            UnboundedAutomatonModelFactory.setInstance();
+            UnboundedAutomatonModelFactory.setInstance(alphabet);
         } else if (modelVersion == 2) {
-            BoundedAutomatonModelFactory.setInstance();
+            BoundedAutomatonModelFactory.setInstance(alphabet);
         } else if (modelVersion == 3) {
-            AggregateAutomatonModelFactory.setInstance();
+            AggregateAutomatonModelFactory.setInstance(alphabet);
         } else if (modelVersion == 4) {
-            WeightedAutomatonModelFactory.setInstance();
+            WeightedAutomatonModelFactory.setInstance(alphabet);
         }
 
         return instance;
@@ -25,5 +33,5 @@ public abstract class AutomatonModelFactory {
 
     public abstract AutomatonModel createAnyString();
 
-    public abstract AutomatonModel createEmpty();
+    public abstract AutomatonModel createEmptyString();
 }

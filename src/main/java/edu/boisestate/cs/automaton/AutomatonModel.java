@@ -11,6 +11,8 @@ public interface AutomatonModel
 
     boolean isSingleton();
 
+    void setBound(int newBound);
+
     AutomatonModel concatenate(AutomatonModel arg);
 
     boolean containsString(String actualValue);
@@ -21,7 +23,9 @@ public interface AutomatonModel
 
     AutomatonModel complement();
 
-    void setBound();
+    boolean equals();
+
+    AutomatonModel union(AutomatonModel arg);
 
     AutomatonModel clone();
 }

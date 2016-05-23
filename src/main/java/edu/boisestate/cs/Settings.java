@@ -1,8 +1,15 @@
 package edu.boisestate.cs;
 
+import edu.boisestate.cs.analysis.Reporter;
+import edu.boisestate.cs.graph.PrintConstraint;
+import edu.boisestate.cs.graph.SymbolicEdge;
+import edu.boisestate.cs.solvers.ExtendedSolver;
+import org.jgrapht.DirectedGraph;
+
 public class Settings {
 
     public static final int DEFAULT_BOUNDING_LENGTH = 10;
+    private String alphabetDeclaration;
     /**
      * Version of the automaton model used with JSA family of string constraint
      * solvers: <ol> <li>Unbounded automaton model</li> <li>Bounded automaton
@@ -14,17 +21,11 @@ public class Settings {
     private String graphFilePath;
     private int initialBoundingLength;
     private String minAlphabet;
-    private Reporter reporter;
-    private Solver solver;
-    private String alphabetDeclaration;
-    private int alphabetSize;
+    private ReportType reportType;
+    private SolverType solverType;
 
     public String getAlphabetDeclaration() {
         return alphabetDeclaration;
-    }
-
-    public int getAlphabetSize() {
-        return alphabetSize;
     }
 
     public int getAutomatonModelVersion() {
@@ -47,20 +48,16 @@ public class Settings {
         return minAlphabet;
     }
 
-    public Reporter getReporter() {
-        return reporter;
+    public ReportType getReportType() {
+        return reportType;
     }
 
-    public Solver getSolver() {
-        return solver;
+    public SolverType getSolverType() {
+        return solverType;
     }
 
     public void setAlphabetDeclaration(String alphabetDeclaration) {
         this.alphabetDeclaration = alphabetDeclaration;
-    }
-
-    public void setAlphabetSize(int alphabetSize) {
-        this.alphabetSize = alphabetSize;
     }
 
     public void setAutomatonModelVersion(int automatonModelVersion) {
@@ -83,36 +80,35 @@ public class Settings {
         this.minAlphabet = minAlphabet;
     }
 
-    public void setReporter(Reporter reporter) {
-        this.reporter = reporter;
+    public void setReportType(ReportType reportType) {
+        this.reportType = reportType;
     }
 
-    public void setSolver(Solver solver) {
-        this.solver = solver;
+    public void setSolverType(SolverType solverType) {
+        this.solverType = solverType;
     }
 
     public Settings() {
 
         // initialize fields with default values
-        this.alphabetDeclaration = " -~"; // ascii visual characters
-        this.alphabetSize = 94; // number of ascii visual characters
+        this.alphabetDeclaration = null;
         this.automatonModelVersion = 1;
         this.debug = false;
         this.initialBoundingLength = DEFAULT_BOUNDING_LENGTH;
         this.minAlphabet = " -~"; // ascii visual characters
-        this.reporter = Reporter.DEFAULT;
-        this.solver = Solver.DEFAULT;
+        this.reportType = ReportType.DEFAULT;
+        this.solverType = SolverType.DEFAULT;
         this.graphFilePath = "./graphs/beasties01.json";
     }
 
-    public enum Reporter {
+    public enum ReportType {
         SAT("SAT"),
         MODEL_COUNT("Model Count");
 
-        public static Reporter DEFAULT = Reporter.SAT;
+        public static ReportType DEFAULT = ReportType.SAT;
         private final String name;
 
-        Reporter(String name) {
+        ReportType(String name) {
             this.name = name;
         }
 
@@ -122,17 +118,17 @@ public class Settings {
         }
     }
 
-    public enum Solver {
+    public enum SolverType {
         BLANK("Blank"),
         CONCRETE("Concrete"),
         JSA("JSA"),
         STRANGER("Stranger"),
         Z3("Z3");
 
-        public static Solver DEFAULT = Solver.JSA;
+        public static SolverType DEFAULT = SolverType.JSA;
         private final String name;
 
-        Solver(String name) {
+        SolverType(String name) {
             this.name = name;
         }
 

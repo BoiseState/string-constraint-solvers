@@ -1,13 +1,16 @@
 package edu.boisestate.cs.automaton;
 
+import edu.boisestate.cs.Alphabet;
+
 public class WeightedAutomatonModelFactory
         extends AutomatonModelFactory {
 
-    private WeightedAutomatonModelFactory() {
+    private WeightedAutomatonModelFactory(Alphabet alphabet) {
+        this.alphabet = alphabet;
     }
 
-    static void setInstance() {
-        instance = new WeightedAutomatonModelFactory();
+    static void setInstance(Alphabet alphabet) {
+        instance = new WeightedAutomatonModelFactory(alphabet);
     }
 
     @Override
@@ -26,7 +29,7 @@ public class WeightedAutomatonModelFactory
     }
 
     @Override
-    public AutomatonModel createEmpty() {
+    public AutomatonModel createEmptyString() {
         return null;
     }
 }

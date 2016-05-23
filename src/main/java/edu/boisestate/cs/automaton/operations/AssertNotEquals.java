@@ -5,16 +5,13 @@ import edu.boisestate.cs.automaton.AutomatonModel;
 /**
  *
  */
-public class Suffix extends Operation {
+public class AssertNotEquals
+        extends Operation {
 
-    private final int start;
+    private final AutomatonModel notEqualModel;
 
-    /**
-     * Constructs suffix operation.
-     * @param start The index of the string at which the suffix begins.
-     */
-    public Suffix(int start) {
-        this.start = start;
+    public AssertNotEquals(AutomatonModel notEqualModel) {
+        this.notEqualModel = notEqualModel;
     }
 
     /**

@@ -95,6 +95,16 @@ public class AggregateAutomataModel
     }
 
     @Override
+    public boolean equals() {
+        return false;
+    }
+
+    @Override
+    public AutomatonModel union(AutomatonModel arg) {
+        return null;
+    }
+
+    @Override
     public AutomatonModel concatenate(AutomatonModel arg) {
         return null;
     }
@@ -110,6 +120,11 @@ public class AggregateAutomataModel
     }
 
     @Override
+    public int getBound() {
+        return 0;
+    }
+
+    @Override
     public AutomatonModel intersect(AutomatonModel arg) {
         return null;
     }
@@ -122,6 +137,11 @@ public class AggregateAutomataModel
     @Override
     public boolean isSingleton() {
         return false;
+    }
+
+    @Override
+    public void setBound(int newBound) {
+
     }
 
     @Override

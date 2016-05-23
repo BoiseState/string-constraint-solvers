@@ -379,11 +379,13 @@ public class UnboundedEJSASolver
             // get satisfying automaton
             AssertEmpty empty = new AssertEmpty();
             baseAutomaton = empty.op(baseAutomaton);
+
         } else {
 
             // get satisfying automaton
             AssertNotEmpty notEmpty = new AssertNotEmpty();
             baseAutomaton = notEmpty.op(baseAutomaton);
+
         }
 
         // store result automaton

@@ -1,13 +1,16 @@
 package edu.boisestate.cs.automaton;
 
+import edu.boisestate.cs.Alphabet;
+
 public class UnboundedAutomatonModelFactory
         extends AutomatonModelFactory {
 
-    private UnboundedAutomatonModelFactory() {
+    private UnboundedAutomatonModelFactory(Alphabet alphabet) {
+        this.alphabet = alphabet;
     }
 
-    static void setInstance() {
-        instance = new UnboundedAutomatonModelFactory();
+    static void setInstance(Alphabet alphabet) {
+        instance = new UnboundedAutomatonModelFactory(alphabet);
     }
 
     @Override
@@ -26,7 +29,7 @@ public class UnboundedAutomatonModelFactory
     }
 
     @Override
-    public AutomatonModel createEmpty() {
+    public AutomatonModel createEmptyString() {
         return null;
     }
 }

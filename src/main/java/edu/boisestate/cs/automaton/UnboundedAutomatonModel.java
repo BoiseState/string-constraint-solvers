@@ -1,20 +1,33 @@
 package edu.boisestate.cs.automaton;
 
+import dk.brics.automaton.Automaton;
+
+import java.util.Set;
+
 public class UnboundedAutomatonModel
         implements AutomatonModel {
+
+    private int bound;
+    private Automaton model;
+
     @Override
-    public String getAcceptedStringExample() {
+    public AutomatonModel clone() {
         return null;
     }
 
     @Override
-    public boolean isEmpty() {
+    public AutomatonModel complement() {
+        return null;
+    }
+
+    @Override
+    public boolean equals() {
         return false;
     }
 
     @Override
-    public boolean isSingleton() {
-        return false;
+    public AutomatonModel union(AutomatonModel arg) {
+        return null;
     }
 
     @Override
@@ -28,13 +41,35 @@ public class UnboundedAutomatonModel
     }
 
     @Override
+    public String getAcceptedStringExample() {
+        return null;
+    }
+
+    @Override
+    public int getBound() {
+        return this.bound;
+    }
+
+    @Override
     public AutomatonModel intersect(AutomatonModel arg) {
         return null;
     }
 
     @Override
-    public AutomatonModel clone() {
-        return null;
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public boolean isSingleton() {
+
+        // get one finite string, null if more
+        Set<String> strings = this.model.getStrings(1);
+
+        // return if single non-null string in automaton
+        return strings != null &&
+               strings.size() == 1 &&
+               strings.iterator().next() != null;
     }
 
     @Override
@@ -43,7 +78,7 @@ public class UnboundedAutomatonModel
     }
 
     @Override
-    public AutomatonModel complement() {
-        return null;
+    public void setBound(int newBound) {
+        this.bound = newBound;
     }
 }
