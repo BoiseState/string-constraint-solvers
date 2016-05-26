@@ -4,15 +4,22 @@ import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
 
+import java.util.Set;
+
 public class UnboundedAutomatonModelFactory
         extends AutomatonModelFactory {
 
-    static void setInstance(Alphabet alphabet) {
-        instance = new UnboundedAutomatonModelFactory(alphabet);
+    private final int initialBoundLength;
+
+    private UnboundedAutomatonModelFactory(Alphabet alphabet,
+                                           int initialBoundLength) {
+        this.alphabet = alphabet;
+        this.initialBoundLength = initialBoundLength;
     }
 
-    private UnboundedAutomatonModelFactory(Alphabet alphabet) {
-        this.alphabet = alphabet;
+    static void setInstance(Alphabet alphabet, int initialBoundLength) {
+        instance = new UnboundedAutomatonModelFactory(alphabet,
+                                                      initialBoundLength);
     }
 
     @Override
@@ -24,11 +31,15 @@ public class UnboundedAutomatonModelFactory
     @Override
     public AutomatonModel createAnyString() {
 
-        // create any string automaton
-        Automaton anyString = BasicAutomata.makeAnyString();
+        // create any string automaton from alphabet
+        String charSet = this.alphabet.getCharSet();
+        Automaton anyString = BasicAutomata.makeCharSet(charSet)
+                                           .repeat();
 
         // return model from automaton
-        return new UnboundedAutomatonModel(anyString);
+        return new UnboundedAutomatonModel(anyString,
+                                           this.alphabet,
+                                           this.initialBoundLength);
     }
 
     @Override
@@ -38,7 +49,9 @@ public class UnboundedAutomatonModelFactory
         Automaton emptyString = BasicAutomata.makeEmptyString();
 
         // return model from automaton
-        return new UnboundedAutomatonModel(emptyString);
+        return new UnboundedAutomatonModel(emptyString,
+                                           this.alphabet,
+                                           this.initialBoundLength);
     }
 
     @Override
@@ -48,6 +61,8 @@ public class UnboundedAutomatonModelFactory
         Automaton stringAutomaton = BasicAutomata.makeString(string);
 
         // return model from automaton
-        return new UnboundedAutomatonModel(stringAutomaton);
+        return new UnboundedAutomatonModel(stringAutomaton,
+                                           this.alphabet,
+                                           this.initialBoundLength);
     }
 }

@@ -217,7 +217,7 @@ public class SolveMain {
     }
 
     private static void loadReporter(Components components,
-                                         Settings settings) {
+                                     Settings settings) {
 
         // get values from settings
         Settings.ReportType reportType = settings.getReportType();
@@ -318,7 +318,9 @@ public class SolveMain {
 
             // get model factory
             AutomatonModelFactory factory =
-                    AutomatonModelFactory.getInstance(alphabet, modelVersion);
+                    AutomatonModelFactory.getInstance(alphabet,
+                                                      modelVersion,
+                                                      boundingLength);
 
             solver = new AutomatonModelSolver(factory, boundingLength);
 
@@ -328,7 +330,9 @@ public class SolveMain {
 
             // get model factory
             AutomatonModelFactory factory =
-                    AutomatonModelFactory.getInstance(alphabet, modelVersion);
+                    AutomatonModelFactory.getInstance(alphabet,
+                                                      modelVersion,
+                                                      boundingLength);
 
             solver = new MCAutomatonModelSolver(factory, boundingLength);
 

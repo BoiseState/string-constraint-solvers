@@ -1,6 +1,7 @@
 package edu.boisestate.cs.automaton.operations;
 
 import edu.boisestate.cs.automaton.AutomatonModel;
+import edu.boisestate.cs.automaton.AutomatonModelFactory;
 
 /**
  *
@@ -9,15 +10,20 @@ public class AssertContainsOther
         extends Operation {
 
     private final AutomatonModel containedModel;
+    private final AutomatonModelFactory modelFactory;
 
     /**
      * Constructs operation for true contains string operation.
      *
      * @param containedModel
      *         The model representing the contained string.
+     * @param modelFactory
+     *         The model factory for producing any string automata.
      */
-    public AssertContainsOther(AutomatonModel containedModel) {
+    public AssertContainsOther(AutomatonModel containedModel,
+                               AutomatonModelFactory modelFactory) {
         this.containedModel = containedModel;
+        this.modelFactory = modelFactory;
     }
 
     /**
@@ -31,7 +37,17 @@ public class AssertContainsOther
      */
     @Override
     public AutomatonModel execute(AutomatonModel model) {
-        return null;
+
+        // create any string models
+        AutomatonModel anyString1 = this.modelFactory.createAnyString();
+        AutomatonModel anyString2 = this.modelFactory.createAnyString();
+
+        // concatenate with contained model
+        AutomatonModel x = anyString1.concatenate(this.containedModel)
+                                     .concatenate(anyString2);
+
+        // return intersection with model
+        return model.intersect(x);
     }
 
     /**

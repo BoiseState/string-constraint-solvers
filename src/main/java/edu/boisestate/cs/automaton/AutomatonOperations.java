@@ -19,23 +19,25 @@ public class AutomatonOperations {
         return automaton.intersection(boundingAutomaton);
     }
 
-    public static List<Automaton> boundAndSliceAutomaton(Automaton automaton, int length) {
+    public static List<Automaton> boundAndSliceAutomaton(Automaton automaton, int minLength, int maxLength) {
 
         // initialize automaton map
-        List<Automaton> automatonMap = new ArrayList<>(length + 1);
+        int count = maxLength - minLength + 1;
+        List<Automaton> automatonList = new ArrayList<>(count);
 
         // for each value up to and including length
-        for (int i = 0; i <= length; i++) {
+        for (int i = minLength; i <= maxLength; i++) {
 
             // bound automaton
-            Automaton a = boundAutomaton(automaton, i);
+            Automaton bounding = Automaton.makeAnyString().repeat(i, i);
+            Automaton a = automaton.intersection(bounding);
 
             // add to map
-            automatonMap.add(a);
+            automatonList.add(a);
         }
 
         // return automaton map
-        return automatonMap;
+        return automatonList;
     }
 
     static public Automaton ignoreCase(Automaton automaton) {

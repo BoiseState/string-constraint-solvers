@@ -1,11 +1,24 @@
 package edu.boisestate.cs.automaton.operations;
 
 import edu.boisestate.cs.automaton.AutomatonModel;
+import edu.boisestate.cs.automaton.AutomatonModelFactory;
 
 /**
  *
  */
 public class AssertEmpty extends Operation {
+
+    private final AutomatonModelFactory automatonModelFactory;
+
+    /**
+     * Constructs operation for true is empty string operation.
+     *
+     * @param automatonModelFactory
+     *         The model factory for producing empty string automata.
+     */
+    public AssertEmpty(AutomatonModelFactory automatonModelFactory) {
+        this.automatonModelFactory = automatonModelFactory;
+    }
 
     /**
      * Execute the symbolic operation on the provided automaton model.
@@ -18,7 +31,10 @@ public class AssertEmpty extends Operation {
      */
     @Override
     public AutomatonModel execute(AutomatonModel model) {
-        return null;
+
+        // intersect model with empty string
+        AutomatonModel empty = this.automatonModelFactory.createEmptyString();
+        return model.intersect(empty);
     }
 
     /**

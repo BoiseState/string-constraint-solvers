@@ -69,7 +69,8 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying base model
-            AssertContainsOther contains = new AssertContainsOther(argModel);
+            AssertContainsOther contains =
+                    new AssertContainsOther(argModel, this.modelFactory);
             baseModel = contains.execute(baseModel);
 
             // get satisfying arg model
@@ -167,7 +168,8 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying base model
-            AssertEndsWith endsWith = new AssertEndsWith(argModel);
+            AssertEndsWith endsWith =
+                    new AssertEndsWith(argModel, this.modelFactory);
             baseModel = endsWith.execute(baseModel);
 
             // get satisfying arg model
@@ -384,7 +386,7 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying automaton
-            AssertEmpty empty = new AssertEmpty();
+            AssertEmpty empty = new AssertEmpty(this.modelFactory);
             baseModel = empty.execute(baseModel);
 
         } else {
@@ -779,7 +781,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // check model with length of one?
-        AssertHasLength hasLength = new AssertHasLength(1,1);
+        AssertHasLength hasLength = new AssertHasLength(1, 1);
         AutomatonModel hasLengthModel = hasLength.execute(baseModel);
         AutomatonModel temp = baseModel.intersect(hasLengthModel);
 

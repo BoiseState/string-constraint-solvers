@@ -12,14 +12,18 @@ public abstract class AutomatonModelFactory {
     }
 
     static public AutomatonModelFactory getInstance(Alphabet alphabet,
-                                                    int modelVersion) {
+                                                    int modelVersion,
+                                                    int initialBoundLength) {
 
         if (modelVersion == 1) {
-            UnboundedAutomatonModelFactory.setInstance(alphabet);
+            UnboundedAutomatonModelFactory.setInstance(alphabet,
+                                                       initialBoundLength);
         } else if (modelVersion == 2) {
-            BoundedAutomatonModelFactory.setInstance(alphabet);
+            BoundedAutomatonModelFactory.setInstance(alphabet,
+                                                     initialBoundLength);
         } else if (modelVersion == 3) {
-            AggregateAutomatonModelFactory.setInstance(alphabet);
+            AggregateAutomatonModelFactory.setInstance(alphabet,
+                                                       initialBoundLength);
         }
 
         return instance;

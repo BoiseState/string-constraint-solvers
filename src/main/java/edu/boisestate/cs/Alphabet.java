@@ -171,4 +171,16 @@ public class Alphabet {
     public int size() {
         return this.symbolSet.size();
     }
+
+    public String getCharSet() {
+
+        // get char set as string from symbol set
+        StringBuilder charSet = new StringBuilder();
+        for (char c : this.symbolSet) {
+            charSet.append(c);
+        }
+
+        // return char set string
+        return charSet.toString();
+    }
 }

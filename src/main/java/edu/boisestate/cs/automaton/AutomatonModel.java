@@ -1,31 +1,48 @@
 package edu.boisestate.cs.automaton;
 
-public interface AutomatonModel
-        extends Cloneable {
+import dk.brics.automaton.Automaton;
+import edu.boisestate.cs.Alphabet;
 
-    String getAcceptedStringExample();
+public abstract class AutomatonModel
+        implements Cloneable {
 
-    int getBound();
+    protected final Alphabet alphabet;
+    protected int boundLength;
 
-    boolean isEmpty();
+    public abstract String getAcceptedStringExample();
 
-    boolean isSingleton();
+    public int getBoundLength() {
+        return boundLength;
+    }
 
-    void setBound(int newBound);
+    public abstract boolean isEmpty();
 
-    AutomatonModel concatenate(AutomatonModel arg);
+    public abstract boolean isSingleton();
 
-    boolean containsString(String actualValue);
+    public void setBoundLength(int boundLength) {
+        this.boundLength = boundLength;
+    }
 
-    AutomatonModel intersect(AutomatonModel arg);
+    protected AutomatonModel(Alphabet alphabet,
+                             int initialBoundLength) {
 
-    AutomatonModel minus(AutomatonModel x);
+        this.alphabet = alphabet;
+        this.boundLength = initialBoundLength;
+    }
 
-    AutomatonModel complement();
+    public abstract AutomatonModel concatenate(AutomatonModel arg);
 
-    boolean equals();
+    public abstract boolean containsString(String actualValue);
 
-    AutomatonModel union(AutomatonModel arg);
+    public abstract AutomatonModel intersect(AutomatonModel arg);
 
-    AutomatonModel clone();
+    public abstract AutomatonModel minus(AutomatonModel x);
+
+    public abstract AutomatonModel complement();
+
+    public abstract boolean equals(AutomatonModel argModel);
+
+    public abstract AutomatonModel union(AutomatonModel arg);
+
+    public abstract AutomatonModel clone();
 }

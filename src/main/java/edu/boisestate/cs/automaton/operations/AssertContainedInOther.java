@@ -40,6 +40,6 @@ public class AssertContainedInOther
      */
     @Override
     public String toString() {
-        return null;
+        return "containedIn";
     }
 }

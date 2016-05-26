@@ -1,12 +1,10 @@
 package edu.boisestate.cs.automaton;
 
 import dk.brics.automaton.Automaton;
-import dk.brics.automaton.BasicAutomata;
-
-import static edu.boisestate.cs.automaton.AutomatonOperations.boundAutomaton;
+import edu.boisestate.cs.Alphabet;
 
 public class AggregateAutomataModel
-        implements AutomatonModel {
+        extends AutomatonModel {
 
     private Automaton[] automata;
 
@@ -14,7 +12,9 @@ public class AggregateAutomataModel
         return automata;
     }
 
-    AggregateAutomataModel(Automaton[] automata) {
+    AggregateAutomataModel(Automaton[] automata, Alphabet alphabet, int initialBoundLength) {
+        super(alphabet, initialBoundLength);
+
         setAutomata(automata);
     }
 
@@ -30,32 +30,14 @@ public class AggregateAutomataModel
         }
     }
 
+    @SuppressWarnings("CloneDoesntCallSuperClone")
     @Override
     public AutomatonModel clone() {
 
-        // declare clone model
-        AggregateAutomataModel cloneModel;
-
-        try {
-
-            // create clone via super as specified by Java
-            Object clone = super.clone();
-
-            // cas object clone
-            cloneModel = (AggregateAutomataModel) clone;
-
-            // set automata for deep copy
-            cloneModel.setAutomata(this.automata);
-
-        } catch (CloneNotSupportedException e) {
-
             // create new model from existing automata
-            cloneModel = new AggregateAutomataModel(this.automata);
-
-        }
-
-        // return clone model
-        return cloneModel;
+            return new AggregateAutomataModel(this.automata,
+                                                    this.alphabet,
+                                                    this.boundLength);
     }
 
     @Override
@@ -64,7 +46,7 @@ public class AggregateAutomataModel
     }
 
     @Override
-    public boolean equals() {
+    public boolean equals(AutomatonModel argModel) {
         return false;
     }
 
@@ -89,11 +71,6 @@ public class AggregateAutomataModel
     }
 
     @Override
-    public int getBound() {
-        return 0;
-    }
-
-    @Override
     public AutomatonModel intersect(AutomatonModel arg) {
         return null;
     }
@@ -106,11 +83,6 @@ public class AggregateAutomataModel
     @Override
     public boolean isSingleton() {
         return false;
-    }
-
-    @Override
-    public void setBound(int newBound) {
-
     }
 
     @Override

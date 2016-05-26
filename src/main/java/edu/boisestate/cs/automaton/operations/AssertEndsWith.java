@@ -1,6 +1,7 @@
 package edu.boisestate.cs.automaton.operations;
 
 import edu.boisestate.cs.automaton.AutomatonModel;
+import edu.boisestate.cs.automaton.AutomatonModelFactory;
 
 /**
  *
@@ -9,6 +10,7 @@ public class AssertEndsWith
         extends Operation {
 
     private final AutomatonModel endingModel;
+    private final AutomatonModelFactory modelFactory;
 
     /**
      * Construct endsWith operation.
@@ -16,9 +18,13 @@ public class AssertEndsWith
      * @param endingModel
      *         The model representing the substring string which is a suffix of
      *         the string.
+     * @param modelFactory
+     *         The model factory for producing any string automata.
      */
-    public AssertEndsWith(AutomatonModel endingModel) {
+    public AssertEndsWith(AutomatonModel endingModel,
+                          AutomatonModelFactory modelFactory) {
         this.endingModel = endingModel;
+        this.modelFactory = modelFactory;
     }
 
     /**
@@ -32,7 +38,15 @@ public class AssertEndsWith
      */
     @Override
     public AutomatonModel execute(AutomatonModel model) {
-        return null;
+
+        // create any string model
+        AutomatonModel anyString = this.modelFactory.createAnyString();
+
+        // concatenate with ending model
+        AutomatonModel x = anyString.concatenate(this.endingModel);
+
+        // return intersection with model
+        return model.intersect(x);
     }
 
     /**

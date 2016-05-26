@@ -9,29 +9,41 @@ import static edu.boisestate.cs.automaton.AutomatonOperations.boundAutomaton;
 public class AggregateAutomatonModelFactory
         extends AutomatonModelFactory {
 
-    static void setInstance(Alphabet alphabet) {
-        instance = new AggregateAutomatonModelFactory(alphabet);
+    private final int boundLength;
+
+    private AggregateAutomatonModelFactory(Alphabet alphabet,
+                                           int initialBoundLength) {
+        this.alphabet = alphabet;
+        this.boundLength = initialBoundLength;
     }
 
-    private AggregateAutomatonModelFactory(Alphabet alphabet) {
-        this.alphabet = alphabet;
+    static void setInstance(Alphabet alphabet, int initialBoundLength) {
+        instance = new AggregateAutomatonModelFactory(alphabet,
+                                                      initialBoundLength);
     }
 
     @Override
     public AutomatonModel createAnyString(int boundingLength) {
 
         // create automata array from bounding length size
-        Automaton[] automata = new Automaton[boundingLength];
+        Automaton[] automata = new Automaton[boundingLength + 1];
+
+        // create any string automaton from alphabet
+        String charSet = this.alphabet.getCharSet();
+        Automaton anyString = BasicAutomata.makeCharSet(charSet)
+                                           .repeat();
+
 
         // fill automata array with appropriately length automata
-        Automaton anyAutomaton = BasicAutomata.makeAnyString();
-        for (int i = 0; i < boundingLength; i++) {
-            Automaton boundedAutomaton = boundAutomaton(anyAutomaton, i);
+        for (int i = 0; i <= boundingLength; i++) {
+            Automaton boundedAutomaton = boundAutomaton(anyString, i);
             automata[i] = boundedAutomaton;
         }
 
         // return aggregate model from automata array
-        return new AggregateAutomataModel(automata);
+        return new AggregateAutomataModel(automata,
+                                          this.alphabet,
+                                          boundingLength);
     }
 
     @Override
@@ -48,7 +60,9 @@ public class AggregateAutomatonModelFactory
         Automaton[] automata = new Automaton[]{BasicAutomata.makeEmptyString()};
 
         // return aggregate model from automata array
-        return new AggregateAutomataModel(automata);
+        return new AggregateAutomataModel(automata,
+                                          this.alphabet,
+                                          this.boundLength);
     }
 
     @Override
@@ -79,6 +93,8 @@ public class AggregateAutomatonModelFactory
         }
 
         // create automaton model from automata array
-        return new AggregateAutomataModel(automata);
+        return new AggregateAutomataModel(automata,
+                                          this.alphabet,
+                                          this.boundLength);
     }
 }
