@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.boisestate.cs.analysis.MCReporter;
 import edu.boisestate.cs.analysis.Reporter;
 import edu.boisestate.cs.analysis.SATReporter;
-import edu.boisestate.cs.automaton.AutomatonModelFactory;
+import edu.boisestate.cs.automaton.AutomatonModelManager;
 import edu.boisestate.cs.graph.PrintConstraint;
 import edu.boisestate.cs.graph.SymbolicEdge;
 import edu.boisestate.cs.solvers.*;
@@ -317,8 +317,8 @@ public class SolveMain {
                    reportType == Settings.ReportType.SAT) {
 
             // get model factory
-            AutomatonModelFactory factory =
-                    AutomatonModelFactory.getInstance(alphabet,
+            AutomatonModelManager factory =
+                    AutomatonModelManager.getInstance(alphabet,
                                                       modelVersion,
                                                       boundingLength);
 
@@ -329,8 +329,8 @@ public class SolveMain {
                    reportType == Settings.ReportType.MODEL_COUNT) {
 
             // get model factory
-            AutomatonModelFactory factory =
-                    AutomatonModelFactory.getInstance(alphabet,
+            AutomatonModelManager factory =
+                    AutomatonModelManager.getInstance(alphabet,
                                                       modelVersion,
                                                       boundingLength);
 

@@ -6,27 +6,98 @@ import edu.boisestate.cs.Alphabet;
 
 import static edu.boisestate.cs.automaton.AutomatonOperations.boundAutomaton;
 
-public class AggregateAutomatonModelFactory
-        extends AutomatonModelFactory {
+public class AggregateAutomatonModelManager
+        extends AutomatonModelManager {
 
     private final int boundLength;
 
-    private AggregateAutomatonModelFactory(Alphabet alphabet,
+    private AggregateAutomatonModelManager(Alphabet alphabet,
                                            int initialBoundLength) {
         this.alphabet = alphabet;
         this.boundLength = initialBoundLength;
     }
 
     static void setInstance(Alphabet alphabet, int initialBoundLength) {
-        instance = new AggregateAutomatonModelFactory(alphabet,
+        instance = new AggregateAutomatonModelManager(alphabet,
                                                       initialBoundLength);
     }
 
     @Override
-    public AutomatonModel createAnyString(int boundingLength) {
+    public AutomatonModel createAnyString(int max) {
+        return this.createAnyString(0, max);
+    }
+
+    @Override
+    public AutomatonModel allSuffixes(AutomatonModel model) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel ignoreCase(AutomatonModel model) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel replace(AutomatonModel model) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel replace(AutomatonModel model,
+                                  char find,
+                                  char replace) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel replaceFindKnown(AutomatonModel model, char find) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel replaceReplaceKnown(AutomatonModel model,
+                                              char replace) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel replace(AutomatonModel model,
+                                  String find,
+                                  String replace) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel reverse(AutomatonModel baseModel) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel allPrefixes(AutomatonModel model) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel toLowercase(AutomatonModel model) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel toUppercase(AutomatonModel model) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel trim(AutomatonModel model) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel createAnyString(int min, int max) {
 
         // create automata array from bounding length size
-        Automaton[] automata = new Automaton[boundingLength + 1];
+        int size = max - min + 1;
+        Automaton[] automata = new Automaton[size];
 
         // create any string automaton from alphabet
         String charSet = this.alphabet.getCharSet();
@@ -35,7 +106,7 @@ public class AggregateAutomatonModelFactory
 
 
         // fill automata array with appropriately length automata
-        for (int i = 0; i <= boundingLength; i++) {
+        for (int i = min; i <= max; i++) {
             Automaton boundedAutomaton = boundAutomaton(anyString, i);
             automata[i] = boundedAutomaton;
         }
@@ -43,7 +114,7 @@ public class AggregateAutomatonModelFactory
         // return aggregate model from automata array
         return new AggregateAutomataModel(automata,
                                           this.alphabet,
-                                          boundingLength);
+                                          max);
     }
 
     @Override
@@ -63,6 +134,33 @@ public class AggregateAutomatonModelFactory
         return new AggregateAutomataModel(automata,
                                           this.alphabet,
                                           this.boundLength);
+    }
+
+    @Override
+    public AutomatonModel prefix(AutomatonModel model, int end) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel suffix(AutomatonModel model, int suffix) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel createEmpty() {
+
+        // create empty automata array
+        Automaton[] automata = new Automaton[]{BasicAutomata.makeEmpty()};
+
+        // return aggregate model from automata array
+        return new AggregateAutomataModel(automata,
+                                          this.alphabet,
+                                          this.boundLength);
+    }
+
+    @Override
+    public AutomatonModel allSubstrings(AutomatonModel model) {
+        return null;
     }
 
     @Override

@@ -2,28 +2,27 @@ package edu.boisestate.cs.solvers;
 
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automaton.AutomatonModel;
-import edu.boisestate.cs.automaton.AutomatonModelFactory;
-import edu.boisestate.cs.automaton.operations.*;
+import edu.boisestate.cs.automaton.AutomatonModelManager;
 import edu.boisestate.cs.util.Tuple;
 
 public class AutomatonModelSolver
         extends ExtendedSolver<AutomatonModel> {
 
-    private final AutomatonModelFactory modelFactory;
+    private final AutomatonModelManager modelManager;
 
-    public AutomatonModelSolver(AutomatonModelFactory modelFactory) {
+    public AutomatonModelSolver(AutomatonModelManager modelManager) {
         super();
 
         // initialize factory from parameter
-        this.modelFactory = modelFactory;
+        this.modelManager = modelManager;
     }
 
-    public AutomatonModelSolver(AutomatonModelFactory modelFactory,
+    public AutomatonModelSolver(AutomatonModelManager modelManager,
                                 int initialBound) {
         super(initialBound);
 
         // initialize factory from parameter
-        this.modelFactory = modelFactory;
+        this.modelManager = modelManager;
     }
 
     @Override
@@ -34,8 +33,8 @@ public class AutomatonModelSolver
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
         // get substring model
-        Substring substr = new Substring(start, end);
-        AutomatonModel substrModel = substr.execute(argModel);
+        AutomatonModel substrModel =
+                this.modelManager.substring(argModel, start, end);
 
         // append substring model to base model
         baseModel = baseModel.concatenate(substrModel);
@@ -69,14 +68,12 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying base model
-            AssertContainsOther contains =
-                    new AssertContainsOther(argModel, this.modelFactory);
-            baseModel = contains.execute(baseModel);
+            baseModel =
+                    this.modelManager.assertContainsOther(baseModel, argModel);
 
             // get satisfying arg model
-            AssertContainedInOther
-                    containedIn = new AssertContainedInOther(baseModel);
-            argModel = containedIn.execute(argModel);
+            argModel = this.modelManager.assertContainedInOther(argModel,
+                                                                baseModel);
 
         } else { // false branch
 
@@ -86,14 +83,12 @@ public class AutomatonModelSolver
             AutomatonModel tempModel = baseModel;
 
             // get satisfying base model as temp
-            AssertNotContainsOther notContains =
-                    new AssertNotContainsOther(argModel, this.modelFactory);
-            tempModel = notContains.execute(baseModel);
+            tempModel = this.modelManager.assertNotContainsOther(baseModel,
+                                                                 argModel);
 
             // get satisfying arg model
-            AssertNotContainedInOther notContained = new AssertNotContainedInOther(baseModel, this.modelFactory);
-            AutomatonModel complement = baseModel.complement();
-            argModel = argModel.intersect(complement);
+            argModel = this.modelManager.assertNotContainedInOther(argModel,
+                                                                   baseModel);
 
             // set base model from temp
             baseModel = tempModel;
@@ -126,18 +121,16 @@ public class AutomatonModelSolver
             if (start == 0) {
 
                 // set start as empty
-                startModel = this.modelFactory.createEmptyString();
+                startModel = this.modelManager.createEmptyString();
 
             } else {
 
                 // get model prefix before start index
-                PrefixKnown prefix = new PrefixKnown(start);
-                startModel = prefix.execute(baseModel);
+                startModel = this.modelManager.prefix(baseModel, start);
             }
 
             // get model suffix from end index
-            SuffixKnown suffix = new SuffixKnown(end);
-            AutomatonModel endModel = suffix.execute(baseModel);
+            AutomatonModel endModel = this.modelManager.suffix(baseModel, end);
 
             // concatenate end model to start model
             baseModel = startModel.concatenate(endModel);
@@ -157,16 +150,12 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying base model
-            AssertEndsWith endsWith =
-                    new AssertEndsWith(argModel, this.modelFactory);
-            baseModel = endsWith.execute(baseModel);
+            baseModel = this.modelManager.assertEndsWith(baseModel, argModel);
 
             // get satisfying arg model
-            SuffixUnknown postfix = new SuffixUnknown();
-            AutomatonModel tempModel = postfix.execute(baseModel);
-            AssertContainedInOther
-                    containedIn = new AssertContainedInOther(tempModel);
-            argModel = containedIn.execute(argModel);
+            AutomatonModel tempModel = this.modelManager.allSuffixes(baseModel);
+            argModel = this.modelManager.assertContainedInOther(argModel,
+                                                                tempModel);
 
         } else {
 
@@ -175,12 +164,11 @@ public class AutomatonModelSolver
             // cache temp as base model
             AutomatonModel tempModel = baseModel;
 
-            // handle singleton arg model
             // if arg model is singleton
             if (argModel.isSingleton()) {
 
                 // get satisfying arg model
-                AutomatonModel x = this.modelFactory.createAnyString();
+                AutomatonModel x = this.modelManager.createAnyString();
                 x = x.concatenate(argModel);
                 tempModel = baseModel.minus(x);
             }
@@ -190,8 +178,7 @@ public class AutomatonModelSolver
             if (baseModel.isSingleton()) {
 
                 // get satisfying arg model
-                SuffixUnknown postfix = new SuffixUnknown();
-                AutomatonModel x = postfix.execute(baseModel);
+                AutomatonModel x = this.modelManager.allSuffixes(baseModel);
                 AutomatonModel argComplement = argModel.complement();
                 argModel = x.intersect(argComplement);
             }
@@ -213,33 +200,31 @@ public class AutomatonModelSolver
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
         // perform equals
-        baseModel = performBaseEquals(result, baseModel, argModel);
-        argModel = performArgEquals(result, baseModel, argModel);
+        baseModel = this.performBaseEquals(result, baseModel, argModel);
+        argModel = this.performArgEquals(result, baseModel, argModel);
 
         // store result models
         this.symbolicStringMap.put(base, baseModel);
         this.symbolicStringMap.put(arg, argModel);
     }
 
-    private static AutomatonModel performArgEquals(boolean result,
-                                                   AutomatonModel baseModel,
-                                                   AutomatonModel argModel) {
+    private AutomatonModel performArgEquals(boolean result,
+                                            AutomatonModel baseModel,
+                                            AutomatonModel argModel) {
 
         if (result) {
 
             // get satisfying arg model
-            AssertEquals eq = new AssertEquals(baseModel);
-            argModel = eq.execute(argModel);
+            argModel = this.modelManager.assertEquals(argModel, baseModel);
 
         } else {
 
             // get satisfying base model
-            AssertNotEquals neqBase = new AssertNotEquals(argModel);
-            AutomatonModel temp = neqBase.execute(baseModel);
+            AutomatonModel temp =
+                    this.modelManager.assertNotEquals(baseModel, argModel);
 
             // get satisfying arg model
-            AssertNotEquals neqArg = new AssertNotEquals(baseModel);
-            argModel = neqArg.execute(argModel);
+            argModel = this.modelManager.assertNotEquals(argModel, baseModel);
 
             // handle singleton base model
             if (baseModel.isSingleton()) {
@@ -254,21 +239,19 @@ public class AutomatonModelSolver
         return argModel;
     }
 
-    private static AutomatonModel performBaseEquals(boolean result,
-                                                    AutomatonModel baseModel,
-                                                    AutomatonModel argModel) {
+    private AutomatonModel performBaseEquals(boolean result,
+                                             AutomatonModel baseModel,
+                                             AutomatonModel argModel) {
 
         if (result) {
 
             // get satisfying base model
-            AssertEquals eq = new AssertEquals(argModel);
-            baseModel = eq.execute(baseModel);
+            baseModel = this.modelManager.assertEquals(baseModel, argModel);
 
         } else {
 
             // get satisfying base model
-            AssertNotEquals neqBase = new AssertNotEquals(argModel);
-            baseModel = neqBase.execute(baseModel);
+            baseModel = this.modelManager.assertNotEquals(baseModel, argModel);
 
         }
 
@@ -284,9 +267,8 @@ public class AutomatonModelSolver
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
         // get ignore case equivalent automata
-        IgnoreCase ignoreCase = new IgnoreCase();
-        AutomatonModel baseIgnoreCase = ignoreCase.execute(baseModel);
-        AutomatonModel argIgnoreCase = ignoreCase.execute(argModel);
+        AutomatonModel baseIgnoreCase = this.modelManager.ignoreCase(baseModel);
+        AutomatonModel argIgnoreCase = this.modelManager.ignoreCase(argModel);
 
         // perform equals with ignore case models
         baseModel = performBaseEquals(result, baseIgnoreCase, argIgnoreCase);
@@ -318,19 +300,19 @@ public class AutomatonModelSolver
         this.symbolicStringMap.put(id, baseModel);
     }
 
-    private static AutomatonModel performInsert(int offset,
-                                                AutomatonModel baseModel,
-                                                AutomatonModel argModel) {
+    private AutomatonModel performInsert(int offset,
+                                         AutomatonModel baseModel,
+                                         AutomatonModel argModel) {
 
         if (offset >= 0) {
 
             // get prefix
-            PrefixKnown prefix = new PrefixKnown(offset);
-            AutomatonModel startModel = prefix.execute(baseModel);
+            AutomatonModel startModel =
+                    this.modelManager.prefix(baseModel, offset);
 
             // get suffix
-            SuffixKnown suffix = new SuffixKnown(offset);
-            AutomatonModel endModel = suffix.execute(baseModel);
+            AutomatonModel endModel =
+                    this.modelManager.suffix(baseModel, offset);
 
             // construct resulting automaton with concatenation
             baseModel = startModel.concatenate(argModel).concatenate(endModel);
@@ -357,8 +339,8 @@ public class AutomatonModelSolver
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
         // get substring from arg model
-        Substring substring = new Substring(start, end);
-        AutomatonModel substrModel = substring.execute(argModel);
+        AutomatonModel substrModel =
+                this.modelManager.substring(argModel, start, end);
 
         baseModel = performInsert(offset, baseModel, substrModel);
 
@@ -375,14 +357,12 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying automaton
-            AssertEmpty empty = new AssertEmpty(this.modelFactory);
-            baseModel = empty.execute(baseModel);
+            baseModel = this.modelManager.assertEmpty(baseModel);
 
         } else {
 
             // get satisfying automaton
-            AssertNotEmpty notEmpty = new AssertNotEmpty();
-            baseModel = notEmpty.execute(baseModel);
+            baseModel = this.modelManager.assertNotEmpty(baseModel);
 
         }
 
@@ -428,7 +408,7 @@ public class AutomatonModelSolver
 
         // get value model
         AutomatonModel value =
-                this.modelFactory.createString(actualValue);
+                this.modelManager.createString(actualValue);
 
         // intersect models
         AutomatonModel intersection = model.intersect(value);
@@ -441,7 +421,7 @@ public class AutomatonModelSolver
     public void newConcreteString(int id, String string) {
 
         // create new automaton model from string
-        AutomatonModel model = this.modelFactory.createString(string);
+        AutomatonModel model = this.modelManager.createString(string);
 
         // store new model
         this.symbolicStringMap.put(id, model);
@@ -455,7 +435,7 @@ public class AutomatonModelSolver
 
         // create new symbolic string
         AutomatonModel model =
-                this.modelFactory.createAnyString(this.initialBound);
+                this.modelManager.createAnyString(this.initialBound);
 
         // store new model
         this.symbolicStringMap.put(id, model);
@@ -500,29 +480,26 @@ public class AutomatonModelSolver
             boolean findKnown = findResult.getSecond();
             boolean replaceKnown = replaceResult.getSecond();
 
-            // determine correct replace operation
-            Operation replaceChar;
+            // perform correct replace operation
             if (findKnown && replaceKnown) {
-                replaceChar = new ReplaceCharacterBothKnown(find, replace);
+                baseModel = this.modelManager.replace(baseModel, find, replace);
             } else if (findKnown) {
-                replaceChar = new ReplaceCharacterFindKnown(find);
+                baseModel = this.modelManager.replaceFindKnown(baseModel, find);
             } else if (replaceKnown) {
-                replaceChar = new ReplaceCharacterReplaceKnown(replace);
+                baseModel = this.modelManager.replaceReplaceKnown(baseModel,
+                                                                  replace);
             } else {
-                replaceChar = new ReplaceCharacterBothUnknown();
+                baseModel = this.modelManager.replace(baseModel);
             }
-
-            // perform replace character operation
-            baseModel = replaceChar.execute(baseModel);
 
         }
         // check if replace string operation
         else if (arg1String != null && arg2String != null) {
 
             // perform replace string operation
-            ReplaceStringBothKnown replaceStr =
-                    new ReplaceStringBothKnown(arg1String, arg2String);
-            baseModel = replaceStr.execute(baseModel);
+            baseModel = this.modelManager.replace(baseModel,
+                                                  arg1String,
+                                                  arg2String);
         }
         // replace string operation with symbolic string arguments
         else {
@@ -567,7 +544,7 @@ public class AutomatonModelSolver
             } else {
 
                 // set value to first value from alphabet
-                Alphabet alphabet = this.modelFactory.getAlphabet();
+                Alphabet alphabet = this.modelManager.getAlphabet();
                 charValue = alphabet.getSymbolSet().iterator().next();
 
             }
@@ -591,8 +568,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform operation
-        Reverse reverse = new Reverse();
-        baseModel = reverse.execute(baseModel);
+        baseModel = this.modelManager.reverse(baseModel);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -608,12 +584,12 @@ public class AutomatonModelSolver
         if (offset >= 0) {
 
             // get prefix
-            PrefixKnown prefix = new PrefixKnown(offset);
-            AutomatonModel startModel = prefix.execute(baseModel);
+            AutomatonModel startModel =
+                    this.modelManager.prefix(baseModel, offset);
 
             // get suffix
-            SuffixKnown suffix = new SuffixKnown(offset + 1);
-            AutomatonModel endModel = suffix.execute(baseModel);
+            AutomatonModel endModel =
+                    this.modelManager.suffix(baseModel, offset + 1);
 
             // get result from concatenation
             baseModel = startModel.concatenate(argModel).concatenate(endModel);
@@ -632,17 +608,16 @@ public class AutomatonModelSolver
         if (length == 0) {
 
             // set result model as empty string model
-            baseModel = this.modelFactory.createEmptyString();
+            baseModel = this.modelManager.createEmptyString();
 
         } else {
 
             // concatenate any string model to base model
-            AutomatonModel anyStr = this.modelFactory.createAnyString();
+            AutomatonModel anyStr = this.modelManager.createAnyString();
             baseModel = baseModel.concatenate(anyStr);
 
             // assert length for concatenated model
-            AssertHasLength hasLength = new AssertHasLength(0, length);
-            baseModel = hasLength.execute(baseModel);
+            baseModel = this.modelManager.assertHasLength(baseModel, 0, length);
 
         }
 
@@ -665,15 +640,11 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying base model
-            AssertStartsWith startsWith = new AssertStartsWith(argModel);
-            baseModel = startsWith.execute(baseModel);
+            baseModel = this.modelManager.assertStartsWith(baseModel, argModel);
 
             // get satisfying arg model
-            PrefixUnknown prefix = new PrefixUnknown();
-            AutomatonModel x = prefix.execute(baseModel);
-            AssertContainedInOther containedInOther =
-                    new AssertContainedInOther(x);
-            argModel = containedInOther.execute(argModel);
+            AutomatonModel x = this.modelManager.allPrefixes(baseModel);
+            argModel = this.modelManager.assertContainedInOther(argModel, x);
 
         } else {
 
@@ -684,7 +655,7 @@ public class AutomatonModelSolver
             if (argModel.isSingleton()) {
 
                 // get satisfying base model
-                AutomatonModel x = this.modelFactory.createAnyString();
+                AutomatonModel x = this.modelManager.createAnyString();
                 x = argModel.concatenate(x);
                 temp = baseModel.minus(x);
             }
@@ -714,8 +685,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform operation
-        SuffixKnown suffix = new SuffixKnown(start);
-        baseModel = suffix.execute(baseModel);
+        baseModel = this.modelManager.suffix(baseModel, start);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -728,8 +698,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform operation
-        Substring substr = new Substring(start, end);
-        baseModel = substr.execute(baseModel);
+        baseModel = this.modelManager.substring(baseModel, start, end);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -742,8 +711,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform operation
-        ToLowercase toLowercase = new ToLowercase();
-        baseModel = toLowercase.execute(baseModel);
+        baseModel = this.modelManager.toLowercase(baseModel);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -756,8 +724,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform operation
-        ToUppercase toUppercase = new ToUppercase();
-        baseModel = toUppercase.execute(baseModel);
+        baseModel = this.modelManager.toUppercase(baseModel);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -769,24 +736,8 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
-        // check model with length of one?
-        AssertHasLength hasLength = new AssertHasLength(1, 1);
-        AutomatonModel hasLengthModel = hasLength.execute(baseModel);
-        AutomatonModel temp = baseModel.intersect(hasLengthModel);
-
-        if (temp.equals(baseModel)) {
-
-            // union empty string with base model?
-            AutomatonModel emptyString = this.modelFactory.createEmptyString();
-            baseModel = temp.union(emptyString);
-
-        } else {
-
-            // perform operation
-            Trim trim = new Trim();
-            baseModel = trim.execute(baseModel);
-
-        }
+        // perform operation
+        baseModel = this.modelManager.trim(baseModel);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);

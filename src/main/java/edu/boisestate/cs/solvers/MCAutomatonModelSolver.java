@@ -1,6 +1,6 @@
 package edu.boisestate.cs.solvers;
 
-import edu.boisestate.cs.automaton.AutomatonModelFactory;
+import edu.boisestate.cs.automaton.AutomatonModelManager;
 
 import java.util.Set;
 
@@ -8,11 +8,11 @@ public class MCAutomatonModelSolver
         extends AutomatonModelSolver
         implements ModelCountSolver {
 
-    public MCAutomatonModelSolver(AutomatonModelFactory modelFactory) {
+    public MCAutomatonModelSolver(AutomatonModelManager modelFactory) {
         super(modelFactory);
     }
 
-    public MCAutomatonModelSolver(AutomatonModelFactory modelFactory,
+    public MCAutomatonModelSolver(AutomatonModelManager modelFactory,
                                   int initialBound) {
         super(modelFactory, initialBound);
     }
