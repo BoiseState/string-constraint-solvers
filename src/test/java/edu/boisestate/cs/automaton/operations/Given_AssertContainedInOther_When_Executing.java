@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class Given_AssertContainsOther_When_Executing {
+public class Given_AssertContainedInOther_When_Executing {
 
     @Before
     public void setup() {

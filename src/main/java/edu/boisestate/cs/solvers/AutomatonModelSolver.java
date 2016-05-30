@@ -85,26 +85,15 @@ public class AutomatonModelSolver
             // cache base model as temp
             AutomatonModel tempModel = baseModel;
 
-            // handle singleton arg model
-            if (argModel.isSingleton()) {
+            // get satisfying base model as temp
+            AssertNotContainsOther notContains =
+                    new AssertNotContainsOther(argModel, this.modelFactory);
+            tempModel = notContains.execute(baseModel);
 
-                // prepend and concatenate any string models to arg model
-                AutomatonModel x = this.modelFactory.createAnyString();
-                x = x.clone()
-                     .concatenate(argModel)
-                     .concatenate(x);
-
-                // get satisfying base model as temp
-                tempModel = baseModel.minus(x);
-            }
-
-            // handle singleton base model
-            if (baseModel.isSingleton()) {
-
-                // get satisfying arg model
-                AutomatonModel complement = baseModel.complement();
-                argModel = argModel.intersect(complement);
-            }
+            // get satisfying arg model
+            AssertNotContainedInOther notContained = new AssertNotContainedInOther(baseModel, this.modelFactory);
+            AutomatonModel complement = baseModel.complement();
+            argModel = argModel.intersect(complement);
 
             // set base model from temp
             baseModel = tempModel;

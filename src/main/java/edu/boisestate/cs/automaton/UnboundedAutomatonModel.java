@@ -11,6 +11,10 @@ public class UnboundedAutomatonModel
 
     private Automaton automaton;
 
+    Automaton getAutomaton() {
+        return this.automaton;
+    }
+
     private void setAutomaton(Automaton automaton) {
         this.automaton = automaton;
     }
