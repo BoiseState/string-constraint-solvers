@@ -1,4 +1,4 @@
-package edu.boisestate.cs.analysis;
+package edu.boisestate.cs.reporting;
 
 import edu.boisestate.cs.Parser;
 import edu.boisestate.cs.graph.PrintConstraint;

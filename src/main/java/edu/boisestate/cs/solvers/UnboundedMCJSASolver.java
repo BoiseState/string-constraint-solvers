@@ -3,8 +3,8 @@ package edu.boisestate.cs.solvers;
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.modelCount.StringModelCounter;
-import edu.boisestate.cs.stringOperations.PrecisePrefix;
-import edu.boisestate.cs.stringOperations.PreciseSuffix;
+import edu.boisestate.cs.automaton.operations.PreciseSuffix;
+import edu.boisestate.cs.automaton.operations.PrecisePrefix;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -79,12 +79,12 @@ public class UnboundedMCJSASolver
             } else {
 
                 // get start substring automaton
-                PreciseSuffix suffix = new PreciseSuffix(start);
+                PrecisePrefix suffix = new PrecisePrefix(start);
                 startAutomaton = suffix.op(automaton);
             }
 
             // get end substring automaton
-            PrecisePrefix prefix = new PrecisePrefix(end);
+            PreciseSuffix prefix = new PreciseSuffix(end);
             Automaton endAutomaton = prefix.op(automaton);
 
             // concat start and end automata

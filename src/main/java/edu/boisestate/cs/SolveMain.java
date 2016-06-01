@@ -8,19 +8,22 @@
 package edu.boisestate.cs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.boisestate.cs.analysis.MCReporter;
-import edu.boisestate.cs.analysis.Reporter;
-import edu.boisestate.cs.analysis.SATReporter;
 import edu.boisestate.cs.automaton.AutomatonModelManager;
 import edu.boisestate.cs.graph.PrintConstraint;
 import edu.boisestate.cs.graph.SymbolicEdge;
+import edu.boisestate.cs.reporting.MCReporter;
+import edu.boisestate.cs.reporting.Reporter;
+import edu.boisestate.cs.reporting.SATReporter;
 import edu.boisestate.cs.solvers.*;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings({"Duplicates", "unchecked"})
 public class SolveMain {
@@ -288,66 +291,24 @@ public class SolveMain {
                                 "str",
                                 "tempZ3Str");
 
-        } else if (selectedSolver == Settings.SolverType.JSA &&
-                   modelVersion == 1 &&
-                   reportType == Settings.ReportType.SAT) {
+        } else if (selectedSolver == Settings.SolverType.JSA) {
 
-            solver = new UnboundedEJSASolver(boundingLength);
-
-        } else if (selectedSolver == Settings.SolverType.JSA &&
-                   modelVersion == 1 &&
-                   reportType == Settings.ReportType.MODEL_COUNT) {
-
-            solver = new UnboundedMCJSASolver(boundingLength);
-
-        } else if (selectedSolver == Settings.SolverType.JSA &&
-                   modelVersion == 2 &&
-                   reportType == Settings.ReportType.SAT) {
-
-            solver = new BoundedEJSASolver(boundingLength);
-
-        } else if (selectedSolver == Settings.SolverType.JSA &&
-                   modelVersion == 2 &&
-                   reportType == Settings.ReportType.MODEL_COUNT) {
-
-            solver = new BoundedMCJSASolver(boundingLength);
-
-        } else if (selectedSolver == Settings.SolverType.JSA &&
-                   modelVersion == 3 &&
-                   reportType == Settings.ReportType.SAT) {
-
-            // get model factory
-            AutomatonModelManager factory =
+            // get model manager instance
+            AutomatonModelManager modelManager =
                     AutomatonModelManager.getInstance(alphabet,
                                                       modelVersion,
                                                       boundingLength);
 
-            solver = new AutomatonModelSolver(factory, boundingLength);
+            if (reportType == Settings.ReportType.SAT) {
 
-        } else if (selectedSolver == Settings.SolverType.JSA &&
-                   modelVersion == 3 &&
-                   reportType == Settings.ReportType.MODEL_COUNT) {
+                solver = new AutomatonModelSolver(modelManager, boundingLength);
 
-            // get model factory
-            AutomatonModelManager factory =
-                    AutomatonModelManager.getInstance(alphabet,
-                                                      modelVersion,
-                                                      boundingLength);
+            } else if (reportType == Settings.ReportType.MODEL_COUNT) {
 
-            solver = new MCAutomatonModelSolver(factory, boundingLength);
+                solver = new MCAutomatonModelSolver(modelManager,
+                                                    boundingLength);
+            }
 
-//        } else if (selectedSolver == Settings.Solver.JSA &&
-//                   modelVersion == 4 &&
-//                   reporter == Settings.Reporter.SAT) {
-//
-//            solver = new FourthEJSASolver(boundingLength);
-//
-//        } else if (selectedSolver == Settings.Solver.JSA &&
-//                   modelVersion == 4 &&
-//                   reporter == Settings.Reporter.MODEL_COUNT) {
-//
-//            solver = new FourthMCJSASolver(boundingLength);
-//
         }
 
         // store created solver

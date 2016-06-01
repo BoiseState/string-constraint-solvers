@@ -1,11 +1,5 @@
 package edu.boisestate.cs;
 
-import edu.boisestate.cs.analysis.Reporter;
-import edu.boisestate.cs.graph.PrintConstraint;
-import edu.boisestate.cs.graph.SymbolicEdge;
-import edu.boisestate.cs.solvers.ExtendedSolver;
-import org.jgrapht.DirectedGraph;
-
 public class Settings {
 
     public static final int DEFAULT_BOUNDING_LENGTH = 10;

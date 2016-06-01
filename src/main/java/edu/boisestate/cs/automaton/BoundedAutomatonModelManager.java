@@ -2,7 +2,11 @@ package edu.boisestate.cs.automaton;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
+import dk.brics.string.stringoperations.*;
 import edu.boisestate.cs.Alphabet;
+import edu.boisestate.cs.automaton.operations.IgnoreCase;
+import edu.boisestate.cs.automaton.operations.PrecisePrefix;
+import edu.boisestate.cs.automaton.operations.PreciseSuffix;
 
 public class BoundedAutomatonModelManager
         extends AutomatonModelManager {
@@ -21,73 +25,54 @@ public class BoundedAutomatonModelManager
     }
 
     @Override
-    public AutomatonModel createAnyString(int max) {
-        return this.createAnyString(0, max);
+    public AutomatonModel allPrefixes(AutomatonModel model) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result = this.performUnaryOperation(automaton, new Prefix());
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
+    }
+
+    @Override
+    public AutomatonModel allSubstrings(AutomatonModel model) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result =
+                this.performUnaryOperation(automaton, new Substring());
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
     }
 
     @Override
     public AutomatonModel allSuffixes(AutomatonModel model) {
-        return null;
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result = this.performUnaryOperation(automaton, new Postfix());
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
     }
 
     @Override
-    public AutomatonModel ignoreCase(AutomatonModel model) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel replace(AutomatonModel model) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel replace(AutomatonModel model,
-                                  char find,
-                                  char replace) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel replaceFindKnown(AutomatonModel model, char find) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel replaceReplaceKnown(AutomatonModel model,
-                                              char replace) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel replace(AutomatonModel model,
-                                  String find,
-                                  String replace) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel reverse(AutomatonModel baseModel) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel allPrefixes(AutomatonModel model) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel toLowercase(AutomatonModel model) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel toUppercase(AutomatonModel model) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel trim(AutomatonModel model) {
-        return null;
+    public AutomatonModel createAnyString(int max) {
+        return this.createAnyString(0, max);
     }
 
     @Override
@@ -133,8 +118,230 @@ public class BoundedAutomatonModelManager
     }
 
     @Override
-    public AutomatonModel allSubstrings(AutomatonModel model) {
-        return null;
+    public AutomatonModel createString(String string) {
+
+        // create string automaton
+        Automaton stringAutomaton = BasicAutomata.makeString(string);
+
+        // return model from automaton
+        return new BoundedAutomatonModel(stringAutomaton,
+                                         this.alphabet,
+                                         this.boundLength);
+    }
+
+    @Override
+    public AutomatonModel ignoreCase(AutomatonModel model) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result =
+                this.performUnaryOperation(automaton, new IgnoreCase());
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
+    }
+
+    @Override
+    public AutomatonModel prefix(AutomatonModel model, int end) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result =
+                this.performUnaryOperation(automaton, new PrecisePrefix(end));
+
+        // determine new bound length
+        int boundLength = end;
+        if (model.getBoundLength() < boundLength) {
+            boundLength = model.getBoundLength();
+        }
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result, this.alphabet, boundLength);
+    }
+
+    @Override
+    public AutomatonModel replace(AutomatonModel model) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result =
+                this.performUnaryOperation(automaton, new Replace4());
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
+    }
+
+    @Override
+    public AutomatonModel replace(AutomatonModel model,
+                                  char find,
+                                  char replace) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result = this.performUnaryOperation(automaton,
+                                                      new Replace1(find,
+                                                                   replace));
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
+    }
+
+    @Override
+    public AutomatonModel replace(AutomatonModel model,
+                                  String find,
+                                  String replace) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result = this.performUnaryOperation(automaton,
+                                                      new Replace6(find,
+                                                                   replace));
+
+        // determine new bound length
+        int boundDiff = find.length() - replace.length();
+        int boundLength = model.getBoundLength() - boundDiff;
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result, this.alphabet, boundLength);
+    }
+
+    @Override
+    public AutomatonModel replaceFindKnown(AutomatonModel model, char find) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result =
+                this.performUnaryOperation(automaton, new Replace2(find));
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
+    }
+
+    @Override
+    public AutomatonModel replaceReplaceKnown(AutomatonModel model,
+                                              char replace) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result =
+                this.performUnaryOperation(automaton, new Replace3(replace));
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
+    }
+
+    @Override
+    public AutomatonModel reverse(AutomatonModel model) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result = this.performUnaryOperation(automaton, new Reverse());
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
+    }
+
+    @Override
+    public AutomatonModel suffix(AutomatonModel model, int start) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result =
+                this.performUnaryOperation(automaton, new PreciseSuffix(start));
+
+        // determine new bound length
+        int boundLength = model.getBoundLength() - start;
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result, this.alphabet, boundLength);
+    }
+
+    @Override
+    public AutomatonModel toLowercase(AutomatonModel model) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result =
+                this.performUnaryOperation(automaton, new ToLowerCase());
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
+    }
+
+    @Override
+    public AutomatonModel toUppercase(AutomatonModel model) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result =
+                this.performUnaryOperation(automaton, new ToUpperCase());
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
+    }
+
+    @Override
+    public AutomatonModel trim(AutomatonModel model) {
+
+        // workaround for trim bug
+        AutomatonModel hasLength = this.assertHasLength(model, 1, 1);
+        AutomatonModel temp = model.intersect(hasLength);
+
+        if (temp.equals(model)) {
+
+            // return union of temp and empty string
+            return temp.union(this.createEmptyString());
+
+        }
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // return automaton model from trim operation
+        Automaton result = this.performUnaryOperation(automaton, new Trim());
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result,
+                                           this.alphabet,
+                                           model.getBoundLength());
     }
 
     @Override
@@ -145,28 +352,6 @@ public class BoundedAutomatonModelManager
 
         // return model from automaton
         return new BoundedAutomatonModel(emptyString,
-                                         this.alphabet,
-                                         this.boundLength);
-    }
-
-    @Override
-    public AutomatonModel prefix(AutomatonModel model, int end) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel suffix(AutomatonModel model, int suffix) {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel createString(String string) {
-
-        // create string automaton
-        Automaton stringAutomaton = BasicAutomata.makeString(string);
-
-        // return model from automaton
-        return new BoundedAutomatonModel(stringAutomaton,
                                          this.alphabet,
                                          this.boundLength);
     }

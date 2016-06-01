@@ -4,9 +4,9 @@ import dk.brics.automaton.Automaton;
 import dk.brics.automaton.State;
 import dk.brics.automaton.Transition;
 import dk.brics.string.stringoperations.*;
-import edu.boisestate.cs.stringOperations.PrecisePrefix;
-import edu.boisestate.cs.stringOperations.PreciseSubstring;
-import edu.boisestate.cs.stringOperations.PreciseSuffix;
+import edu.boisestate.cs.automaton.operations.PreciseSuffix;
+import edu.boisestate.cs.automaton.operations.PreciseSubstring;
+import edu.boisestate.cs.automaton.operations.PrecisePrefix;
 
 import java.util.*;
 
@@ -229,7 +229,7 @@ public class JSASolver extends SatSolver {
             if (sourceMap.size() == 2) {
                 if (argOne != 0) {
 //					Postfix p=new Postfix();
-                    PrecisePrefix p = new PrecisePrefix(argOne);
+                    PreciseSuffix p = new PreciseSuffix(argOne);
                     auto = doOp(auto, p);
                 }
             } else {
@@ -288,11 +288,11 @@ public class JSASolver extends SatSolver {
 
                 PreciseSubstring s = new PreciseSubstring(0, offset);
                 Automaton start = doOp(auto, s);
-                PrecisePrefix p = new PrecisePrefix(offset + 1);
+                PreciseSuffix p = new PreciseSuffix(offset + 1);
                 Automaton end = doOp(auto, p);
                 auto = start.concatenate(newVal).concatenate(end);
             } else {
-                PrecisePrefix p = new PrecisePrefix(1);
+                PreciseSuffix p = new PreciseSuffix(1);
                 auto = newVal.concatenate(doOp(auto, p));
             }
             store.put(id, auto);
@@ -322,7 +322,7 @@ public class JSASolver extends SatSolver {
             if (offset >= 0) {
                 PreciseSubstring s = new PreciseSubstring(0, offset);
                 Automaton start = doOp(auto, s);
-                PrecisePrefix p = new PrecisePrefix(offset);
+                PreciseSuffix p = new PreciseSuffix(offset);
                 Automaton end = doOp(auto, p);
                 auto = start.concatenate(newVal).concatenate(end);
             } else {
@@ -354,14 +354,14 @@ public class JSASolver extends SatSolver {
             if (start == 0) {
                 startAuto = Automaton.makeEmptyString();
             } else {
-                PreciseSuffix s = new PreciseSuffix(start);
+                PrecisePrefix s = new PrecisePrefix(start);
                 startAuto = doOp(auto, s);
             }
 
             if (end <= start) {
                 store.put(id, auto);
             } else {
-                PrecisePrefix p = new PrecisePrefix(end);
+                PreciseSuffix p = new PreciseSuffix(end);
                 Automaton endAuto = doOp(auto, p);
                 auto = startAuto.concatenate(endAuto);
                 store.put(id, auto);
@@ -369,9 +369,9 @@ public class JSASolver extends SatSolver {
         } else if (fName.equals("deleteCharAt")) {
             auto = ((Automaton) store.get(sourceMap.get("t"))).clone();
             int loc = Integer.parseInt(actualVals.get(sourceMap.get("s1")));
-            PreciseSuffix s = new PreciseSuffix(loc);
+            PrecisePrefix s = new PrecisePrefix(loc);
             Automaton startAuto = doOp(auto, s);
-            PrecisePrefix p = new PrecisePrefix(loc + 1);
+            PreciseSuffix p = new PreciseSuffix(loc + 1);
             Automaton endAuto = doOp(auto, p);
             store.put(id, startAuto.concatenate(endAuto));
         } else if (fName.equals("reverse")) {

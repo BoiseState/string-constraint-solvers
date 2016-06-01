@@ -1,38 +1,39 @@
-package edu.boisestate.cs.analysis;
+package edu.boisestate.cs.reporting;
 
 import edu.boisestate.cs.Parser;
 import edu.boisestate.cs.graph.PrintConstraint;
 import edu.boisestate.cs.graph.SymbolicEdge;
 import edu.boisestate.cs.solvers.ExtendedSolver;
-import edu.boisestate.cs.solvers.ModelCountSolver;
 import org.jgrapht.DirectedGraph;
 
 import java.util.Map;
 
-public class MCReporter
-        extends Reporter {
+public class SATReporter extends Reporter {
 
-    private final ModelCountSolver modelCountSolver;
+    public SATReporter(DirectedGraph<PrintConstraint, SymbolicEdge> graph,
+                       Parser parser,
+                       ExtendedSolver solver,
+                       boolean debug) {
 
-    public MCReporter(DirectedGraph<PrintConstraint, SymbolicEdge>
-                              graph,
-                      Parser parser,
-                      ExtendedSolver extendedSolver,
-                      boolean debug,
-                      ModelCountSolver modelCountSolver) {
-
-        super(graph, parser, extendedSolver, debug);
-
-        this.modelCountSolver = modelCountSolver;
+        super(graph, parser, solver, debug);
     }
 
     @Override
-    protected void calculateStats(PrintConstraint constraint) {
+    protected void outputHeader() {
 
+        // output header
+        System.out.println("    ID\t" +
+                           " SING\t" +
+                           " TSAT\t" +
+                           " FSAT\t" +
+                           "DISJOINT");
+    }
+
+
+    protected void calculateStats(PrintConstraint constraint) {
 
         // get constraint info as variables
         Map<String, Integer> sourceMap = constraint.getSourceMap();
-        StringBuilder stats = new StringBuilder();
         String actualVal = constraint.getActualVal();
         int base = sourceMap.get("t");
 
@@ -54,8 +55,6 @@ public class MCReporter
             isSingleton = true;
         }
 
-        int initialCount = this.modelCountSolver.getModelCount(base);
-
         // store symbolic string values
         solver.setLast(base, arg);
 
@@ -64,8 +63,6 @@ public class MCReporter
         if (solver.isSatisfiable(base)) {
             trueSat = true;
         }
-
-        int trueModelCount = this.modelCountSolver.getModelCount(base);
 
         // revert symbolic string values
         solver.revertLastPredicate();
@@ -78,8 +75,6 @@ public class MCReporter
         if (solver.isSatisfiable(base)) {
             falseSat = true;
         }
-
-        int falseModelCount = this.modelCountSolver.getModelCount(base);
 
         // revert symbolic string values
         solver.revertLastPredicate();
@@ -112,44 +107,15 @@ public class MCReporter
             disjoint = "no";
         }
 
-        // set yes or no for disjoint branches
-        int overlap = this.modelCountSolver.getModelCount(base);
-
         // revert symbolic string values
         solver.revertLastPredicate();
 
         // output stats
-        float truePercent = 100 * (float) trueModelCount / (float) initialCount;
-        float falsePercent = 100 * (float) falseModelCount / (float) initialCount;
-        System.out.format(
-                "%6d\t%5b\t%5b\t%5b\t%8s\t%9d\t%9d\t%5.1f\t%9d\t%5.1f\t%9d\n",
-                constraint.getId(),
-                isSingleton,
-                trueSat,
-                falseSat,
-                disjoint,
-                initialCount,
-                trueModelCount,
-                truePercent,
-                falseModelCount,
-                falsePercent,
-                overlap);
-    }
-
-    @Override
-    protected void outputHeader() {
-
-        // output header
-        System.out.println("    ID\t" +
-                           " SING\t" +
-                           " TSAT\t" +
-                           " FSAT\t" +
-                           "DISJOINT\t" +
-                           " IN COUNT\t" +
-                           "  T COUNT\t" +
-                           "T PER\t" +
-                           "  F COUNT\t" +
-                           "F PER\t" +
-                           "  OVERLAP");
+        System.out.format("%6d\t%5b\t%5b\t%5b\t%8s\n",
+                          constraint.getId(),
+                          isSingleton,
+                          trueSat,
+                          falseSat,
+                          disjoint);
     }
 }

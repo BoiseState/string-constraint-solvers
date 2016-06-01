@@ -1,7 +1,7 @@
 /**
  * An extended EJSA operation for a more precise prefix operation.
  */
-package edu.boisestate.cs.stringOperations;
+package edu.boisestate.cs.automaton.operations;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.State;
@@ -15,9 +15,10 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-public class PreciseSuffix extends UnaryOperation{
+public class PrecisePrefix
+		extends UnaryOperation{
 	int end;
-	public PreciseSuffix(int end){
+	public PrecisePrefix(int end){
 		this.end=end;
 	}
 	@Override

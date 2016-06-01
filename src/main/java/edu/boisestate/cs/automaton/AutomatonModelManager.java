@@ -1,5 +1,8 @@
 package edu.boisestate.cs.automaton;
 
+import dk.brics.automaton.Automaton;
+import dk.brics.automaton.BasicAutomata;
+import dk.brics.string.stringoperations.UnaryOperation;
 import edu.boisestate.cs.Alphabet;
 
 public abstract class AutomatonModelManager {
@@ -147,6 +150,21 @@ public abstract class AutomatonModelManager {
 
         // return intersection of model and complement
         return model.intersect(complement);
+    }
+
+    protected Automaton performUnaryOperation(Automaton automaton,
+                                              UnaryOperation operation) {
+
+        // use operation
+        Automaton result = operation.op(automaton);
+
+        // bound automaton to alphabet
+        String charSet = this.alphabet.getCharSet();
+        Automaton alphabet = BasicAutomata.makeCharSet(charSet).repeat();
+        result = result.intersection(alphabet);
+
+        // return resulting automaton
+        return result;
     }
 
     public abstract AutomatonModel allSubstrings(AutomatonModel model);

@@ -1,7 +1,7 @@
 /**
  * An extended EJSA operation for a more precise substring operation.
  */
-package edu.boisestate.cs.stringOperations;
+package edu.boisestate.cs.automaton.operations;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.string.charset.CharSet;
@@ -26,13 +26,13 @@ public class PreciseSubstring extends UnaryOperation{
 		if(start==end)
 			return Automaton.makeEmptyString();
 		else if(start==0){
-			PreciseSuffix s=new PreciseSuffix(end);
+			PrecisePrefix s=new PrecisePrefix(end);
 			return s.op(a);
 		}
 		Automaton temp;
-		PrecisePrefix p=new PrecisePrefix(start);
+		PreciseSuffix p=new PreciseSuffix(start);
 		temp=p.op(a);
-		PreciseSuffix s=new PreciseSuffix(end-start);
+		PrecisePrefix s=new PrecisePrefix(end - start);
 		return s.op(temp);
 	}
 

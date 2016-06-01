@@ -2,17 +2,13 @@ package edu.boisestate.cs.solvers;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
-import dk.brics.automaton.State;
-import dk.brics.automaton.Transition;
 import dk.brics.string.stringoperations.*;
-import edu.boisestate.cs.stringOperations.PrecisePrefix;
-import edu.boisestate.cs.stringOperations.PreciseSubstring;
-import edu.boisestate.cs.stringOperations.PreciseSuffix;
+import edu.boisestate.cs.automaton.operations.IgnoreCase;
+import edu.boisestate.cs.automaton.operations.PreciseSuffix;
+import edu.boisestate.cs.automaton.operations.PreciseSubstring;
+import edu.boisestate.cs.automaton.operations.PrecisePrefix;
 
-import java.util.ArrayList;
 import java.util.Set;
-
-import static edu.boisestate.cs.automaton.AutomatonOperations.ignoreCase;
 
 @SuppressWarnings("Duplicates")
 public class UnboundedEJSASolver
@@ -131,12 +127,12 @@ public class UnboundedEJSASolver
             } else {
 
                 // get start substring automaton
-                PreciseSuffix suffix = new PreciseSuffix(start);
+                PrecisePrefix suffix = new PrecisePrefix(start);
                 startAutomaton = suffix.op(automaton);
             }
 
             // get end substring automaton
-            PrecisePrefix prefix = new PrecisePrefix(end);
+            PreciseSuffix prefix = new PreciseSuffix(end);
             Automaton endAutomaton = prefix.op(automaton);
 
             // concat start and end automata
@@ -154,11 +150,11 @@ public class UnboundedEJSASolver
         Automaton automaton = this.symbolicStringMap.get(base);
 
         // get start substring automaton
-        PreciseSuffix suffix = new PreciseSuffix(loc);
+        PrecisePrefix suffix = new PrecisePrefix(loc);
         Automaton startAutomaton = suffix.op(automaton);
 
         // gt end substring automaton
-        PrecisePrefix prefix = new PrecisePrefix(loc + 1);
+        PreciseSuffix prefix = new PreciseSuffix(loc + 1);
         Automaton endAutomaton = prefix.op(automaton);
 
         // concat start and end automata
@@ -269,8 +265,9 @@ public class UnboundedEJSASolver
         Automaton argAutomaton = this.symbolicStringMap.get(arg);
 
         // get ignore case equivalent automata
-        Automaton baseIgnoreCase = ignoreCase(baseAutomaton);
-        Automaton argIgnoreCase = ignoreCase(argAutomaton);
+        IgnoreCase ignoreCase = new IgnoreCase();
+        Automaton baseIgnoreCase = ignoreCase.op(baseAutomaton);
+        Automaton argIgnoreCase = ignoreCase.op(argAutomaton);
 
         if (result) {
 
@@ -315,7 +312,7 @@ public class UnboundedEJSASolver
             Automaton startAutomaton = substr.op(baseAutomaton);
 
             // get end substring
-            PrecisePrefix prefix = new PrecisePrefix(offset);
+            PreciseSuffix prefix = new PreciseSuffix(offset);
             Automaton endAutomaton = prefix.op(baseAutomaton);
 
             // concat automata
@@ -352,7 +349,7 @@ public class UnboundedEJSASolver
             Automaton startAutomaton = startSubstr.op(baseAutomaton);
 
             // get end substring
-            PrecisePrefix prefix = new PrecisePrefix(offset);
+            PreciseSuffix prefix = new PreciseSuffix(offset);
             Automaton endAutomaton = prefix.op(baseAutomaton);
 
             // concat automata
@@ -572,7 +569,7 @@ public class UnboundedEJSASolver
             Automaton startAutomaton = substr.op(baseAutomaton);
 
             // get end substring
-            PrecisePrefix prefix = new PrecisePrefix(offset + 1);
+            PreciseSuffix prefix = new PreciseSuffix(offset + 1);
             Automaton endAutomaton = prefix.op(baseAutomaton);
 
             // set character at offset
@@ -581,7 +578,7 @@ public class UnboundedEJSASolver
         } else {
 
             // get end substring
-            PrecisePrefix prefix = new PrecisePrefix(1);
+            PreciseSuffix prefix = new PreciseSuffix(1);
             Automaton endAutomaton = prefix.op(baseAutomaton);
 
             // set first character
@@ -676,7 +673,7 @@ public class UnboundedEJSASolver
         Automaton automaton = this.symbolicStringMap.get(base);
 
         // get operation
-        PrecisePrefix prefix = new PrecisePrefix(start);
+        PreciseSuffix prefix = new PreciseSuffix(start);
 
         // perform operation
         automaton = prefix.op(automaton);

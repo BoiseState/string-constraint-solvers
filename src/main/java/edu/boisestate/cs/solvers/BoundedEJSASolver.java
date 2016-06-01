@@ -2,7 +2,6 @@ package edu.boisestate.cs.solvers;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
-import edu.boisestate.cs.automaton.AutomatonOperations;
 
 public class BoundedEJSASolver
         extends UnboundedEJSASolver {
@@ -16,9 +15,12 @@ public class BoundedEJSASolver
 
     @Override
     public void newSymbolicString(int id) {
-        Automaton automaton = BasicAutomata.makeAnyString();
-        automaton = AutomatonOperations.boundAutomaton(automaton,
-                                                       this.initialBound);
+
+        // create new appropriate bound automaton
+        Automaton automaton =
+                BasicAutomata.makeAnyChar().repeat(0, this.initialBound);
+
+        // store new automaton
         this.symbolicStringMap.put(id, automaton);
     }
 }

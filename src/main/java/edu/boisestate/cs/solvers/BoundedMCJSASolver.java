@@ -2,9 +2,9 @@ package edu.boisestate.cs.solvers;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
-import edu.boisestate.cs.automaton.AutomatonOperations;
 
-public class BoundedMCJSASolver extends UnboundedMCJSASolver {
+public class BoundedMCJSASolver
+        extends UnboundedMCJSASolver {
 
     public BoundedMCJSASolver() {
     }
@@ -15,9 +15,12 @@ public class BoundedMCJSASolver extends UnboundedMCJSASolver {
 
     @Override
     public void newSymbolicString(int id) {
-        Automaton automaton = BasicAutomata.makeAnyString();
-        automaton = AutomatonOperations.boundAutomaton(automaton,
-                                                       this.initialBound);
+
+        // create new automaton
+        Automaton automaton =
+                BasicAutomata.makeAnyChar().repeat(0, this.initialBound);
+
+        // store new automaton
         this.symbolicStringMap.put(id, automaton);
 
         // set new bound

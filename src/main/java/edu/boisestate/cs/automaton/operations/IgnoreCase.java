@@ -1,49 +1,32 @@
-package edu.boisestate.cs.automaton;
+package edu.boisestate.cs.automaton.operations;
 
 import dk.brics.automaton.Automaton;
-import dk.brics.automaton.BasicAutomata;
 import dk.brics.automaton.State;
 import dk.brics.automaton.Transition;
+import dk.brics.string.charset.CharSet;
+import dk.brics.string.stringoperations.UnaryOperation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Set;
 
-public class AutomatonOperations {
+/**
+ *
+ */
+public class IgnoreCase extends UnaryOperation {
 
-    public static Automaton boundAutomaton(Automaton automaton, int length) {
-
-        // create bounding automaton
-        Automaton boundingAutomaton = BasicAutomata.makeAnyChar()
-                                                   .repeat(0, length);
-
-        // bound automaton and return
-        return automaton.intersection(boundingAutomaton);
-    }
-
-    public static List<Automaton> boundAndSliceAutomaton(Automaton automaton, int minLength, int maxLength) {
-
-        // initialize automaton map
-        int count = maxLength - minLength + 1;
-        List<Automaton> automatonList = new ArrayList<>(count);
-
-        // for each value up to and including length
-        for (int i = minLength; i <= maxLength; i++) {
-
-            // bound automaton
-            Automaton bounding = Automaton.makeAnyString().repeat(i, i);
-            Automaton a = automaton.intersection(bounding);
-
-            // add to map
-            automatonList.add(a);
-        }
-
-        // return automaton map
-        return automatonList;
-    }
-
-    static public Automaton ignoreCase(Automaton automaton) {
+    /**
+     * Unary operation on automata.
+     *
+     * @param a
+     *         input automaton, should not be modified
+     *
+     * @return output automaton
+     */
+    @Override
+    public Automaton op(Automaton a) {
 
         // clone automaton
-        Automaton clone = automaton.clone();
+        Automaton clone = a.clone();
 
         // for all states
         for (State state : clone.getStates()) {
@@ -95,5 +78,34 @@ public class AutomatonOperations {
         clone.minimize();
 
         return clone;
+    }
+
+    /**
+     * Transfer function for character set analysis.
+     *
+     * @param a
+     */
+    @Override
+    public CharSet charsetTransfer(CharSet a) {
+        CharSet lower = a.toLowerCase();
+        CharSet upper = a.toUpperCase();
+        return lower.union(upper);
+    }
+
+    /**
+     * Returns name of this operation.
+     */
+    @Override
+    public String toString() {
+        return "ignoreCase";
+    }
+
+    /**
+     * Returns priority of this operation. When approximating operation loops in
+     * grammars, operations with high priority are considered first.
+     */
+    @Override
+    public int getPriority() {
+        return 2;
     }
 }
