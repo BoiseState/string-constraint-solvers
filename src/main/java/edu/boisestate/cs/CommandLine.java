@@ -155,27 +155,81 @@ class CommandLine {
         // create formatter
         HelpFormatter formatter = new HelpFormatter();
 
-        formatter.setSyntaxPrefix("USAGE:\n");
+        formatter.setSyntaxPrefix("USAGE:\n\n" + padding(2));
 
         String appClass = "java " + SolveMain.class.getName();
 
-        String header = "\nRun string constraint solver on specified control" +
-                        " flow graph. The default string constraint solver " +
-                        "is " +
-                        Settings.SolverType.DEFAULT +
-                        ". The default reporter is " +
-                        Settings.ReportType.DEFAULT +
-                        ".\n\nOPTIONS:\n";
+        StringBuilder header = new StringBuilder();
 
-        String footer = "\nSee the code repository at https://github.com/" +
-                        "BoiseState/string-constraint-solvers for more " +
-                        "details.\n";
+        // description
+        header.append("\nRun string constraint solver on specified control")
+              .append(" flow graph. The default string constraint solver ")
+              .append("is ")
+              .append(Settings.SolverType.DEFAULT)
+              .append(". The default reporter is ")
+              .append(Settings.ReportType.DEFAULT);
+
+        // section header for options
+        header.append(".\n\nOPTIONS:\n\n");
+
+        StringBuilder footer = new StringBuilder();
+
+        // section header for example usage
+        footer.append("\n\nUSAGE EXAMPLES:");
+
+        // first example
+        footer.append("\n\n")
+              .append(padding(4))
+              .append(appClass)
+              .append(" <PROJECT_ROOT>/graphs/iText02.json")
+              .append("\n")
+              .append(padding(8))
+              .append("-s jsa -r sat -v 1 -l 10");
+
+        // first example explanation
+        footer.append("\n\nRun sat reporter for the iText02.json constraint")
+              .append(" graph file using the JSA solver with unbounded")
+              .append(" automata and an initial bounding length of 10.");
+
+        // second example
+        footer.append("\n\n")
+              .append(padding(4))
+              .append(appClass)
+              .append(" <PROJECT_ROOT>/graphs/iText02.json")
+              .append("\n")
+              .append(padding(8))
+              .append("-s concrete -r model-count -l 10");
+
+        // second example explanation
+        footer.append("\n\nRun model count reporter for the iText02.json")
+              .append(" constraint graph file using the Concrete solver with")
+              .append(" an initial bounding length of 10.");
+
+        // section header for additional information
+        footer.append("\n\nADDITIONAL INFORMATION:");
+
+        // additional information description
+        footer.append("\n\nSee the code repository at https://github.com/")
+              .append("BoiseState/string-constraint-solvers for more ")
+              .append("details.\n");
 
         formatter.printHelp(appClass + " <Graph File>",
-                            header,
+                            header.toString(),
                             options,
-                            footer,
+                            footer.toString(),
                             true);
+    }
+
+    private static String padding(int length) {
+
+        // create char array of length with blank spaces
+        char[] pad = new char[length];
+        for (int i = 0; i < length; i++) {
+            pad[i] = ' ';
+        }
+
+        // return string created from pad array
+        return new String(pad);
     }
 
     private static Options createOptions() {
@@ -249,9 +303,9 @@ class CommandLine {
         Option length = Option.builder("l")
                               .longOpt("length")
                               .desc("Initial bounding length of the " +
-                                    "underlying finite state automata if " +
-                                    "used for representing symbolic strings." +
-                                    " Default value is " +
+                                    "underlying symbolic string, used with " +
+                                    "JSA ans Concrete solvers. Default value " +
+                                    "is " +
                                     Settings.DEFAULT_BOUNDING_LENGTH + ".")
                               .hasArg()
                               .numberOfArgs(1)
@@ -274,9 +328,9 @@ class CommandLine {
                                     .build();
 
         Option old = Option.builder("o")
-                             .longOpt("old")
-                             .desc("Runs older version of jsa solver")
-                             .build();
+                           .longOpt("old")
+                           .desc("Runs older version of jsa solver")
+                           .build();
 
         // add each option to options collection
         Options options = new Options();

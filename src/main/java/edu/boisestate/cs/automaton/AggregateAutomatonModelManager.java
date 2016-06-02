@@ -4,6 +4,9 @@ import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
 
+import java.math.BigInteger;
+import java.util.Set;
+
 public class AggregateAutomatonModelManager
         extends AutomatonModelManager {
 
@@ -13,6 +16,9 @@ public class AggregateAutomatonModelManager
                                            int initialBoundLength) {
         this.alphabet = alphabet;
         this.boundLength = initialBoundLength;
+
+        // set automaton minimization as huffman
+        Automaton.setMinimization(0);
     }
 
     static void setInstance(Alphabet alphabet, int initialBoundLength) {
@@ -95,6 +101,11 @@ public class AggregateAutomatonModelManager
         return new AggregateAutomataModel(automata,
                                           this.alphabet,
                                           this.boundLength);
+    }
+
+    @Override
+    public Set<String> getFiniteStrings(AutomatonModel model) {
+        return null;
     }
 
     @Override
@@ -192,6 +203,11 @@ public class AggregateAutomatonModelManager
 
     @Override
     public AutomatonModel trim(AutomatonModel model) {
+        return null;
+    }
+
+    @Override
+    public BigInteger modelCount(AutomatonModel model) {
         return null;
     }
 }

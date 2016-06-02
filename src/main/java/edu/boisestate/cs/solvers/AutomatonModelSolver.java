@@ -8,7 +8,7 @@ import edu.boisestate.cs.util.Tuple;
 public class AutomatonModelSolver
         extends ExtendedSolver<AutomatonModel> {
 
-    private final AutomatonModelManager modelManager;
+    protected final AutomatonModelManager modelManager;
 
     public AutomatonModelSolver(AutomatonModelManager modelManager) {
         super();

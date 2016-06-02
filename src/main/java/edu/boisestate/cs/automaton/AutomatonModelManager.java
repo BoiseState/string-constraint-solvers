@@ -5,6 +5,9 @@ import dk.brics.automaton.BasicAutomata;
 import dk.brics.string.stringoperations.UnaryOperation;
 import edu.boisestate.cs.Alphabet;
 
+import java.math.BigInteger;
+import java.util.Set;
+
 public abstract class AutomatonModelManager {
 
     static protected AutomatonModelManager instance = null;
@@ -13,6 +16,8 @@ public abstract class AutomatonModelManager {
     public Alphabet getAlphabet() {
         return this.alphabet;
     }
+
+    public abstract Set<String> getFiniteStrings(AutomatonModel model);
 
     static public AutomatonModelManager getInstance(Alphabet alphabet,
                                                     int modelVersion,
@@ -66,6 +71,8 @@ public abstract class AutomatonModelManager {
 
     public abstract AutomatonModel trim(AutomatonModel model);
 
+    public abstract BigInteger modelCount(AutomatonModel model);
+
     public AutomatonModel assertContainedInOther(AutomatonModel model,
                                                  AutomatonModel
                                                          containingModel) {
@@ -76,6 +83,8 @@ public abstract class AutomatonModelManager {
         // intersect substrings with model
         return model.intersect(substrings);
     }
+
+    public abstract AutomatonModel allSubstrings(AutomatonModel model);
 
     public AutomatonModel assertContainsOther(AutomatonModel model,
                                               AutomatonModel containedModel) {
@@ -92,12 +101,16 @@ public abstract class AutomatonModelManager {
         return model.intersect(x);
     }
 
+    public abstract AutomatonModel createAnyString();
+
     public AutomatonModel assertEmpty(AutomatonModel model) {
 
         // intersect model with empty string
         AutomatonModel empty = this.createEmptyString();
         return model.intersect(empty);
     }
+
+    public abstract AutomatonModel createEmptyString();
 
     public AutomatonModel assertEndsWith(AutomatonModel model,
                                          AutomatonModel endingModel) {
@@ -108,8 +121,6 @@ public abstract class AutomatonModelManager {
         // return intersection of model and end
         return model.intersect(end);
     }
-
-    public abstract AutomatonModel createAnyString();
 
     public AutomatonModel assertEquals(AutomatonModel model,
                                        AutomatonModel equalModel) {
@@ -152,23 +163,6 @@ public abstract class AutomatonModelManager {
         return model.intersect(complement);
     }
 
-    protected Automaton performUnaryOperation(Automaton automaton,
-                                              UnaryOperation operation) {
-
-        // use operation
-        Automaton result = operation.op(automaton);
-
-        // bound automaton to alphabet
-        String charSet = this.alphabet.getCharSet();
-        Automaton alphabet = BasicAutomata.makeCharSet(charSet).repeat();
-        result = result.intersection(alphabet);
-
-        // return resulting automaton
-        return result;
-    }
-
-    public abstract AutomatonModel allSubstrings(AutomatonModel model);
-
     public AutomatonModel assertNotContainsOther(AutomatonModel model,
                                                  AutomatonModel
                                                          notContainedModel) {
@@ -190,8 +184,6 @@ public abstract class AutomatonModelManager {
         // return model minus empty string
         return model.minus(emptyString);
     }
-
-    public abstract AutomatonModel createEmptyString();
 
     public AutomatonModel assertNotEquals(AutomatonModel model,
                                           AutomatonModel notEqualModel) {
@@ -230,4 +222,19 @@ public abstract class AutomatonModelManager {
     public abstract AutomatonModel prefix(AutomatonModel model, int end);
 
     public abstract AutomatonModel suffix(AutomatonModel model, int suffix);
+
+    protected Automaton performUnaryOperation(Automaton automaton,
+                                              UnaryOperation operation) {
+
+        // use operation
+        Automaton result = operation.op(automaton);
+
+        // bound automaton to alphabet
+        String charSet = this.alphabet.getCharSet();
+        Automaton alphabet = BasicAutomata.makeCharSet(charSet).repeat();
+        result = result.intersection(alphabet);
+
+        // return resulting automaton
+        return result;
+    }
 }

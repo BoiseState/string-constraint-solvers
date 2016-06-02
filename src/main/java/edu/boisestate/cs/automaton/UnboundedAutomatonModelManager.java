@@ -7,6 +7,10 @@ import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automaton.operations.IgnoreCase;
 import edu.boisestate.cs.automaton.operations.PrecisePrefix;
 import edu.boisestate.cs.automaton.operations.PreciseSuffix;
+import edu.boisestate.cs.automaton.operations.StringModelCounter;
+
+import java.math.BigInteger;
+import java.util.Set;
 
 public class UnboundedAutomatonModelManager
         extends AutomatonModelManager {
@@ -17,6 +21,9 @@ public class UnboundedAutomatonModelManager
                                            int boundLength) {
         this.alphabet = alphabet;
         this.boundLength = boundLength;
+
+        // set automaton minimization as huffman
+        Automaton.setMinimization(0);
     }
 
     static void setInstance(Alphabet alphabet, int initialBoundLength) {
@@ -116,6 +123,23 @@ public class UnboundedAutomatonModelManager
         return new UnboundedAutomatonModel(empty,
                                            this.alphabet,
                                            this.boundLength);
+    }
+
+    @Override
+    public Set<String> getFiniteStrings(AutomatonModel model) {
+
+        // get automaton from model
+        Automaton automaton = ((UnboundedAutomatonModel) model).getAutomaton();
+
+        // get bounding automaton from current bound length
+        int length = model.getBoundLength();
+        Automaton bounding = BasicAutomata.makeAnyChar().repeat(0, length);
+
+        // get bounded automaton
+        Automaton bounded = automaton.intersection(bounding);
+
+        // return finite strings from bounded automaton
+        return bounded.getFiniteStrings();
     }
 
     @Override
@@ -343,6 +367,19 @@ public class UnboundedAutomatonModelManager
         return new UnboundedAutomatonModel(result,
                                            this.alphabet,
                                            model.getBoundLength());
+    }
+
+    @Override
+    public BigInteger modelCount(AutomatonModel model) {
+
+        // get automaton from model
+        Automaton automaton = ((UnboundedAutomatonModel) model).getAutomaton();
+
+        // get bound length from model
+        int length = model.getBoundLength();
+
+        // return model count of automaton
+        return StringModelCounter.ModelCount(automaton, length);
     }
 
     @Override

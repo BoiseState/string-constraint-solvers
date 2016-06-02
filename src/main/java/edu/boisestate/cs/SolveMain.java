@@ -279,7 +279,7 @@ public class SolveMain {
 
         } else if (selectedSolver == Settings.SolverType.CONCRETE) {
 
-            solver = new ConcreteSolver(2);
+            solver = new ConcreteSolver(boundingLength);
 
         } else if (selectedSolver == Settings.SolverType.STRANGER) {
 

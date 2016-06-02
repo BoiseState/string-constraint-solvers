@@ -7,6 +7,10 @@ import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automaton.operations.IgnoreCase;
 import edu.boisestate.cs.automaton.operations.PrecisePrefix;
 import edu.boisestate.cs.automaton.operations.PreciseSuffix;
+import edu.boisestate.cs.automaton.operations.StringModelCounter;
+
+import java.math.BigInteger;
+import java.util.Set;
 
 public class BoundedAutomatonModelManager
         extends AutomatonModelManager {
@@ -17,6 +21,9 @@ public class BoundedAutomatonModelManager
                                          int initialBoundLength) {
         this.alphabet = alphabet;
         this.boundLength = initialBoundLength;
+
+        // set automaton minimization as huffman
+        Automaton.setMinimization(0);
     }
 
     static void setInstance(Alphabet alphabet, int initialBoundLength) {
@@ -115,6 +122,16 @@ public class BoundedAutomatonModelManager
         return new BoundedAutomatonModel(empty,
                                          this.alphabet,
                                          this.boundLength);
+    }
+
+    @Override
+    public Set<String> getFiniteStrings(AutomatonModel model) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // return finite strings from automaton
+        return automaton.getFiniteStrings();
     }
 
     @Override
@@ -342,6 +359,16 @@ public class BoundedAutomatonModelManager
         return new BoundedAutomatonModel(result,
                                            this.alphabet,
                                            model.getBoundLength());
+    }
+
+    @Override
+    public BigInteger modelCount(AutomatonModel model) {
+
+        // get automaton from model
+        Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
+
+        // return model count of automaton
+        return StringModelCounter.ModelCount(automaton);
     }
 
     @Override

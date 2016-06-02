@@ -1,4 +1,4 @@
-package edu.boisestate.cs.modelCount;
+package edu.boisestate.cs.automaton.operations;
 
 public class StringModelCounterUtilities {
 

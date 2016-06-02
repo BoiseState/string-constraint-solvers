@@ -1,7 +1,9 @@
 package edu.boisestate.cs.solvers;
 
+import edu.boisestate.cs.automaton.AutomatonModel;
 import edu.boisestate.cs.automaton.AutomatonModelManager;
 
+import java.math.BigInteger;
 import java.util.Set;
 
 public class MCAutomatonModelSolver
@@ -28,7 +30,12 @@ public class MCAutomatonModelSolver
      */
     @Override
     public Set<String> getAllVales(int id) {
-        return null;
+
+        // get model from id
+        AutomatonModel model = this.symbolicStringMap.get(id);
+
+        // return finite strings of model
+        return this.modelManager.getFiniteStrings(model);
     }
 
     /**
@@ -41,6 +48,14 @@ public class MCAutomatonModelSolver
      */
     @Override
     public int getModelCount(int id) {
-        return 0;
+
+        // get model from id
+        AutomatonModel model = this.symbolicStringMap.get(id);
+
+        // get model count as big integer
+        BigInteger count = this.modelManager.modelCount(model);
+
+        // return model count as integer
+        return count.intValue();
     }
 }

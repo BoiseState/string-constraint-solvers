@@ -2,7 +2,7 @@ package edu.boisestate.cs.solvers;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
-import edu.boisestate.cs.modelCount.StringModelCounter;
+import edu.boisestate.cs.automaton.operations.StringModelCounter;
 import edu.boisestate.cs.automaton.operations.PreciseSuffix;
 import edu.boisestate.cs.automaton.operations.PrecisePrefix;
 
