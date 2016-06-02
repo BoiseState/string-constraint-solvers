@@ -15,6 +15,7 @@ public class Settings {
     private String graphFilePath;
     private int initialBoundingLength;
     private String minAlphabet;
+    private boolean old;
     private ReportType reportType;
     private SolverType solverType;
 
@@ -48,6 +49,10 @@ public class Settings {
 
     public SolverType getSolverType() {
         return solverType;
+    }
+
+    public boolean getOld() {
+        return this.old;
     }
 
     public void setAlphabetDeclaration(String alphabetDeclaration) {
@@ -93,6 +98,11 @@ public class Settings {
         this.reportType = ReportType.DEFAULT;
         this.solverType = SolverType.DEFAULT;
         this.graphFilePath = "./graphs/beasties01.json";
+        this.old = false;
+    }
+
+    public void setOld() {
+        this.old = true;
     }
 
     public enum ReportType {

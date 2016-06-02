@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # get dot file directory
-dot_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../graphs/dot" && pwd )
+dot_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../graphs/dot" && pwd )
 
 # get all dot files for neato graphs
 dot_files=`ls $dot_dir/*.dot`

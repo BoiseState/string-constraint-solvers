@@ -267,6 +267,7 @@ public class SolveMain {
         int modelVersion = settings.getAutomatonModelVersion();
         int boundingLength = settings.getInitialBoundingLength();
         Alphabet alphabet = components.getAlphabet();
+        boolean old = settings.getOld();
 
         // initialize extend solver as null
         ExtendedSolver solver = null;
@@ -291,7 +292,7 @@ public class SolveMain {
                                 "str",
                                 "tempZ3Str");
 
-        } else if (selectedSolver == Settings.SolverType.JSA) {
+        } else if (selectedSolver == Settings.SolverType.JSA && !old) {
 
             // get model manager instance
             AutomatonModelManager modelManager =
@@ -308,6 +309,30 @@ public class SolveMain {
                 solver = new MCAutomatonModelSolver(modelManager,
                                                     boundingLength);
             }
+
+        } else if (selectedSolver == Settings.SolverType.JSA &&
+                   modelVersion == 1 &&
+                   reportType == Settings.ReportType.SAT) {
+
+            solver = new UnboundedEJSASolver(boundingLength);
+
+        } else if (selectedSolver == Settings.SolverType.JSA &&
+                   modelVersion == 1 &&
+                   reportType == Settings.ReportType.MODEL_COUNT) {
+
+            solver = new UnboundedMCJSASolver(boundingLength);
+
+        } else if (selectedSolver == Settings.SolverType.JSA &&
+                   modelVersion == 2 &&
+                   reportType == Settings.ReportType.SAT) {
+
+            solver = new BoundedEJSASolver(boundingLength);
+
+        } else if (selectedSolver == Settings.SolverType.JSA &&
+                   modelVersion == 2 &&
+                   reportType == Settings.ReportType.MODEL_COUNT) {
+
+            solver = new BoundedMCJSASolver(boundingLength);
 
         }
 

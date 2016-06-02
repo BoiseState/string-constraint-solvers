@@ -112,6 +112,10 @@ class CommandLine {
                 System.err.println(errorMessage);
                 return null;
             }
+
+            if (commandLine.hasOption("o")) {
+                settings.setOld();
+            }
         }
 
         // process reporter option
@@ -269,6 +273,11 @@ class CommandLine {
                                     .argName("version")
                                     .build();
 
+        Option old = Option.builder("o")
+                             .longOpt("old")
+                             .desc("Runs older version of jsa solver")
+                             .build();
+
         // add each option to options collection
         Options options = new Options();
         options.addOption(debug);
@@ -277,6 +286,7 @@ class CommandLine {
         options.addOption(modelVersion);
         options.addOption(solver);
         options.addOption(reporter);
+        options.addOption(old);
 
         // return options
         return options;

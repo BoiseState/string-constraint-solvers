@@ -78,7 +78,10 @@ def analyze_graph(vertices):
                 if special_c in value:
                     log.debug(u'Special Character Found: {0}'.format(
                         display_special_char(special_c)))
-                    alphabet.add(ord(special_c))
+                    if special_c == '\\\\':
+                        alphabet.add(92)
+                    else:
+                        alphabet.add(ord(special_c))
                     value = value.replace(special_c,
                                           display_special_char(special_c))
 

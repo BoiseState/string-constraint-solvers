@@ -1,31 +1,40 @@
 #! /usr/bin/env bash
 
 # get directory of this script as current working directory
-results_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../results" && pwd )"
+results_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../results" && pwd )"
 
 # load useful functions
-. $results_dir/../scripts/funcs.sh
+. $results_dir/../scripts/shell/funcs.sh
 
 # get solver
 set_solver $1
 
+# get reporter
+set_reporter $2
+
 # ensure extended solver results directory is ready
-mkdir -p $results_dir/$solver/diff/
+mkdir -p $results_dir/$reporter/$solver/diff/
 
 # clean diffs directory
-rm $results_dir/$solver/diff/*
+if [ "$(ls -A $results_dir/$reporter/$solver/diff)" ]; then
+    rm $results_dir/$reporter/$solver/diff/*
+fi
 
-for file in $results_dir/$solver/extended/*.txt
+for file in $results_dir/$reporter/$solver/extended/*.txt
 do
 
     # extract original graph name
     f_name_ex=${file##*/}
     f_name=${f_name_ex%%.txt}
+
+    echo
+    echo "diff $f_name"
+    echo
     
     # execute diff
     diff -B \
-         $results_dir/$solver/extended/$f_name_ex \
-         $results_dir/$solver/old/$f_name_ex &>/dev/null
+         $results_dir/$reporter/$solver/automaton_model/$f_name_ex \
+         $results_dir/$reporter/$solver/extended/$f_name_ex &>/dev/null
 
     # if difference found
     if [ $? -ne 0 ]
@@ -37,9 +46,9 @@ do
 
         # show side by side diff
         diff -B \
-             $results_dir/$solver/extended/$f_name_ex \
-             $results_dir/$solver/old/$f_name_ex | \
-                tee $results_dir/$solver/diff/$f_name.txt
+             $results_dir/$reporter/$solver/automaton_model/$f_name_ex \
+             $results_dir/$reporter/$solver/extended/$f_name_ex | \
+                tee $results_dir/$reporter/$solver/diff/$f_name.txt
     fi
 
 done
