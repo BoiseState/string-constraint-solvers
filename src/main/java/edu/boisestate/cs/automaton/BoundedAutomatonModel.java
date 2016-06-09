@@ -12,6 +12,11 @@ public class BoundedAutomatonModel
 
     @Override
     public AutomatonModel clone() {
-        return super.clone();
+
+        // create new model from existing automata
+        Automaton cloneAutomaton = this.automaton.clone();
+        return new BoundedAutomatonModel(cloneAutomaton,
+                                           this.alphabet,
+                                           this.boundLength);
     }
 }

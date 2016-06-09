@@ -9,7 +9,7 @@ import java.util.Set;
 public class UnboundedAutomatonModel
         extends AutomatonModel {
 
-    private Automaton automaton;
+    protected Automaton automaton;
 
     Automaton getAutomaton() {
         return this.automaton;
