@@ -6,6 +6,7 @@ import dk.brics.automaton.BasicOperations;
 import edu.boisestate.cs.Alphabet;
 
 import java.util.Arrays;
+import java.util.Set;
 
 public class AggregateAutomataModel
         extends AutomatonModel {
@@ -83,7 +84,6 @@ public class AggregateAutomataModel
 
         // get arg automata array
         Automaton[] argAutomata = this.getAutomataFromModel(argModel);
-
         // get any string automaton for bounding to alphabet
         String charSet = this.alphabet.getCharSet();
         Automaton anyString = BasicAutomata.makeCharSet(charSet);
@@ -155,37 +155,226 @@ public class AggregateAutomataModel
     }
 
     @Override
-    public boolean equals(AutomatonModel argModel) {
+    public boolean equals(AutomatonModel arg) {
+
+        // check if arg model is aggregate automata model
+        if (arg instanceof AggregateAutomataModel) {
+
+            // cast arg model
+            AggregateAutomataModel argModel = (AggregateAutomataModel) arg;
+
+            // check if automata arrays are equal
+            Automaton[] argAutomata = argModel.automata;
+            if (this.automata.length == argAutomata.length) {
+
+                // check each automata index
+                for (int i = 0; i < this.automata.length; i++) {
+
+                    // if any automaton is not equal to the corresponding
+                    // automaton, return false
+                    if (!this.automata[i].equals(argAutomata[i])) {
+                        return false;
+                    }
+                }
+
+                // all automata matched, return true
+                return true;
+            }
+        }
+
         return false;
     }
 
     @Override
     public String getAcceptedStringExample() {
+
+        // cycle through each automaton until an example is found
+        for (Automaton automaton : this.automata) {
+
+            // get shortest example from automaton
+            String example = automaton.getShortestExample(true);
+
+            // if example found, return it
+            if (example != null) {
+                return example;
+            }
+        }
+
+        // if none found, return null;
         return null;
     }
 
     @Override
-    public AutomatonModel intersect(AutomatonModel arg) {
-        return null;
+    public AutomatonModel intersect(AutomatonModel argModel) {
+
+        // initialize result automata array
+        Automaton[] results = new Automaton[this.automata.length];
+
+        // get arg automata array
+        Automaton[] argAutomata = this.getAutomataFromModel(argModel);
+        // get any string automaton for bounding to alphabet
+        String charSet = this.alphabet.getCharSet();
+        Automaton anyString = BasicAutomata.makeCharSet(charSet);
+
+        // for each automaton in model
+        for (int i = 0; i < this.automata.length; i++) {
+
+            // initialize temp automata array
+            Automaton[] temp = new Automaton[argAutomata.length];
+
+            // for each automaton in arg model
+            for (int j = 0; j < argAutomata.length; j++) {
+
+                // intersect automata
+                temp[j] = this.automata[i].intersection(argAutomata[j]);
+            }
+
+            // union temp automaton for result
+            Automaton result = BasicOperations.union(Arrays.asList(temp));
+
+            // bound result to alphabet
+            result = result.intersection(anyString);
+
+            // set array index with result
+            results[i] = result;
+        }
+
+        // return new model from results automata array
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          this.boundLength);
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+
+        // for each automaton in automata
+        for (Automaton automaton : this.automata) {
+
+            // if automaton is not empty string
+            if (!automaton.isEmptyString()) {
+                return false;
+            }
+        }
+
+        // all automata are empty strings, return true
+        return true;
     }
 
     @Override
     public boolean isSingleton() {
-        return false;
+
+        // initialize found singleton flag
+        boolean foundSingleton = false;
+
+        // for each automaton in automata
+        for (Automaton automaton : this.automata) {
+
+            // get on finite string, null if more
+            Set<String> strings = automaton.getFiniteStrings(1);
+
+            // if strings are null, not singleton
+            if (strings == null) {
+                return false;
+            }
+
+            // if string is singleton
+            if (strings.size() == 1 &&
+                strings.iterator().next() != null) {
+
+                // check if a singleton has already been found
+                if (foundSingleton) {
+                    return false;
+                }
+
+                // singleton has not already been found, set flag
+                foundSingleton = true;
+            }
+        }
+
+        // return found singleton flag value
+        return foundSingleton;
     }
 
     @Override
-    public AutomatonModel minus(AutomatonModel x) {
-        return null;
+    public AutomatonModel minus(AutomatonModel argModel) {
+
+        // initialize result automata array
+        Automaton[] results = new Automaton[this.automata.length];
+
+        // get arg automata array
+        Automaton[] argAutomata = this.getAutomataFromModel(argModel);
+        // get any string automaton for bounding to alphabet
+        String charSet = this.alphabet.getCharSet();
+        Automaton anyString = BasicAutomata.makeCharSet(charSet);
+
+        // for each automaton in model
+        for (int i = 0; i < this.automata.length; i++) {
+
+            // initialize temp automata array
+            Automaton[] temp = new Automaton[argAutomata.length];
+
+            // for each automaton in arg model
+            for (int j = 0; j < argAutomata.length; j++) {
+
+                // minus automata
+                temp[j] = this.automata[i].minus(argAutomata[j]);
+            }
+
+            // union temp automaton for result
+            Automaton result = BasicOperations.union(Arrays.asList(temp));
+
+            // bound result to alphabet
+            result = result.intersection(anyString);
+
+            // set array index with result
+            results[i] = result;
+        }
+
+        // return new model from results automata array
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          this.boundLength);
     }
 
     @Override
-    public AutomatonModel union(AutomatonModel arg) {
-        return null;
+    public AutomatonModel union(AutomatonModel argModel) {
+
+        // initialize result automata array
+        Automaton[] results = new Automaton[this.automata.length];
+
+        // get arg automata array
+        Automaton[] argAutomata = this.getAutomataFromModel(argModel);
+        // get any string automaton for bounding to alphabet
+        String charSet = this.alphabet.getCharSet();
+        Automaton anyString = BasicAutomata.makeCharSet(charSet);
+
+        // for each automaton in model
+        for (int i = 0; i < this.automata.length; i++) {
+
+            // initialize temp automata array
+            Automaton[] temp = new Automaton[argAutomata.length];
+
+            // for each automaton in arg model
+            for (int j = 0; j < argAutomata.length; j++) {
+
+                // union automata
+                temp[j] = this.automata[i].union(argAutomata[j]);
+            }
+
+            // union temp automaton for result
+            Automaton result = BasicOperations.union(Arrays.asList(temp));
+
+            // bound result to alphabet
+            result = result.intersection(anyString);
+
+            // set array index with result
+            results[i] = result;
+        }
+
+        // return new model from results automata array
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          this.boundLength);
     }
 }

@@ -2,9 +2,15 @@ package edu.boisestate.cs.automaton;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
+import dk.brics.string.stringoperations.*;
 import edu.boisestate.cs.Alphabet;
+import edu.boisestate.cs.automaton.operations.IgnoreCase;
+import edu.boisestate.cs.automaton.operations.PrecisePrefix;
+import edu.boisestate.cs.automaton.operations.PreciseSuffix;
+import edu.boisestate.cs.automaton.operations.StringModelCounter;
 
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.Set;
 
 public class AggregateAutomatonModelManager
@@ -28,17 +34,77 @@ public class AggregateAutomatonModelManager
 
     @Override
     public AutomatonModel allPrefixes(AutomatonModel model) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new Prefix());
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
+    }
+
+    private Automaton[] performUnaryOperations(Automaton[] automata,
+                                               UnaryOperation operation) {
+
+        // create automata to bound results to alphabet
+        String charSet = this.alphabet.getCharSet();
+        Automaton alphabet = BasicAutomata.makeCharSet(charSet).repeat();
+
+        // initialize results array
+        Automaton[] results = new Automaton[automata.length];
+
+        //  for each index in the automata array
+        for (int i = 0; i < automata.length; i++) {
+
+            // perform operation
+            Automaton result = operation.op(automata[i]);
+
+            // bound result
+            result = result.intersection(alphabet);
+
+            // set appropriate index in results array
+            results[i] = result;
+        }
+
+        // return results array
+        return results;
     }
 
     @Override
     public AutomatonModel allSubstrings(AutomatonModel model) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new Substring());
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
     public AutomatonModel allSuffixes(AutomatonModel model) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new Postfix());
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
@@ -104,11 +170,6 @@ public class AggregateAutomatonModelManager
     }
 
     @Override
-    public Set<String> getFiniteStrings(AutomatonModel model) {
-        return null;
-    }
-
-    @Override
     public AutomatonModel createString(String string) {
 
         // declare automata array
@@ -142,72 +203,249 @@ public class AggregateAutomatonModelManager
     }
 
     @Override
+    public Set<String> getFiniteStrings(AutomatonModel model) {
+
+        // initialize set of strings
+        Set<String> strings = new HashSet<>();
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // for each automaton
+        for (Automaton automaton : automata) {
+
+            // get finite strings from automaton
+            Set<String> automatonStrings = automaton.getFiniteStrings();
+
+            // if set is not null, add automaton strings to strings set
+            if (automatonStrings != null) {
+                strings.addAll(automatonStrings);
+            }
+        }
+
+        // return string set
+        return strings;
+    }
+
+    @Override
     public AutomatonModel ignoreCase(AutomatonModel model) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new IgnoreCase());
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
+    }
+
+    @Override
+    public BigInteger modelCount(AutomatonModel model) {
+
+        // initialize total model count as big integer
+        BigInteger totalModelCount = new BigInteger("0");
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // for each automaton in automata array
+        for (Automaton automaton : automata) {
+
+            // get automaton model count
+            BigInteger modelCount = StringModelCounter.ModelCount(automaton);
+
+            // add automaton model count to total model count
+            totalModelCount = totalModelCount.add(modelCount);
+        }
+
+        // return final model count
+        return totalModelCount;
     }
 
     @Override
     public AutomatonModel prefix(AutomatonModel model, int end) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new PrecisePrefix(end));
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
     public AutomatonModel replace(AutomatonModel model) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new Replace4());
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
     public AutomatonModel replace(AutomatonModel model,
                                   char find,
                                   char replace) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata,
+                                            new Replace1(find, replace));
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
     public AutomatonModel replace(AutomatonModel model,
                                   String find,
                                   String replace) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata,
+                                            new Replace6(find, replace));
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
     public AutomatonModel replaceFindKnown(AutomatonModel model, char find) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new Replace2(find));
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
     public AutomatonModel replaceReplaceKnown(AutomatonModel model,
                                               char replace) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new Replace3(replace));
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
-    public AutomatonModel reverse(AutomatonModel baseModel) {
-        return null;
+    public AutomatonModel reverse(AutomatonModel model) {
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new Reverse());
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
-    public AutomatonModel suffix(AutomatonModel model, int suffix) {
-        return null;
+    public AutomatonModel suffix(AutomatonModel model, int start) {
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new PreciseSuffix(start));
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
     public AutomatonModel toLowercase(AutomatonModel model) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new ToLowerCase());
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
     public AutomatonModel toUppercase(AutomatonModel model) {
-        return null;
+
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new ToUpperCase());
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 
     @Override
     public AutomatonModel trim(AutomatonModel model) {
-        return null;
-    }
 
-    @Override
-    public BigInteger modelCount(AutomatonModel model) {
-        return null;
+        // get automata from model
+        Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();
+
+        // perform operations
+        Automaton[] results =
+                this.performUnaryOperations(automata, new Substring());
+
+        // return new model from resulting automata
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          model.getBoundLength());
     }
 }
