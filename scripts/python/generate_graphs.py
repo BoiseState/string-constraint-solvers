@@ -362,11 +362,19 @@ def perform_const(value, const):
         return 'true' if value.startswith(arg_string) else 'false'
 
 
-def add_operation(t, countdown):
+def add_operation(t, countdown, v_list=None):
     global op_counter
+
+    new_v_list = v_list is None
 
     # for each operation
     for op in operations:
+
+        # check and create vertices list
+        if new_v_list:
+            v_list = list()
+            vertices.append(v_list)
+            v_list.append(t)
 
         op_counter += 1
         if op_counter % (op_total / 100) == 0:
@@ -380,40 +388,40 @@ def add_operation(t, countdown):
         value = op.get_value()
         op_vertex = Vertex(value, actual_val, generate_id(value))
 
-        # add operation vertex to collection
-        vertices.append(op_vertex)
+        # add operation vertices list
+        v_list.append(op_vertex)
 
         # add edge to collection
         edge = Edge(t.node_id, op_vertex.node_id, 't')
         op_vertex.incoming_edges.append(edge)
 
         # for each operation argument
-        for i, arg in enumerate(op.op_args):
+        for j, arg in enumerate(op.op_args):
             # create root value for arg
-            arg_value = RootValue(True, arg, "<init>")
+            arg_value = RootValue(True, arg, "init")
 
             # create vertex
             arg_val = arg_value.get_value()
             arg_vertex = Vertex(arg_val, arg, generate_id(arg_val))
 
-            # add arg vertex to collection
-            vertices.append(arg_vertex)
+            # add arg vertices list
+            v_list.append(arg_vertex)
 
             # add edge to collection
-            edge_type = 's{0}'.format(i + 1)
+            edge_type = 's{0}'.format(j + 1)
             arg_edge = Edge(arg_vertex.node_id, op_vertex.node_id, edge_type)
             op_vertex.incoming_edges.append(arg_edge)
 
         # if countdown not reached
         if countdown > 0:
             # add another of each operation
-            add_operation(op_vertex, countdown - 1)
+            add_operation(op_vertex, countdown - 1, v_list)
 
         # add a boolean constraint
-        add_bool_constraint(op_vertex)
+        add_bool_constraint(op_vertex, v_list)
 
 
-def add_bool_constraint(t):
+def add_bool_constraint(t, v_list):
     # for each boolean constraint
     for const in boolean_constraints:
 
@@ -425,101 +433,109 @@ def add_bool_constraint(t):
         const_vertex = Vertex(value, actual_val, generate_id(value))
 
         # add operation vertex to collection
-        vertices.append(const_vertex)
+        v_list.append(const_vertex)
 
         # add edge to collection
         edge = Edge(t.node_id, const_vertex.node_id, 't')
         const_vertex.incoming_edges.append(edge)
 
         # for each operation argument
-        for i, arg in enumerate(const.op_args):
+        for k, arg in enumerate(const.op_args):
             # create root value for arg
-            arg_value = RootValue(True, arg, "<init>")
+            arg_value = RootValue(True, arg, "init")
 
             # create vertex
             arg_val = arg_value.get_value()
             arg_vertex = Vertex(arg_val, arg, generate_id(arg_val))
 
             # add arg vertex to collection
-            vertices.append(arg_vertex)
+            v_list.append(arg_vertex)
 
             # add edge to collection
-            edge_type = 's{0}'.format(i + 1)
+            edge_type = 's{0}'.format(k + 1)
             arg_edge = Edge(arg_vertex.node_id, const_vertex.node_id, edge_type)
             const_vertex.incoming_edges.append(arg_edge)
 
 
 # main function
 def main(arguments):
+
+    # initialize counter
+    counter = 1
+
     # for each input value
-    for i, value in enumerate(inputs):
+    for value in inputs:
         # create root node value
-        root_value = RootValue(True, value, "<init>")
+        root_value = RootValue(True, value, "init")
 
         # create vertex from root node
         val = root_value.get_value()
         root_vertex = Vertex(val, value, generate_id(val))
 
-        # add vertex to collection
-        vertices.append(root_vertex)
-
         # add operations to the vertex
         add_operation(root_vertex, depth)
 
         log.debug('*** {0} Operations Added ***'.format(op_counter))
-        num_v = len(vertices)
+        num_v = 0
+        for v_list in vertices:
+            num_v += len(v_list)
         v_counter = 0
 
-        # initialize vertex list
-        vertex_list = list()
+        for v_list in vertices:
 
-        # for each vertex
-        for v in vertices:
+            # initialize vertex list
+            vertex_list = list()
 
-            v_counter += 1
-            if v_counter % (num_v / 100) == 0:
-                percent = v_counter * 100 / num_v
-                log.debug('Vertex Creation Progress: {0}%'.format(percent))
+            # for each vertex
+            for v in v_list:
 
-            # initialize vertex
-            vertex = {
-                'incomingEdges': list(),
-                'sourceConstraints': list(),
-                'timeStamp': int(time.time()),
-                'value': v.value,
-                'actualValue': v.actual_value,
-                'num': 0,
-                'type': 0,
-                'id': v.node_id
-            }
+                v_counter += 1
+                if v_counter % (num_v / 100) == 0:
+                    percent = v_counter * 100 / num_v
+                    log.debug('Vertex Creation Progress: {0}%'.format(percent))
 
-            # for each edge
-            for edge in v.incoming_edges:
-                # create incoming edge
-                inc_edge = {
-                    'source': edge.source_id,
-                    'type': edge.edge_type
+                # initialize vertex
+                vertex = {
+                    'incomingEdges': list(),
+                    'sourceConstraints': list(),
+                    'timeStamp': int(time.time()),
+                    'value': v.value,
+                    'actualValue': v.actual_value,
+                    'num': 0,
+                    'type': 0,
+                    'id': v.node_id
                 }
 
-                # add the incoming edge to the vertex
-                vertex['incomingEdges'].append(inc_edge)
+                # for each edge
+                for edge in v.incoming_edges:
+                    # create incoming edge
+                    inc_edge = {
+                        'source': edge.source_id,
+                        'type': edge.edge_type
+                    }
 
-            vertex_list.append(vertex)
+                    # add the incoming edge to the vertex
+                    vertex['incomingEdges'].append(inc_edge)
 
-        # create graph dictionary
-        graph = {
-            'vertices': vertex_list,
-            'alphabet': {
-                'declaration': 'A-D,a-d',
-                'size': 8
+                vertex_list.append(vertex)
+
+            # create graph dictionary
+            graph = {
+                'vertices': vertex_list,
+                'alphabet': {
+                    'declaration': 'A-D,a-d',
+                    'size': 8
+                }
             }
-        }
 
-        # write out update graph file
-        file_path = '{0}/../../graphs/gen{1:02d}.json'.format(
-            os.path.dirname(__file__), i)
-        with open(file_path, 'w') as graph_file:
-            json.dump(graph, graph_file)
+            # write out update graph file
+            file_path = '{0}/../../graphs/gen{1:02d}.json'.format(
+                os.path.dirname(__file__), counter)
+            with open(file_path, 'w') as graph_file:
+                json.dump(graph, graph_file)
+
+            # increment counter
+            counter += 1
 
 
 if __name__ == '__main__':

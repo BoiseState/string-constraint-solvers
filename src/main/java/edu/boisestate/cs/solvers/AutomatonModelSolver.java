@@ -387,7 +387,7 @@ public class AutomatonModelSolver
         AutomatonModel model = this.symbolicStringMap.get(id);
 
         // return singleton status
-        return model.containsString(actualValue) && this.isSingleton(id);
+        return model.containsString(actualValue) && model.isSingleton();
     }
 
     @Override
