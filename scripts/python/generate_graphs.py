@@ -6,6 +6,8 @@ import random
 import sys
 
 # Configure Logging
+import time
+
 file_name = os.path.basename(__file__).replace('.py', '')
 log = logging.getLogger(file_name)
 log.setLevel(logging.DEBUG)
@@ -483,7 +485,7 @@ def main(arguments):
             vertex = {
                 'incomingEdges': list(),
                 'sourceConstraints': list(),
-                'timeStamp': 0,
+                'timeStamp': int(time.time()),
                 'value': v.value,
                 'actualValue': v.actual_value,
                 'num': 0,

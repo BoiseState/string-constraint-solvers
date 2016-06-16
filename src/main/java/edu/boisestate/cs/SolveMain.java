@@ -140,7 +140,12 @@ public class SolveMain {
                 int id = (Integer) obj.get("id");
                 String actualValue = (String) obj.get("actualValue");
                 int num = (Integer) obj.get("num");
-                long timeStamp = (Long) obj.get("timeStamp");
+                long timeStamp;
+                try {
+                    timeStamp = (Long) obj.get("timeStamp");
+                } catch (ClassCastException e) {
+                    timeStamp = (Integer) obj.get("timeStamp");
+                }
                 int type = (Integer) obj.get("type");
                 String value = (String) obj.get("value");
 
