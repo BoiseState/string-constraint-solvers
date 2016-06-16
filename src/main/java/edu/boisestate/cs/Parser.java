@@ -398,7 +398,6 @@ public class Parser {
      * Determine and symbolically execute the correct concatenate or concatenate
      * operation:
      * <ul>
-     * <li>{@link java.lang.StringBuffer#append(AbstractStringBuilder)}</li>
      * <li>{@link java.lang.StringBuffer#append(boolean)}</li>
      * <li>{@link java.lang.StringBuffer#append(char)}</li>
      * <li>{@link java.lang.StringBuffer#append(char[])}</li>
@@ -412,7 +411,6 @@ public class Parser {
      * <li>{@link java.lang.StringBuffer#append(Object)}</li>
      * <li>{@link java.lang.StringBuffer#append(String)}</li>
      * <li>{@link java.lang.StringBuffer#append(StringBuffer)}</li>
-     * <li>{@link java.lang.StringBuilder#append(AbstractStringBuilder)}</li>
      * <li>{@link java.lang.StringBuilder#append(boolean)}</li>
      * <li>{@link java.lang.StringBuilder#append(char)}</li>
      * <li>{@link java.lang.StringBuilder#append(char[])}</li>
