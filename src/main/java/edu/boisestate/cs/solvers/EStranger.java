@@ -55,6 +55,26 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		symbolicStringMap.put(id, symbolicStringMap.get(base));
 	}
 
+	@Override
+	public void replaceCharKnown(int id, int base, char find, char replace) {
+		// TODO: Add implementation
+	}
+
+	@Override
+	public void replaceCharFindKnown(int id, int base, char find) {
+		// TODO: Add implementation
+	}
+
+	@Override
+	public void replaceCharReplaceKnown(int id, int base, char replace) {
+		// TODO: Add implementation
+	}
+
+	@Override
+	public void replaceCharUnknown(int id, int base) {
+		// TODO: Add implementation
+	}
+
 	public void append(int id, int base, int arg, int start, int end){
 		StrangerAutomaton argAutomaton = symbolicStringMap.get(arg);
 		argAutomaton=argAutomaton.substring(start, end);
@@ -259,7 +279,7 @@ public class EStranger extends ExtendedSolver<StrangerAutomaton> {
 		symbolicStringMap.put(id, automaton);
 	}
 	
-	public void replace(int id, int base, int argOne, int argTwo){
+	public void replaceStrings(int id, int base, int argOne, int argTwo){
 		StrangerAutomaton baseAutomaton = symbolicStringMap.get(base);
 		StrangerAutomaton argOneAutomaton = symbolicStringMap.get(argOne);
 		StrangerAutomaton argTwoAutomaton = symbolicStringMap.get(argTwo);

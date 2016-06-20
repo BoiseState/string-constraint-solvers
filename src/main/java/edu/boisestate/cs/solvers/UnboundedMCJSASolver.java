@@ -214,9 +214,41 @@ public class UnboundedMCJSASolver
     }
 
     @Override
-    public void replace(int id, int base, int arg1, int arg2) {
+    public void replaceCharKnown(int id, int base, char find, char replace) {
+        super.replaceCharKnown(id, base, find, replace);
 
-        super.replace(id, base, arg1, arg2);
+        // update bound value
+        this.boundMap.put(id, this.boundMap.get(base));
+    }
+
+    @Override
+    public void replaceCharFindKnown(int id, int base, char find) {
+        super.replaceCharFindKnown(id, base, find);
+
+        // update bound value
+        this.boundMap.put(id, this.boundMap.get(base));
+    }
+
+    @Override
+    public void replaceCharReplaceKnown(int id, int base, char replace) {
+        super.replaceCharReplaceKnown(id, base, replace);
+
+        // update bound value
+        this.boundMap.put(id, this.boundMap.get(base));
+    }
+
+    @Override
+    public void replaceCharUnknown(int id, int base) {
+        super.replaceCharUnknown(id, base);
+
+        // update bound value
+        this.boundMap.put(id, this.boundMap.get(base));
+    }
+
+    @Override
+    public void replaceStrings(int id, int base, int arg1, int arg2) {
+
+        super.replaceStrings(id, base, arg1, arg2);
 
         // update bound value
         this.boundMap.put(id, this.boundMap.get(base));

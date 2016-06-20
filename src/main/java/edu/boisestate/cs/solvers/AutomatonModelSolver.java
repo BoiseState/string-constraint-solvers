@@ -455,103 +455,58 @@ public class AutomatonModelSolver
     }
 
     @Override
-    public void replace(int id, int base, int argOne, int argTwo) {
+    public void replaceCharFindKnown(int id, int base, char find) {
 
-        // get models
+        // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
-        String arg1String = this.concreteStringMap.get(argOne);
-        String arg2String = this.concreteStringMap.get(argTwo);
 
-        // check if replace char operation
-        if (arg1String != null &&
-            arg1String.length() == 1 &&
-            arg2String != null &&
-            arg2String.length() == 1) {
+        // perform replace string operation
+        baseModel = this.modelManager.replaceFindKnown(baseModel, find);
 
-            // get find and replace chars
-            Tuple<Character, Boolean> findResult =
-                    getCharFromString(arg1String);
-            Tuple<Character, Boolean> replaceResult =
-                    getCharFromString(arg2String);
+        // store result model
+        this.symbolicStringMap.put(id, baseModel);
 
-            // get char values and known flags
-            char find = findResult.getFirst();
-            char replace = replaceResult.getFirst();
-            boolean findKnown = findResult.getSecond();
-            boolean replaceKnown = replaceResult.getSecond();
+    }
 
-            // perform correct replace operation
-            if (findKnown && replaceKnown) {
-                baseModel = this.modelManager.replace(baseModel, find, replace);
-            } else if (findKnown) {
-                baseModel = this.modelManager.replaceFindKnown(baseModel, find);
-            } else if (replaceKnown) {
-                baseModel = this.modelManager.replaceReplaceKnown(baseModel,
-                                                                  replace);
-            } else {
-                baseModel = this.modelManager.replace(baseModel);
-            }
+    @Override
+    public void replaceCharKnown(int id, int base, char find, char replace) {
 
-        }
-        // check if replace string operation
-        else if (arg1String != null && arg2String != null) {
+        // get model
+        AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
-            // perform replace string operation
-            baseModel = this.modelManager.replace(baseModel,
-                                                  arg1String,
-                                                  arg2String);
-        }
-        // replace string operation with symbolic string arguments
-        else {
-            System.err.println(
-                    "AutomatonModelSolver.replace: at least one concrete " +
-                    "string is null, this solver cannot currently perform " +
-                    "replace with symbolic string parameters.");
-        }
+        // perform replace string operation
+        baseModel = this.modelManager.replace(baseModel, find, replace);
+
+        // store result model
+        this.symbolicStringMap.put(id, baseModel);
+
+    }
+
+    @Override
+    public void replaceCharReplaceKnown(int id, int base, char replace) {
+
+        // get model
+        AutomatonModel baseModel = this.symbolicStringMap.get(base);
+
+        // perform replace string operation
+        baseModel = this.modelManager.replaceReplaceKnown(baseModel, replace);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
     }
 
-    private Tuple<Character, Boolean> getCharFromString(String string) {
+    @Override
+    public void replaceCharUnknown(int id, int base) {
 
-        // initialize result variables
-        boolean isKnown = true;
-        char charValue;
+        // get model
+        AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
-        // attempt to parse char value from string
-        try {
+        // perform replace string operation
+        baseModel = this.modelManager.replace(baseModel);
 
-            // parse string to int
-            int tempVal = Integer.parseInt(string);
+        // store result model
+        this.symbolicStringMap.put(id, baseModel);
 
-            // if value falls between 0 and 9, not known char value
-            if (tempVal >= 0 || tempVal < 10) {
-                isKnown = false;
-            }
-
-            // set char value via cast
-            charValue = (char) tempVal;
-
-        } catch (NumberFormatException e) {
-
-            // if string is not empty
-            if (!string.isEmpty()) {
-
-                // set value to first char in string
-                charValue = string.charAt(0);
-
-            } else {
-
-                // set value to first value from alphabet
-                Alphabet alphabet = this.modelManager.getAlphabet();
-                charValue = alphabet.getSymbolSet().iterator().next();
-
-            }
-        }
-
-        // return results
-        return new Tuple<>(charValue, isKnown);
     }
 
     @Override
@@ -559,6 +514,23 @@ public class AutomatonModelSolver
 
         // all unicode characters supported
         return value;
+    }
+
+    @Override
+    public void replaceStrings(int id, int base, int argOne, int argTwo) {
+
+        // get models
+        AutomatonModel baseModel = this.symbolicStringMap.get(base);
+        String arg1String = this.concreteStringMap.get(argOne);
+        String arg2String = this.concreteStringMap.get(argTwo);
+
+        // perform replace string operation
+        baseModel = this.modelManager.replace(baseModel,
+                                              arg1String,
+                                              arg2String);
+
+        // store result model
+        this.symbolicStringMap.put(id, baseModel);
     }
 
     @Override
@@ -741,5 +713,46 @@ public class AutomatonModelSolver
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
+    }
+
+    private Tuple<Character, Boolean> getCharFromString(String string) {
+
+        // initialize result variables
+        boolean isKnown = true;
+        char charValue;
+
+        // attempt to parse char value from string
+        try {
+
+            // parse string to int
+            int tempVal = Integer.parseInt(string);
+
+            // if value falls between 0 and 9, not known char value
+            if (tempVal >= 0 || tempVal < 10) {
+                isKnown = false;
+            }
+
+            // set char value via cast
+            charValue = (char) tempVal;
+
+        } catch (NumberFormatException e) {
+
+            // if string is not empty
+            if (!string.isEmpty()) {
+
+                // set value to first char in string
+                charValue = string.charAt(0);
+
+            } else {
+
+                // set value to first value from alphabet
+                Alphabet alphabet = this.modelManager.getAlphabet();
+                charValue = alphabet.getSymbolSet().iterator().next();
+
+            }
+        }
+
+        // return results
+        return new Tuple<>(charValue, isKnown);
     }
 }

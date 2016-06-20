@@ -17,6 +17,7 @@ abstract public class Reporter {
     protected final Parser parser;
     protected final boolean debug;
     protected final ExtendedSolver solver;
+    protected final Map<Integer, String[]> operationsMap;
 
     protected Reporter(DirectedGraph<PrintConstraint, SymbolicEdge> graph,
                        Parser parser,
@@ -27,6 +28,7 @@ abstract public class Reporter {
         this.parser = parser;
         this.debug = debug;
         this.solver = solver;
+        operationsMap = new HashMap<>();
     }
 
     public void run() {
@@ -77,9 +79,13 @@ abstract public class Reporter {
 
             // get constraint
             PrintConstraint constraint = iterator.next();
+            int constraintId = constraint.getId();
 
             // initialize constraint source map
             Map<String, Integer> sourceMap = new HashMap<>();
+
+            // declare target id
+            int targetId = 0;
 
             // for each incoming edge of the constraint
             for (SymbolicEdge edge : graph.incomingEdgesOf(constraint)) {
@@ -90,6 +96,11 @@ abstract public class Reporter {
 
                 // add the edge type and source id to the source map
                 sourceMap.put(edge.getType(), source.getId());
+
+                // if source is target, set id
+                if (edge.getType().equals("t")) {
+                    targetId = source.getId();
+                }
             }
 
             // set the constraint source map
@@ -110,10 +121,24 @@ abstract public class Reporter {
                 // add root
                 parser.addRoot(constraint);
 
+                // add initialization operation
+                String[] ops = new String[] {"<init>"};
+                this.operationsMap.put(constraintId, ops);
+
             } else {
 
                 // add operation
-                parser.addOperation(constraint);
+                String operation = parser.addOperation(constraint);
+
+                // get previous operations
+                String[] prevOps = this.operationsMap.get(targetId);
+
+                // create ops array for current operation
+                String[] currentOps = Arrays.copyOf(prevOps, prevOps.length + 1);
+                currentOps[currentOps.length - 1] = operation;
+
+                // add operations to map
+                this.operationsMap.put(constraintId, currentOps);
             }
         }
 

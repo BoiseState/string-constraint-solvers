@@ -457,7 +457,27 @@ public class UnboundedEJSASolver
     }
 
     @Override
-    public void replace(int id, int base, int arg1, int arg2) {
+    public void replaceCharKnown(int id, int base, char find, char replace) {
+
+    }
+
+    @Override
+    public void replaceCharFindKnown(int id, int base, char find) {
+
+    }
+
+    @Override
+    public void replaceCharReplaceKnown(int id, int base, char replace) {
+
+    }
+
+    @Override
+    public void replaceCharUnknown(int id, int base) {
+
+    }
+
+    @Override
+    public void replaceStrings(int id, int base, int arg1, int arg2) {
 
         // get automata
         Automaton baseAutomaton = this.symbolicStringMap.get(base);

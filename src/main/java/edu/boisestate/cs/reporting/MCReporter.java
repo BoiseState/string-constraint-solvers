@@ -118,22 +118,39 @@ public class MCReporter
         // revert symbolic string values
         solver.revertLastPredicate();
 
-        // output stats
+        // get percentages
         float truePercent = 100 * (float) trueModelCount / (float) initialCount;
-        float falsePercent = 100 * (float) falseModelCount / (float) initialCount;
-        System.out.format(
-                "%6d\t%5b\t%5b\t%5b\t%8s\t%9d\t%9d\t%5.1f\t%9d\t%5.1f\t%9d\n",
-                constraint.getId(),
-                isSingleton,
-                trueSat,
-                falseSat,
-                disjoint,
-                initialCount,
-                trueModelCount,
-                truePercent,
-                falseModelCount,
-                falsePercent,
-                overlap);
+        float falsePercent =
+                100 * (float) falseModelCount / (float) initialCount;
+
+        // get constraint function name
+        String constName = constraint.getSplitValue().split("!!")[0];
+
+        // get operations
+        String[] opsArray = this.operationsMap.get(constraint.getId());
+        StringBuilder ops = new StringBuilder();
+        for (String op : opsArray) {
+            ops.append(op).append(" -> ");
+        }
+        int opsLength = ops.length();
+        ops.delete(opsLength - 4, opsLength);
+
+        // output stats
+        System.out.format("%6d\t%5b\t%5b\t%5b\t%8s\t%9d\t%9d\t%5.1f\t%9d\t" +
+                          "%5.1f\t%9d\t%16s\t%s\n",
+                          constraint.getId(),
+                          isSingleton,
+                          trueSat,
+                          falseSat,
+                          disjoint,
+                          initialCount,
+                          trueModelCount,
+                          truePercent,
+                          falseModelCount,
+                          falsePercent,
+                          overlap,
+                          constName,
+                          ops.toString());
     }
 
     @Override
@@ -150,6 +167,8 @@ public class MCReporter
                            "T PER\t" +
                            "  F COUNT\t" +
                            "F PER\t" +
-                           "  OVERLAP");
+                           "  OVERLAP\t" +
+                           "CONSTRAINT FUNC\t" +
+                           "OPS");
     }
 }

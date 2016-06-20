@@ -345,7 +345,64 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public abstract void propagateSymbolicString(int id, int base);
 
     /**
-     * Interface for replace(String argOne, String argTwo)
+     * Interface for replace(char argOne, char argTwo) where both argument
+     * values are known.
+     *
+     * @param id
+     *         represents result.
+     * @param base
+     *         represents calling string.
+     * @param find
+     *         The character in the base string to replace.
+     * @param replace
+     *         The character used to replace the found character in the string.
+     */
+    public abstract void replaceCharKnown(int id,
+                                          int base,
+                                          char find,
+                                          char replace);
+
+    /**
+     * Interface for replace(char argOne, char argTwo) where only the first
+     * argument value, the character to replace in the string, is known.
+     *
+     * @param id
+     *         represents result.
+     * @param base
+     *         represents calling string.
+     * @param find
+     *         The character in the base string to replace.
+     */
+    public abstract void replaceCharFindKnown(int id, int base, char find);
+
+    /**
+     * Interface for replace(char argOne, char argTwo) where only the second
+     * argument value, the replacement character, is known.
+     *
+     * @param id
+     *         represents result.
+     * @param base
+     *         represents calling string.
+     * @param replace
+     *         The character used to replace the found character in the string.
+     */
+    public abstract void replaceCharReplaceKnown(int id,
+                                                 int base,
+                                                 char replace);
+
+    /**
+     * Interface for replace(char argOne, char argTwo) where both argument
+     * values are not known.
+     *
+     * @param id
+     *         represents result.
+     * @param base
+     *         represents calling string.
+     */
+    public abstract void replaceCharUnknown(int id, int base);
+
+    /**
+     * Interface for replace(String argOne, String argTwo).
      *
      * @param id
      *         represents result.
@@ -356,7 +413,10 @@ public abstract class ExtendedSolver<TSymbolicString> {
      * @param argTwo
      *         represents replacement string.
      */
-    public abstract void replace(int id, int base, int argOne, int argTwo);
+    public abstract void replaceStrings(int id,
+                                        int base,
+                                        int argOne,
+                                        int argTwo);
 
     /**
      * Replaces possible invalid characters in the input value. Introduces

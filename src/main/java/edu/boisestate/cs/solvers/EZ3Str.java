@@ -95,6 +95,26 @@ public class EZ3Str extends ExtendedSolver<StringBuilder>{
 	}
 
 	@Override
+	public void replaceCharKnown(int id, int base, char find, char replace) {
+
+	}
+
+	@Override
+	public void replaceCharFindKnown(int id, int base, char find) {
+
+	}
+
+	@Override
+	public void replaceCharReplaceKnown(int id, int base, char replace) {
+
+	}
+
+	@Override
+	public void replaceCharUnknown(int id, int base) {
+
+	}
+
+	@Override
 	public void append(int id, int base, int arg, int start, int end) {
 		String temp = "temp_" + id;
 		StringBuilder result = getValue(base).append(getValue(arg));
@@ -294,7 +314,7 @@ public class EZ3Str extends ExtendedSolver<StringBuilder>{
 	}
 
 	@Override
-	public void replace(int id, int base, int argOne, int argTwo) {
+	public void replaceStrings(int id, int base, int argOne, int argTwo) {
 		newSymbolicString(id);
 	}
 
@@ -426,10 +446,6 @@ public class EZ3Str extends ExtendedSolver<StringBuilder>{
 	/**
 	 * Executes a query for solvers that run in a stanalone program (Z3-str).
 	 * @param solveString Contains the constraints to be evaluated in the language of the solver.
-	 * @param trackConstraintTime True if this should go into evaluation of time at branching points.
-	 * @param trackHotTime True if this should go into evaluation of time at hotspots.
-	 * @param isTrueBranch True if this if for evaluation of a true branch.
-	 * @param id An id for the constraint to be evaluated.
 	 */
 	protected String exec(String solveString) {
 		solveString = solveString + "(get-model)\n";
