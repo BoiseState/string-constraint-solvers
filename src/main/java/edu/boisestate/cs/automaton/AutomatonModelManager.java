@@ -45,7 +45,7 @@ public abstract class AutomatonModelManager {
 
     public abstract AutomatonModel ignoreCase(AutomatonModel model);
 
-    public abstract AutomatonModel replace(AutomatonModel model);
+    public abstract AutomatonModel replaceChar(AutomatonModel model);
 
     public abstract AutomatonModel replace(AutomatonModel model,
                                            char find,

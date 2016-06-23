@@ -191,7 +191,7 @@ public class UnboundedAutomatonModelManager
     }
 
     @Override
-    public AutomatonModel replace(AutomatonModel model) {
+    public AutomatonModel replaceChar(AutomatonModel model) {
 
         // get automaton from model
         Automaton automaton = ((UnboundedAutomatonModel) model).getAutomaton();

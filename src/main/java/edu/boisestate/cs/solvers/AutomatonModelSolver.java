@@ -502,7 +502,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform replace string operation
-        baseModel = this.modelManager.replace(baseModel);
+        baseModel = this.modelManager.replaceChar(baseModel);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);

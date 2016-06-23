@@ -1,7 +1,7 @@
 package edu.boisestate.cs;
 
 import edu.boisestate.cs.graph.PrintConstraint;
-import edu.boisestate.cs.solvers.ConcreteSolver;
+import edu.boisestate.cs.solvers.StaticConcreteSolver;
 import edu.boisestate.cs.solvers.ExtendedSolver;
 
 import java.util.HashMap;
@@ -242,9 +242,9 @@ public class Parser {
 // " " + string);
 //    	}
 
-        if (solver instanceof ConcreteSolver && ConcreteSolver.DEBUG) {
+        if (solver instanceof StaticConcreteSolver && StaticConcreteSolver.DEBUG) {
             //check the actual and concrete values
-            ConcreteSolver cs = (ConcreteSolver) solver;
+            StaticConcreteSolver cs = (StaticConcreteSolver) solver;
             String calString = cs.getValue(id).getValue();
             if (fName.equals("length")) {
                 calString = String.valueOf(calString.length());

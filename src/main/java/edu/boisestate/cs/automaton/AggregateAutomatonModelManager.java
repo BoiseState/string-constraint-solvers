@@ -283,7 +283,7 @@ public class AggregateAutomatonModelManager
     }
 
     @Override
-    public AutomatonModel replace(AutomatonModel model) {
+    public AutomatonModel replaceChar(AutomatonModel model) {
 
         // get automata from model
         Automaton[] automata = ((AggregateAutomataModel) model).getAutomata();

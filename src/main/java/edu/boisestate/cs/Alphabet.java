@@ -1,11 +1,23 @@
 package edu.boisestate.cs;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Alphabet {
+
+    static private Alphabet instance = null;
+
+    static public void setInstance(Alphabet alphabet) {
+        instance = alphabet;
+    }
+
+    static public Alphabet getInstance() {
+        return instance;
+    }
 
     private final Set<MinMaxPair> charRanges;
     private final Set<Character> symbolSet;
@@ -19,6 +31,48 @@ public class Alphabet {
 
         this.createCharRanges();
         return charRanges;
+    }
+
+    public List<String> allStrings(int minLength, int maxLength) {
+
+        // initialize return list of strings
+        List<String> returnList = new ArrayList<>();
+
+        // initialize string tracking list with empty string element
+        List<String> strList = new ArrayList<>();
+        strList.add("");
+
+        // add empty string to string domain if min is 0
+        if (minLength == 0) {
+            returnList.add("");
+        }
+
+        // for strings of length min to length max
+        for (int i = 1; i <= maxLength; i++) {
+
+            // save strings to temporary list before clearing string list
+            List<String> tempList = new ArrayList<>(strList.size());
+            tempList.addAll(strList);
+            strList.clear();
+
+            // loop for each character in alphabet
+            for (char c : this.symbolSet) {
+
+                // for each previous string of length n, append the current
+                // character to create instances of strings with length n+1
+                for (String str : tempList) {
+                    String strInstance = str + c;
+                    strList.add(strInstance);
+                }
+            }
+
+            // add to return list if above min length
+            if (i >= minLength) {
+                returnList.addAll(strList);
+            }
+        }
+
+        return returnList;
     }
 
     private void createCharRanges() {

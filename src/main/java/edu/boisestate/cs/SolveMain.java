@@ -284,7 +284,7 @@ public class SolveMain {
 
         } else if (selectedSolver == Settings.SolverType.CONCRETE) {
 
-            solver = new ConcreteSolver(boundingLength);
+            solver = new StaticConcreteSolver(alphabet, boundingLength);
 
         } else if (selectedSolver == Settings.SolverType.STRANGER) {
 
