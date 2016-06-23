@@ -14,6 +14,7 @@ public class ConcreteValues {
     private final Alphabet alphabet;
     private final int initialBoundLength;
     private final List<String> values;
+    private long exceptionCount;
 
     public List<String> getValues() {
         return this.values;
@@ -30,6 +31,7 @@ public class ConcreteValues {
 
         this.values = new ArrayList<>();
         this.values.add(value);
+        exceptionCount = 0;
     }
 
     //creates an infeasible
@@ -40,6 +42,7 @@ public class ConcreteValues {
         this.initialBoundLength = initialBoundLength;
 
         this.values = new ArrayList<>();
+        exceptionCount = 0;
     }
 
     public ConcreteValues(Alphabet alphabet,
@@ -51,6 +54,7 @@ public class ConcreteValues {
 
         this.values = new ArrayList<>();
         this.values.addAll(values);
+        exceptionCount = 0;
     }
 
     @Override
@@ -291,7 +295,8 @@ public class ConcreteValues {
                                   results);
     }
 
-    public ConcreteValues assertNotContainedInEnding(ConcreteValues containing) {
+    public ConcreteValues assertNotContainedInEnding(ConcreteValues
+                                                             containing) {
         // initialize result list
         List<String> results = new ArrayList<>();
 
@@ -578,10 +583,14 @@ public class ConcreteValues {
 
         // for each string in values
         for (String str : this.values) {
-            // add deleted string to result list
-            StringBuilder strBuilder = new StringBuilder(str);
-            strBuilder.delete(start, end);
-            results.add(strBuilder.toString());
+            try {
+                // add deleted string to result list
+                StringBuilder strBuilder = new StringBuilder(str);
+                strBuilder.delete(start, end);
+                results.add(strBuilder.toString());
+            } catch (Exception e) {
+                this.exceptionCount += 1;
+            }
         }
 
         // return new concrete values from result list
@@ -597,10 +606,14 @@ public class ConcreteValues {
 
         // for each string in values
         for (String str : this.values) {
-            // add deleted string to result list
-            StringBuilder strBuilder = new StringBuilder(str);
-            strBuilder.deleteCharAt(loc);
-            results.add(strBuilder.toString());
+            try {
+                // add deleted string to result list
+                StringBuilder strBuilder = new StringBuilder(str);
+                strBuilder.deleteCharAt(loc);
+                results.add(strBuilder.toString());
+            } catch (Exception e) {
+                this.exceptionCount += 1;
+            }
         }
 
         // return new concrete values from result list
@@ -617,10 +630,14 @@ public class ConcreteValues {
         // for each string in both base and arg values
         for (String baseStr : this.values) {
             for (String argStr : arg.values) {
-                // add result of string insertion to result list
-                StringBuilder strBuilder = new StringBuilder(baseStr);
-                strBuilder.insert(offset, argStr);
-                results.add(strBuilder.toString());
+                try {
+                    // add result of string insertion to result list
+                    StringBuilder strBuilder = new StringBuilder(baseStr);
+                    strBuilder.insert(offset, argStr);
+                    results.add(strBuilder.toString());
+                } catch (Exception e) {
+                    this.exceptionCount += 1;
+                }
             }
         }
 
@@ -749,10 +766,14 @@ public class ConcreteValues {
         // for each string in both base and arg values
         for (String baseStr : this.values) {
             for (String argStr : arg.values) {
-                // add result of setting character to result list
-                StringBuilder strBuilder = new StringBuilder(baseStr);
-                strBuilder.setCharAt(offset, argStr.charAt(0));
-                results.add(strBuilder.toString());
+                try {
+                    // add result of setting character to result list
+                    StringBuilder strBuilder = new StringBuilder(baseStr);
+                    strBuilder.setCharAt(offset, argStr.charAt(0));
+                    results.add(strBuilder.toString());
+                } catch (Exception e) {
+                    this.exceptionCount += 1;
+                }
             }
         }
 
@@ -770,8 +791,12 @@ public class ConcreteValues {
 
         // for each string in values
         for (String str : this.values) {
-            // add substring to result list
-            results.add(str.substring(start, end));
+            try {
+                // add substring to result list
+                results.add(str.substring(start, end));
+            } catch (Exception e) {
+                this.exceptionCount += 1;
+            }
         }
 
         // return new concrete values from result list
@@ -787,8 +812,12 @@ public class ConcreteValues {
 
         // for each string in values
         for (String str : this.values) {
+            try {
             // add substring to result list
             results.add(str.substring(start));
+            } catch (Exception e) {
+                this.exceptionCount += 1;
+            }
         }
 
         // return new concrete values from result list

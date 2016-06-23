@@ -235,60 +235,6 @@ public class Parser {
             operationString = "[Unknown string operation]";
         }
 
-//        if(id == 106325 || id == 106323 || id == 106321 || id == 106318 ||
-// id == 106319 || id == 106316
-//        		|| id == 106314){
-//    		System.out.println(id + " " + base + " " + actualVals.get(base) +
-// " " + string);
-//    	}
-
-        if (solver instanceof StaticConcreteSolver && StaticConcreteSolver.DEBUG) {
-            //check the actual and concrete values
-            StaticConcreteSolver cs = (StaticConcreteSolver) solver;
-            String calString = cs.getValue(id).getValue();
-            if (fName.equals("length")) {
-                calString = String.valueOf(calString.length());
-            }
-            if (fName.equals("charAt")) {
-                int index = Integer.parseInt(actualVals.get(arg));
-                if (calString != null && index < calString.length()) {
-                    calString = String.valueOf(calString.charAt(index));
-                }
-            }
-
-            String actString = actualVals.get(id);
-            if (!actString.equals(calString)) {
-                System.err.println(id +
-                                   " Concrete and Actual do not match \t" +
-                                   calString +
-                                   "\t" +
-                                   actString
-                                   +
-                                   "\t" +
-                                   constraint +
-                                   " base " +
-                                   base +
-                                   " " +
-                                   actualVals.get(base) +
-                                   " args " +
-                                   arg +
-                                   " " +
-                                   actualVals.get(arg));
-                //System.exit(2);
-                //fix it for toString
-                if (fName.endsWith("toString")) {
-                    System.err.println("Fixing toString()");
-                    solver.newConcreteString(id, actString);
-                    calString = cs.getValue(id).getValue();
-                    if (!actString.equals(calString)) {
-                        System.err.println("Did not fix toString!!!");
-                    }
-                }
-
-            }
-
-        }
-
         // return op string
         return operationString;
     }

@@ -127,7 +127,7 @@ public class MCReporter
         String constName = constraint.getSplitValue().split("!!")[0];
 
         // get operations
-        String[] opsArray = this.operationsMap.get(constraint.getId());
+        String[] opsArray = this.operationsMap.get(base);
         StringBuilder ops = new StringBuilder();
         for (String op : opsArray) {
             ops.append(op).append(" -> ");
