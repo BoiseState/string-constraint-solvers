@@ -99,9 +99,9 @@ operations = [
     OperationValue('reverse!!'),
     OperationValue('substring!!I', ['1']),
     OperationValue('substring!!II', ['0', '1']),
-    OperationValue('toLowercase!!'),
+    OperationValue('toLowerCase!!'),
     OperationValue('toString!!'),
-    OperationValue('toUppercase!!'),
+    OperationValue('toUpperCase!!'),
     OperationValue('trim!!')
 ]
 
@@ -293,7 +293,7 @@ def perform_op(orignal_value, op):
         # return substring
         return orignal_value[start:end]
 
-    elif op.op == 'toLowercase!!':
+    elif op.op == 'toLowerCase!!':
 
         # return string in lowercase
         return orignal_value.lower()
@@ -303,7 +303,7 @@ def perform_op(orignal_value, op):
         # return string
         return orignal_value[::1]
 
-    elif op.op == 'toUppercase!!':
+    elif op.op == 'toUpperCase!!':
 
         # return string in uppercase
         return orignal_value.upper()

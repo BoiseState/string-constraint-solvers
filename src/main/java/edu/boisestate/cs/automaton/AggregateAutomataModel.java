@@ -64,7 +64,8 @@ public class AggregateAutomataModel
             Automaton result = this.automata[i].complement();
 
             // bound result to alphabet
-            result = result.intersection(anyString);
+            Automaton bounding = anyString.repeat(0, this.boundLength);
+            result = result.intersection(bounding);
 
             // set array index with result
             results[i] = result;
@@ -86,7 +87,7 @@ public class AggregateAutomataModel
         Automaton[] argAutomata = this.getAutomataFromModel(argModel);
         // get any string automaton for bounding to alphabet
         String charSet = this.alphabet.getCharSet();
-        Automaton anyString = BasicAutomata.makeCharSet(charSet);
+        Automaton anyString = BasicAutomata.makeCharSet(charSet).repeat();
 
         // for each automaton in model
         for (int i = 0; i < this.automata.length; i++) {
@@ -123,7 +124,7 @@ public class AggregateAutomataModel
         if (model instanceof UnboundedAutomatonModel) {
 
             // return array of single automaton
-            Automaton automaton = ((UnboundedAutomatonModel) model).automaton;
+            Automaton automaton = ((UnboundedAutomatonModel) model).getAutomaton();
             return new Automaton[]{automaton.clone()};
 
         } else if (model instanceof AggregateAutomataModel) {
@@ -214,7 +215,7 @@ public class AggregateAutomataModel
         Automaton[] argAutomata = this.getAutomataFromModel(argModel);
         // get any string automaton for bounding to alphabet
         String charSet = this.alphabet.getCharSet();
-        Automaton anyString = BasicAutomata.makeCharSet(charSet);
+        Automaton anyString = BasicAutomata.makeCharSet(charSet).repeat();
 
         // for each automaton in model
         for (int i = 0; i < this.automata.length; i++) {
@@ -306,7 +307,7 @@ public class AggregateAutomataModel
         Automaton[] argAutomata = this.getAutomataFromModel(argModel);
         // get any string automaton for bounding to alphabet
         String charSet = this.alphabet.getCharSet();
-        Automaton anyString = BasicAutomata.makeCharSet(charSet);
+        Automaton anyString = BasicAutomata.makeCharSet(charSet).repeat();
 
         // for each automaton in model
         for (int i = 0; i < this.automata.length; i++) {
@@ -347,7 +348,7 @@ public class AggregateAutomataModel
         Automaton[] argAutomata = this.getAutomataFromModel(argModel);
         // get any string automaton for bounding to alphabet
         String charSet = this.alphabet.getCharSet();
-        Automaton anyString = BasicAutomata.makeCharSet(charSet);
+        Automaton anyString = BasicAutomata.makeCharSet(charSet).repeat();
 
         // for each automaton in model
         for (int i = 0; i < this.automata.length; i++) {

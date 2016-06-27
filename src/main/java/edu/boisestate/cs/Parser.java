@@ -1,7 +1,6 @@
 package edu.boisestate.cs;
 
 import edu.boisestate.cs.graph.PrintConstraint;
-import edu.boisestate.cs.solvers.StaticConcreteSolver;
 import edu.boisestate.cs.solvers.ExtendedSolver;
 
 import java.util.HashMap;
@@ -107,7 +106,7 @@ public class Parser {
         Map<String, Integer> sourceMap = constraint.getSourceMap();
 
         // initialize operation string
-        String operationString = "[Unknown]";
+        String operationString = "[Unknown string operation]";
 
         // if debug mode set
         if (debug) {
@@ -145,7 +144,9 @@ public class Parser {
         }
 
         // process operation based on function name
-        if ((fName.equals("concatenate")) || fName.equals("concat")) {
+        if ((fName.equals("concatenate")) ||
+            fName.equals("concat") ||
+            fName.equals("append")) {
 
             operationString = processAppend(constraint);
 
@@ -232,7 +233,6 @@ public class Parser {
 
             // create symbolic string
             solver.newSymbolicString(id);
-            operationString = "[Unknown string operation]";
         }
 
         // return op string
@@ -806,13 +806,17 @@ public class Parser {
                                                  base,
                                                  findChar,
                                                  replaceChar);
-                    operation = String.format("<prev>.replace(%s, %s)", findChar, replaceChar);
+                    operation = String.format("<prev>.replace(%s, %s)",
+                                              findChar,
+                                              replaceChar);
                 } else if (findKnown) {
                     this.solver.replaceCharFindKnown(id, base, findChar);
-                    operation = String.format("<prev>.replace(%s, <char>)", findChar);
+                    operation = String.format("<prev>.replace(%s, <char>)",
+                                              findChar);
                 } else if (replaceKnown) {
                     this.solver.replaceCharReplaceKnown(id, base, replaceChar);
-                    operation = String.format("<prev>.replace(<char>, %s)", replaceChar);
+                    operation = String.format("<prev>.replace(<char>, %s)",
+                                              replaceChar);
                 } else {
                     this.solver.replaceCharUnknown(id, base);
                     operation = "<prev>.replace(<char>, <char>)";

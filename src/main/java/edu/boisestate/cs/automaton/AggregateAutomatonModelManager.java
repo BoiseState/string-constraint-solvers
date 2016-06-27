@@ -140,9 +140,7 @@ public class AggregateAutomatonModelManager
 
     @Override
     public AutomatonModel createAnyString() {
-        throw new UnsupportedOperationException(
-                "An AggregateAutomataModel must have a maximum bounding " +
-                "length");
+        return this.createAnyString(0, this.boundLength);
     }
 
     @Override

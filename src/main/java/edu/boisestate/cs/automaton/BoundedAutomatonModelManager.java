@@ -226,9 +226,8 @@ public class BoundedAutomatonModelManager
         Automaton automaton = ((BoundedAutomatonModel) model).getAutomaton();
 
         // perform operation
-        Automaton result = this.performUnaryOperation(automaton,
-                                                      new Replace6(find,
-                                                                   replace));
+        Replace6 replaceOp = new Replace6(find, replace);
+        Automaton result = this.performUnaryOperation(automaton, replaceOp);
 
         // determine new bound length
         int boundDiff = find.length() - replace.length();

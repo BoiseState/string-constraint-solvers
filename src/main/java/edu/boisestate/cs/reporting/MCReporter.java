@@ -7,7 +7,7 @@ import edu.boisestate.cs.solvers.ExtendedSolver;
 import edu.boisestate.cs.solvers.ModelCountSolver;
 import org.jgrapht.DirectedGraph;
 
-import java.util.Map;
+import java.util.*;
 
 public class MCReporter
         extends Reporter {
@@ -28,7 +28,6 @@ public class MCReporter
 
     @Override
     protected void calculateStats(PrintConstraint constraint) {
-
 
         // get constraint info as variables
         Map<String, Integer> sourceMap = constraint.getSourceMap();
@@ -126,49 +125,117 @@ public class MCReporter
         // get constraint function name
         String constName = constraint.getSplitValue().split("!!")[0];
 
+        if (constName.equals("isEmpty")) {
+
+            // update base constraint operations
+            String[] baseOps = this.operationsMap.get(base);
+
+            // create ops array for current operation
+            String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
+            newBaseOps[newBaseOps.length - 1] = "<this>.isEmpty()";
+
+            // add operations to map
+            this.operationsMap.put(base, newBaseOps);
+
+        } else {
+
+            // get base constraint operations
+            String[] baseOps = this.operationsMap.get(base);
+
+            // create ops array for base operation
+            String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
+            newBaseOps[newBaseOps.length - 1] =
+                    String.format("<this>.%s(<String>)", constName);
+
+            // update base operations
+            this.operationsMap.put(base, newBaseOps);
+
+            // get arg constraint operations
+            String[] argOps = this.operationsMap.get(arg);
+
+            // create ops array for arg operation
+            String[] newArgOps = Arrays.copyOf(argOps, argOps.length + 1);
+            newArgOps[newArgOps.length - 1] =
+                    String.format("<String>.%s(<this>)", constName);
+
+            // update arg operations
+            this.operationsMap.put(arg, newArgOps);
+
+        }
+
         // get operations
         String[] opsArray = this.operationsMap.get(base);
-        StringBuilder ops = new StringBuilder();
-        for (String op : opsArray) {
-            ops.append(op).append(" -> ");
-        }
-        int opsLength = ops.length();
-        ops.delete(opsLength - 4, opsLength);
+        String ops = joinStrings(Arrays.asList(opsArray), " -> ");
 
-        // output stats
-        System.out.format("%6d\t%5b\t%5b\t%5b\t%8s\t%9d\t%9d\t%5.1f\t%9d\t" +
-                          "%5.1f\t%9d\t%16s\t%s\n",
-                          constraint.getId(),
-                          isSingleton,
-                          trueSat,
-                          falseSat,
-                          disjoint,
-                          initialCount,
-                          trueModelCount,
-                          truePercent,
-                          falseModelCount,
-                          falsePercent,
-                          overlap,
-                          constName,
-                          ops.toString());
+        // gather column data in list
+        List<String> columns = new ArrayList<>();
+        // id
+        columns.add(String.valueOf(constraint.getId()));
+        // actual value
+        columns.add(String.format("\"%s\"", constraint.getActualVal()));
+        // is singleton?
+        columns.add(String.valueOf(isSingleton));
+        // true sat?
+        columns.add(String.valueOf(trueSat));
+        // false sat?
+        columns.add(String.valueOf(falseSat));
+        // disjoint?
+        columns.add(String.format("%8s", disjoint));
+        // initial model count
+        columns.add(String.valueOf(initialCount));
+        // true model count
+        columns.add(String.valueOf(trueModelCount));
+        // true model count percent
+        columns.add(String.format("%.1f", truePercent));
+        // false model count
+        columns.add(String.valueOf(falseModelCount));
+        // false model count percent
+        columns.add(String.format("%.1f", falsePercent));
+        // overlap count
+        columns.add(String.valueOf(overlap));
+        // previous operations
+        columns.add(ops);
+
+        // generate row string
+        String row = joinStrings(columns, "\t");
+
+        // output row
+        System.out.println(row);
+    }
+
+    private String joinStrings(Iterable<String> strings, String separator) {
+        StringBuilder head = new StringBuilder();
+        Iterator<String> iter = strings.iterator();
+        head.append(iter.next());
+        while (iter.hasNext()) {
+            head.append(separator).append(iter.next());
+        }
+        return head.toString();
     }
 
     @Override
     protected void outputHeader() {
 
+        // gather headers in list
+        List<String> headers = new ArrayList<>();
+        headers.add("ID");
+        headers.add("ACT VAL");
+        headers.add("SING");
+        headers.add("TSAT");
+        headers.add("FSAT");
+        headers.add("DISJOINT");
+        headers.add("IN COUNT");
+        headers.add("T COUNT");
+        headers.add("T PER");
+        headers.add("F COUNT");
+        headers.add("F PER");
+        headers.add("OVERLAP");
+        headers.add("PREV OPS");
+
+        // generate headers string
+        String header = joinStrings(headers, "\t");
+
         // output header
-        System.out.println("    ID\t" +
-                           " SING\t" +
-                           " TSAT\t" +
-                           " FSAT\t" +
-                           "DISJOINT\t" +
-                           " IN COUNT\t" +
-                           "  T COUNT\t" +
-                           "T PER\t" +
-                           "  F COUNT\t" +
-                           "F PER\t" +
-                           "  OVERLAP\t" +
-                           "CONSTRAINT FUNC\t" +
-                           "OPS");
+        System.out.println(header);
     }
 }

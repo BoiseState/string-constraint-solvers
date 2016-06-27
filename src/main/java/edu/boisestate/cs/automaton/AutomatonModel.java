@@ -36,11 +36,11 @@ public abstract class AutomatonModel
 
     public abstract AutomatonModel intersect(AutomatonModel arg);
 
-    public abstract AutomatonModel minus(AutomatonModel x);
+    public abstract AutomatonModel minus(AutomatonModel arg);
 
     public abstract AutomatonModel complement();
 
-    public abstract boolean equals(AutomatonModel argModel);
+    public abstract boolean equals(AutomatonModel arg);
 
     public abstract AutomatonModel union(AutomatonModel arg);
 
