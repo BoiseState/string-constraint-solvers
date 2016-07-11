@@ -17,8 +17,6 @@ public abstract class AutomatonModelManager {
         return this.alphabet;
     }
 
-    public abstract Set<String> getFiniteStrings(AutomatonModel model);
-
     static public AutomatonModelManager getInstance(Alphabet alphabet,
                                                     int modelVersion,
                                                     int initialBoundLength) {
@@ -37,9 +35,11 @@ public abstract class AutomatonModelManager {
         return instance;
     }
 
+    public abstract Set<String> getFiniteStrings(AutomatonModel model);
+
     public abstract AutomatonModel createString(String string);
 
-    public abstract AutomatonModel createAnyString(int max);
+    public abstract AutomatonModel createAnyString(int initialBound);
 
     public abstract AutomatonModel allSuffixes(AutomatonModel model);
 

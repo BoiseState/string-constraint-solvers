@@ -78,8 +78,8 @@ public class BoundedAutomatonModelManager
     }
 
     @Override
-    public AutomatonModel createAnyString(int max) {
-        return this.createAnyString(0, max);
+    public AutomatonModel createAnyString(int initialBound) {
+        return this.createAnyString(0, initialBound);
     }
 
     @Override
@@ -87,11 +87,10 @@ public class BoundedAutomatonModelManager
 
         // create any string automaton from alphabet
         String charSet = this.alphabet.getCharSet();
-        Automaton anyString = BasicAutomata.makeCharSet(charSet)
-                                           .repeat();
+        Automaton anyChar = BasicAutomata.makeCharSet(charSet);
 
         // create bounded automaton
-        Automaton boundedAutomaton = anyString.repeat(min, max);
+        Automaton boundedAutomaton = anyChar.repeat(min, max);
 
         // return model from bounded automaton
         return new BoundedAutomatonModel(boundedAutomaton, this.alphabet,
@@ -104,7 +103,7 @@ public class BoundedAutomatonModelManager
         // create any string automaton from alphabet
         String charSet = this.alphabet.getCharSet();
         Automaton anyString = BasicAutomata.makeCharSet(charSet)
-                                           .repeat();
+                                           .repeat(0, this.boundLength);
 
         // return model from automaton
         return new BoundedAutomatonModel(anyString,
@@ -379,6 +378,6 @@ public class BoundedAutomatonModelManager
         // return model from automaton
         return new BoundedAutomatonModel(emptyString,
                                          this.alphabet,
-                                         this.boundLength);
+                                         0);
     }
 }

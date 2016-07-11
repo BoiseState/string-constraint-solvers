@@ -108,8 +108,8 @@ public class AggregateAutomatonModelManager
     }
 
     @Override
-    public AutomatonModel createAnyString(int max) {
-        return this.createAnyString(0, max);
+    public AutomatonModel createAnyString(int initialBound) {
+        return this.createAnyString(0, initialBound);
     }
 
     @Override
@@ -121,14 +121,11 @@ public class AggregateAutomatonModelManager
 
         // create any string automaton from alphabet
         String charSet = this.alphabet.getCharSet();
-        Automaton anyString = BasicAutomata.makeCharSet(charSet)
-                                           .repeat();
-
+        Automaton anyChar = BasicAutomata.makeCharSet(charSet);
 
         // fill automata array with appropriately length automata
         for (int i = min; i <= max; i++) {
-            Automaton boundedAutomaton =
-                    BasicAutomata.makeAnyString().repeat(i, i);
+            Automaton boundedAutomaton = anyChar.repeat(i, i);
             automata[i] = boundedAutomaton;
         }
 
@@ -164,7 +161,7 @@ public class AggregateAutomatonModelManager
         // return aggregate model from automata array
         return new AggregateAutomataModel(automata,
                                           this.alphabet,
-                                          this.boundLength);
+                                          0);
     }
 
     @Override

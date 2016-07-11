@@ -181,6 +181,8 @@ public class MCReporter
         columns.add(String.valueOf(falseSat));
         // disjoint?
         columns.add(String.format("%8s", disjoint));
+        // id of initial model
+        columns.add(String.valueOf(base));
         // initial model count
         columns.add(String.valueOf(initialCount));
         // true model count
@@ -224,6 +226,7 @@ public class MCReporter
         headers.add("TSAT");
         headers.add("FSAT");
         headers.add("DISJOINT");
+        headers.add("IN ID");
         headers.add("IN COUNT");
         headers.add("T COUNT");
         headers.add("T PER");

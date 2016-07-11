@@ -1064,7 +1064,7 @@ public class JSASolver extends SatSolver {
             argNum = sourceMap.get("s1");
         }
 
-        if (fName.equals("containsString")) {
+        if (fName.equals("contains")) {
 
             if (result) {
                 AssertContainsOther c = new AssertContainsOther();

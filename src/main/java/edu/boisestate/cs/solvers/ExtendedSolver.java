@@ -45,7 +45,7 @@ public abstract class ExtendedSolver<TSymbolicString> {
     public static boolean containsBoolFunction(String string) {
         String fName = string.split("!!")[0];
         return fName.equals("equals") ||
-               fName.equals("containsString") ||
+               fName.equals("contains") ||
                fName.equals("contentEquals") ||
                fName.equals("endsWith") ||
                fName.equals("startsWith") ||

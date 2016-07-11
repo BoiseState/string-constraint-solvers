@@ -1,13 +1,14 @@
 #!/usr/bin/env python
+import argparse
 import json
 import logging
 import os
 import random
+import re
 import sys
-
-# Configure Logging
 import time
 
+# Configure Logging
 file_name = os.path.basename(__file__).replace('.py', '')
 log = logging.getLogger(file_name)
 log.setLevel(logging.DEBUG)
@@ -25,9 +26,9 @@ log.addHandler(ch)
 # Data Classes
 # root node
 class RootValue:
-    def __init__(self, has_string, string='', method=''):
+    def __init__(self, has_string, string=None, method=''):
         self.has_string = has_string
-        self.string = string
+        self.string = string if string is not None else random_string(4)
         self.method = method
 
     def get_value(self):
@@ -67,6 +68,18 @@ class Vertex:
         self.node_id = node_id
         self.incoming_edges = list()
 
+    def clone(self):
+        # create new vertex from old
+        new_vertex = Vertex(self.value,
+                            self.actual_value,
+                            generate_id(self.value, force=True))
+
+        # copy incoming edge values
+        new_vertex.incoming_edges.extend(self.incoming_edges)
+
+        # return new vertex
+        return new_vertex
+
 
 # edge
 class Edge:
@@ -77,9 +90,6 @@ class Edge:
 
 
 # Initialize Arrays
-# input array
-inputs = ['ABCD']
-
 # operations array
 operations = [
     OperationValue('append!!Ljava/lang/String;', ['A']),
@@ -116,24 +126,27 @@ boolean_constraints = [
 ]
 
 # Global values
-depth = 2
+allow_duplicates = True
 alphabet = {'a', 'b', 'c', 'd', 'A', 'B', 'C', 'D'}
-op_counter = 0
+depth = 1
 id_counter = 1
+op_counter = 0
+op_total = 0
 value_id_map = dict()
 vertices = list()
-op_total = 0
+
+# calculate op total
 for i in range(0, depth + 2):
     op_total += len(operations) ** i
 
 
 # id generator
-def generate_id(value):
+def generate_id(value, force=False):
     # specify id_counter is the global variable
     global id_counter
 
     # if id already generated for value
-    if value_id_map.has_key(value):
+    if not force and value in value_id_map:
         # return that value
         return value_id_map.get(value)
 
@@ -147,22 +160,28 @@ def generate_id(value):
     return new_id
 
 
-# recursive graph constructor function
 def random_char():
     alpha_list = list(alphabet)
     return random.choice(alpha_list).upper()
 
 
-def perform_op(orignal_value, op):
+def random_string(length):
+    chars = list()
+    for num in range(1, length):
+        chars.append(random_char())
+    return ''.join(chars)
+
+
+# recursive graph constructor function
+def perform_op(original_value, op):
     # determine operation
-    if (op.op == 'append!!Ljava/lang/String;' or
-                op.op == 'concat!!Ljava/lang/String;'):
+    if op.op in ['append!!Ljava/lang/String;', 'concat!!Ljava/lang/String;']:
 
         # get argument value
         arg_value = op.op_args[0]
 
         # return concatenated string
-        return orignal_value + arg_value
+        return original_value + arg_value
 
     elif op.op == 'append!![CII':
 
@@ -177,7 +196,7 @@ def perform_op(orignal_value, op):
         substr_value = arg_value[offset:(offset + length)]
 
         # return concatenated string
-        return orignal_value + substr_value
+        return original_value + substr_value
 
     elif op.op == 'deleteCharAt!!I':
 
@@ -185,7 +204,7 @@ def perform_op(orignal_value, op):
         index = int(op.op_args[0])
 
         # return deleted string
-        return orignal_value[:index] + orignal_value[(index + 1):]
+        return original_value[:index] + original_value[(index + 1):]
 
     elif op.op == 'delete!!II':
 
@@ -194,7 +213,7 @@ def perform_op(orignal_value, op):
         end = int(op.op_args[1])
 
         # return deleted string
-        return orignal_value[:start] + orignal_value[(end + 1):]
+        return original_value[:start] + original_value[(end + 1):]
 
     elif op.op == 'insert!!IC':
 
@@ -205,7 +224,7 @@ def perform_op(orignal_value, op):
         insert = op.op_args[1]
 
         # return inserted string
-        return orignal_value[:index] + insert + orignal_value[(index + 1):]
+        return original_value[:index] + insert + original_value[(index + 1):]
 
     elif op.op == 'insert!!I[C':
 
@@ -216,7 +235,7 @@ def perform_op(orignal_value, op):
         insert = op.op_args[1]
 
         # return inserted string
-        return orignal_value[:index] + insert + orignal_value[(index + 1):]
+        return original_value[:index] + insert + original_value[(index + 1):]
 
     elif op.op == 'insert!!I[CII':
 
@@ -232,7 +251,7 @@ def perform_op(orignal_value, op):
         insert = arg_string[offset:(offset + length)]
 
         # return inserted string
-        return orignal_value[:index] + insert + orignal_value[(index + 1):]
+        return original_value[:index] + insert + original_value[(index + 1):]
 
     elif op.op == 'replace!!CC':
 
@@ -254,13 +273,13 @@ def perform_op(orignal_value, op):
 
         # perform operation depending on known arguments
         if find_known and replace_known:
-            return orignal_value.replace(find, replace)
+            return original_value.replace(find, replace)
         elif find_known:
-            return orignal_value.replace(find, random_char())
+            return original_value.replace(find, random_char())
         elif replace_known:
-            return orignal_value.replace(random_char(), replace)
+            return original_value.replace(random_char(), replace)
         else:
-            return orignal_value.replace(random_char(), random_char())
+            return original_value.replace(random_char(), random_char())
 
     elif op.op == 'replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;':
 
@@ -269,12 +288,12 @@ def perform_op(orignal_value, op):
         replace = op.op_args[1]
 
         # return replaced string
-        return orignal_value.replace(find, replace)
+        return original_value.replace(find, replace)
 
     elif op.op == 'reverse!!':
 
         # return reversed string
-        return orignal_value[::-1]
+        return original_value[::-1]
 
     elif op.op == 'substring!!I':
 
@@ -282,7 +301,7 @@ def perform_op(orignal_value, op):
         start = int(op.op_args[0])
 
         # return substring suffix
-        return orignal_value[start:]
+        return original_value[start:]
 
     elif op.op == 'substring!!II':
 
@@ -291,27 +310,27 @@ def perform_op(orignal_value, op):
         end = int(op.op_args[1])
 
         # return substring
-        return orignal_value[start:end]
+        return original_value[start:end]
 
     elif op.op == 'toLowerCase!!':
 
         # return string in lowercase
-        return orignal_value.lower()
+        return original_value.lower()
 
     elif op.op == 'toString!!':
 
         # return string
-        return orignal_value[::1]
+        return original_value[::1]
 
     elif op.op == 'toUpperCase!!':
 
         # return string in uppercase
-        return orignal_value.upper()
+        return original_value.upper()
 
     elif op.op == 'trim!!':
 
         # return trimmed string
-        return orignal_value.strip()
+        return original_value.strip()
 
 
 def perform_const(value, const):
@@ -413,7 +432,7 @@ def add_operation(t, countdown, v_list=None):
             op_vertex.incoming_edges.append(arg_edge)
 
         # if countdown not reached
-        if countdown > 0:
+        if countdown > 1:
             # add another of each operation
             add_operation(op_vertex, countdown - 1, v_list)
 
@@ -424,6 +443,11 @@ def add_operation(t, countdown, v_list=None):
 def add_bool_constraint(t, v_list):
     # for each boolean constraint
     for const in boolean_constraints:
+
+        # if no duplicates allowed
+        if not allow_duplicates:
+            t = t.clone()
+            v_list.append(t)
 
         # get actual value resulting from op
         actual_val = perform_const(t.actual_value, const)
@@ -446,7 +470,10 @@ def add_bool_constraint(t, v_list):
 
             # create vertex
             arg_val = arg_value.get_value()
-            arg_vertex = Vertex(arg_val, arg, generate_id(arg_val))
+            do_force = not allow_duplicates
+            arg_vertex = Vertex(arg_val,
+                                arg,
+                                generate_id(arg_val, force=do_force))
 
             # add arg vertex to collection
             v_list.append(arg_vertex)
@@ -458,19 +485,82 @@ def add_bool_constraint(t, v_list):
 
 
 # main function
-def main(arguments):
+def get_options(arguments):
+    # process command line args
+    parser = argparse.ArgumentParser(prog=__doc__,
+                                     description='Generate artificial string '
+                                                 'constraint graphs for us '
+                                                 'with the string constraint '
+                                                 'solver framework')
 
-    # initialize counter
-    counter = 1
+    parser.add_argument('-o',
+                        '--ops-depth',
+                        default=1,
+                        help='The maximum number of operations that will be '
+                             'performed in sequence before a constraint is '
+                             'reached in the generated graph.')
+
+    parser.add_argument('-i',
+                        '--inputs',
+                        nargs='*',
+                        default=list(),
+                        help='List of input strings to use to generate '
+                             'graphs, each input string is used to generate a '
+                             'full set of graphs.')
+
+    parser.add_argument('-u',
+                        '--unknown-string',
+                        help='Include unknown string value in list of input '
+                             'strings used to generate graphs.',
+                        action='store_true')
+
+    parser.add_argument('-n',
+                        '--no-duplicates',
+                        help='Ensure that there are no duplicates of source '
+                             'constraints for each boolean constraint.',
+                        action='store_true')
+
+    return parser.parse_args(arguments)
+
+
+def main(arguments):
+    # get option from arguments
+    options = get_options(arguments)
+
+    # initialize depth
+    global depth
+    depth = options.ops_depth
+
+    # get list of input strings
+    inputs = options.inputs
+
+    # add unknown string input if specified
+    if options.unknown_string:
+        inputs.append(chr(0))
+
+    # adjust duplicate option
+    global allow_duplicates
+    if options.no_duplicates:
+        allow_duplicates = False
+
+    # clean existing files
+    dir_path = '{0}/../../graphs'.format(os.path.dirname(__file__))
+    for f in os.listdir(dir_path):
+        if re.search('gen.*\.json', f):
+            os.remove(os.path.join(dir_path, f))
 
     # for each input value
     for value in inputs:
+
         # create root node value
-        root_value = RootValue(True, value, "init")
+        if ord(value) == 0:
+            root_value = RootValue(False, method="getStringValue!!")
+        else:
+            root_value = RootValue(True, value, "init")
 
         # create vertex from root node
         val = root_value.get_value()
-        root_vertex = Vertex(val, value, generate_id(val))
+        root_vertex = Vertex(val, root_value.string, generate_id(val))
 
         # add operations to the vertex
         add_operation(root_vertex, depth)
@@ -480,6 +570,8 @@ def main(arguments):
         for v_list in vertices:
             num_v += len(v_list)
         v_counter = 0
+
+        vertices_collection = list()
 
         for v_list in vertices:
 
@@ -519,9 +611,23 @@ def main(arguments):
 
                 vertex_list.append(vertex)
 
+            # add current vertex list to collection
+            vertices_collection.append(vertex_list)
+
+        # flatten vertices collection into single nested list if simple
+        if depth == 1:
+            v_list1 = vertices_collection[0]
+            root_v = next(v for v in v_list1
+                          if v['id'] == root_vertex.node_id)
+            vertices_collection = [
+                [v for v_list in vertices_collection for v in v_list
+                 if v['id'] != root_vertex.node_id]]
+            vertices_collection[0].append(root_v)
+
+        for j, v_list in enumerate(vertices_collection):
             # create graph dictionary
             graph = {
-                'vertices': vertex_list,
+                'vertices': v_list,
                 'alphabet': {
                     'declaration': 'A-D,a-d',
                     'size': 8
@@ -530,12 +636,9 @@ def main(arguments):
 
             # write out update graph file
             file_path = '{0}/../../graphs/gen{1:02d}.json'.format(
-                os.path.dirname(__file__), counter)
+                os.path.dirname(__file__), j + 1)
             with open(file_path, 'w') as graph_file:
                 json.dump(graph, graph_file)
-
-            # increment counter
-            counter += 1
 
 
 if __name__ == '__main__':

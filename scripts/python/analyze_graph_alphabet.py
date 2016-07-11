@@ -90,11 +90,18 @@ def analyze_graph(vertices):
                 log.debug(u'Index {0:3d}: \'{1}\''.format(i, c))
                 alphabet.add(ord(c))
 
+                # ensure lower case letter in alphabet also
+                if 'A' <= c <= 'Z':
+                    alphabet.add(ord(c.lower()))
+
+                # ensure lower case letter in alphabet also
+                if 'a' <= c <= 'z':
+                    alphabet.add(ord(c.upper()))
+
     # log alphabet information
     for sym in alphabet:
-        log.debug(u'Alphabet Symbol: {0:d} = {1}'.format(sym,
-                                                        display_special_char(
-                                                            unichr(sym))))
+        dc = display_special_char(unichr(sym))
+        log.debug(u'Alphabet Symbol: {0:d} = {1}'.format(sym, dc))
 
     # return alphabet set
     return sorted(alphabet)

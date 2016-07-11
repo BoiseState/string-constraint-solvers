@@ -78,8 +78,8 @@ public class UnboundedAutomatonModelManager
     }
 
     @Override
-    public AutomatonModel createAnyString(int max) {
-        return this.createAnyString(0, max);
+    public AutomatonModel createAnyString(int initialBound) {
+        return this.createAnyString();
     }
 
     @Override
@@ -87,11 +87,10 @@ public class UnboundedAutomatonModelManager
 
         // create any string automaton from alphabet
         String charSet = this.alphabet.getCharSet();
-        Automaton anyString = BasicAutomata.makeCharSet(charSet)
-                                           .repeat();
+        Automaton anyChar = BasicAutomata.makeCharSet(charSet);
 
         // create bounded automaton
-        Automaton boundedAutomaton = anyString.repeat(min, max);
+        Automaton boundedAutomaton = anyChar.repeat(min, max);
 
         // return model from bounded automaton
         return new UnboundedAutomatonModel(boundedAutomaton,
@@ -122,7 +121,7 @@ public class UnboundedAutomatonModelManager
         // create new model from automaton
         return new UnboundedAutomatonModel(empty,
                                            this.alphabet,
-                                           this.boundLength);
+                                           0);
     }
 
     @Override
@@ -148,10 +147,13 @@ public class UnboundedAutomatonModelManager
         // create string automaton
         Automaton stringAutomaton = BasicAutomata.makeString(string);
 
+        // get string length as bound length
+        int length = string.length();
+
         // return model from automaton
         return new UnboundedAutomatonModel(stringAutomaton,
                                            this.alphabet,
-                                           this.boundLength);
+                                           length);
     }
 
     @Override
@@ -391,6 +393,6 @@ public class UnboundedAutomatonModelManager
         // return model from automaton
         return new UnboundedAutomatonModel(emptyString,
                                            this.alphabet,
-                                           this.boundLength);
+                                           0);
     }
 }
