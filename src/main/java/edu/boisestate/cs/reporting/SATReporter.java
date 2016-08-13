@@ -6,6 +6,9 @@ import edu.boisestate.cs.graph.SymbolicEdge;
 import edu.boisestate.cs.solvers.ExtendedSolver;
 import org.jgrapht.DirectedGraph;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class SATReporter extends Reporter {
@@ -21,12 +24,20 @@ public class SATReporter extends Reporter {
     @Override
     protected void outputHeader() {
 
+        // gather headers in list
+        List<String> headers = new ArrayList<>();
+        headers.add("ID");
+        headers.add("SING");
+        headers.add("TSAT");
+        headers.add("FSAT");
+        headers.add("DISJOINT");
+        headers.add("PREV OPS");
+
+        // generate headers string
+        String header = joinStrings(headers, "\t");
+
         // output header
-        System.out.println("    ID\t" +
-                           " SING\t" +
-                           " TSAT\t" +
-                           " FSAT\t" +
-                           "DISJOINT");
+        System.out.println(header);
     }
 
 
@@ -110,12 +121,36 @@ public class SATReporter extends Reporter {
         // revert symbolic string values
         solver.revertLastPredicate();
 
-        // output stats
-        System.out.format("%6d\t%5b\t%5b\t%5b\t%8s\n",
-                          constraint.getId(),
-                          isSingleton,
-                          trueSat,
-                          falseSat,
-                          disjoint);
+        // get constraint function name
+        String constName = constraint.getSplitValue().split("!!")[0];
+
+        // add boolean operation to operation list
+        addBooleanOperation(base, arg, constName);
+
+        // get operations
+        String[] opsArray = this.operationsMap.get(base);
+        String ops = joinStrings(Arrays.asList(opsArray), " -> ");
+
+        // gather column data in list
+        List<String> columns = new ArrayList<>();
+        // id
+        columns.add(String.valueOf(constraint.getId()));
+        // is singleton?
+        columns.add(String.valueOf(isSingleton));
+        // true sat?
+        columns.add(String.valueOf(trueSat));
+        // false sat?
+        columns.add(String.valueOf(falseSat));
+        // disjoint?
+        columns.add(String.valueOf(disjoint));
+        // previous operations
+        columns.add(ops);
+
+        // generate row string
+        String row = joinStrings(columns, "\t");
+
+        // output row
+        System.out.println(row);
+
     }
 }

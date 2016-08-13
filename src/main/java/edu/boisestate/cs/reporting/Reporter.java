@@ -119,10 +119,10 @@ abstract public class Reporter {
             } else if (roots.contains(constraint)) {
 
                 // add root
-                parser.addRoot(constraint);
+                String init = parser.addRoot(constraint);
 
                 // add initialization operation
-                String[] ops = new String[] {"<init>"};
+                String[] ops = new String[] {init};
                 this.operationsMap.put(constraintId, ops);
 
             } else {
@@ -145,6 +145,58 @@ abstract public class Reporter {
         // shut down solver
         solver.shutDown();
 
+    }
+
+    protected String joinStrings(Iterable<String> strings, String separator) {
+        StringBuilder head = new StringBuilder();
+        Iterator<String> iter = strings.iterator();
+        head.append(iter.next());
+        while (iter.hasNext()) {
+            head.append(separator).append(iter.next());
+        }
+        return head.toString();
+    }
+
+    protected void addBooleanOperation(int base, int arg, String constName) {
+
+        if (constName.equals("isEmpty")) {
+
+            // update base constraint operations
+            String[] baseOps = this.operationsMap.get(base);
+
+            // create ops array for current operation
+            String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
+            newBaseOps[newBaseOps.length - 1] =
+                    String.format("<S:%d>.isEmpty()", base);
+
+            // add operations to map
+            this.operationsMap.put(base, newBaseOps);
+
+        } else {
+
+            // get base constraint operations
+            String[] baseOps = this.operationsMap.get(base);
+
+            // create ops array for base operation
+            String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
+            newBaseOps[newBaseOps.length - 1] =
+                    String.format("<S:%d>.%s(<S:%d>)", base, constName, arg);
+
+            // update base operations
+            this.operationsMap.put(base, newBaseOps);
+
+            // get arg constraint operations
+            String[] argOps = this.operationsMap.get(arg);
+
+            // create ops array for arg operation
+            String[] newArgOps = Arrays.copyOf(argOps, argOps.length + 1);
+            newArgOps[newArgOps.length - 1] =
+                    String.format("<S:%d>.%s(<S:%d>)", base, constName, arg);
+
+            // update arg operations
+            this.operationsMap.put(arg, newArgOps);
+
+        }
     }
 
     protected abstract void outputHeader();

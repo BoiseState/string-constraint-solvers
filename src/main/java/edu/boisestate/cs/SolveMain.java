@@ -3,7 +3,7 @@
  * search to create PCs and pass them to the constraint solvers using the
  * argument.
  *
- * @author Scott Kausler
+ * @author Scott Kausler, Andrew Harris
  */
 package edu.boisestate.cs;
 

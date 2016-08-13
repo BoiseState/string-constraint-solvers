@@ -125,43 +125,8 @@ public class MCReporter
         // get constraint function name
         String constName = constraint.getSplitValue().split("!!")[0];
 
-        if (constName.equals("isEmpty")) {
-
-            // update base constraint operations
-            String[] baseOps = this.operationsMap.get(base);
-
-            // create ops array for current operation
-            String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
-            newBaseOps[newBaseOps.length - 1] = "<this>.isEmpty()";
-
-            // add operations to map
-            this.operationsMap.put(base, newBaseOps);
-
-        } else {
-
-            // get base constraint operations
-            String[] baseOps = this.operationsMap.get(base);
-
-            // create ops array for base operation
-            String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
-            newBaseOps[newBaseOps.length - 1] =
-                    String.format("<this>.%s(<String>)", constName);
-
-            // update base operations
-            this.operationsMap.put(base, newBaseOps);
-
-            // get arg constraint operations
-            String[] argOps = this.operationsMap.get(arg);
-
-            // create ops array for arg operation
-            String[] newArgOps = Arrays.copyOf(argOps, argOps.length + 1);
-            newArgOps[newArgOps.length - 1] =
-                    String.format("<String>.%s(<this>)", constName);
-
-            // update arg operations
-            this.operationsMap.put(arg, newArgOps);
-
-        }
+        // add boolean operation to operation list
+        addBooleanOperation(base, arg, constName);
 
         // get operations
         String[] opsArray = this.operationsMap.get(base);
@@ -203,16 +168,6 @@ public class MCReporter
 
         // output row
         System.out.println(row);
-    }
-
-    private String joinStrings(Iterable<String> strings, String separator) {
-        StringBuilder head = new StringBuilder();
-        Iterator<String> iter = strings.iterator();
-        head.append(iter.next());
-        while (iter.hasNext()) {
-            head.append(separator).append(iter.next());
-        }
-        return head.toString();
     }
 
     @Override

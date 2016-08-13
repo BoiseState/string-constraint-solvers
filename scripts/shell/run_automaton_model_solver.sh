@@ -18,7 +18,7 @@ set_reporter $2
 set_classpath $project_dir
 
 # ensure extended solver results directory is ready
-mkdir -p $project_dir/results/$reporter/$solver/automaton_model
+mkdir -p $project_dir/results/$reporter/$solver
 
 # get graph files to parse
 if [ -z "$3" ] ; then
@@ -50,8 +50,7 @@ do
          $project_dir/graphs/$f_name.json \
          $solver_args \
          $reporter_args \
-         --old \
          2>&1 | \
-            tee $project_dir/results/$reporter/$solver/automaton_model/$f_name.txt
+            tee $project_dir/results/$reporter/$solver/$f_name.txt
 
 done

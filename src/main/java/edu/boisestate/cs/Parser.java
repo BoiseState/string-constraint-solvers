@@ -180,7 +180,7 @@ public class Parser {
 
             // perform trim operation
             solver.trim(id, base);
-            operationString = "<prev>.trim()";
+            operationString = String.format("<S:%d>.trim()", base);
 
         } else if (fName.equals("delete")) {
 
@@ -194,7 +194,7 @@ public class Parser {
 
             // perform reverse operation
             solver.reverse(id, base);
-            operationString = "<prev>.reverse()";
+            operationString = String.format("<S:%d>.reverse()", base);
 
         } else if (fName.startsWith("replace")) {
 
@@ -204,13 +204,13 @@ public class Parser {
 
             // perform uppercase operation
             solver.toUpperCase(id, base);
-            operationString = "<prev>.toUpperCase()";
+            operationString = String.format("<S:%d>.toUpperCase()", base);
 
         } else if (fName.equals("toLowerCase") && sourceMap.size() == 1) {
 
             // perform lowercase operation
             solver.toLowerCase(id, base);
-            operationString = "<prev>.toLowerCase()";
+            operationString = String.format("<S:%d>.toLowerCase()", base);
 
         } else if (fName.equals("toString") ||
                    fName.equals("intern") ||
@@ -220,14 +220,14 @@ public class Parser {
 
             // perform string propagation
             processPropagation(constraint);
-            operationString = String.format("<String>.%s()", fName);
+            operationString = String.format("<S:%d>.%s()", base, fName);
 
         } else if (fName.equals("valueOf") ||
                    (fName.equals("copyValueOf") && sourceMap.size() == 2)) {
 
             // perform string propagation
             processPropagation(constraint);
-            operationString = String.format("String.%s(<value>)", fName);
+            operationString = String.format("String.%s(<S:%d>)", fName, base);
 
         } else {
 
@@ -282,14 +282,14 @@ public class Parser {
         int id = constraint.getId();
         int base = sourceMap.get("t");
 
-        // initialize operation string
-        String operation = "<prev>.append(<CharSequence>)";
-
         // get arg id from source map, -1 if none
         int arg = -1;
         if (sourceMap.get("s1") != null) {
             arg = sourceMap.get("s1");
         }
+
+        // initialize operation string
+        String operation = String.format("<S:%d>.append(<CS:%d>)", base, arg);
 
         // if argument not set
         if (sourceMap.get("s1") == null) {
@@ -312,7 +312,9 @@ public class Parser {
             int end = Integer.parseInt(s3String);
 
             // update operation string
-            operation = String.format("<prev>.append(<CharSequence>, %d, %d)",
+            operation = String.format("<S:%d>.append(<CS:%d>, %d, %d)",
+                                      base,
+                                      arg,
                                       start,
                                       end);
 
@@ -321,7 +323,9 @@ public class Parser {
             if (params.startsWith("[CI")) {
 
                 // update operation string
-                operation = String.format("<prev>.append(<char[]>, %d, %d)",
+                operation = String.format("<S:%d>.append(<C[]:%d>, %d, %d)",
+                                          base,
+                                          arg,
                                           start,
                                           end);
 
@@ -346,7 +350,7 @@ public class Parser {
             solver.newConcreteString(charId, charString);
 
             // update operation string
-            operation = String.format("<prev>.append('%s')", charString);
+            operation = String.format("<S:%d>.append('%s')", base, charString);
 
         }
         // stringBuilder.concatenate(boolean b)
@@ -381,7 +385,7 @@ public class Parser {
             }
 
             // update operation string
-            operation = String.format("<prev>.append(%s)", argString);
+            operation = String.format("<S:%d>.append(%s)", base, argString);
         }
         // stringBuilder.concatenate(String str)
         // if only param is a string
@@ -395,14 +399,19 @@ public class Parser {
                 // set arg symbolic string from actual value
                 solver.newConcreteString(arg, argValue);
 
+                // update operation string
+                operation = String.format("<S:%d>.concat(\\\"%s\\\")",
+                                          base,
+                                          argValue);
+
             } else {
 
                 // set arg symbolic string to any string
                 solver.newSymbolicString(arg);
-            }
 
-            // update operation string
-            operation = "<prev>.concat(<String>)";
+                // update operation string
+                operation = String.format("<S:%d>.concat(<S:%d>)", base, arg);
+            }
         }
 
         // perform concatenate operation
@@ -450,7 +459,7 @@ public class Parser {
         solver.delete(id, base, start, end);
 
         // return operation string
-        return String.format("<prev>.delete(%d, %d)", start, end);
+        return String.format("<S:%d>.delete(%d, %d)", base, start, end);
     }
 
     /**
@@ -479,7 +488,7 @@ public class Parser {
         solver.deleteCharAt(id, base, loc);
 
         // return operation string
-        return String.format("<prev>.deleteCharAt(%d)", loc);
+        return String.format("<S:%d>.deleteCharAt(%d)", base, loc);
     }
 
     /**
@@ -516,7 +525,7 @@ public class Parser {
             solver.propagateSymbolicString(id, base);
 
             // set operation string
-            operation = "<this> = <prev>";
+            operation = String.format("<this> = <S:%d>", base);
 
         } else {
 
@@ -524,7 +533,7 @@ public class Parser {
             solver.newSymbolicString(id);
 
             // set operation string
-            operation = "<this> = <String>";
+            operation = String.format("<this> = <S:%d>", base);
         }
 
         // return operation string
@@ -581,7 +590,10 @@ public class Parser {
         int arg = sourceMap.get("s2");
 
         // initialize operation string
-        String operation = String.format("<prev>.insert(%d, <String>)", offset);
+        String operation = String.format("<S:%d>.insert(%d, <S:%d>)",
+                                         base,
+                                         offset,
+                                         arg);
 
         //TODO implement other inserts
 
@@ -604,8 +616,10 @@ public class Parser {
             solver.insert(id, base, arg, offset);
 
             // set operation
-            operation =
-                    String.format("<prev>.insert(%d, '%s')", offset, argString);
+            operation = String.format("<S:%d>.insert(%d, \\\"%s\\\")",
+                                      base,
+                                      offset,
+                                      argString);
 
         }
         // stringBuilder.insert(int index, char[] str, int offset, int len)
@@ -627,8 +641,10 @@ public class Parser {
             solver.insert(id, base, arg, offset, start, end);
 
             // set operation
-            operation = String.format("<prev>.insert(%d, <String>, %d, %d)",
+            operation = String.format("<S:%d>.insert(%d, <S:%d>, %d, %d)",
+                                      base,
                                       offset,
+                                      arg,
                                       start,
                                       end);
 
@@ -665,8 +681,6 @@ public class Parser {
      *
      * @param constraint
      *         The constraint corresponding to the operation.
-     *
-     * @return Returns a string representation of the operation.
      */
     private void processPropagation(PrintConstraint constraint) {
 
@@ -735,7 +749,11 @@ public class Parser {
 
             // set resulting symbolic string as any string
             solver.newSymbolicString(id);
-            return String.format("<prev>.%s(<String>, <String>)", fName);
+            return String.format("<S:%d>.%s(<S:%d>, <S:%d>)",
+                                 base,
+                                 fName,
+                                 arg1,
+                                 arg2);
         }
         // first two params are int
         else if (params.startsWith("II") || sourceMap.size() != 3) {
@@ -747,9 +765,11 @@ public class Parser {
 
             // set resulting symbolic string as any string
             solver.newSymbolicString(id);
-            return String.format("<prev>.replace(%d, %d, <String>)",
+            return String.format("<S:%d>.replace(%d, %d, <S:%d>)",
+                                 base,
                                  start,
-                                 end);
+                                 end,
+                                 arg2);
 
         }
 
@@ -806,20 +826,24 @@ public class Parser {
                                                  base,
                                                  findChar,
                                                  replaceChar);
-                    operation = String.format("<prev>.replace(%s, %s)",
+                    operation = String.format("<S:%d>.replace('%s', '%s')",
+                                              base,
                                               findChar,
                                               replaceChar);
                 } else if (findKnown) {
                     this.solver.replaceCharFindKnown(id, base, findChar);
-                    operation = String.format("<prev>.replace(%s, <char>)",
+                    operation = String.format("<S:%d>.replace('%s', <char>)",
+                                              base,
                                               findChar);
                 } else if (replaceKnown) {
                     this.solver.replaceCharReplaceKnown(id, base, replaceChar);
-                    operation = String.format("<prev>.replace(<char>, %s)",
+                    operation = String.format("<S:%d>.replace(<char>, '%s')",
+                                              base,
                                               replaceChar);
                 } else {
                     this.solver.replaceCharUnknown(id, base);
-                    operation = "<prev>.replace(<char>, <char>)";
+                    operation = String.format("<S:%d>.replace(<char>, <char>)",
+                                              base);
                 }
             }
         }
@@ -839,13 +863,17 @@ public class Parser {
             solver.replaceStrings(id, base, arg1, arg2);
 
             // set operation string
-            operation = String.format("<prev>.replace(%s, %s)", str1, str2);
+            operation = String.format("<S:%d>.replace(\\\"%s\\\", \\\"%s\\\")",
+                                      base,
+                                      str1,
+                                      str2);
 
         } else {
 
             solver.newSymbolicString(id);
 
-            operation = "[Unknown Replace Operation]";
+            operation = String.format("<S:%d>.[Unknown Replace Operation]",
+                                      base);
         }
 
         // return operation string
@@ -887,7 +915,10 @@ public class Parser {
         // perform set char at operation
         solver.setCharAt(id, base, arg, offset);
 
-        return String.format("<prev>.setCharAt(%d, %s)", offset, argString);
+        return String.format("<S:%d>.setCharAt(%d, '%s')",
+                             base,
+                             offset,
+                             argString);
     }
 
     /**
@@ -917,7 +948,7 @@ public class Parser {
         // perform set length operation
         solver.setLength(id, base, length);
 
-        return String.format("<prev>.setLength(%d)", length);
+        return String.format("<S:%d>.setLength(%d)", base, length);
     }
 
     /**
@@ -959,14 +990,16 @@ public class Parser {
                 // perform substring operation
                 solver.substring(id, base, start);
 
-                operation = String.format("<prev>.substring(%d)", start);
+                operation = String.format("<S:%d>.substring(%d)", base, start);
 
             } else {
 
                 // propagate
                 solver.propagateSymbolicString(id, base);
 
-                operation = "[Unknown substring operation]";
+                operation =
+                        String.format("<S:%d>.[Unknown substring operation]",
+                                      base);
             }
         }
         // string.substring(int beginIndex, int endIndex)
@@ -984,7 +1017,10 @@ public class Parser {
             // perform substring operation
             solver.substring(id, base, start, end);
 
-            operation = String.format("<prev>.substring(%d, %d)", start, end);
+            operation = String.format("<S:%d>.substring(%d, %d)",
+                                      base,
+                                      start,
+                                      end);
         }
 
         // return operation string
@@ -996,8 +1032,11 @@ public class Parser {
      *
      * @param constraint
      *         The root node constraint.
+     *
+     * @return Returns string representation of the the initialization
+     * operation.
      */
-    public void addRoot(PrintConstraint constraint) {
+    public String addRoot(PrintConstraint constraint) {
 
         // get constraint info as variables
         String value = constraint.getSplitValue();
@@ -1027,13 +1066,12 @@ public class Parser {
 
             // create new symbolic string for id
             solver.newSymbolicString(id);
-
-        } else {
-
-            // create new concrete string for id from actual value
-            solver.newConcreteString(id, actualValue);
-
+            return String.format("<S:%d> = <init>", id);
         }
+
+        // create new concrete string for id from actual value
+        solver.newConcreteString(id, actualValue);
+        return String.format("<S:%d> = \\\"%s\\\"", id, actualValue);
     }
 
     /**

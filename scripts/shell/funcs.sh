@@ -14,6 +14,8 @@ function set_solver {
     # initialize solver_args as empty string
     solver_args=''
 
+    local length='4'
+
     # extract solver
     if [ "$solver" == '' ] ; then
 
@@ -30,6 +32,7 @@ function set_solver {
          "$solver" == 'concretesolver' ] ; then
 
           solver='concrete'
+          solver_args="--length $length"
 
     elif [ "$solver" == 'jsa' -o \
            "$solver" == 'jsasolver' -o \
@@ -37,7 +40,7 @@ function set_solver {
            "$solver" == 'ejsasolver' ] ; then
         
           solver='jsa'
-          solver_args="--model-version 1 --length 10"
+          solver_args="--model-version 1 --length $length"
 
     elif [ "$solver" == 'stranger' -o \
            "$solver" == 'strangersolver' -o \
@@ -57,11 +60,11 @@ function set_solver {
 
     if [ "$solver_args" != '' ] ; then
 
-      solver_args="--solver $solver"
+      solver_args="--solver $solver $solver_args"
 
     else
 
-      solver_args="--solver $solver $solver_args"
+      solver_args="--solver $solver"
 
     fi
 

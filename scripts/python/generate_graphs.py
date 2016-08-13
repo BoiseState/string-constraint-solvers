@@ -529,7 +529,7 @@ def main(arguments):
 
     # initialize depth
     global depth
-    depth = options.ops_depth
+    depth = int(options.ops_depth)
 
     # get list of input strings
     inputs = options.inputs
