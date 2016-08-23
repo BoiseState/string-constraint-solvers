@@ -179,8 +179,19 @@ abstract public class Reporter {
 
             // create ops array for base operation
             String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
-            newBaseOps[newBaseOps.length - 1] =
-                    String.format("<S:%d>.%s(<S:%d>)", base, constName, arg);
+            if (solver.isSingleton(arg)) {
+                newBaseOps[newBaseOps.length - 1] =
+                        String.format("<S:%d>.%s(\\\"%s\\\")",
+                                      base,
+                                      constName,
+                                      Parser.actualVals.get(arg));
+            } else {
+                newBaseOps[newBaseOps.length - 1] =
+                        String.format("<S:%d>.%s(<S:%d>)",
+                                      base,
+                                      constName,
+                                      arg);
+            }
 
             // update base operations
             this.operationsMap.put(base, newBaseOps);

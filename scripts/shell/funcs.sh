@@ -5,16 +5,12 @@ function set_solver {
     # set default solver
     default_solver='jsa'
 
-    # get solver string from argument
+    # consume solver string from argument
     solver=$1
+    shift
 
     # convert solver string to lowercase
-    solver=`tr A-Z a-z <<< $solver`
-
-    # initialize solver_args as empty string
-    solver_args=''
-
-    local length='4'
+    solver=`tr A-Z a-z <<< ${solver}`
 
     # extract solver
     if [ "$solver" == '' ] ; then
@@ -32,7 +28,6 @@ function set_solver {
          "$solver" == 'concretesolver' ] ; then
 
           solver='concrete'
-          solver_args="--length $length"
 
     elif [ "$solver" == 'jsa' -o \
            "$solver" == 'jsasolver' -o \
@@ -40,7 +35,6 @@ function set_solver {
            "$solver" == 'ejsasolver' ] ; then
         
           solver='jsa'
-          solver_args="--model-version 1 --length $length"
 
     elif [ "$solver" == 'stranger' -o \
            "$solver" == 'strangersolver' -o \
@@ -58,16 +52,6 @@ function set_solver {
 
     fi
 
-    if [ "$solver_args" != '' ] ; then
-
-      solver_args="--solver $solver $solver_args"
-
-    else
-
-      solver_args="--solver $solver"
-
-    fi
-
 }
 
 function set_reporter {
@@ -79,10 +63,7 @@ function set_reporter {
     reporter=$1
 
     # convert reporter string to lowercase
-    reporter=`tr A-Z a-z <<< $reporter`
-
-    # initialize reporter_args as empty string
-    reporter_args=''
+    reporter=`tr A-Z a-z <<< ${reporter}`
 
     # extract reporter
     if [ "$reporter" == '' ] ; then
@@ -107,16 +88,6 @@ function set_reporter {
 
     fi
 
-    if [ "$reporter_args" != '' ] ; then
-
-      reporter_args="--reporter $reporter"
-
-    else
-
-      reporter_args="--reporter $reporter $reporter_args"
-
-    fi
-
 }
 
 function set_classpath {
@@ -130,7 +101,7 @@ function set_classpath {
     class_path="$proj_root_dir/bin"
 
     # for each jar file in lib directory
-    for jar_file in $proj_root_dir/lib/*.jar
+    for jar_file in ${proj_root_dir}/lib/*.jar
     do
 
         # get filename

@@ -1,9 +1,6 @@
 package edu.boisestate.cs;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +18,7 @@ public class Alphabet {
 
     private final Set<MinMaxPair> charRanges;
     private final Set<Character> symbolSet;
+    private final Random random;
 
     public Set<MinMaxPair> getCharRanges() {
 
@@ -124,6 +122,9 @@ public class Alphabet {
         // initialize fields
         this.symbolSet = new TreeSet<>();
         this.charRanges = new TreeSet<>();
+
+        // initialize random
+        random = new Random(System.nanoTime());
     }
 
     private static Set<Character> getSymbolsFromDeclaration(String string) {
@@ -207,6 +208,9 @@ public class Alphabet {
     Alphabet(Set<Character> symbolSet, Set<MinMaxPair> charRanges) {
         this.symbolSet = symbolSet;
         this.charRanges = charRanges;
+
+        // initialize random
+        random = new Random(System.nanoTime());
     }
 
     public boolean isSuperset(String minAlphabetDeclaration) {
@@ -236,5 +240,9 @@ public class Alphabet {
 
         // return char set string
         return charSet.toString();
+    }
+
+    public char randomChar() {
+        return new ArrayList<Character>(this.symbolSet).get(this.random.nextInt() % this.symbolSet.size());
     }
 }

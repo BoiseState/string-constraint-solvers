@@ -94,21 +94,24 @@ class Edge:
 operations = [
     OperationValue('append!!Ljava/lang/String;', ['A']),
     OperationValue('append!![CII', ['ABC', '1', '2']),
-    OperationValue('concat!!Ljava/lang/String;', ['B']),
+    OperationValue('concat!!Ljava/lang/String;', [chr(0)]),
     OperationValue('deleteCharAt!!I', ['0']),
     OperationValue('delete!!II', ['0', '1']),
     OperationValue('insert!!IC', ['0', 'D']),
     OperationValue('insert!!I[C', ['0', 'AB']),
     OperationValue('insert!!I[CII', ['0', 'ABCD', '2', '3']),
     OperationValue('replace!!CC', ['A', 'B']),
-    OperationValue('replace!!CC', ['A', '2']),
-    OperationValue('replace!!CC', ['1', 'B']),
-    OperationValue('replace!!CC', ['1', '2']),
+    OperationValue('replace!!CC', ['A', chr(0)]),
+    OperationValue('replace!!CC', [chr(0), 'B']),
+    OperationValue('replace!!CC', [chr(0), chr(0)]),
     OperationValue('replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;',
                    ['AB', 'CD']),
     OperationValue('reverse!!'),
     OperationValue('substring!!I', ['1']),
     OperationValue('substring!!II', ['0', '1']),
+    # OperationValue('substring!!II', ['0', '?']),
+    # OperationValue('substring!!II', ['?', '1']),
+    # OperationValue('substring!!II', ['?', '?']),
     OperationValue('toLowerCase!!'),
     OperationValue('toString!!'),
     OperationValue('toUpperCase!!'),
@@ -130,8 +133,9 @@ allow_duplicates = True
 alphabet = {'a', 'b', 'c', 'd', 'A', 'B', 'C', 'D'}
 depth = 1
 id_counter = 1
+max_initial_length = 2
 op_counter = 0
-op_total = 0
+op_total = 1
 value_id_map = dict()
 vertices = list()
 
@@ -178,6 +182,9 @@ def perform_op(original_value, op):
     if op.op in ['append!!Ljava/lang/String;', 'concat!!Ljava/lang/String;']:
 
         # get argument value
+        if ord(op.op_args[0]) == 0:
+            op.op_args[0] = random_char()
+
         arg_value = op.op_args[0]
 
         # return concatenated string
@@ -264,12 +271,16 @@ def perform_op(original_value, op):
         replace_known = True
 
         # determine if find is a known character
-        if ord('0') <= ord(find) <= ord('9'):
+        if ord(find) == 0:
             find_known = False
+            find = random_char()
+            op.op_args[0] = find
 
         # determine if replace is a known character
-        if ord('0') <= ord(replace) <= ord('9'):
+        if ord(replace) == 0:
             replace_known = False
+            replace = random_char()
+            op.op_args[1] = replace
 
         # perform operation depending on known arguments
         if find_known and replace_known:
@@ -306,8 +317,20 @@ def perform_op(original_value, op):
     elif op.op == 'substring!!II':
 
         # get indices as numbers
-        start = int(op.op_args[0])
-        end = int(op.op_args[1])
+        start = 0
+        if op.op_args[0] == '?':
+            start = random.randint(0, len(original_value))
+        else:
+            start = int(op.op_args[0])
+
+        end = 0
+        if op.op_args[1] == '?':
+            end = random.randint(start, len(original_value))
+        else:
+            end = int(op.op_args[1])
+
+        op.op_args[0] = str(start)
+        op.op_args[1] = str(end)
 
         # return substring
         return original_value[start:end]
@@ -396,7 +419,7 @@ def add_operation(t, countdown, v_list=None):
             v_list.append(t)
 
         op_counter += 1
-        if op_counter % (op_total / 100) == 0:
+        if op_total > 100 and op_counter % (op_total / 100) == 0:
             percent = op_counter * 100 / op_total
             log.debug('Operation Addition Progress: {0}%'.format(percent))
 
@@ -514,6 +537,12 @@ def get_options(arguments):
                              'strings used to generate graphs.',
                         action='store_true')
 
+    parser.add_argument('-e',
+                        '--empty-string',
+                        help='Include empty string value in list of input '
+                             'strings used to generate graphs.',
+                        action='store_true')
+
     parser.add_argument('-n',
                         '--no-duplicates',
                         help='Ensure that there are no duplicates of source '
@@ -538,6 +567,10 @@ def main(arguments):
     if options.unknown_string:
         inputs.append(chr(0))
 
+    # add empty string input if specified
+    if options.empty_string:
+        inputs.append('')
+
     # adjust duplicate option
     global allow_duplicates
     if options.no_duplicates:
@@ -553,7 +586,7 @@ def main(arguments):
     for value in inputs:
 
         # create root node value
-        if ord(value) == 0:
+        if len(value) == 1 and ord(value) == 0:
             root_value = RootValue(False, method="getStringValue!!")
         else:
             root_value = RootValue(True, value, "init")
@@ -582,7 +615,7 @@ def main(arguments):
             for v in v_list:
 
                 v_counter += 1
-                if v_counter % (num_v / 100) == 0:
+                if num_v > 100 and v_counter % (num_v / 100) == 0:
                     percent = v_counter * 100 / num_v
                     log.debug('Vertex Creation Progress: {0}%'.format(percent))
 

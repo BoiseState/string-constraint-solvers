@@ -290,6 +290,11 @@ public class Parser {
 
         // initialize operation string
         String operation = String.format("<S:%d>.append(<CS:%d>)", base, arg);
+        if (this.solver.isSingleton(arg)) {
+            operation = String.format("<S:%d>.append(\\\"%s\\\")",
+                                      base,
+                                      actualVals.get(arg));
+        }
 
         // if argument not set
         if (sourceMap.get("s1") == null) {
@@ -795,30 +800,44 @@ public class Parser {
                 boolean replaceKnown = true;
 
                 // determine if old char is known
-                try {
-                    int tempVal = Integer.parseInt(arg1String);
-
-                    if (tempVal < 10 && tempVal >= 0) {
-                        findKnown = false;
-                    }
-
-                    findChar = ((char) tempVal);
-                } catch (NumberFormatException e) {
+                if (arg1String.charAt(0) == 0) {
+                    findKnown = false;
+                    // TODO: get random char from alphabet
+                    findChar = 'A';
+                } else {
                     findChar = arg1String.charAt(0);
                 }
+//                try {
+//                    int tempVal = Integer.parseInt(arg1String);
+//
+//                    if (tempVal < 10 && tempVal >= 0) {
+//                        findKnown = false;
+//                    }
+//
+//                    findChar = ((char) tempVal);
+//                } catch (NumberFormatException e) {
+//                    findChar = arg1String.charAt(0);
+//                }
 
                 // determine if new char is known
-                try {
-                    int tempVal = Integer.parseInt(arg2String);
-
-                    if (tempVal < 10 && tempVal >= 0) {
-                        replaceKnown = false;
-                    }
-
-                    replaceChar = ((char) tempVal);
-                } catch (NumberFormatException e) {
+                if (arg2String.charAt(0) == 0) {
+                    replaceKnown = false;
+                    // TODO: get random char from alphabet
+                    replaceChar = 'B';
+                } else {
                     replaceChar = arg2String.charAt(0);
                 }
+//                try {
+//                    int tempVal = Integer.parseInt(arg2String);
+//
+//                    if (tempVal < 10 && tempVal >= 0) {
+//                        replaceKnown = false;
+//                    }
+//
+//                    replaceChar = ((char) tempVal);
+//                } catch (NumberFormatException e) {
+//                    replaceChar = arg2String.charAt(0);
+//                }
 
                 // perform appropriate replace operation
                 if (findKnown && replaceKnown) {
