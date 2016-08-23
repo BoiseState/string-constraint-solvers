@@ -178,6 +178,7 @@ release.properties
 
 graphs/dot/
 graphs/png/
+graphs/gen*
 results/
 traceFile
 /SolverInterface/
