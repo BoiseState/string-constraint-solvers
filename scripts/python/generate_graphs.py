@@ -22,13 +22,19 @@ ch.setFormatter(formatter)
 
 log.addHandler(ch)
 
+# Global values
+settings = None
+value_id_map = dict()
+vertices = list()
+
 
 # Data Classes
 # root node
 class RootValue:
     def __init__(self, has_string, string=None, method=''):
         self.has_string = has_string
-        self.string = string if string is not None else random_string(4)
+        self.string = string if string is not None else random_string(
+            settings.max_initial_length)
         self.method = method
 
     def get_value(self):
@@ -40,9 +46,9 @@ class RootValue:
 
 # operation node
 class OperationValue:
-    def __init__(self, op, op_args=list(), num=0):
+    def __init__(self, op, op_args=None, num=0):
         self.op = op
-        self.op_args = op_args
+        self.op_args = list() if op_args is None else op_args
         self.num = num
 
     def get_value(self):
@@ -51,13 +57,21 @@ class OperationValue:
 
 # boolean constraint node
 class BooleanConstraintValue:
-    def __init__(self, op, op_args=list(), num=0):
+    def __init__(self, op, op_args=None, num=0):
         self.op = op
-        self.op_args = op_args
+        self.op_args = list() if op_args is None else op_args
         self.num = num
 
     def get_value(self):
         return '{0.op}!:!{0.num}'.format(self)
+
+
+# edge
+class Edge:
+    def __init__(self, source_id, target_id, edge_type):
+        self.source_id = source_id
+        self.target_id = target_id
+        self.edge_type = edge_type
 
 
 # vertex
@@ -79,14 +93,6 @@ class Vertex:
 
         # return new vertex
         return new_vertex
-
-
-# edge
-class Edge:
-    def __init__(self, source_id, target_id, edge_type):
-        self.source_id = source_id
-        self.target_id = target_id
-        self.edge_type = edge_type
 
 
 # Initialize Arrays
@@ -128,26 +134,35 @@ boolean_constraints = [
     BooleanConstraintValue('startsWith!!Ljava/lang/String;', ['A'])
 ]
 
-# Global values
-allow_duplicates = True
-alphabet = {'a', 'b', 'c', 'd', 'A', 'B', 'C', 'D'}
-depth = 1
-id_counter = 1
-max_initial_length = 2
-op_counter = 0
-op_total = 1
-value_id_map = dict()
-vertices = list()
 
-# calculate op total
-for i in range(0, depth + 2):
-    op_total += len(operations) ** i
+# settings
+class Settings:
+    def __init__(self, options):
+        self.allow_duplicates = False if options.no_duplicates else True
+        self.alphabet = parse_alphabet_declaration(options.alphabet)
+        self.depth = int(options.ops_depth)
+        self.id_counter = 1
+        self.max_initial_length = int(options.length)
+        self.op_counter = 0
+
+        # initialize inputs
+        self.inputs = options.inputs
+        if options.empty_string:
+            self.inputs.append('')
+        # use unknown string if no other inputs specified
+        if len(self.inputs) == 0 or options.unknown_string:
+            self.inputs.append(chr(0))
+
+        # initialize op_total
+        self.op_total = 1
+        for i in range(0, self.depth + 2):
+            self.op_total += (len(operations) ** i)
+        self.op_total *= len(self.inputs)
 
 
 # id generator
 def generate_id(value, force=False):
     # specify id_counter is the global variable
-    global id_counter
 
     # if id already generated for value
     if not force and value in value_id_map:
@@ -155,17 +170,17 @@ def generate_id(value, force=False):
         return value_id_map.get(value)
 
     # generate new id from id counter
-    new_id = id_counter
+    new_id = settings.id_counter
 
     # increment id counter
-    id_counter += 1
+    settings.id_counter += 1
 
     # return new id
     return new_id
 
 
 def random_char():
-    alpha_list = list(alphabet)
+    alpha_list = list(settings.alphabet)
     return random.choice(alpha_list).upper()
 
 
@@ -317,13 +332,13 @@ def perform_op(original_value, op):
     elif op.op == 'substring!!II':
 
         # get indices as numbers
-        start = 0
+        start = None
         if op.op_args[0] == '?':
             start = random.randint(0, len(original_value))
         else:
             start = int(op.op_args[0])
 
-        end = 0
+        end = None
         if op.op_args[1] == '?':
             end = random.randint(start, len(original_value))
         else:
@@ -364,7 +379,7 @@ def perform_const(value, const):
         arg_string = const.op_args[0]
 
         # return true or false for boolean constraint
-        return 'true' if value.find(arg_string) > -1 else 'false'
+        return 'true' if arg_string in value else 'false'
 
     elif const.op == 'endsWith!!Ljava/lang/String;':
 
@@ -405,7 +420,6 @@ def perform_const(value, const):
 
 
 def add_operation(t, countdown, v_list=None):
-    global op_counter
 
     new_v_list = v_list is None
 
@@ -418,9 +432,12 @@ def add_operation(t, countdown, v_list=None):
             vertices.append(v_list)
             v_list.append(t)
 
-        op_counter += 1
-        if op_total > 100 and op_counter % (op_total / 100) == 0:
-            percent = op_counter * 100 / op_total
+        settings.op_counter += 1
+
+        if settings.op_total > 100 and \
+           settings.op_counter % (settings.op_total / 100) == 0:
+
+            percent = settings.op_counter * 100 / settings.op_total
             log.debug('Operation Addition Progress: {0}%'.format(percent))
 
         # get actual value resulting from op
@@ -468,7 +485,7 @@ def add_bool_constraint(t, v_list):
     for const in boolean_constraints:
 
         # if no duplicates allowed
-        if not allow_duplicates:
+        if not settings.allow_duplicates:
             t = t.clone()
             v_list.append(t)
 
@@ -493,7 +510,7 @@ def add_bool_constraint(t, v_list):
 
             # create vertex
             arg_val = arg_value.get_value()
-            do_force = not allow_duplicates
+            do_force = not settings.allow_duplicates
             arg_vertex = Vertex(arg_val,
                                 arg,
                                 generate_id(arg_val, force=do_force))
@@ -516,12 +533,19 @@ def get_options(arguments):
                                                  'with the string constraint '
                                                  'solver framework')
 
-    parser.add_argument('-o',
-                        '--ops-depth',
-                        default=1,
-                        help='The maximum number of operations that will be '
-                             'performed in sequence before a constraint is '
-                             'reached in the generated graph.')
+    parser.add_argument('-a',
+                        '--alphabet',
+                        default='A-D',
+                        help='An alphabet declaration using the a comma '
+                             'separated list of either singe characters or '
+                             'character ranges using the \'-\' character as '
+                             'in "A-D".')
+
+    parser.add_argument('-e',
+                        '--empty-string',
+                        help='Include empty string value in list of input '
+                             'strings used to generate graphs.',
+                        action='store_true')
 
     parser.add_argument('-i',
                         '--inputs',
@@ -531,17 +555,10 @@ def get_options(arguments):
                              'graphs, each input string is used to generate a '
                              'full set of graphs.')
 
-    parser.add_argument('-u',
-                        '--unknown-string',
-                        help='Include unknown string value in list of input '
-                             'strings used to generate graphs.',
-                        action='store_true')
-
-    parser.add_argument('-e',
-                        '--empty-string',
-                        help='Include empty string value in list of input '
-                             'strings used to generate graphs.',
-                        action='store_true')
+    parser.add_argument('-l',
+                        '--length',
+                        default=2,
+                        help='The maximum length of generated initial strings.')
 
     parser.add_argument('-n',
                         '--no-duplicates',
@@ -549,32 +566,91 @@ def get_options(arguments):
                              'constraints for each boolean constraint.',
                         action='store_true')
 
+    parser.add_argument('-o',
+                        '--ops-depth',
+                        default=1,
+                        help='The maximum number of operations that will be '
+                             'performed in sequence before a constraint is '
+                             'reached in the generated graph.')
+
+    parser.add_argument('-u',
+                        '--unknown-string',
+                        help='Include unknown string value in list of input '
+                             'strings used to generate graphs.',
+                        action='store_true')
+
     return parser.parse_args(arguments)
+
+
+def parse_alphabet_declaration(alphabet_declaration):
+    # initialize symbol set
+    symbol_set = set()
+
+    # detect comma characters
+    if ',,' in alphabet_declaration:
+
+        # detect single comma in alphabet declaration
+        if ',,,' in alphabet_declaration or \
+                alphabet_declaration.startswith(',,') or \
+                alphabet_declaration.endswith(',,'):
+            # add to symbol set
+            symbol_set.add(',')
+
+            # remove comma from alphabet declaration
+            alphabet_declaration = alphabet_declaration.replace(',,', '')
+
+        # detect commas as part of range in alphabet declaration
+        pattern = '^.*,?(?:,(?P<range1>,-.|.-,)|(?P<range2>,-.|.-,),),?.*'
+        match = re.match(pattern, alphabet_declaration)
+
+        if match:
+
+            # get matching char range
+            char_range = match.group('range1')
+            if char_range is None:
+                char_range = match.group('range2')
+
+            # add char range to symbol set
+            start = char_range[0]
+            end = char_range[2]
+            for c in range(ord(start), ord(end)):
+                symbol_set.add(chr(c))
+
+            # remove range from alphabet declaration
+            alphabet_declaration.replace(char_range, '')
+
+    # split string
+    symbol_declarations = alphabet_declaration.split(',')
+
+    # process symbol declarations
+    for sd in symbol_declarations:
+
+        # process singe char declaration
+        if len(sd) == 1:
+            symbol_set.add(sd[0])
+
+        # process char range declaration
+        elif len(sd) == 3 and sd[1] == '-':
+            start = sd[0]
+            end = sd[2]
+            for c in range(ord(start), ord(end)):
+                symbol_set.add(chr(c))
+
+        # invalid alphabet declaration
+        else:
+            raise ValueError('alphabet declaration is invalid')
+
+    # return symbol set
+    return symbol_set
 
 
 def main(arguments):
     # get option from arguments
     options = get_options(arguments)
 
-    # initialize depth
-    global depth
-    depth = int(options.ops_depth)
-
-    # get list of input strings
-    inputs = options.inputs
-
-    # add unknown string input if specified
-    if options.unknown_string:
-        inputs.append(chr(0))
-
-    # add empty string input if specified
-    if options.empty_string:
-        inputs.append('')
-
-    # adjust duplicate option
-    global allow_duplicates
-    if options.no_duplicates:
-        allow_duplicates = False
+    # get settings
+    global settings
+    settings = Settings(options)
 
     # clean existing files
     dir_path = '{0}/../../graphs'.format(os.path.dirname(__file__))
@@ -583,7 +659,7 @@ def main(arguments):
             os.remove(os.path.join(dir_path, f))
 
     # for each input value
-    for value in inputs:
+    for value in settings.inputs:
 
         # create root node value
         if len(value) == 1 and ord(value) == 0:
@@ -596,9 +672,9 @@ def main(arguments):
         root_vertex = Vertex(val, root_value.string, generate_id(val))
 
         # add operations to the vertex
-        add_operation(root_vertex, depth)
+        add_operation(root_vertex, settings.depth)
 
-        log.debug('*** {0} Operations Added ***'.format(op_counter))
+        log.debug('*** {0} Operations Added ***'.format(settings.op_counter))
         num_v = 0
         for v_list in vertices:
             num_v += len(v_list)
@@ -648,7 +724,7 @@ def main(arguments):
             vertices_collection.append(vertex_list)
 
         # flatten vertices collection into single nested list if simple
-        if depth == 1:
+        if settings.depth == 1:
             v_list1 = vertices_collection[0]
             root_v = next(v for v in v_list1
                           if v['id'] == root_vertex.node_id)

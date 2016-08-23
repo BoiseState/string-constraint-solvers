@@ -136,15 +136,9 @@ public class Alphabet {
         if (string.contains(",,")) {
 
             // detect single comma in symbol string
-            if (string.contains(",,,")) {
-
-                // add to symbol set
-                symbolSet.add(',');
-
-                // remove comma from string
-                string = string.replace(",,,", ",");
-
-            } else if (string.startsWith(",,") || string.endsWith(",,")) {
+            if (string.contains(",,,") ||
+                string.startsWith(",,") ||
+                string.endsWith(",,")) {
 
                 // add to symbol set
                 symbolSet.add(',');
