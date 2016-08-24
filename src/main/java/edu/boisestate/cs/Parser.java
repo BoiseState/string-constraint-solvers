@@ -316,27 +316,36 @@ public class Parser {
             int start = Integer.parseInt(s2String);
             int end = Integer.parseInt(s3String);
 
-            // update operation string
-            operation = String.format("<S:%d>.append(<CS:%d>, %d, %d)",
-                                      base,
-                                      arg,
-                                      start,
-                                      end);
+            // set param symbols for use in operation string
+            String paramSymbols = String.format("<CS:%d>, %d, %d",
+                                                arg,
+                                                start,
+                                                end);
+            boolean argSingleton = this.solver.isSingleton(arg);
+            if (argSingleton){
+                paramSymbols = String.format("\\\"%s\\\", %d, %d",
+                                          actualVals.get(arg),
+                                          start,
+                                          end);
+            }
 
             // stringBuilder.append(char[] str, int offset, int len)
             // if first two parameters are char array and int
             if (params.startsWith("[CI")) {
 
-                // update operation string
-                operation = String.format("<S:%d>.append(<C[]:%d>, %d, %d)",
-                                          base,
-                                          arg,
-                                          start,
-                                          end);
+                // update arg symbol
+                if (!argSingleton) {
+                    paramSymbols = String.format("<C[]:%d>, %d, %d",
+                                                 arg,
+                                                 start,
+                                                 end);
+                }
 
                 // adjust end to be actual end value instead of length
                 end = start + end;
             }
+
+            operation = String.format("<S:%d>.append(%s)", base, paramSymbols);
 
             // perform operation
             solver.append(id, base, arg, start, end);
@@ -1132,7 +1141,7 @@ public class Parser {
 
         // TODO: add starts with for sourceMap size 3 (two args)
         // assert the boolean constraint
-        if (fName.equals("containsString")) {
+        if (fName.equals("contains")) {
 
             solver.contains(result, base, arg);
 

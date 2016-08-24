@@ -63,6 +63,6 @@ do
          ${solver_args} \
          --reporter ${reporter} \
          2>&1 | \
-            tee ${project_dir}/results/${reporter}/${solver}/${f_name}.txt
+            tee ${project_dir}/results/${reporter}/${solver}/${f_name}.csv
 
 done
