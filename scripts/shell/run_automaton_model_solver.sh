@@ -16,9 +16,20 @@ shift
 solver_args=''
 until [ "${1:0:1}" != '-' ]
 do
-    solver_args="$solver_args $1 $2"
-    shift
-    shift
+    if [ "$1" = '-d' -o \
+         "$1" = '--debug' -o \
+         "$1" = '-h' -o \
+         "$1" = '--help' -o \
+         "$1" = '-o' -o \
+         "$1" = '--old' ]
+    then
+        solver_args="$solver_args $1"
+        shift
+    else
+        solver_args="$solver_args $1 $2"
+        shift
+        shift
+    fi
 done
 
 # consume reporter arg
@@ -28,8 +39,33 @@ shift
 # get classpath
 set_classpath ${project_dir}
 
-# ensure extended solver results directory is ready
-mkdir -p ${project_dir}/results/${reporter}/${solver}
+# set results path
+results_path="$project_dir/results/$reporter/$solver"
+if [ "$solver" = 'jsa' ]
+then
+    case $solver_args in
+    *'--model-version 1'*)        
+        results_path="$project_dir/results/$reporter/jsa/unbounded"
+        ;;
+    *'--model-version 2'*)        
+        results_path="$project_dir/results/$reporter/jsa/bounded"
+        ;;
+    *'--model-version 3'*)        
+        results_path="$project_dir/results/$reporter/jsa/aggregate"
+        ;;
+    *'--model-version 4'*)        
+        results_path="$project_dir/results/$reporter/jsa/weighted"
+        ;;
+    *)        
+        results_path="$project_dir/results/$reporter/jsa/unbounded"
+        ;;
+    esac
+fi
+
+# ensure result path exists
+mkdir -p ${results_path}
+
+echo "results_path: $results_path"
 
 # get graph files to parse
 if [ -z "$1" ] ; then
@@ -63,6 +99,6 @@ do
          ${solver_args} \
          --reporter ${reporter} \
          2>&1 | \
-            tee ${project_dir}/results/${reporter}/${solver}/${f_name}.csv
+            tee ${results_path}/${f_name}.csv
 
 done

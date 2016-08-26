@@ -654,6 +654,7 @@ def main(arguments):
 
     # clean existing files
     dir_path = '{0}/../../graphs'.format(os.path.dirname(__file__))
+    dir_path = os.path.normpath(dir_path)
     for f in os.listdir(dir_path):
         if re.search('gen.*\.json', f):
             os.remove(os.path.join(dir_path, f))
