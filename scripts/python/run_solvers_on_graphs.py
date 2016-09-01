@@ -8,6 +8,7 @@ import platform
 import subprocess
 import sys
 
+# set relevent path and file variables
 file_name = os.path.basename(__file__).replace('.py', '')
 project_dir = '{0}/../..'.format(os.path.dirname(__file__))
 project_dir = os.path.normpath(project_dir)
@@ -20,7 +21,7 @@ ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(logging.ERROR)
 
 formatter = logging.Formatter(
-    u'[%(name)s:%(levelname)s]: %(message)s')
+    u'[%(name)s:%(levelname)s] %(message)s')
 ch.setFormatter(formatter)
 
 log.addHandler(ch)
@@ -102,11 +103,105 @@ class Settings:
         self.framework_args.insert(3, self.length)
 
 
+def get_options(arguments):
+    # process command line args
+    parser = argparse.ArgumentParser(prog=__doc__,
+                                     description='Run the string constraint '
+                                                 'solver framework for a '
+                                                 'specified set of solvers on '
+                                                 'a specified set of graphs '
+                                                 'using a specified reporter.')
+
+    parser.add_argument('-a',
+                        '--framework-args',
+                        nargs='*',
+                        default=list(),
+                        help='List of additional args to pass to the '
+                             'constraint solver framework.')
+
+    parser.add_argument('-d',
+                        '--debug',
+                        help='Display debug messages for both this script and'
+                             'the constraint solver framework.',
+                        action="store_true")
+
+    parser.add_argument('-f',
+                        '--graph-files',
+                        default='*.json',
+                        help='A Unix shell-style pattern which is used to '
+                             'match a set of constraint graph files which '
+                             'will be solved by the constraint solver '
+                             'framework.')
+
+    parser.add_argument('-l',
+                        '--length',
+                        default=2,
+                        help='The initial bounding length suplied to the '
+                             'constraint solver framework.')
+
+    # solver argument group
+    solvers = parser.add_argument_group('solvers',
+                                        'String constraint solvers which can '
+                                        'be used in the constraint solver '
+                                        'framework. If no solver is '
+                                        'specified, the default solver is the '
+                                        'concrete solver.')
+
+    solvers.add_argument('-c',
+                         '--concrete-solver',
+                         help='Include the concrete solver in the set of '
+                              'solvers.',
+                         action='store_true')
+
+    solvers.add_argument('-u',
+                         '--unbounded-solver',
+                         help='Include the unbounded automaton model solver in '
+                              'the set of solvers.',
+                         action='store_true')
+
+    solvers.add_argument('-b',
+                         '--bounded-solver',
+                         help='Include the bounded automaton model solver in '
+                              'the set of solvers.',
+                         action='store_true')
+
+    solvers.add_argument('-g',
+                         '--aggregate-solver',
+                         help='Include the aggregate automata model solver in '
+                              'the set of solvers.',
+                         action='store_true')
+
+    solvers.add_argument('-w',
+                         '--weighted-solver',
+                         help='Include the weighted transition automata model '
+                              'solver in the set of solvers.',
+                         action='store_true')
+
+    # reporter argument group
+    reporters = parser.add_mutually_exclusive_group(required=True)
+
+    reporters.add_argument('-m',
+                           '--mc-reporter',
+                           help='Informs the constraint solver framework to '
+                                'utilize the model count reporter when solving '
+                                'constraint graphs.',
+                           action='store_true')
+
+    reporters.add_argument('-s',
+                           '--sat-reporter',
+                           help='Informs the constraint solver framework to '
+                                'utilize the sat reporter when solving '
+                                'constraint graphs.',
+                           action='store_true')
+
+    return Settings(parser.parse_args(arguments))
+
+
 def get_graph_files(settings):
     # initialize set for graph file paths
     graph_files = set()
 
-    # get graph folder path
+    # get graph directory path
     graph_dir_path = os.path.join(project_dir, 'graphs')
 
     # for all matching files in graph directory
@@ -128,10 +223,10 @@ def get_classpath():
     class_path = ''
 
     # check if maven available
-    which_cmd = 'where' if platform.system() == 'Windows' else 'which'
+    check_cmd_cmd = 'where' if platform.system() == 'Windows' else 'hash'
     try:
         with open(os.devnull, 'w') as dev_null:
-            subprocess.check_call([which_cmd, 'mvn'],
+            subprocess.check_call([check_cmd_cmd, 'mvn'],
                                   stderr=dev_null,
                                   stdout=dev_null)
 
@@ -236,100 +331,6 @@ def run_solver(solver, files, class_path, settings):
             log.debug('ValueError while running solver framework.')
         except subprocess.CalledProcessError as cp_e:
             log.debug('CalledProcessError while  running solver framework.')
-
-
-def get_options(arguments):
-    # process command line args
-    parser = argparse.ArgumentParser(prog=__doc__,
-                                     description='Run the string constraint '
-                                                 'solver framework for a '
-                                                 'specified set of solvers on '
-                                                 'a specified set of graphs '
-                                                 'using a specified reporter.')
-
-    parser.add_argument('-a',
-                        '--framework-args',
-                        nargs='*',
-                        default=list(),
-                        help='List of additional args to pass to the '
-                             'constraint solver framework.')
-
-    parser.add_argument('-d',
-                        '--debug',
-                        help='Display debug messages for both this script and'
-                             'the constraint solver framework.',
-                        action="store_true")
-
-    parser.add_argument('-f',
-                        '--graph-files',
-                        default='*.json',
-                        help='A Unix shell-style pattern which is used to '
-                             'match a set of constraint graph files which '
-                             'will be solved by the constraint solver '
-                             'framework.')
-
-    parser.add_argument('-l',
-                        '--length',
-                        default=2,
-                        help='The initial bounding length suplied to the '
-                             'constraint solver framework.')
-
-    # solver argument group
-    solvers = parser.add_argument_group('solvers',
-                                        'String constraint solvers which can '
-                                        'be used in the constraint solver '
-                                        'framework. If no solver is '
-                                        'specified, the default solver is the '
-                                        'concrete solver.')
-
-    solvers.add_argument('-c',
-                         '--concrete-solver',
-                         help='Include the concrete solver in the set of '
-                              'solvers.',
-                         action='store_true')
-
-    solvers.add_argument('-u',
-                         '--unbounded-solver',
-                         help='Include the unbounded automaton model solver in '
-                              'the set of solvers.',
-                         action='store_true')
-
-    solvers.add_argument('-b',
-                         '--bounded-solver',
-                         help='Include the bounded automaton model solver in '
-                              'the set of solvers.',
-                         action='store_true')
-
-    solvers.add_argument('-g',
-                         '--aggregate-solver',
-                         help='Include the aggregate automata model solver in '
-                              'the set of solvers.',
-                         action='store_true')
-
-    solvers.add_argument('-w',
-                         '--weighted-solver',
-                         help='Include the weighted transition automata model '
-                              'solver in the set of solvers.',
-                         action='store_true')
-
-    # reporter argument group
-    reporters = parser.add_mutually_exclusive_group(required=True)
-
-    reporters.add_argument('-m',
-                           '--mc-reporter',
-                           help='Informs the constraint solver framework to '
-                                'utilize the model count reporter when solving '
-                                'constraint graphs.',
-                           action='store_true')
-
-    reporters.add_argument('-s',
-                           '--sat-reporter',
-                           help='Informs the constraint solver framework to '
-                                'utilize the sat reporter when solving '
-                                'constraint graphs.',
-                           action='store_true')
-
-    return Settings(parser.parse_args(arguments))
 
 
 def main(arguments):
