@@ -69,6 +69,9 @@ public class BoundedAutomatonModel
         // get concatenation of automata
         Automaton result = this.automaton.concatenate(argModel.automaton);
 
+        // minimize result automaton
+        result.minimize();
+
         // calculate new bound length
         int boundLength = this.boundLength + argModel.boundLength;
 
@@ -119,6 +122,9 @@ public class BoundedAutomatonModel
         // get intersection of automata
         Automaton result = this.automaton.intersection(argModel.automaton);
 
+        // minimize result automaton
+        result.minimize();
+
         // calculate new bound length
         int boundLength = this.boundLength;
         if (argModel.boundLength < this.boundLength) {
@@ -163,6 +169,9 @@ public class BoundedAutomatonModel
         // get intersection of automata
         Automaton result = this.automaton.minus(argModel.automaton);
 
+        // minimize result automaton
+        result.minimize();
+
         // return bounded model from automaton
         return new BoundedAutomatonModel(result,
                                            this.alphabet,
@@ -185,6 +194,9 @@ public class BoundedAutomatonModel
 
         // get union of automata
         Automaton result = this.automaton.union(argModel.automaton);
+
+        // minimize result automaton
+        result.minimize();
 
         // calculate new bound length
         int boundLength = this.boundLength;

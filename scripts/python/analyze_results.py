@@ -122,9 +122,9 @@ def get_result_file_sets(settings):
 
 def analyze_result_sets(result_file_sets):
     # get set of all common file names in each file set
-    file_name_set = reduce(lambda x, y: x.intersection(y.keys()),
-                           result_file_sets[1:],
-                           set(result_file_sets[0].keys()))
+    file_name_set = sorted(
+        reduce(lambda x, y: x.intersection(y.keys()), result_file_sets[1:],
+               set(result_file_sets[0].keys())))
     log.debug('file name set: %s', file_name_set)
 
 

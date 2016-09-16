@@ -105,6 +105,9 @@ public class AggregateAutomataModel
             // union temp automaton for result
             Automaton result = BasicOperations.union(Arrays.asList(temp));
 
+            // minimize result automaton
+            result.minimize();
+
             // bound result to alphabet
             result = result.intersection(anyString);
 
@@ -233,6 +236,9 @@ public class AggregateAutomataModel
             // union temp automaton for result
             Automaton result = BasicOperations.union(Arrays.asList(temp));
 
+            // minimize result automaton
+            result.minimize();
+
             // bound result to alphabet
             result = result.intersection(anyString);
 
@@ -322,8 +328,14 @@ public class AggregateAutomataModel
                 temp[j] = this.automata[i].minus(argAutomata[j]);
             }
 
-            // union temp automaton for result
-            Automaton result = BasicOperations.union(Arrays.asList(temp));
+            // intersect temp automaton for result
+            Automaton result = temp[0];
+            for(int j = 1; j < temp.length; j++) {
+                result = result.intersection(temp[j]);
+            }
+
+            // minimize result automaton
+            result.minimize();
 
             // bound result to alphabet
             result = result.intersection(anyString);
@@ -365,6 +377,9 @@ public class AggregateAutomataModel
 
             // union temp automaton for result
             Automaton result = BasicOperations.union(Arrays.asList(temp));
+
+            // minimize result automaton
+            result.minimize();
 
             // bound result to alphabet
             result = result.intersection(anyString);

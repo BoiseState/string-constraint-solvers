@@ -98,40 +98,44 @@ class Vertex:
 # Initialize Arrays
 # operations array
 operations = [
-    OperationValue('append!!Ljava/lang/String;', ['A']),
-    OperationValue('append!![CII', ['ABC', '1', '2']),
-    OperationValue('concat!!Ljava/lang/String;', [chr(0)]),
-    OperationValue('deleteCharAt!!I', ['0']),
+    # OperationValue('append!!Ljava/lang/String;', ['A']),
+    # OperationValue('append!![CII', ['ABC', '1', '2']),
+    # OperationValue('concat!!Ljava/lang/String;', [chr(0)]),
+    OperationValue('concat!!Ljava/lang/String;', ['B']),
+    OperationValue('concat!!Ljava/lang/String;', ['C']),
+    # OperationValue('deleteCharAt!!I', ['0']),
     OperationValue('delete!!II', ['0', '1']),
-    OperationValue('insert!!IC', ['0', 'D']),
-    OperationValue('insert!!I[C', ['0', 'AB']),
-    OperationValue('insert!!I[CII', ['0', 'ABCD', '2', '3']),
+    # OperationValue('insert!!IC', ['0', 'D']),
+    # OperationValue('insert!!I[C', ['0', 'AB']),
+    # OperationValue('insert!!I[CII', ['0', 'ABCD', '2', '3']),
     OperationValue('replace!!CC', ['A', 'B']),
-    OperationValue('replace!!CC', ['A', chr(0)]),
-    OperationValue('replace!!CC', [chr(0), 'B']),
-    OperationValue('replace!!CC', [chr(0), chr(0)]),
-    OperationValue('replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;',
-                   ['AB', 'CD']),
-    OperationValue('reverse!!'),
-    OperationValue('substring!!I', ['1']),
-    OperationValue('substring!!II', ['0', '1']),
+    OperationValue('replace!!CC', ['A', 'C']),
+    # OperationValue('replace!!CC', ['A', chr(0)]),
+    # OperationValue('replace!!CC', [chr(0), 'B']),
+    # OperationValue('replace!!CC', [chr(0), chr(0)]),
+    # OperationValue('replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;',
+    #                ['AB', 'CD']),
+    # OperationValue('reverse!!'),
+    # OperationValue('substring!!I', ['1']),
+    # OperationValue('substring!!II', ['0', '1']),
     # OperationValue('substring!!II', ['0', '?']),
     # OperationValue('substring!!II', ['?', '1']),
     # OperationValue('substring!!II', ['?', '?']),
-    OperationValue('toLowerCase!!'),
-    OperationValue('toString!!'),
-    OperationValue('toUpperCase!!'),
-    OperationValue('trim!!')
+    # OperationValue('toLowerCase!!'),
+    # OperationValue('toString!!'),
+    # OperationValue('toUpperCase!!'),
+    # OperationValue('trim!!')
 ]
 
 # boolean constraints array
 boolean_constraints = [
+    BooleanConstraintValue('contains!!Ljava/lang/CharSequence;', ['B']),
     BooleanConstraintValue('contains!!Ljava/lang/CharSequence;', ['C']),
-    BooleanConstraintValue('endsWith!!Ljava/lang/String;', ['D']),
-    BooleanConstraintValue('equals!!Ljava/lang/Object;', ['ABCD']),
-    BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;', ['ABCD']),
-    BooleanConstraintValue('isEmpty!!'),
-    BooleanConstraintValue('startsWith!!Ljava/lang/String;', ['A'])
+    # BooleanConstraintValue('endsWith!!Ljava/lang/String;', ['D']),
+    # BooleanConstraintValue('equals!!Ljava/lang/Object;', ['ABCD']),
+    # BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;', ['ABCD']),
+    # BooleanConstraintValue('isEmpty!!'),
+    # BooleanConstraintValue('startsWith!!Ljava/lang/String;', ['A'])
 ]
 
 
@@ -674,6 +678,11 @@ def main(arguments):
 
         # add operations to the vertex
         add_operation(root_vertex, settings.depth)
+
+        # add bool contraints for initial string
+        init_v_list = list()
+        vertices.append(init_v_list)
+        add_bool_constraint(root_vertex, init_v_list)
 
         log.debug('*** {0} Operations Added ***'.format(settings.op_counter))
         num_v = 0

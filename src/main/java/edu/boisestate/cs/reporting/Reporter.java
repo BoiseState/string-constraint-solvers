@@ -116,7 +116,9 @@ abstract public class Reporter {
                     this.calculateStats(constraint);
                 }
 
-            } else if (roots.contains(constraint)) {
+            }
+            // if constraint is root node
+            else if (roots.contains(constraint)) {
 
                 // add root
                 String init = parser.addRoot(constraint);
@@ -125,7 +127,9 @@ abstract public class Reporter {
                 String[] ops = new String[] {init};
                 this.operationsMap.put(constraintId, ops);
 
-            } else {
+            }
+            // constraint is op node
+            else {
 
                 // add operation
                 String operation = parser.addOperation(constraint);
