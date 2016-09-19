@@ -23,6 +23,8 @@ ch.setFormatter(formatter)
 log.addHandler(ch)
 
 # Global values
+boolean_constraints = None
+operations = None
 settings = None
 value_id_map = dict()
 vertices = list()
@@ -95,50 +97,6 @@ class Vertex:
         return new_vertex
 
 
-# Initialize Arrays
-# operations array
-operations = [
-    # OperationValue('append!!Ljava/lang/String;', ['A']),
-    # OperationValue('append!![CII', ['ABC', '1', '2']),
-    # OperationValue('concat!!Ljava/lang/String;', [chr(0)]),
-    OperationValue('concat!!Ljava/lang/String;', ['B']),
-    OperationValue('concat!!Ljava/lang/String;', ['C']),
-    # OperationValue('deleteCharAt!!I', ['0']),
-    OperationValue('delete!!II', ['0', '1']),
-    # OperationValue('insert!!IC', ['0', 'D']),
-    # OperationValue('insert!!I[C', ['0', 'AB']),
-    # OperationValue('insert!!I[CII', ['0', 'ABCD', '2', '3']),
-    OperationValue('replace!!CC', ['A', 'B']),
-    OperationValue('replace!!CC', ['A', 'C']),
-    # OperationValue('replace!!CC', ['A', chr(0)]),
-    # OperationValue('replace!!CC', [chr(0), 'B']),
-    # OperationValue('replace!!CC', [chr(0), chr(0)]),
-    # OperationValue('replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;',
-    #                ['AB', 'CD']),
-    # OperationValue('reverse!!'),
-    # OperationValue('substring!!I', ['1']),
-    # OperationValue('substring!!II', ['0', '1']),
-    # OperationValue('substring!!II', ['0', '?']),
-    # OperationValue('substring!!II', ['?', '1']),
-    # OperationValue('substring!!II', ['?', '?']),
-    # OperationValue('toLowerCase!!'),
-    # OperationValue('toString!!'),
-    # OperationValue('toUpperCase!!'),
-    # OperationValue('trim!!')
-]
-
-# boolean constraints array
-boolean_constraints = [
-    BooleanConstraintValue('contains!!Ljava/lang/CharSequence;', ['B']),
-    BooleanConstraintValue('contains!!Ljava/lang/CharSequence;', ['C']),
-    # BooleanConstraintValue('endsWith!!Ljava/lang/String;', ['D']),
-    # BooleanConstraintValue('equals!!Ljava/lang/Object;', ['ABCD']),
-    # BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;', ['ABCD']),
-    # BooleanConstraintValue('isEmpty!!'),
-    # BooleanConstraintValue('startsWith!!Ljava/lang/String;', ['A'])
-]
-
-
 # settings
 class Settings:
     def __init__(self, options):
@@ -159,9 +117,756 @@ class Settings:
 
         # initialize op_total
         self.op_total = 1
+
+    def get_ops_total(self):
         for i in range(0, self.depth + 2):
-            self.op_total += (len(operations) ** i)
+            self.op_total += (len(get_operations()) ** i)
         self.op_total *= len(self.inputs)
+
+        return self.op_total
+
+
+# operations array
+def add_append_substring_operations(ops):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+
+    # sb.append(string known, offset known, length known)
+    # sb.append(string known, start known, end known)
+    for i in range(0, len(symbol_string) - 2):
+        # add append substring for char array
+        ops.append(OperationValue('append!![CII',
+                                  [symbol_string, str(i), '1']))
+
+        # add append substring for char sequence
+        ops.append(OperationValue('append!!Ljava/lang/CharSequence;II',
+                                  [symbol_string, str(i), str(i + 1)]))
+
+    # sb.append(string known, offset known, length unknown)
+    # sb.append(string known, start known, end unknown)
+    for i in range(0, len(symbol_string) - 2):
+        # add append substring for char array
+        ops.append(OperationValue('append!![CII',
+                                  [symbol_string, str(i), chr(0)]))
+
+        # add append substring for char sequence
+        ops.append(OperationValue('append!!Ljava/lang/CharSequence;II',
+                                  [symbol_string, str(i), chr(0)]))
+
+    # sb.append(string known, offset unknown, length known)
+    # sb.append(string known, start unknown, end known)
+    # add append substring for char array
+    ops.append(OperationValue('append!![CII', [symbol_string, chr(0), '1']))
+
+    # add append substring for char sequence
+    for i in range(1, len(symbol_string) - 1):
+        ops.append(OperationValue('append!!Ljava/lang/CharSequence;II',
+                                  [symbol_string, chr(0), str(i)]))
+
+    # sb.append(string known, offset unknown, length unknown)
+    # sb.append(string known, start unknown, end unknown)
+    # add append substring for char array
+    ops.append(OperationValue('append!![CII', [symbol_string, chr(0), chr(0)]))
+
+    # add append substring for char sequence
+    ops.append(OperationValue('append!!Ljava/lang/CharSequence;II',
+                              [symbol_string, chr(0), chr(0)]))
+
+    # sb.append(string unknown, offset known, length known)
+    # sb.append(string unknown, start known, end known)
+    for i in range(0, len(symbol_string) - 2):
+        # add append substring for char array
+        ops.append(OperationValue('append!![CII',
+                                  [chr(0), str(i), '1']))
+
+        # add append substring for char sequence
+        ops.append(OperationValue('append!!Ljava/lang/CharSequence;II',
+                                  [chr(0), str(i), str(i + 1)]))
+
+    # sb.append(string unknown, offset known, length unknown)
+    # sb.append(string unknown, start known, end unknown)
+    for i in range(0, len(symbol_string) - 2):
+        # add append substring for char array
+        ops.append(OperationValue('append!![CII',
+                                  [chr(0), str(i), chr(0)]))
+
+        # add append substring for char sequence
+        ops.append(OperationValue('append!!Ljava/lang/CharSequence;II',
+                                  [chr(0), str(i), chr(0)]))
+
+    # sb.append(string unknown, offset unknown, length known)
+    # sb.append(string unknown, start unknown, end known)
+    # add append substring for char array
+    ops.append(OperationValue('append!![CII', [chr(0), chr(0), '1']))
+
+    for i in range(1, len(symbol_string) - 1):
+        # add append substring for char sequence
+        ops.append(OperationValue('append!!Ljava/lang/CharSequence;II',
+                                  [chr(0), chr(0), str(i)]))
+
+    # sb.append(string unknown, offset unknown, length unknown)
+    # sb.append(string unknown, start unknown, end unknown)
+    # add append substring for char array
+    ops.append(OperationValue('append!![CII', [chr(0), chr(0), chr(0)]))
+
+    # add append substring for char sequence
+    ops.append(OperationValue('append!!Ljava/lang/CharSequence;II',
+                              [chr(0), chr(0), chr(0)]))
+
+
+def add_append_operations(ops):
+    # sb.append(string known)
+    for c in settings.alphabet:
+        ops.append(OperationValue('append!!Ljava/lang/String;', [c]))
+
+    # sb.append(string unknown)
+    ops.append(OperationValue('append!!Ljava/lang/String;', [chr(0)]))
+
+
+def add_concat_operations(ops):
+    # sb.concat(string known)
+    for c in settings.alphabet:
+        ops.append(OperationValue('concat!!Ljava/lang/String;', [c]))
+
+    # sb.concat(string unknown)
+    ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)]))
+
+
+def add_delete_char_at_operations(ops):
+    # sb.deleteCharAt(index known)
+    for i in range(0, settings.max_initial_length - 1):
+        ops.append(OperationValue('deleteCharAt!!I', [str(i)]))
+
+    # sb.deleteCharAt(index unknown)
+    ops.append(OperationValue('deleteCharAt!!I', [chr(0)]))
+
+
+def add_delete_operations(ops):
+    # sb.delete(start known, end known)
+    for i in range(0, settings.max_initial_length - 1):
+        for j in range(i, settings.max_initial_length):
+            ops.append(OperationValue('delete!!II', [str(i), str(j)]))
+
+    # sb.delete(start known, end unknown)
+    for i in range(0, settings.max_initial_length - 1):
+        ops.append(OperationValue('delete!!II', [str(i), chr(0)]))
+
+    # sb.delete(start unknown, end known)
+    for i in range(0, settings.max_initial_length):
+        ops.append(OperationValue('delete!!II', [chr(0), str(i)]))
+
+    # sb.delete(start unknown, end unknown)
+    ops.append(OperationValue('delete!!II', [chr(0), chr(0)]))
+
+
+def add_insert_char_operations(ops):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+
+    # sb.insert(index known, string known)
+    for i in range(0, len(symbol_string) - 1):
+        for c in settings.alphabet:
+            ops.append(OperationValue('insert!!IC', [str(i), c]))
+
+    # sb.insert(index known, string unknown)
+    for i in range(0, len(symbol_string) - 1):
+        ops.append(OperationValue('insert!!IC', [str(i), chr(0)]))
+
+    # sb.insert(index unknown, string known)
+    for c in settings.alphabet:
+        ops.append(OperationValue('insert!!IC', [chr(0), c]))
+
+    # sb.insert(index unknown, string unknown)
+    ops.append(OperationValue('insert!!IC', [chr(0), chr(0)]))
+
+
+def add_insert_string_operations(ops):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+
+    # sb.insert(index known, string known)
+    for i in range(0, len(symbol_string) - 1):
+        for c in settings.alphabet:
+            # add insert for char array
+            ops.append(OperationValue('insert!!I[C', [str(i), c]))
+
+            # add insert for char sequence
+            ops.append(OperationValue('insert!!ILjava/lang/CharSequence;',
+                                      [str(i), c]))
+
+    # sb.insert(index known, string unknown)
+    for i in range(0, len(symbol_string) - 1):
+        # add insert for char array
+        ops.append(OperationValue('insert!!I[C', [str(i), chr(0)]))
+
+        # add insert for char sequence
+        ops.append(OperationValue('insert!!ILjava/lang/CharSequence;',
+                                  [str(i), chr(0)]))
+
+    # sb.insert(index unknown, string known)
+    for c in settings.alphabet:
+        # add insert for char array
+        ops.append(OperationValue('insert!!I[C', [chr(0), c]))
+
+        # add insert for char sequence
+        ops.append(OperationValue('insert!!ILjava/lang/CharSequence;',
+                                  [chr(0), c]))
+
+    # sb.insert(index unknown, string unknown)
+    # add insert for char array
+    ops.append(OperationValue('insert!!I[C', [chr(0), chr(0)]))
+
+    # add insert for char sequence
+    ops.append(OperationValue('insert!!ILjava/lang/CharSequence;',
+                              [chr(0), chr(0)]))
+
+
+def add_insert_substring_operations(ops):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+
+    # sb.insert(index known, string known, offset known, length known)
+    # sb.insert(index known, string known, start known, end known)
+    for i in range(0, settings.max_initial_length - 1):
+        for j in range(0, len(symbol_string) - 1):
+            # add insert substring for char array
+            ops.append(OperationValue('insert!!I[CII',
+                                      [str(i), symbol_string, str(j), '1']))
+
+            # add insert substring for char sequence
+            ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                      [str(i),
+                                       symbol_string,
+                                       str(j),
+                                       str(j + 1)]))
+
+    # sb.insert(index known, string known, offset known, length unknown)
+    # sb.insert(index known, string known, start known, end unknown)
+    for i in range(0, settings.max_initial_length - 1):
+        for j in range(0, len(symbol_string) - 1):
+            # add insert substring for char array
+            ops.append(OperationValue('insert!!I[CII',
+                                      [str(i), symbol_string, str(j), chr(0)]))
+
+            # add insert substring for char sequence
+            ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                      [str(i), symbol_string, str(j), chr(0)]))
+
+    # sb.insert(index known, string known, offset unknown, length known)
+    # sb.insert(index known, string known, start unknown, end known)
+    for i in range(0, settings.max_initial_length - 1):
+        # add insert substring for char array
+        ops.append(OperationValue('insert!!I[CII',
+                                  [str(i), symbol_string, chr(0), '1']))
+
+        for j in range(1, len(symbol_string)):
+            # add insert substring for char sequence
+            ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                      [str(i), symbol_string, chr(0), str(j)]))
+
+    # sb.insert(index known, string known, offset unknown, length unknown)
+    # sb.insert(index known, string known, start unknown, end unknown)
+    for i in range(0, settings.max_initial_length - 1):
+        # add insert substring for char array
+        ops.append(OperationValue('insert!!I[CII',
+                                  [str(i), symbol_string, chr(0), chr(0)]))
+
+        # add insert substring for char sequence
+        ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                  [str(i), symbol_string, chr(0), chr(0)]))
+
+    # sb.insert(index known, string unknown, offset known, length known)
+    # sb.insert(index known, string unknown, start known, end known)
+    for i in range(0, settings.max_initial_length - 1):
+        for j in range(0, len(symbol_string) - 1):
+            # add insert substring for char array
+            ops.append(OperationValue('insert!!I[CII',
+                                      [str(i), chr(0), str(j), '1']))
+
+            # add insert substring for char sequence
+            ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                      [str(i), chr(0), str(j), str(j + 1)]))
+
+    # sb.insert(index known, string unknown, offset known, length unknown)
+    # sb.insert(index known, string unknown, start known, end unknown)
+    for i in range(0, settings.max_initial_length - 1):
+        for j in range(0, len(symbol_string) - 1):
+            # add insert substring for char array
+            ops.append(OperationValue('insert!!I[CII',
+                                      [str(i), chr(0), str(j), chr(0)]))
+
+            # add insert substring for char sequence
+            ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                      [str(i), chr(0), str(i), chr(0)]))
+
+    # sb.insert(index known, string unknown, offset unknown, length known)
+    # sb.insert(index known, string unknown, start unknown, end known)
+    for i in range(0, settings.max_initial_length - 1):
+        # add insert substring for char array
+        ops.append(OperationValue('insert!!I[CII',
+                                  [str(i), chr(0), chr(0), '1']))
+
+        for j in range(1, len(symbol_string)):
+            # add insert substring for char sequence
+            ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                      [str(i), chr(0), chr(0), str(j)]))
+
+    # sb.insert(index known, string unknown, offset unknown, length unknown)
+    # sb.insert(index known, string unknown, start unknown, end unknown)
+    for i in range(0, settings.max_initial_length - 1):
+        # add insert substring for char array
+        ops.append(OperationValue('insert!!I[CII',
+                                  [str(i), chr(0), chr(0), chr(0)]))
+
+        # add insert substring for char sequence
+        ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                  [str(i), chr(0), chr(0), chr(0)]))
+
+    # sb.insert(index unknown, string known, offset known, length known)
+    # sb.insert(index unknown, string known, start known, end known)
+    for i in range(0, len(symbol_string) - 1):
+        # add insert substring for char array
+        ops.append(OperationValue('insert!!I[CII',
+                                  [chr(0), symbol_string, str(i), '1']))
+
+        # add insert substring for char sequence
+        ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                  [chr(0), symbol_string, str(i), str(i + 1)]))
+
+    # sb.insert(index unknown, string known, offset known, length unknown)
+    # sb.insert(index unknown, string known, start known, end unknown)
+    for i in range(0, len(symbol_string) - 1):
+        # add insert substring for char array
+        ops.append(OperationValue('insert!!I[CII',
+                                  [chr(0), symbol_string, str(i), chr(0)]))
+
+        # add insert substring for char sequence
+        ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                  [chr(0), symbol_string, str(i), chr(0)]))
+
+    # sb.insert(index unknown, string known, offset unknown, length known)
+    # sb.insert(index unknown, string known, start unknown, end known)
+    # add insert substring for char array
+    ops.append(OperationValue('insert!!I[CII',
+                              [chr(0), symbol_string, chr(0), '1']))
+
+    for i in range(1, len(symbol_string)):
+        # add insert substring for char sequence
+        ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                  [chr(0), symbol_string, chr(0), str(i)]))
+
+    # sb.insert(index unknown, string known, offset unknown, length unknown)
+    # sb.insert(index unknown, string known, start unknown, end unknown)
+    # add insert substring for char array
+    ops.append(OperationValue('insert!!I[CII',
+                              [chr(0), symbol_string, chr(0), chr(0)]))
+
+    # add insert substring for char sequence
+    ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                              [chr(0), symbol_string, chr(0), chr(0)]))
+
+    # sb.insert(index unknown, string unknown, offset known, length known)
+    # sb.insert(index unknown, string unknown, start known, end known)
+    for i in range(0, len(symbol_string) - 1):
+        # add insert substring for char array
+        ops.append(OperationValue('insert!!I[CII',
+                                  [chr(0), chr(0), str(i), '1']))
+
+        # add insert substring for char sequence
+        ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                  [chr(0), chr(0), str(i), str(i + 1)]))
+
+    # sb.insert(index unknown, string unknown, offset known, length unknown)
+    # sb.insert(index unknown, string unknown, start known, end unknown)
+    for i in range(0, len(symbol_string) - 1):
+        # add insert substring for char array
+        ops.append(OperationValue('insert!!I[CII',
+                                  [chr(0), chr(0), str(i), chr(0)]))
+
+        # add insert substring for char sequence
+        ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                  [chr(0), chr(0), str(i), chr(0)]))
+
+    # sb.insert(index unknown, string unknown, offset unknown, length known)
+    # sb.insert(index unknown, string unknown, start unknown, end known)
+    # add insert substring for char array
+    ops.append(OperationValue('insert!!I[CII',
+                              [chr(0), chr(0), chr(0), '1']))
+
+    for i in range(1, len(symbol_string)):
+        # add insert substring for char sequence
+        ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                                  [chr(0), chr(0), chr(0), str(i)]))
+
+    # sb.insert(index unknown, string unknown, offset unknown, length unknown)
+    # sb.insert(index unknown, string unknown, start unknown, end unknown)
+    # add insert substring for char array
+    ops.append(OperationValue('insert!!I[CII',
+                              [chr(0), chr(0), chr(0), chr(0)]))
+
+    # add insert substring for char sequence
+    ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
+                              [chr(0), chr(0), chr(0), chr(0)]))
+
+
+def add_replace_char_operations(ops):
+    # s.replace(old known, new known)
+    for c1 in settings.alphabet:
+        for c2 in settings.alphabet:
+            ops.append(OperationValue('replace!!CC', [c1, c2]))
+
+    # s.replace(old known, new unknown)
+    for c in settings.alphabet:
+        ops.append(OperationValue('replace!!CC', [c, chr(0)]))
+
+    # s.replace(old unknown, new known)
+    for c in settings.alphabet:
+        ops.append(OperationValue('replace!!CC', [chr(0), c]))
+
+    # s.replace(old unknown, new unknown)
+    ops.append(OperationValue('replace!!CC', [chr(0), chr(0)]))
+
+
+def add_replace_string_operations(ops):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+    # get target from first 2 symbols
+    target = symbol_string[0:2]
+    # get replacement from last 2 symbols
+    replacement = symbol_string[len(symbol_string) - 3:len(symbol_string) - 1]
+
+    # s.replace(target known, replacement known)
+    ops.append(OperationValue(
+        'replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;',
+        [target, replacement]))
+
+    # s.replace(target known, replacement unknown)
+    ops.append(OperationValue(
+        'replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;',
+        [target, chr(0)]))
+
+    # s.replace(target unknown, replacement known)
+    ops.append(OperationValue(
+        'replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;',
+        [chr(0), replacement]))
+
+    # s.replace(target unknown, replacement unknown)
+    ops.append(OperationValue(
+        'replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;',
+        [chr(0), chr(0)]))
+
+
+def add_replace_first_string_operations(ops):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+    # get regex from first symbol
+    regex = symbol_string[0:1] + '+'
+    # get replacement from last 2 symbols
+    replacement = symbol_string[len(symbol_string) - 3:len(symbol_string) - 1]
+
+    # s.replaceFirst(regex known, replacement known)
+    # s.replaceAll(regex known, replacement known)
+    ops.append(
+        OperationValue('replaceFirst!!Ljava/lang/String;Ljava/lang/String;',
+                       [regex, replacement]))
+    ops.append(
+        OperationValue('replaceAll!!Ljava/lang/String;Ljava/lang/String;',
+                       [regex, replacement]))
+
+    # s.replaceFirst(regex known, replacement unknown)
+    # s.replaceAll(regex known, replacement unknown)
+    ops.append(
+        OperationValue('replaceFirst!!Ljava/lang/String;Ljava/lang/String;',
+                       [regex, chr(0)]))
+    ops.append(
+        OperationValue('replaceAll!!Ljava/lang/String;Ljava/lang/String;',
+                       [regex, chr(0)]))
+
+    # s.replaceFirst(regex unknown, replacement known)
+    # s.replaceAll(regex unknown, replacement known)
+    ops.append(
+        OperationValue('replaceFirst!!Ljava/lang/String;Ljava/lang/String;',
+                       [chr(0), replacement]))
+    ops.append(
+        OperationValue('replaceAll!!Ljava/lang/String;Ljava/lang/String;',
+                       [chr(0), replacement]))
+
+    # s.replaceFirst(regex unknown, replacement unknown)
+    # s.replaceAll(regex unknown, replacement unknown)
+    ops.append(
+        OperationValue('replaceFirst!!Ljava/lang/String;Ljava/lang/String;',
+                       [chr(0), chr(0)]))
+    ops.append(
+        OperationValue('replaceAll!!Ljava/lang/String;Ljava/lang/String;',
+                       [chr(0), chr(0)]))
+
+
+def add_replace_substring_operations(ops):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+    # get string from first 2 symbols
+    string = symbol_string[0:2]
+
+    # replace(start known, end known, string known)
+    for i in range(0, settings.max_initial_length - 1):
+        for j in range(i, settings.max_initial_length):
+            ops.append(OperationValue('replace!!IILjava/lang/String;',
+                                      [str(i), str(j), string]))
+
+    # replace(start known, end known, string unknown)
+    for i in range(0, settings.max_initial_length - 1):
+        for j in range(i, settings.max_initial_length):
+            ops.append(OperationValue('replace!!IILjava/lang/String;',
+                                      [str(i), str(j), chr(0)]))
+
+    # replace(start known, end unknown, string known)
+    for i in range(0, settings.max_initial_length - 1):
+        ops.append(OperationValue('replace!!IILjava/lang/String;',
+                                  [str(i), chr(0), string]))
+
+    # replace(start known, end unknown, string unknown)
+    for i in range(0, settings.max_initial_length - 1):
+        ops.append(OperationValue('replace!!IILjava/lang/String;',
+                                  [str(i), chr(0), chr(0)]))
+
+    # replace(start unknown, end known, string known)
+    for i in range(0, settings.max_initial_length):
+        ops.append(OperationValue('replace!!IILjava/lang/String;',
+                                  [chr(0), str(i), string]))
+
+    # replace(start unknown, end known, string unknown)
+    for i in range(0, settings.max_initial_length):
+        ops.append(OperationValue('replace!!IILjava/lang/String;',
+                                  [chr(0), str(i), chr(0)]))
+
+    # replace(start unknown, end unknown, string known)
+    ops.append(OperationValue('replace!!IILjava/lang/String;',
+                              [chr(0), chr(0), string]))
+
+    # replace(start unknown, end unknown, string unknown)
+    ops.append(OperationValue('replace!!IILjava/lang/String;',
+                              [chr(0), chr(0), chr(0)]))
+
+
+def add_reverse_operations(ops):
+    # s.reverse()
+    ops.append(OperationValue('reverse!!'))
+
+
+def add_substring_operations(ops):
+    # s.substring(start known)
+    for i in range(0, settings.max_initial_length - 1):
+        ops.append(OperationValue('substring!!I', [str(i)]))
+
+    # s.substring(start unknown)
+    ops.append(OperationValue('substring!!I', [chr(0)]))
+
+    # s.substring(start known, end known)
+    for i in range(0, settings.max_initial_length - 1):
+        for j in range(i, settings.max_initial_length):
+            ops.append(OperationValue('substring!!II', [str(i), str(j)]))
+
+    # s.substring(start known, end unknown)
+    for i in range(0, settings.max_initial_length - 1):
+        ops.append(OperationValue('substring!!II', [str(i), chr(0)]))
+
+    # s.substring(start unknown, end known)
+    for i in range(1, settings.max_initial_length):
+        ops.append(OperationValue('substring!!II', [chr(0), str(i)]))
+
+    # s.substring(start unknown, end unknown)
+    ops.append(OperationValue('substring!!II', [chr(0), chr(0)]))
+
+
+def add_to_lower_case_operations(ops):
+    # s.toLowerCase()
+    ops.append(OperationValue('toLowerCase!!'))
+
+
+def add_to_string_operations(ops):
+    # s.toString()
+    ops.append(OperationValue('toString!!'))
+
+
+def add_to_upper_case_operations(ops):
+    # s.toUpperCase()
+    ops.append(OperationValue('toUpperCase!!'))
+
+
+def add_trim_operations(ops):
+    # s.trim()
+    ops.append(OperationValue('trim!!'))
+
+
+def get_operations():
+    # check for existing operations value
+    if operations is not None:
+        return operations
+
+    # initialize operations list
+    ops_list = list()
+
+    # add operation instances
+    add_append_substring_operations(ops_list)
+    add_append_operations(ops_list)
+    add_concat_operations(ops_list)
+    add_delete_char_at_operations(ops_list)
+    add_delete_operations(ops_list)
+    add_insert_char_operations(ops_list)
+    add_insert_string_operations(ops_list)
+    add_insert_substring_operations(ops_list)
+    add_replace_char_operations(ops_list)
+    add_replace_string_operations(ops_list)
+    add_replace_first_string_operations(ops_list)
+    add_replace_substring_operations(ops_list)
+    add_reverse_operations(ops_list)
+    add_substring_operations(ops_list)
+    add_to_lower_case_operations(ops_list)
+    add_to_string_operations(ops_list)
+    add_to_upper_case_operations(ops_list)
+    add_trim_operations(ops_list)
+
+    # set global operations from ops_list
+    global operations
+    operations = ops_list
+
+    # return operations array
+    return operations
+
+
+# boolean constraints array
+def add_contains_bool_constraints(constraints):
+    # s.contains(substr known)
+    for c in settings.alphabet:
+        constraints.append(
+            BooleanConstraintValue('contains!!Ljava/lang/CharSequence;', [c]))
+
+    # s.contains(substr unknown)
+    constraints.append(
+        BooleanConstraintValue('contains!!Ljava/lang/CharSequence;', [chr(0)]))
+
+
+def add_ends_with_bool_constraints(constraints):
+    # s.endsWith(suffix known)
+    for c in settings.alphabet:
+        constraints.append(
+            BooleanConstraintValue('endsWith!!Ljava/lang/String;', [c]))
+
+    # s.endsWith(suffix unknown)
+    constraints.append(
+        BooleanConstraintValue('endsWith!!Ljava/lang/String;', [chr(0)]))
+
+
+def add_equals_bool_constraints(constraints):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+    # get string from first 2 symbols
+    string = symbol_string[0:2]
+
+    # s.contentEquals(str known)
+    # s.equals(str known)
+    constraints.append(
+        BooleanConstraintValue('contentEquals!!Ljava/lang/CharSequence;',
+                               [string]))
+    constraints.append(
+        BooleanConstraintValue('contentEquals!!Ljava/lang/StringBuffer;',
+                               [string]))
+    constraints.append(
+        BooleanConstraintValue('equals!!Ljava/lang/Object;', [string]))
+
+    # s.contentEquals(str unknown)
+    # s.equals(str unknown)
+    constraints.append(
+        BooleanConstraintValue('contentEquals!!Ljava/lang/CharSequence;',
+                               [chr(0)]))
+    constraints.append(
+        BooleanConstraintValue('contentEquals!!Ljava/lang/StringBuffer;',
+                               [chr(0)]))
+    constraints.append(
+        BooleanConstraintValue('equals!!Ljava/lang/Object;', [chr(0)]))
+
+
+def add_equals_ignore_case_bool_constraints(constraints):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+    # get string from first 2 symbols
+    string = symbol_string[0:2]
+
+    # s.equalsIgnoreCase(str known)
+    constraints.append(
+        BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;',
+                               [string]))
+
+    # s.equalsIgnoreCase(str unknown)
+    constraints.append(
+        BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;',
+                               [chr(0)]))
+
+
+def add_is_empty_bool_constraints(constraints):
+    # s.isEmpty()
+    constraints.append(BooleanConstraintValue('isEmpty!!'))
+
+
+def add_starts_with_bool_constraints(constraints):
+    # s.startsWith(prefix known)
+    for c in settings.alphabet:
+        constraints.append(
+            BooleanConstraintValue('startsWith!!Ljava/lang/String;', [c]))
+
+    # s.startsWith(prefix known)
+    constraints.append(
+        BooleanConstraintValue('startsWith!!Ljava/lang/String;', [chr(0)]))
+
+
+def add_starts_with_offset_bool_constraints(constraints):
+    # s.startsWith(prefix known, offset known)
+    for c in settings.alphabet:
+        for i in settings.max_initial_length:
+            constraints.append(
+                BooleanConstraintValue('startsWith!!Ljava/lang/String;I',
+                                       [c, str(i)]))
+
+    # s.startsWith(prefix known, offset unknown)
+    for c in settings.alphabet:
+        constraints.append(
+            BooleanConstraintValue('startsWith!!Ljava/lang/String;I',
+                                   [c, chr(0)]))
+
+    # s.startsWith(prefix unknown, offset known)
+    for i in settings.max_initial_length:
+        constraints.append(
+            BooleanConstraintValue('startsWith!!Ljava/lang/String;I',
+                                   [chr(0), str(i)]))
+
+    # s.startsWith(prefix unknown, offset unknown)
+    constraints.append(BooleanConstraintValue('startsWith!!Ljava/lang/String;I',
+                                              [chr(0), chr(0)]))
+
+
+def get_boolean_constraints():
+    # check for existing boolean constraints value
+    if boolean_constraints is not None:
+        return boolean_constraints
+
+    # initialize operations list
+    constraints_list = list()
+
+    # add boolean constraint instances
+    add_contains_bool_constraints(constraints_list)
+    add_ends_with_bool_constraints(constraints_list)
+    add_equals_bool_constraints(constraints_list)
+    add_equals_ignore_case_bool_constraints(constraints_list)
+    add_is_empty_bool_constraints(constraints_list)
+    add_starts_with_bool_constraints(constraints_list)
+    add_starts_with_offset_bool_constraints(constraints_list)
+
+    # set global operations from ops_list
+    global boolean_constraints
+    boolean_constraints = constraints_list
+
+    # return operations array
+    return boolean_constraints
 
 
 # id generator
@@ -183,196 +888,340 @@ def generate_id(value, force=False):
     return new_id
 
 
+def random_length(min_length=None, max_length=None):
+    if min_length is None:
+        min_length = 0
+    if max_length is None:
+        max_length = settings.max_initial_length
+    return random.randint(min_length, max_length)
+
+
 def random_char():
     alpha_list = list(settings.alphabet)
     return random.choice(alpha_list).upper()
 
 
-def random_string(length):
+def random_string(length=None):
+    if length is None:
+        length = settings.max_initial_length
     chars = list()
     for num in range(1, length):
         chars.append(random_char())
     return ''.join(chars)
 
 
-# recursive graph constructor function
+def perform_concat(string, op):
+    # randomize arg value if unknown
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = random_char()
+
+    # return concatenated string
+    return string + op.op_args[0]
+
+
+def perform_append_substring(string, op):
+    # randomize arg value if unknown
+    arg_length = random_length()
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = random_string(arg_length)
+
+    # randomize start value if unknown
+    start_index = random_length(max_length=arg_length)
+    if ord(op.op_args[1]) == 0:
+        op.op_args[1] = str(start_index)
+
+    # randomize end value if unknown
+    if ord(op.op_args[2]) == 0:
+        # adjust end if char array operation
+        if op.op == 'append!![CII':
+            op.op_args[2] = str(random_length(0, arg_length - start_index))
+        else:
+            op.op_args[2] = str(random_length(start_index, arg_length))
+
+    # get start and end as numbers
+    start = op.op_args[1]
+    end = op.op_args[2]
+
+    # adjust end if char array operation
+    if op.op == 'append!![CII':
+        end = op.op_args[2] + start
+
+    # get substring value
+    substr_value = op.op_args[0][start:end]
+
+    # return concatenated string
+    return string + substr_value
+
+
+def perform_delete_char_at(string, op):
+    # randomize index if unknown
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = str(random_length(max_length=len(string)))
+
+    # get index as a number
+    index = int(op.op_args[0])
+
+    # return deleted string
+    return string[:index] + string[(index + 1):]
+
+
+def perform_delete(string, op):
+    # randomize start index if unknown
+    start_index = random_length(max_length=len(string))
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = str(start_index)
+
+    # randomize end index if unknown
+    if ord(op.op_args[1]) == 0:
+        op.op_args[1] = str(random_length(start_index, len(string)))
+
+    # get indices as numbers
+    start = int(op.op_args[0])
+    end = int(op.op_args[1])
+
+    # return deleted string
+    return string[:start] + string[(end + 1):]
+
+
+def perform_insert_char(string, op):
+    # randomize index if unknown
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = str(random_length(max_length=len(string)))
+
+    # randomize char if unknown
+    if ord(op.op_args[1]) == 0:
+        op.op_args[1] = random_char()
+
+    # get index as a number
+    index = int(op.op_args[0])
+
+    # get insert character
+    insert = op.op_args[1]
+
+    # return inserted string
+    return string[:index] + insert + string[(index + 1):]
+
+
+def perform_insert_string(string, op):
+    # randomize index if unknown
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = str(random_length(max_length=len(string)))
+
+    # randomize char if unknown
+    if ord(op.op_args[1]) == 0:
+        op.op_args[1] = random_string()
+
+    # get index as a number
+    index = int(op.op_args[0])
+
+    # get insert character
+    insert = op.op_args[1]
+
+    # return inserted string
+    return string[:index] + insert + string[(index + 1):]
+
+
+def perform_insert_substring(string, op):
+    # randomize index if unknown
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = str(random_length(max_length=len(string)))
+
+    # randomize arg value if unknown
+    arg_length = random_length()
+    if ord(op.op_args[1]) == 0:
+        op.op_args[1] = random_string(arg_length)
+
+    # randomize start value if unknown
+    start_index = random_length(max_length=arg_length)
+    if ord(op.op_args[2]) == 0:
+        op.op_args[2] = str(start_index)
+
+    # randomize end value if unknown
+    if ord(op.op_args[3]) == 0:
+        # adjust end if char array operation
+        if op.op == 'insert!!I[CII':
+            op.op_args[3] = str(random_length(0, arg_length - start_index))
+        else:
+            op.op_args[3] = str(random_length(start_index, arg_length))
+
+    # get index, start, and end as numbers
+    index = int(op.op_args[0])
+    start = op.op_args[2]
+    end = op.op_args[3]
+
+    # adjust end if char array operation
+    if op.op == 'insert!!I[CII':
+        end = op.op_args[3] + start
+
+    # get insert substring
+    insert = op.op_args[1][start:end]
+
+    # return inserted string
+    return string[:index] + insert + string[(index + 1):]
+
+
+def perform_replace_char(string, op):
+    # randomize old char if unknown
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = random_char()
+    # randomize new char if unknown
+    if ord(op.op_args[1]) == 0:
+        op.op_args[1] = random_char()
+
+    # get old and new characters
+    old = op.op_args[0]
+    new = op.op_args[1]
+
+    return string.replace(old, new)
+
+
+def perform_replace_regex(string, op):
+    # randomize regex if unknown
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = random_char() + '+'
+    # randomize replacement if unknown
+    if ord(op.op_args[1]) == 0:
+        op.op_args[1] = random_string()
+
+    # get target and replacement strings
+    regex = op.op_args[0]
+    replacement = op.op_args[1]
+
+    if op.op == 'replaceFirst!!Ljava/lang/String;Ljava/lang/String;':
+        return re.sub(regex, replacement, string, count=1)
+    else:
+        return re.sub(regex, replacement, string)
+
+
+def perform_replace_string(string, op):
+    # randomize target if unknown
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = random_string(len(string))
+    # randomize replacement if unknown
+    if ord(op.op_args[1]) == 0:
+        op.op_args[1] = random_string()
+
+    # get target and replacement strings
+    target = op.op_args[0]
+    replacement = op.op_args[1]
+
+    # return replaced string
+    return string.replace(target, replacement)
+
+
+def perform_replace_substring(string, op):
+    # randomize start index if unknown
+    start_index = random_length(max_length=len(string))
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = str(start_index)
+    # randomize end index if unknown
+    if ord(op.op_args[1]) == 0:
+        op.op_args[1] = str(random_length(start_index, len(string)))
+    # randomize replacement if unknown
+    if ord(op.op_args[2]) == 0:
+        op.op_args[2] = random_string()
+
+    # get indices as numbers
+    start = int(op.op_args[0])
+    end = int(op.op_args[1])
+
+    # return replaced string
+    return string[:start] + op.op_args[2] + string[end:]
+
+
+def perform_reverse(string):
+    # return reversed string
+    return string[::-1]
+
+
+def perform_suffix(string, op):
+    # randomize index if unknown
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = str(random_length(max_length=len(string)))
+
+    # get index as a number
+    start = int(op.op_args[0])
+
+    # return substring suffix
+    return string[start:]
+
+
+def perform_substring(string, op):
+    # randomize start if unknown
+    start_index = random_length(max_length=len(string))
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = str(start_index)
+    # randomize start if unknown
+    if ord(op.op_args[0]) == 0:
+        op.op_args[0] = str(random_length(start_index, len(string)))
+
+    # get indices as numbers
+    start = int(op.op_args[0])
+    end = int(op.op_args[1])
+
+    # return substring
+    return string[start:end]
+
+
+def perform_to_lower_case(string):
+    # return string in lowercase
+    return string.lower()
+
+
+def perform_to_string(string):
+    # return string
+    return string[::1]
+
+
+def perform_to_upper_case(string):
+    # return string in uppercase
+    return string.upper()
+
+
+def perform_trim(string):
+    # return trimmed string
+    return string.strip()
+
+
 def perform_op(original_value, op):
     # determine operation
     if op.op in ['append!!Ljava/lang/String;', 'concat!!Ljava/lang/String;']:
-
-        # get argument value
-        if ord(op.op_args[0]) == 0:
-            op.op_args[0] = random_char()
-
-        arg_value = op.op_args[0]
-
-        # return concatenated string
-        return original_value + arg_value
-
-    elif op.op == 'append!![CII':
-
-        # get initial argument value
-        arg_value = op.op_args[0]
-
-        # get offset and length as numbers
-        offset = int(op.op_args[1])
-        length = int(op.op_args[2])
-
-        # get substring value
-        substr_value = arg_value[offset:(offset + length)]
-
-        # return concatenated string
-        return original_value + substr_value
-
+        return perform_concat(original_value, op)
+    elif op.op in ['append!![CII', 'append!!Ljava/lang/CharSequence;II']:
+        return perform_append_substring(original_value, op)
     elif op.op == 'deleteCharAt!!I':
-
-        # get index as a number
-        index = int(op.op_args[0])
-
-        # return deleted string
-        return original_value[:index] + original_value[(index + 1):]
-
+        return perform_delete_char_at(original_value, op)
     elif op.op == 'delete!!II':
-
-        # get indices as numbers
-        start = int(op.op_args[0])
-        end = int(op.op_args[1])
-
-        # return deleted string
-        return original_value[:start] + original_value[(end + 1):]
-
+        return perform_delete(original_value, op)
     elif op.op == 'insert!!IC':
-
-        # get index as a number
-        index = int(op.op_args[0])
-
-        # get insert character
-        insert = op.op_args[1]
-
-        # return inserted string
-        return original_value[:index] + insert + original_value[(index + 1):]
-
-    elif op.op == 'insert!!I[C':
-
-        # get index as a number
-        index = int(op.op_args[0])
-
-        # get insert string
-        insert = op.op_args[1]
-
-        # return inserted string
-        return original_value[:index] + insert + original_value[(index + 1):]
-
-    elif op.op == 'insert!!I[CII':
-
-        # get index as a number
-        index = int(op.op_args[0])
-
-        # get offset and length as numbers
-        offset = int(op.op_args[2])
-        length = int(op.op_args[3])
-
-        # get insert substring
-        arg_string = op.op_args[1]
-        insert = arg_string[offset:(offset + length)]
-
-        # return inserted string
-        return original_value[:index] + insert + original_value[(index + 1):]
-
+        return perform_insert_char(original_value, op)
+    elif op.op in ['insert!!I[C', 'insert!!ILjava/lang/CharSequence;']:
+        return perform_insert_string(original_value, op)
+    elif op.op == ['insert!!I[CII', 'insert!!ILjava/lang/CharSequence;II']:
+        return perform_insert_substring(original_value, op)
     elif op.op == 'replace!!CC':
-
-        # get find and replace characters
-        find = op.op_args[0]
-        replace = op.op_args[1]
-
-        # initialize known flags
-        find_known = True
-        replace_known = True
-
-        # determine if find is a known character
-        if ord(find) == 0:
-            find_known = False
-            find = random_char()
-            op.op_args[0] = find
-
-        # determine if replace is a known character
-        if ord(replace) == 0:
-            replace_known = False
-            replace = random_char()
-            op.op_args[1] = replace
-
-        # perform operation depending on known arguments
-        if find_known and replace_known:
-            return original_value.replace(find, replace)
-        elif find_known:
-            return original_value.replace(find, random_char())
-        elif replace_known:
-            return original_value.replace(random_char(), replace)
-        else:
-            return original_value.replace(random_char(), random_char())
-
+        return perform_replace_char(original_value, op)
     elif op.op == 'replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;':
-
-        # get find and replace strings
-        find = op.op_args[0]
-        replace = op.op_args[1]
-
-        # return replaced string
-        return original_value.replace(find, replace)
-
+        return perform_replace_string(original_value, op)
+    elif op.op in ['replaceAll!!Ljava/lang/String;Ljava/lang/String;',
+                   'replaceFirst!!Ljava/lang/String;Ljava/lang/String;']:
+        return perform_replace_regex(original_value, op)
+    elif op.op == 'replace!!IILjava/lang/String;':
+        return perform_replace_substring(original_value, op)
     elif op.op == 'reverse!!':
-
-        # return reversed string
-        return original_value[::-1]
-
+        return perform_reverse(original_value)
     elif op.op == 'substring!!I':
-
-        # get index as a number
-        start = int(op.op_args[0])
-
-        # return substring suffix
-        return original_value[start:]
-
+        return perform_suffix(original_value, op)
     elif op.op == 'substring!!II':
-
-        # get indices as numbers
-        start = None
-        if op.op_args[0] == '?':
-            start = random.randint(0, len(original_value))
-        else:
-            start = int(op.op_args[0])
-
-        end = None
-        if op.op_args[1] == '?':
-            end = random.randint(start, len(original_value))
-        else:
-            end = int(op.op_args[1])
-
-        op.op_args[0] = str(start)
-        op.op_args[1] = str(end)
-
-        # return substring
-        return original_value[start:end]
-
+        return perform_substring(original_value, op)
     elif op.op == 'toLowerCase!!':
-
-        # return string in lowercase
-        return original_value.lower()
-
+        return perform_to_lower_case(original_value)
     elif op.op == 'toString!!':
-
-        # return string
-        return original_value[::1]
-
+        return perform_to_string(original_value)
     elif op.op == 'toUpperCase!!':
-
-        # return string in uppercase
-        return original_value.upper()
-
+        return perform_to_upper_case(original_value)
     elif op.op == 'trim!!':
-
-        # return trimmed string
-        return original_value.strip()
+        return perform_trim(original_value)
 
 
 def perform_const(value, const):
@@ -424,11 +1273,10 @@ def perform_const(value, const):
 
 
 def add_operation(t, countdown, v_list=None):
-
     new_v_list = v_list is None
 
     # for each operation
-    for op in operations:
+    for op in get_operations():
 
         # check and create vertices list
         if new_v_list:
@@ -438,9 +1286,8 @@ def add_operation(t, countdown, v_list=None):
 
         settings.op_counter += 1
 
-        if settings.op_total > 100 and \
-           settings.op_counter % (settings.op_total / 100) == 0:
-
+        if settings.op_total > 100 and settings.op_counter % (
+                    settings.op_total / 100) == 0:
             percent = settings.op_counter * 100 / settings.op_total
             log.debug('Operation Addition Progress: {0}%'.format(percent))
 
@@ -486,7 +1333,7 @@ def add_operation(t, countdown, v_list=None):
 
 def add_bool_constraint(t, v_list):
     # for each boolean constraint
-    for const in boolean_constraints:
+    for const in get_boolean_constraints():
 
         # if no duplicates allowed
         if not settings.allow_duplicates:
@@ -608,7 +1455,6 @@ def parse_alphabet_declaration(alphabet_declaration):
         match = re.match(pattern, alphabet_declaration)
 
         if match:
-
             # get matching char range
             char_range = match.group('range1')
             if char_range is None:
@@ -644,8 +1490,72 @@ def parse_alphabet_declaration(alphabet_declaration):
         else:
             raise ValueError('alphabet declaration is invalid')
 
+    # initialize set of symbols to add
+    to_add = set()
+
+    # ensure correct lower case letters are included in alphabet
+    if any(x.op == 'toLowerCase!!' for x in get_operations()):
+        for c in symbol_set:
+            c_lower = c.lower()
+            # if lower equivilant
+            if c != c_lower:
+                to_add.add(c_lower)
+
+    # ensure correct upper case letters are included in alphabet
+    if any(x.op == 'toUpperCase!!' for x in get_operations()):
+        for c in symbol_set:
+            c_upper = c.upper()
+            # if lower equivilant
+            if c != c_upper:
+                to_add.add(c_upper)
+
+    # update symbol list with all additions
+    symbol_set.update(to_add)
+
     # return symbol set
     return symbol_set
+
+
+def create_alphabet_declaration(alphabet):
+    # initialize variables
+    ranges = list()
+    prev = alphabet.pop(0)
+    start = prev
+
+    # process each symbol
+    for sym in alphabet:
+
+        # if starting new range
+        if sym - prev != 1:
+            # add previous range pair
+            range_pair = (start, prev)
+            ranges.append(range_pair)
+
+            # set new min
+            start = sym
+
+        # set prev from current sym
+        prev = sym
+
+    # add final range pair
+    range_pair = (start, prev)
+    ranges.append(range_pair)
+
+    # transform range pairs into strings
+    range_strings = list()
+    for s, e in ranges:
+        if s == e:
+            range_strings.append(unichr(s))
+        else:
+            range_string = u'{0}-{1}'.format(unichr(s), unichr(e))
+            range_strings.append(range_string)
+
+    # print debug information
+    for s in range_strings:
+        log.debug(u'Alphabet Sub-range: {0}'.format(s))
+
+    # return single string of ranges
+    return ','.join(range_strings)
 
 
 def main(arguments):
@@ -735,12 +1645,21 @@ def main(arguments):
 
         # flatten vertices collection into single nested list if simple
         if settings.depth == 1:
+            # get first vertex sublist
             v_list1 = vertices_collection[0]
+
+            # get root vertex instance
             root_v = next(v for v in v_list1
                           if v['id'] == root_vertex.node_id)
-            vertices_collection = [
-                [v for v_list in vertices_collection for v in v_list
-                 if v['id'] != root_vertex.node_id]]
+
+            # get collection of verticies
+            v_collection = list()
+            for v_list in vertices_collection:
+                for v in v_list:
+                    if v['id'] != root_vertex.node_id:
+                        v_collection.append(v)
+
+            # add root vertex to flattened collection of vertices
             vertices_collection[0].append(root_v)
 
         for j, v_list in enumerate(vertices_collection):
@@ -748,8 +1667,9 @@ def main(arguments):
             graph = {
                 'vertices': v_list,
                 'alphabet': {
-                    'declaration': 'A-D,a-d',
-                    'size': 8
+                    'declaration': create_alphabet_declaration(
+                        settings.alphabet),
+                    'size': len(settings.alphabet)
                 }
             }
 
