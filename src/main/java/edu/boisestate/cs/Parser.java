@@ -803,50 +803,22 @@ public class Parser {
                 arg2String != null &&
                 arg2String.length() == 1) {
 
-                char findChar;
-                char replaceChar;
-                boolean findKnown = true;
-                boolean replaceKnown = true;
+                char findChar = 0;
+                char replaceChar = 0;
+                boolean findKnown = false;
+                boolean replaceKnown = false;
 
                 // determine if old char is known
-                if (arg1String.charAt(0) == 0) {
-                    findKnown = false;
-                    // TODO: get random char from alphabet
-                    findChar = 'A';
-                } else {
+                if (arg1String.charAt(0) != 0) {
+                    findKnown = true;
                     findChar = arg1String.charAt(0);
                 }
-//                try {
-//                    int tempVal = Integer.parseInt(arg1String);
-//
-//                    if (tempVal < 10 && tempVal >= 0) {
-//                        findKnown = false;
-//                    }
-//
-//                    findChar = ((char) tempVal);
-//                } catch (NumberFormatException e) {
-//                    findChar = arg1String.charAt(0);
-//                }
 
                 // determine if new char is known
-                if (arg2String.charAt(0) == 0) {
-                    replaceKnown = false;
-                    // TODO: get random char from alphabet
-                    replaceChar = 'B';
-                } else {
+                if (arg2String.charAt(0) != 0) {
+                    replaceKnown = true;
                     replaceChar = arg2String.charAt(0);
                 }
-//                try {
-//                    int tempVal = Integer.parseInt(arg2String);
-//
-//                    if (tempVal < 10 && tempVal >= 0) {
-//                        replaceKnown = false;
-//                    }
-//
-//                    replaceChar = ((char) tempVal);
-//                } catch (NumberFormatException e) {
-//                    replaceChar = arg2String.charAt(0);
-//                }
 
                 // perform appropriate replace operation
                 if (findKnown && replaceKnown) {

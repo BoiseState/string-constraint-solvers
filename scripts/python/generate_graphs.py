@@ -24,8 +24,8 @@ log.addHandler(ch)
 
 # Global values
 boolean_constraints = None
-has_lower_case_op = True
-has_upper_case_op = True
+has_lower_case_op = False
+has_upper_case_op = False
 operations = None
 settings = None
 value_id_map = dict()
@@ -117,6 +117,11 @@ class Settings:
         # use unknown string if no other inputs specified
         if len(self.inputs) == 0 or options.unknown_string:
             self.inputs.append(chr(0))
+
+        # set single graph option
+        self.single_graph = False
+        if options.single_graph:
+            self.single_graph = True
 
     def get_ops_total(self):
         for i in range(0, self.depth + 2):
@@ -760,24 +765,24 @@ def get_operations():
     ops_list = list()
 
     # add operation instances
-    add_append_substring_operations(ops_list)
-    add_append_operations(ops_list)
+    # add_append_substring_operations(ops_list)
+    # add_append_operations(ops_list)
     add_concat_operations(ops_list)
     add_delete_char_at_operations(ops_list)
-    add_delete_operations(ops_list)
-    add_insert_char_operations(ops_list)
-    add_insert_string_operations(ops_list)
-    add_insert_substring_operations(ops_list)
+    # add_delete_operations(ops_list)
+    # add_insert_char_operations(ops_list)
+    # add_insert_string_operations(ops_list)
+    # add_insert_substring_operations(ops_list)
     add_replace_char_operations(ops_list)
-    add_replace_string_operations(ops_list)
-    add_replace_regex_string_operations(ops_list)
-    add_replace_substring_operations(ops_list)
-    add_reverse_operations(ops_list)
-    add_substring_operations(ops_list)
-    add_to_lower_case_operations(ops_list)
-    add_to_string_operations(ops_list)
-    add_to_upper_case_operations(ops_list)
-    add_trim_operations(ops_list)
+    # add_replace_string_operations(ops_list)
+    # add_replace_regex_string_operations(ops_list)
+    # add_replace_substring_operations(ops_list)
+    # add_reverse_operations(ops_list)
+    # add_substring_operations(ops_list)
+    # add_to_lower_case_operations(ops_list)
+    # add_to_string_operations(ops_list)
+    # add_to_upper_case_operations(ops_list)
+    # add_trim_operations(ops_list)
 
     # set global operations from ops_list
     global operations
@@ -1029,14 +1034,14 @@ def get_boolean_constraints():
 
     # add boolean constraint instances
     add_contains_bool_constraints(constraints_list)
-    add_ends_with_bool_constraints(constraints_list)
-    add_equals_bool_constraints(constraints_list)
-    add_equals_ignore_case_bool_constraints(constraints_list)
-    add_is_empty_bool_constraints(constraints_list)
+    # add_ends_with_bool_constraints(constraints_list)
+    # add_equals_bool_constraints(constraints_list)
+    # add_equals_ignore_case_bool_constraints(constraints_list)
+    # add_is_empty_bool_constraints(constraints_list)
     # add_matches_bool_constraints(constraints_list)
     # add_region_matches_bool_constraints(constraints_list)
-    add_starts_with_bool_constraints(constraints_list)
-    add_starts_with_offset_bool_constraints(constraints_list)
+    # add_starts_with_bool_constraints(constraints_list)
+    # add_starts_with_offset_bool_constraints(constraints_list)
 
     # set global operations from ops_list
     global boolean_constraints
@@ -1653,6 +1658,11 @@ def get_options(arguments):
                              'performed in sequence before a constraint is '
                              'reached in the generated graph.')
 
+    parser.add_argument('-s',
+                        '--single-graph',
+                        help='Force output into a single graph file.',
+                        action='store_true')
+
     parser.add_argument('-u',
                         '--unknown-string',
                         help='Include unknown string value in list of input '
@@ -1870,7 +1880,7 @@ def main(arguments):
             vertices_collection.append(vertex_list)
 
         # flatten vertices collection into single nested list if simple
-        if settings.depth == 1:
+        if settings.depth == 1 or settings.single_graph:
             # get first vertex sublist
             v_list1 = vertices_collection[0]
 
@@ -1884,6 +1894,7 @@ def main(arguments):
                 for v in v_list:
                     if v['id'] != root_vertex.node_id:
                         v_collection.append(v)
+            vertices_collection = [v_collection]
 
             # add root vertex to flattened collection of vertices
             vertices_collection[0].append(root_v)

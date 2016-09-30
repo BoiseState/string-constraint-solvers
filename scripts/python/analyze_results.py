@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import csv
 import fnmatch
 import json
 import logging
@@ -25,6 +26,9 @@ ch.setFormatter(formatter)
 
 log.addHandler(ch)
 
+# initialize settings variable
+SETTINGS = None
+
 
 class Settings:
     def __init__(self, options):
@@ -45,7 +49,30 @@ class Settings:
             self.reporter = 'sat'
 
 
-def get_options(arguments):
+def compare_solvers(x, y):
+    if x == y:
+        return 0
+    elif x == 'concrete':
+        return -1
+    elif y == 'concrete':
+        return 1
+    elif x == 'unbounded':
+        return -1
+    elif y == 'unbounded':
+        return 1
+    elif x == 'bounded':
+        return -1
+    elif y == 'bounded':
+        return 1
+    elif x == 'aggregate':
+        return -1
+    elif y == 'aggregate':
+        return 1
+    else:
+        return 0
+
+
+def set_options(arguments):
     # process command line args
     parser = argparse.ArgumentParser(prog=__doc__,
                                      description='Analyze results csv files '
@@ -77,7 +104,9 @@ def get_options(arguments):
                            help='Analyze result files from the sat reporter.',
                            action='store_true')
 
-    return Settings(parser.parse_args(arguments))
+    # set settings variable from parsed options
+    global SETTINGS
+    SETTINGS = Settings(parser.parse_args(arguments))
 
 
 def get_result_files(dir_path, file_pattern):
@@ -97,43 +126,150 @@ def get_result_files(dir_path, file_pattern):
     return files
 
 
-def get_result_file_sets(settings):
+def get_result_file_sets():
     # initialize list of result file sets
-    file_sets = list()
+    solver_file_sets = dict()
 
     # get correct reporter result directory
-    result_dir = os.path.join(project_dir, 'results', settings.reporter)
+    result_dir = os.path.join(project_dir, 'results', SETTINGS.reporter)
 
     # for all items in reporter results directory
     for d in os.listdir(result_dir):
-        # if item is a directory
-        if os.path.isdir(os.path.join(result_dir, d)):
+        # if item is a directory and not analysis
+        if os.path.isdir(os.path.join(result_dir, d)) and d != 'analysis':
             # get file set
             log.debug('getting result files for %s solver', d)
             result_files = get_result_files(os.path.join(result_dir, d),
-                                            settings.result_file_pattern)
+                                            SETTINGS.result_file_pattern)
 
-            # add file set to result file list
-            file_sets.append(result_files)
+            # add file set to result file map
+            solver_file_sets[d] = result_files
+
+    # initialize result file sets dictionary
+    result_file_sets = dict()
+
+    # for each solver
+    for solver in solver_file_sets.keys():
+        solver_files = solver_file_sets.get(solver)
+        # for each file name in solver files
+        for f_name in solver_files.keys():
+            # get file set from result file sets
+            file_map = result_file_sets.get(f_name)
+            # if file map does not exist
+            if file_map is None:
+                # create new file map and add to result file sets
+                file_map = dict()
+                result_file_sets[f_name] = file_map
+            # add file path to file map
+            file_map[solver] = solver_files.get(f_name)
 
     # return result file sets
-    return file_sets
+    return result_file_sets
+
+
+def get_data_map_from_csv_files(f_name, file_set):
+    # initialize data map
+    data_map = dict()
+    # for each solver
+    for solver in file_set.keys():
+        log.debug('loading csv data for solver %s and file %s', solver, f_name)
+        # get file path from file set
+        file_path = file_set.get(solver)
+        # initialize row map
+        row_map = dict()
+        # open csv file for reading
+        with open(file_path, 'r') as csv_file:
+            reader = csv.DictReader(csv_file, delimiter='\t')
+            # for each row in file
+            for row in reader:
+                # map row to row id
+                row_id = row.get('ID')
+                row_map[row_id] = row
+        # add row map to data map dictionary
+        data_map[solver] = row_map
+
+    # return data map
+    return data_map
+
+
+def produce_output_data(data_map, solvers, f_name):
+    # initialize csv field names
+    field_names = list()
+    field_names.append('Operation')
+
+    # for solver in solvers:
+    for solver in sorted(solvers, cmp=compare_solvers):
+        # add field names for each solver
+        field_names.append('{0} In Count'.format(solver))
+        field_names.append('{0} True Count'.format(solver))
+        field_names.append('{0} False Count'.format(solver))
+
+    # initialize output row list
+    output_rows = list()
+
+    # for each operation id
+    for op_id in data_map.get(next(iter(solvers))).keys():
+        # initialize row
+        row = dict()
+        # add operation
+        row['Operation'] = data_map.get('concrete').get(op_id).get('PREV OPS')
+        for solver in solvers:
+            data_row = data_map.get(solver).get(op_id)
+            row['{0} In Count'.format(solver)] = data_row.get('IN COUNT')
+            row['{0} True Count'.format(solver)] = data_row.get('T COUNT')
+            row['{0} False Count'.format(solver)] = data_row.get('F COUNT')
+
+        # add row to output rows
+        output_rows.append(row)
+
+    # get output file path
+    csv_file_path = os.path.join(project_dir,
+                                 'results',
+                                 SETTINGS.reporter,
+                                 'analysis',
+                                 f_name)
+    with open(csv_file_path, 'w') as csv_file:
+        # creat csv writer with field names
+        writer = csv.DictWriter(csv_file, field_names, delimiter='\t')
+        # output header
+        writer.writeheader()
+        # output rows
+        writer.writerows(output_rows)
+
+
+def analyze_results(f_name, file_set):
+    # get solvers from file_set
+    solvers = list(file_set.keys())
+    # get data map from files
+    data_map = get_data_map_from_csv_files(f_name, file_set)
+    # output data
+    produce_output_data(data_map, solvers, f_name)
 
 
 def analyze_result_sets(result_file_sets):
-    # get set of all common file names in each file set
-    file_name_set = sorted(
-        reduce(lambda x, y: x.intersection(y.keys()), result_file_sets[1:],
-               set(result_file_sets[0].keys())))
-    log.debug('file name set: %s', file_name_set)
+    # for each file name in the result file sets
+    for f_name in sorted(result_file_sets.keys()):
+        # get file set
+        file_set = result_file_sets.get(f_name)
+        log.debug('getting result files for %s', f_name)
+        # analyze file set
+        analyze_results(f_name, file_set)
 
 
 def main(arguments):
     # get option from arguments
-    settings = get_options(arguments)
+    set_options(arguments)
 
     # get result files to analyze
-    result_file_sets = get_result_file_sets(settings)
+    result_file_sets = get_result_file_sets()
+
+    # ensure output directory exists
+    output_dir = os.path.join(project_dir,
+                              'results',
+                              SETTINGS.reporter,
+                              'analysis')
+    if not os.path.isdir(output_dir):
+        os.makedirs(output_dir)
 
     # analyze result sets
     analyze_result_sets(result_file_sets)

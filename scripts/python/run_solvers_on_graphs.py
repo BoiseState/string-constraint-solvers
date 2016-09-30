@@ -297,6 +297,16 @@ def run_solver(solver, files, class_path, settings):
         log.debug('creating results dir: %s', results_dir)
         os.makedirs(results_dir)
 
+    # clean up result directory
+    result_file_pattern = settings.graph_file_pattern
+    if len(os.path.splitext(result_file_pattern)) > 1:
+        result_file_pattern = result_file_pattern.replace('json', 'csv')
+    for f in os.listdir(results_dir):
+        file_path = os.path.join(results_dir, f)
+        if os.path.isfile(file_path) and \
+                fnmatch.fnmatch(f, result_file_pattern):
+            os.remove(file_path)
+
     # for each graph file
     for gf in files:
         # set results file
