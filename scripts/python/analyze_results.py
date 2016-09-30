@@ -9,6 +9,8 @@ import os
 import sys
 
 # set relevent path and file variables
+import re
+
 file_name = os.path.basename(__file__).replace('.py', '')
 project_dir = '{0}/../..'.format(os.path.dirname(__file__))
 project_dir = os.path.normpath(project_dir)
@@ -70,6 +72,32 @@ def compare_solvers(x, y):
         return 1
     else:
         return 0
+
+
+def compare_rows(x, y):
+    # get both operations
+    op_x = x.get('Operation')
+    op_y = y.get('Operation')
+
+    # extract operations using regular expression
+    regex_pattern = '<S:\d+> = (?:<init>|\".*?\")' \
+                    '(?: -> <S:\d+>.(\w+\(.*?\)))?' \
+                    '(?: -> <S:\d+>.(\w+\(.*?\)))?' \
+                    '(?: -> <S:\d+>.(\w+\(.*?\)))?' \
+                    '(?: -> <S:\d+>.(\w+\(.*?\)))?' \
+                    '(?: -> <S:\d+>.(\w+\(.*?\)))?'
+    x_match = re.match(regex_pattern, op_x)
+    y_match = re.match(regex_pattern, op_y)
+
+    if x_match and y_match:
+        for i, x_group in enumerate(x_match.groups()):
+            y_group = y_match.group(i + 1)
+            op_diff = cmp(x_group, y_group)
+            if op_diff != 0:
+                return op_diff
+
+    # return comparision of operation strings
+    return cmp(op_x, op_y)
 
 
 def set_options(arguments):
@@ -221,6 +249,9 @@ def produce_output_data(data_map, solvers, f_name):
 
         # add row to output rows
         output_rows.append(row)
+
+    # sort output rows
+    output_rows = sorted(output_rows, cmp=compare_rows)
 
     # get output file path
     csv_file_path = os.path.join(project_dir,
