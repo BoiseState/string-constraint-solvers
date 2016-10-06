@@ -4,10 +4,7 @@ import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import dk.brics.string.stringoperations.*;
 import edu.boisestate.cs.Alphabet;
-import edu.boisestate.cs.automaton.operations.IgnoreCase;
-import edu.boisestate.cs.automaton.operations.PrecisePrefix;
-import edu.boisestate.cs.automaton.operations.PreciseSuffix;
-import edu.boisestate.cs.automaton.operations.StringModelCounter;
+import edu.boisestate.cs.automaton.operations.*;
 
 import java.math.BigInteger;
 import java.util.Set;
@@ -382,6 +379,22 @@ public class UnboundedAutomatonModelManager
 
         // return model count of automaton
         return StringModelCounter.ModelCount(automaton, length);
+    }
+
+    @Override
+    public AutomatonModel delete(AutomatonModel model, int start, int end) {
+
+        // get automaton from model
+        Automaton automaton = ((UnboundedAutomatonModel) model).getAutomaton();
+
+        // perform operation
+        Automaton result = this.performUnaryOperation(automaton, new PreciseDelete(start, end));
+
+        // determine new bound length
+        int boundLength = model.getBoundLength() - (end - start);
+
+        // return new model from resulting automaton
+        return new UnboundedAutomatonModel(result, this.alphabet, boundLength);
     }
 
     @Override

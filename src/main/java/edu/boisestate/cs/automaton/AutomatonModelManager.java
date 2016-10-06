@@ -73,6 +73,10 @@ public abstract class AutomatonModelManager {
 
     public abstract BigInteger modelCount(AutomatonModel model);
 
+    public abstract AutomatonModel delete(AutomatonModel model,
+                                          int start,
+                                          int end);
+
     public AutomatonModel assertContainedInOther(AutomatonModel model,
                                                  AutomatonModel
                                                          containingModel) {
