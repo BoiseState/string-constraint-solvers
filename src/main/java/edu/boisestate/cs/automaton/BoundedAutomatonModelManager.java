@@ -100,12 +100,10 @@ public class BoundedAutomatonModelManager
         // create any string automaton from alphabet
         String charSet = this.alphabet.getCharSet();
         Automaton anyString = BasicAutomata.makeCharSet(charSet)
-                                           .repeat(0, this.boundLength);
+                                           .repeat();
 
         // return model from automaton
-        return new BoundedAutomatonModel(anyString,
-                                         this.alphabet,
-                                         this.boundLength);
+        return new BoundedAutomatonModel(anyString, this.alphabet);
     }
 
     @Override
@@ -374,7 +372,7 @@ public class BoundedAutomatonModelManager
 
         // perform operation
         Automaton result =
-                this.performUnaryOperation(automaton, new PreciseDelete(start, end));
+                this.performUnaryOperation(automaton, new ImpreciseDelete(start, end));
 
         // determine new bound length
         int boundLength = model.getBoundLength() - (start - end);

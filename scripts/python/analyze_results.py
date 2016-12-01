@@ -90,14 +90,42 @@ def compare_rows(x, y):
     y_match = re.match(regex_pattern, op_y)
 
     if x_match and y_match:
-        for i, x_group in enumerate(x_match.groups()):
-            y_group = y_match.group(i + 1)
+        x_op_count = len(x_match.groups()) - 1
+        y_op_count = len(y_match.groups()) - 1
+        for i in range(1, ):
+            x_group = x_match.group(i)
+            y_group = y_match.group(i)
             op_diff = cmp(x_group, y_group)
+
             if op_diff != 0:
                 return op_diff
+            elif y_op_count > x_op_count == i + 1:
+                return -1
+            elif i + 1 < y_op_count < x_op_count:
+                return 1
 
     # return comparision of operation strings
     return cmp(op_x, op_y)
+
+
+def get_operations(x):
+    ops_list = list()
+
+    # extract operations using regular expression
+    regex_pattern = '<S:\d+> = (?:<init>|\".*?\")' \
+                    '(?: -> <S:\d+>.(\w+)\(.*?\))?' \
+                    '(?: -> <S:\d+>.(\w+)\(.*?\))?' \
+                    '(?: -> <S:\d+>.(\w+)\(.*?\))?' \
+                    '(?: -> <S:\d+>.(\w+)\(.*?\))?' \
+                    '(?: -> <S:\d+>.(\w+)\(.*?\))?'
+    x_match = re.match(regex_pattern, x)
+
+    if x_match:
+        for i in range(1, len(x_match.groups()) - 1):
+            ops_list.append(x_match.group(i))
+
+    # return comparision of operation strings
+    return ops_list
 
 
 def set_options(arguments):
@@ -220,9 +248,88 @@ def get_data_map_from_csv_files(f_name, file_set):
     return data_map
 
 
+def verify_data(data_map, solvers, f_name):
+    other_solvers = list(solvers)
+    other_solvers.remove('concrete')
+
+    # for each operation id
+    for op_id in data_map.get(next(iter(solvers))).keys():
+        # get operations
+        ops = get_operations(data_map.get('concrete')
+                             .get(op_id)
+                             .get('PREV OPS'))
+
+        delete = ['delete',
+                  'deleteCharAt']
+        non_injective = ['replace',
+                         'setCharAt',
+                         'subSequence',
+                         'substring',
+                         'toLowerCase',
+                         'toUpperCase',
+                         'trim']
+        if set(ops).intersection(delete):
+            # get base values
+            in_count = data_map.get('bounded').get(op_id).get('IN COUNT')
+            t_count = data_map.get('bounded').get(op_id).get('T COUNT')
+            f_count = data_map.get('bounded').get(op_id).get('F COUNT')
+            for solver in set(other_solvers).intersection(
+                    ['aggregate, weighted']):
+                data_row = data_map.get(solver).get(op_id)
+                if in_count != data_row.get('IN COUNT'):
+                    log.error('Incoming MC from %s solver for constraint '
+                              '%s is not equal to bounded MC', solver, op_id)
+
+                if t_count != data_row.get('T COUNT'):
+                    log.error('True branch MC from %s solver for constraint '
+                              '%s is not equal to bounded MC', solver, op_id)
+
+                if f_count != data_row.get('F COUNT'):
+                    log.error('False branch MC from %s solver for constraint '
+                              '%s is not equal to bounded MC', solver, op_id)
+        elif set(ops).intersection(non_injective):
+            # get base values
+            in_count = data_map.get('unbounded').get(op_id).get('IN COUNT')
+            t_count = data_map.get('unbounded').get(op_id).get('T COUNT')
+            f_count = data_map.get('unbounded').get(op_id).get('F COUNT')
+            for solver in set(other_solvers).intersection(
+                    ['bounded, aggregate, weighted']):
+                data_row = data_map.get(solver).get(op_id)
+                if in_count != data_row.get('IN COUNT'):
+                    log.error('Incoming MC from %s solver for constraint '
+                              '%s is not equal to unbounded MC', solver, op_id)
+
+                if t_count != data_row.get('T COUNT'):
+                    log.error('True branch MC from %s solver for constraint '
+                              '%s is not equal to unbounded MC', solver, op_id)
+
+                if f_count != data_row.get('F COUNT'):
+                    log.error('False branch MC from %s solver for constraint '
+                              '%s is not equal to unbounded MC', solver, op_id)
+        else:
+            # get base values
+            in_count = data_map.get('concrete').get(op_id).get('IN COUNT')
+            t_count = data_map.get('concrete').get(op_id).get('T COUNT')
+            f_count = data_map.get('concrete').get(op_id).get('F COUNT')
+            for solver in other_solvers:
+                data_row = data_map.get(solver).get(op_id)
+                if in_count != data_row.get('IN COUNT'):
+                    log.error('Incoming MC from %s solver for constraint '
+                              '%s is not equal to concrete MC', solver, op_id)
+
+                if t_count != data_row.get('T COUNT'):
+                    log.error('True branch MC from %s solver for constraint '
+                              '%s is not equal to concrete MC', solver, op_id)
+
+                if f_count != data_row.get('F COUNT'):
+                    log.error('False branch MC from %s solver for constraint '
+                              '%s is not equal to concrete MC', solver, op_id)
+
+
 def produce_output_data(data_map, solvers, f_name):
     # initialize csv field names
     field_names = list()
+    field_names.append('Id')
     field_names.append('Operation')
 
     # for solver in solvers:
@@ -241,6 +348,7 @@ def produce_output_data(data_map, solvers, f_name):
         row = dict()
         # add operation
         row['Operation'] = data_map.get('concrete').get(op_id).get('PREV OPS')
+        row['Id'] = op_id
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)
             row['{0} In Count'.format(solver)] = data_row.get('IN COUNT')
@@ -273,6 +381,8 @@ def analyze_results(f_name, file_set):
     solvers = list(file_set.keys())
     # get data map from files
     data_map = get_data_map_from_csv_files(f_name, file_set)
+    # verify data
+    verify_data(data_map, solvers, f_name)
     # output data
     produce_output_data(data_map, solvers, f_name)
 

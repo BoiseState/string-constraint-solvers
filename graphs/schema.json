@@ -1,0 +1,69 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "alphabet": {
+            "type": "object",
+            "properties": {
+                "declaration": {
+                    "type": "string",
+                    "pattern": "^(([\\x0000-\\xFFFF]-[\\x0000-\\xFFFF]|[\\x0000-\\xFFFF]),)*([\\x0000-\\xFFFF]-[\\x0000-\\xFFFF]|[\\x0000-\\xFFFF])$"
+                },
+                "size": {
+                    "type": "number",
+                    "minimum": 0
+                }
+            }
+        },
+        "verticies": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "incomingEdges": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "source": {
+                                    "type": "number",
+                                    "minimum": 0
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "pattern": "^[rst][0-9]*$"
+                                }
+                            }
+                        }
+                    },
+                    "sourceConstraints": {
+                        "type": "array",
+                        "items": {
+                            "type": "number",
+                            "minimum": 0
+                        }
+                    },
+                    "timeStamp": {
+                        "type": "number"
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "num": {
+                        "type": "number"
+                    },
+                    "actualValue": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "number"
+                    },
+                    "id": {
+                        "type": "number",
+                        "minimum": 0
+                    }
+                }
+            }
+        }
+    }
+}

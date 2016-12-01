@@ -134,7 +134,16 @@ public class AggregateAutomatonModelManager
 
     @Override
     public AutomatonModel createAnyString() {
-        return this.createAnyString(0, this.boundLength);
+
+        // create any string automaton from alphabet
+        String charSet = this.alphabet.getCharSet();
+        Automaton anyChar = BasicAutomata.makeCharSet(charSet);
+
+        // repeat any char
+        Automaton anyString = anyChar.repeat();
+
+        // return new aggregate model from automata array
+        return new AggregateAutomataModel(anyString, this.alphabet);
     }
 
     @Override
@@ -266,7 +275,7 @@ public class AggregateAutomatonModelManager
 
         // perform operations
         Automaton[] results =
-                this.performUnaryOperations(automata, new PreciseDelete(start, end));
+                this.performUnaryOperations(automata, new ImpreciseDelete(start, end));
 
         // return new model from resulting automata
         return new AggregateAutomataModel(results,

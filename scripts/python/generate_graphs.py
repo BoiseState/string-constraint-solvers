@@ -222,7 +222,8 @@ def add_replace_char_operations(ops):
     # s.replace(old, new)
     for c1 in settings.alphabet:
         for c2 in settings.alphabet:
-            ops.append(OperationValue('replace!!CC', [c1, c2]))
+            if c1 != c2:
+                ops.append(OperationValue('replace!!CC', [c1, c2]))
 
 
 def add_replace_string_operations(ops):

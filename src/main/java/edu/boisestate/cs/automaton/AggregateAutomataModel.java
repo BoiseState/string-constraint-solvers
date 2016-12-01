@@ -25,6 +25,12 @@ public class AggregateAutomataModel
         setAutomata(automata);
     }
 
+    AggregateAutomataModel(Automaton automaton, Alphabet alphabet) {
+        super(alphabet, 0);
+
+        this.automata = new Automaton[] { automaton };
+    }
+
     private void setAutomata(Automaton[] automata) {
 
         // create automata array from parameter

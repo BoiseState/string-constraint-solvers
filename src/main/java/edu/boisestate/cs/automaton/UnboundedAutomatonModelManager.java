@@ -388,7 +388,7 @@ public class UnboundedAutomatonModelManager
         Automaton automaton = ((UnboundedAutomatonModel) model).getAutomaton();
 
         // perform operation
-        Automaton result = this.performUnaryOperation(automaton, new PreciseDelete(start, end));
+        Automaton result = this.performUnaryOperation(automaton, new ImpreciseDelete(start, end));
 
         // determine new bound length
         int boundLength = model.getBoundLength() - (end - start);

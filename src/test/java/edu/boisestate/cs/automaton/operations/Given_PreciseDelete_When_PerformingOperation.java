@@ -99,7 +99,7 @@ public class Given_PreciseDelete_When_PerformingOperation {
     public void setup() {
 
         // *** arrange ***
-        PreciseDelete delete = new PreciseDelete(this.start, this.end);
+        ImpreciseDelete delete = new ImpreciseDelete(this.start, this.end);
         Automaton automaton = automatonMap.get(this.automatonString);
 
         // *** act ***

@@ -112,15 +112,28 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
-        // check indicies for relation
         if (start < end) {
 
-            // perform operation
-            baseModel = this.modelManager.delete(baseModel, start, end);
+            // declare start model
+            AutomatonModel startModel;
 
-        } else if (start > end) {
+            // if start index is 0
+            if (start == 0) {
 
-            baseModel = this.modelManager.createEmpty();
+                // set start as empty
+                startModel = this.modelManager.createEmptyString();
+
+            } else {
+
+                // get model prefix before start index
+                startModel = this.modelManager.prefix(baseModel, start);
+            }
+
+            // get model suffix from end index
+            AutomatonModel endModel = this.modelManager.suffix(baseModel, end);
+
+            // concatenate end model to start model
+            baseModel = startModel.concatenate(endModel);
         }
 
         // store result model

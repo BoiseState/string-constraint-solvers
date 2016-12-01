@@ -8,10 +8,7 @@
 package edu.boisestate.cs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dk.brics.automaton.Automaton;
-import dk.brics.automaton.BasicAutomata;
-import dk.brics.automaton.State;
-import dk.brics.automaton.StatePair;
+import dk.brics.automaton.*;
 import dk.brics.string.stringoperations.Delete;
 import edu.boisestate.cs.automaton.AutomatonModelManager;
 import edu.boisestate.cs.automaton.operations.PrecisePrefix;

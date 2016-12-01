@@ -21,6 +21,12 @@ public class BoundedAutomatonModel
         this.automaton = automaton;
     }
 
+    BoundedAutomatonModel(Automaton automaton, Alphabet alphabet) {
+        super(alphabet, 0);
+
+        this.automaton = automaton;
+    }
+
     @SuppressWarnings("CloneDoesntCallSuperClone")
     @Override
     public AutomatonModel clone() {

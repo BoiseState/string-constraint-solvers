@@ -41,7 +41,7 @@ public class SolveMain {
         String solverName = "JSASolver";
         String properties = String.format("%s/properties.txt",
                                           projRootDirFile.getAbsolutePath());
-        String tempFile = "temp.txt";
+        String tempFile = "outputDotFileAndPng.txt";
         boolean generateText = false;
         if (args.length > 0) {
             LinkedList<String> list =
@@ -51,7 +51,7 @@ public class SolveMain {
             if (options.startsWith("-")) {
                 if (options.contains("u")) {
                     System.out.println(
-                            "Usage: <graph file> <solver name> (temp file) " +
+                            "Usage: <graph file> <solver name> (outputDotFileAndPng file) " +
                             "(properties file) (-<generate text output>(t) " +
                             "<solvers>(s) <usage>u)");
                     System.out.println(

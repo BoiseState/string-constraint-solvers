@@ -10,12 +10,12 @@ import dk.brics.string.stringoperations.UnaryOperation;
 import java.util.*;
 
 @SuppressWarnings("Duplicates")
-public class PreciseDelete
+public class ImpreciseDelete
         extends UnaryOperation {
     private int end;
     private int start;
 
-    public PreciseDelete(int start, int end) {
+    public ImpreciseDelete(int start, int end) {
         // initialize indicies from parameters
         this.start = start;
         this.end = end;
