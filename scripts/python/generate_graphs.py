@@ -162,7 +162,7 @@ def add_concat_operations(ops):
 
 def add_delete_char_at_operations(ops):
     # sb.deleteCharAt(index)
-    for i in range(0, settings.max_initial_length - 1):
+    for i in range(0, settings.max_initial_length):
         ops.append(OperationValue('deleteCharAt!!I', [str(i)]))
 
 
