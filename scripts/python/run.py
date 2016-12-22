@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+import argparse
 import logging
 
 import logging
@@ -51,8 +52,7 @@ def compile_sources():
         # any exceptions mean maven usage is not viable
         try:
             # use subprocess to compile classes with maven
-            cmd = ['mvn', 'compile']
-            subprocess.call(cmd)
+            subprocess.call(['mvn', 'compile'], cwd=project_dir)
 
         except OSError as os_e:
             log.debug('OSError while getting class path from maven.')
@@ -63,10 +63,29 @@ def compile_sources():
 
 
 def main(arguments):
+    # process command line args
+    run_parser = argparse.ArgumentParser(prog=__doc__,
+                                         description='Run all full suite of'
+                                                     ' scripts')
+
+    run_parser.add_argument('-d',
+                            '--debug',
+                            help="Display debug messages for script.",
+                            action="store_true")
+
+    args = run_parser.parse_args(arguments)
+
+    # check debug flag
+    if args.debug:
+        log.setLevel(logging.DEBUG)
+        ch.setLevel(logging.DEBUG)
+        log.debug('Args: {0}'.format(args))
+
     # compile sources
     compile_sources()
 
     # run generate graph script
+    log.debug('Running Script: generate_graphs.py')
     generate_script_args = ['--ops-depth',
                             '2',
                             '--no-duplicates',
@@ -74,9 +93,13 @@ def main(arguments):
                             '--length',
                             '2',
                             '--single-graph']
+
+    if args.debug:
+        generate_script_args.append('--debug')
     generate_graphs.main(generate_script_args)
 
     # run solvers via script
+    log.debug('Running Script: run_solvers_on_graphs.py')
     solver_script_args = ['--graph-files',
                           'gen*.json',
                           '--length',
@@ -85,12 +108,18 @@ def main(arguments):
                           '--unbounded-solver',
                           '--bounded-solver',
                           '--aggregate-solver',
-                          '--mc-reporter',
-                          '--debug']
+                          '--mc-reporter']
+
+    if args.debug:
+        solver_script_args.append('--debug')
     run_solvers_on_graphs.main(solver_script_args)
 
     # run analyze results script
-    analyze_script_args = ['--result-files', 'gen*', '--mc-reporter', '--debug']
+    log.debug('Running Script: analyze_results.py')
+    analyze_script_args = ['--result-files', 'gen*', '--mc-reporter']
+
+    if args.debug:
+        analyze_script_args.append('--debug')
     analyze_results.main(analyze_script_args)
 
 

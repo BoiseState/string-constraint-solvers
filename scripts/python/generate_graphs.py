@@ -11,10 +11,10 @@ import time
 # Configure Logging
 file_name = os.path.basename(__file__).replace('.py', '')
 log = logging.getLogger(file_name)
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.ERROR)
 
 ch = logging.StreamHandler(sys.stdout)
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.ERROR)
 
 formatter = logging.Formatter(
     u'[%(name)s:%(levelname)s]: %(message)s')
@@ -109,6 +109,13 @@ class Settings:
         self.max_initial_length = int(options.length)
         self.op_counter = 0
         self.op_total = 1
+
+        # set debug
+        self.debug = options.debug
+        if self.debug:
+            log.setLevel(logging.DEBUG)
+            ch.setLevel(logging.DEBUG)
+            log.debug('Args: %s', options)
 
         # initialize inputs
         self.inputs = options.inputs
@@ -1019,64 +1026,84 @@ def add_bool_constraint(t, v_list):
 # main function
 def get_options(arguments):
     # process command line args
-    parser = argparse.ArgumentParser(prog=__doc__,
-                                     description='Generate artificial string '
-                                                 'constraint graphs for us '
-                                                 'with the string constraint '
-                                                 'solver framework')
+    generate_parser = argparse.ArgumentParser(prog=__doc__,
+                                              description='Generate '
+                                                          'artificial string '
+                                                          'constraint graphs '
+                                                          'for us '
+                                                          'with the string '
+                                                          'constraint '
+                                                          'solver framework')
 
-    parser.add_argument('-a',
-                        '--alphabet',
-                        default='A-D',
-                        help='An alphabet declaration using the a comma '
-                             'separated list of either singe characters or '
-                             'character ranges using the \'-\' character as '
-                             'in "A-D".')
+    generate_parser.add_argument('-a',
+                                 '--alphabet',
+                                 default='A-D',
+                                 help='An alphabet declaration using the a '
+                                      'comma '
+                                      'separated list of either singe '
+                                      'characters or '
+                                      'character ranges using the \'-\' '
+                                      'character as '
+                                      'in "A-D".')
 
-    parser.add_argument('-e',
-                        '--empty-string',
-                        help='Include empty string value in list of input '
-                             'strings used to generate graphs.',
-                        action='store_true')
+    generate_parser.add_argument('-d',
+                                 '--debug',
+                                 help="Display debug messages for script.",
+                                 action="store_true")
 
-    parser.add_argument('-i',
-                        '--inputs',
-                        nargs='*',
-                        default=list(),
-                        help='List of input strings to use to generate '
-                             'graphs, each input string is used to generate a '
-                             'full set of graphs.')
+    generate_parser.add_argument('-e',
+                                 '--empty-string',
+                                 help='Include empty string value in list of '
+                                      'input '
+                                      'strings used to generate graphs.',
+                                 action='store_true')
 
-    parser.add_argument('-l',
-                        '--length',
-                        default=2,
-                        help='The maximum length of generated initial strings.')
+    generate_parser.add_argument('-i',
+                                 '--inputs',
+                                 nargs='*',
+                                 default=list(),
+                                 help='List of input strings to use to '
+                                      'generate '
+                                      'graphs, each input string is used to '
+                                      'generate a '
+                                      'full set of graphs.')
 
-    parser.add_argument('-n',
-                        '--no-duplicates',
-                        help='Ensure that there are no duplicates of source '
-                             'constraints for each boolean constraint.',
-                        action='store_true')
+    generate_parser.add_argument('-l',
+                                 '--length',
+                                 default=2,
+                                 help='The maximum length of generated '
+                                      'initial strings.')
 
-    parser.add_argument('-o',
-                        '--ops-depth',
-                        default=1,
-                        help='The maximum number of operations that will be '
-                             'performed in sequence before a constraint is '
-                             'reached in the generated graph.')
+    generate_parser.add_argument('-n',
+                                 '--no-duplicates',
+                                 help='Ensure that there are no duplicates of '
+                                      'source '
+                                      'constraints for each boolean '
+                                      'constraint.',
+                                 action='store_true')
 
-    parser.add_argument('-s',
-                        '--single-graph',
-                        help='Force output into a single graph file.',
-                        action='store_true')
+    generate_parser.add_argument('-o',
+                                 '--ops-depth',
+                                 default=1,
+                                 help='The maximum number of operations that '
+                                      'will be '
+                                      'performed in sequence before a '
+                                      'constraint is '
+                                      'reached in the generated graph.')
 
-    parser.add_argument('-u',
-                        '--unknown-string',
-                        help='Include unknown string value in list of input '
-                             'strings used to generate graphs.',
-                        action='store_true')
+    generate_parser.add_argument('-s',
+                                 '--single-graph',
+                                 help='Force output into a single graph file.',
+                                 action='store_true')
 
-    return parser.parse_args(arguments)
+    generate_parser.add_argument('-u',
+                                 '--unknown-string',
+                                 help='Include unknown string value in list '
+                                      'of input '
+                                      'strings used to generate graphs.',
+                                 action='store_true')
+
+    return generate_parser.parse_args(arguments)
 
 
 def parse_alphabet_declaration(alphabet_declaration):

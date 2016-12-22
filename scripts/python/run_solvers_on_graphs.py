@@ -105,47 +105,59 @@ class Settings:
 
 def get_options(arguments):
     # process command line args
-    parser = argparse.ArgumentParser(prog=__doc__,
-                                     description='Run the string constraint '
-                                                 'solver framework for a '
-                                                 'specified set of solvers on '
-                                                 'a specified set of graphs '
-                                                 'using a specified reporter.')
+    solver_parser = argparse.ArgumentParser(prog=__doc__,
+                                            description='Run the string '
+                                                        'constraint '
+                                                        'solver framework for '
+                                                        'a '
+                                                        'specified set of '
+                                                        'solvers on '
+                                                        'a specified set of '
+                                                        'graphs '
+                                                        'using a specified '
+                                                        'reporter.')
 
-    parser.add_argument('-a',
-                        '--framework-args',
-                        nargs='*',
-                        default=list(),
-                        help='List of additional args to pass to the '
-                             'constraint solver framework.')
+    solver_parser.add_argument('-a',
+                               '--framework-args',
+                               nargs='*',
+                               default=list(),
+                               help='List of additional args to pass to the '
+                                    'constraint solver framework.')
 
-    parser.add_argument('-d',
-                        '--debug',
-                        help='Display debug messages for both this script and'
-                             'the constraint solver framework.',
-                        action="store_true")
+    solver_parser.add_argument('-d',
+                               '--debug',
+                               help='Display debug messages for both this '
+                                    'script and'
+                                    'the constraint solver framework.',
+                               action="store_true")
 
-    parser.add_argument('-f',
-                        '--graph-files',
-                        default='*.json',
-                        help='A Unix shell-style pattern which is used to '
-                             'match a set of constraint graph files which '
-                             'will be solved by the constraint solver '
-                             'framework.')
+    solver_parser.add_argument('-f',
+                               '--graph-files',
+                               default='*.json',
+                               help='A Unix shell-style pattern which is used '
+                                    'to '
+                                    'match a set of constraint graph files '
+                                    'which '
+                                    'will be solved by the constraint solver '
+                                    'framework.')
 
-    parser.add_argument('-l',
-                        '--length',
-                        default=2,
-                        help='The initial bounding length suplied to the '
-                             'constraint solver framework.')
+    solver_parser.add_argument('-l',
+                               '--length',
+                               default=2,
+                               help='The initial bounding length suplied to '
+                                    'the '
+                                    'constraint solver framework.')
 
     # solver argument group
-    solvers = parser.add_argument_group('solvers',
-                                        'String constraint solvers which can '
-                                        'be used in the constraint solver '
-                                        'framework. If no solver is '
-                                        'specified, the default solver is the '
-                                        'concrete solver.')
+    solvers = solver_parser.add_argument_group('solvers',
+                                               'String constraint solvers '
+                                               'which can '
+                                               'be used in the constraint '
+                                               'solver '
+                                               'framework. If no solver is '
+                                               'specified, the default solver '
+                                               'is the '
+                                               'concrete solver.')
 
     solvers.add_argument('-c',
                          '--concrete-solver',
@@ -178,7 +190,7 @@ def get_options(arguments):
                          action='store_true')
 
     # reporter argument group
-    reporters = parser.add_mutually_exclusive_group(required=True)
+    reporters = solver_parser.add_mutually_exclusive_group(required=True)
 
     reporters.add_argument('-m',
                            '--mc-reporter',
@@ -194,7 +206,7 @@ def get_options(arguments):
                                 'constraint graphs.',
                            action='store_true')
 
-    return Settings(parser.parse_args(arguments))
+    return Settings(solver_parser.parse_args(arguments))
 
 
 def get_graph_files(settings):
@@ -228,7 +240,8 @@ def get_classpath():
         with open(os.devnull, 'w') as dev_null:
             subprocess.check_call([check_cmd_cmd, 'mvn'],
                                   stderr=dev_null,
-                                  stdout=dev_null)
+                                  stdout=dev_null,
+                                  cwd=project_dir)
 
         maven_available = True
         log.debug('Maven available on the current system.')
@@ -249,15 +262,19 @@ def get_classpath():
                 cmd = ['mvn', 'help:describe', '-Dplugin=dependency']
                 subprocess.check_call(cmd,
                                       stderr=dev_null,
-                                      stdout=dev_null)
+                                      stdout=dev_null,
+                                      cwd=project_dir)
 
             # use subprocess to get class path from maven
             cmd = ['mvn', 'dependency:build-classpath']
-            sp1 = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+            sp1 = subprocess.Popen(cmd,
+                                   stdout=subprocess.PIPE,
+                                   cwd=project_dir)
             cmd = ['grep', '-v', '^\[INFO\]']
             sp2 = subprocess.Popen(cmd,
                                    stdin=sp1.stdout,
-                                   stdout=subprocess.PIPE)
+                                   stdout=subprocess.PIPE,
+                                   cwd=project_dir)
             sp1.stdout.close()
             mvn_class_path = sp2.communicate()[0].strip()
 
@@ -335,6 +352,7 @@ def run_solver(solver, files, class_path, settings):
                 sp1 = subprocess.Popen(cmd,
                                        stderr=subprocess.STDOUT,
                                        stdout=out_file)
+                sp1.wait()
         except OSError as os_e:
             log.debug('OSError while running solver framework.')
         except ValueError as v_e:

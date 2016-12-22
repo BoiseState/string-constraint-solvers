@@ -130,24 +130,27 @@ def get_operations(x):
 
 def set_options(arguments):
     # process command line args
-    parser = argparse.ArgumentParser(prog=__doc__,
-                                     description='Analyze results csv files '
-                                                 'for each different '
-                                                 'automaton model version.')
+    analyze_parser = argparse.ArgumentParser(prog=__doc__,
+                                             description='Analyze results csv '
+                                                         'files '
+                                                         'for each different '
+                                                         'automaton model '
+                                                         'version.')
 
-    parser.add_argument('-d',
-                        '--debug',
-                        help='Display debug messages for this script.',
-                        action="store_true")
+    analyze_parser.add_argument('-d',
+                                '--debug',
+                                help='Display debug messages for this script.',
+                                action="store_true")
 
-    parser.add_argument('-f',
-                        '--result-files',
-                        default='*',
-                        help='A Unix shell-style pattern which is used to '
-                             'match a set of result files.')
+    analyze_parser.add_argument('-f',
+                                '--result-files',
+                                default='*',
+                                help='A Unix shell-style pattern which is '
+                                     'used to '
+                                     'match a set of result files.')
 
     # reporter argument group
-    reporters = parser.add_mutually_exclusive_group(required=True)
+    reporters = analyze_parser.add_mutually_exclusive_group(required=True)
 
     reporters.add_argument('-m',
                            '--mc-reporter',
@@ -162,7 +165,7 @@ def set_options(arguments):
 
     # set settings variable from parsed options
     global SETTINGS
-    SETTINGS = Settings(parser.parse_args(arguments))
+    SETTINGS = Settings(analyze_parser.parse_args(arguments))
 
 
 def get_result_files(dir_path, file_pattern):
@@ -367,6 +370,7 @@ def produce_output_data(data_map, solvers, f_name):
                                  SETTINGS.reporter,
                                  'analysis',
                                  f_name)
+    log.info('Outputting data to: %s', csv_file_path)
     with open(csv_file_path, 'w') as csv_file:
         # creat csv writer with field names
         writer = csv.DictWriter(csv_file, field_names, delimiter='\t')
