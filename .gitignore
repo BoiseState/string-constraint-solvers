@@ -182,3 +182,4 @@ graphs/gen*
 results/
 traceFile
 /SolverInterface/
+scripts/python/*.pyc

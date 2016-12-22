@@ -32,7 +32,7 @@ log.addHandler(ch)
 
 def compile_sources():
     # check if maven available
-    check_cmd_cmd = 'where' if sys.platform.system() == 'Windows' else 'hash'
+    check_cmd_cmd = 'where' if platform.system() == 'Windows' else 'hash'
     try:
         with open(os.devnull, 'w') as dev_null:
             subprocess.check_call([check_cmd_cmd, 'mvn'],
