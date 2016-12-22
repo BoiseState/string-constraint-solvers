@@ -168,8 +168,8 @@ def add_delete_char_at_operations(ops):
 
 def add_delete_operations(ops):
     # sb.delete(start, end)
-    for i in range(0, settings.max_initial_length - 1):
-        for j in range(i, settings.max_initial_length):
+    for i in range(0, settings.max_initial_length + 1):
+        for j in range(i, settings.max_initial_length + 1):
             ops.append(OperationValue('delete!!II', [str(i), str(j)]))
 
 
@@ -319,8 +319,8 @@ def get_operations():
     # add_append_substring_operations(ops_list)
     # add_append_operations(ops_list)
     add_concat_operations(ops_list)
-    add_delete_char_at_operations(ops_list)
-    # add_delete_operations(ops_list)
+    # add_delete_char_at_operations(ops_list)
+    add_delete_operations(ops_list)
     # add_insert_char_operations(ops_list)
     # add_insert_string_operations(ops_list)
     # add_insert_substring_operations(ops_list)
