@@ -1,7 +1,7 @@
 package edu.boisestate.cs.solvers;
 
-import edu.boisestate.cs.automaton.AutomatonModel;
-import edu.boisestate.cs.automaton.AutomatonModelManager;
+import edu.boisestate.cs.automatonModel.AutomatonModel;
+import edu.boisestate.cs.automatonModel.AutomatonModelManager;
 
 import java.math.BigInteger;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class MCAutomatonModelSolver
         AutomatonModel model = this.symbolicStringMap.get(id);
 
         // return finite strings of model
-        return this.modelManager.getFiniteStrings(model);
+        return model.getFiniteStrings();
     }
 
     /**
@@ -53,7 +53,7 @@ public class MCAutomatonModelSolver
         AutomatonModel model = this.symbolicStringMap.get(id);
 
         // get model count as big integer
-        BigInteger count = this.modelManager.modelCount(model);
+        BigInteger count = model.modelCount();
 
         // return model count as integer
         return count.intValue();

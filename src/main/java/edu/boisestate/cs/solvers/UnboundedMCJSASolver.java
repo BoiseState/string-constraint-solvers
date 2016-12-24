@@ -2,9 +2,9 @@ package edu.boisestate.cs.solvers;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
-import edu.boisestate.cs.automaton.operations.StringModelCounter;
-import edu.boisestate.cs.automaton.operations.PreciseSuffix;
-import edu.boisestate.cs.automaton.operations.PrecisePrefix;
+import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
+import edu.boisestate.cs.automatonModel.operations.PreciseSuffix;
+import edu.boisestate.cs.automatonModel.operations.PrecisePrefix;
 
 import java.math.BigInteger;
 import java.util.HashMap;

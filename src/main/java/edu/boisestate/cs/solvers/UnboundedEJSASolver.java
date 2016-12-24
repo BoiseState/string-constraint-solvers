@@ -3,10 +3,10 @@ package edu.boisestate.cs.solvers;
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import dk.brics.string.stringoperations.*;
-import edu.boisestate.cs.automaton.operations.IgnoreCase;
-import edu.boisestate.cs.automaton.operations.PreciseSuffix;
-import edu.boisestate.cs.automaton.operations.PreciseSubstring;
-import edu.boisestate.cs.automaton.operations.PrecisePrefix;
+import edu.boisestate.cs.automatonModel.operations.IgnoreCase;
+import edu.boisestate.cs.automatonModel.operations.PreciseSuffix;
+import edu.boisestate.cs.automatonModel.operations.PreciseSubstring;
+import edu.boisestate.cs.automatonModel.operations.PrecisePrefix;
 
 import java.util.Set;
 

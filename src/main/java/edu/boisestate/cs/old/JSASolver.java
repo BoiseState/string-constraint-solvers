@@ -4,9 +4,9 @@ import dk.brics.automaton.Automaton;
 import dk.brics.automaton.State;
 import dk.brics.automaton.Transition;
 import dk.brics.string.stringoperations.*;
-import edu.boisestate.cs.automaton.operations.PreciseSuffix;
-import edu.boisestate.cs.automaton.operations.PreciseSubstring;
-import edu.boisestate.cs.automaton.operations.PrecisePrefix;
+import edu.boisestate.cs.automatonModel.operations.PreciseSuffix;
+import edu.boisestate.cs.automatonModel.operations.PreciseSubstring;
+import edu.boisestate.cs.automatonModel.operations.PrecisePrefix;
 
 import java.util.*;
 

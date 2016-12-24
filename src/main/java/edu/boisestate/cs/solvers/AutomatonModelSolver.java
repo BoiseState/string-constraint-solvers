@@ -1,8 +1,8 @@
 package edu.boisestate.cs.solvers;
 
 import edu.boisestate.cs.Alphabet;
-import edu.boisestate.cs.automaton.AutomatonModel;
-import edu.boisestate.cs.automaton.AutomatonModelManager;
+import edu.boisestate.cs.automatonModel.AutomatonModel;
+import edu.boisestate.cs.automatonModel.AutomatonModelManager;
 import edu.boisestate.cs.util.Tuple;
 
 public class AutomatonModelSolver
@@ -33,8 +33,7 @@ public class AutomatonModelSolver
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
         // get substring model
-        AutomatonModel substrModel =
-                this.modelManager.substring(argModel, start, end);
+        AutomatonModel substrModel = argModel.substring(start, end);
 
         // append substring model to base model
         baseModel = baseModel.concatenate(substrModel);
@@ -68,12 +67,10 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying base model
-            baseModel =
-                    this.modelManager.assertContainsOther(baseModel, argModel);
+            baseModel = baseModel.assertContainsOther(argModel);
 
             // get satisfying arg model
-            argModel = this.modelManager.assertContainedInOther(argModel,
-                                                                baseModel);
+            argModel = argModel.assertContainedInOther(baseModel);
 
         } else { // false branch
 
@@ -83,12 +80,10 @@ public class AutomatonModelSolver
             AutomatonModel tempModel = baseModel;
 
             // get satisfying base model as temp
-            tempModel = this.modelManager.assertNotContainsOther(baseModel,
-                                                                 argModel);
+            tempModel = baseModel.assertNotContainsOther(argModel);
 
             // get satisfying arg model
-            argModel = this.modelManager.assertNotContainedInOther(argModel,
-                                                                   baseModel);
+            argModel = argModel.assertNotContainedInOther(baseModel);
 
             // set base model from temp
             baseModel = tempModel;
@@ -126,14 +121,14 @@ public class AutomatonModelSolver
             } else {
 
                 // get model prefix before start index
-                startModel = this.modelManager.prefix(baseModel, start);
+                startModel = baseModel.prefix(start);
             }
 
             // get model suffix from end index
-            AutomatonModel endModel = this.modelManager.suffix(baseModel, end);
+            AutomatonModel endModel = baseModel.suffix(end);
 
             // concatenate end model to start model
-            baseModel = startModel.concatenate(endModel);
+            baseModel = startModel.concatenateIndividual(endModel);
         }
 
         // store result model
@@ -150,12 +145,11 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying base model
-            baseModel = this.modelManager.assertEndsWith(baseModel, argModel);
+            baseModel = baseModel.assertEndsWith(argModel);
 
             // get satisfying arg model
-            AutomatonModel tempModel = this.modelManager.allSuffixes(baseModel);
-            argModel = this.modelManager.assertContainedInOther(argModel,
-                                                                tempModel);
+            AutomatonModel tempModel = baseModel.allSuffixes();
+            argModel = argModel.assertContainedInOther(tempModel);
 
         } else {
 
@@ -178,7 +172,7 @@ public class AutomatonModelSolver
             if (baseModel.isSingleton()) {
 
                 // get satisfying arg model
-                AutomatonModel x = this.modelManager.allSuffixes(baseModel);
+                AutomatonModel x = baseModel.allSuffixes();
                 AutomatonModel argComplement = argModel.complement();
                 argModel = x.intersect(argComplement);
             }
@@ -215,16 +209,15 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying arg model
-            argModel = this.modelManager.assertEquals(argModel, baseModel);
+            argModel = argModel.assertEquals(baseModel);
 
         } else {
 
             // get satisfying base model
-            AutomatonModel temp =
-                    this.modelManager.assertNotEquals(baseModel, argModel);
+            AutomatonModel temp = baseModel.assertNotEquals(argModel);
 
             // get satisfying arg model
-            argModel = this.modelManager.assertNotEquals(argModel, baseModel);
+            argModel = argModel.assertNotEquals(baseModel);
 
             // handle singleton base model
             if (baseModel.isSingleton()) {
@@ -246,12 +239,12 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying base model
-            baseModel = this.modelManager.assertEquals(baseModel, argModel);
+            baseModel = baseModel.assertEquals(argModel);
 
         } else {
 
             // get satisfying base model
-            baseModel = this.modelManager.assertNotEquals(baseModel, argModel);
+            baseModel = baseModel.assertNotEquals(argModel);
 
         }
 
@@ -267,8 +260,8 @@ public class AutomatonModelSolver
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
         // get ignore case equivalent automata
-        AutomatonModel baseIgnoreCase = this.modelManager.ignoreCase(baseModel);
-        AutomatonModel argIgnoreCase = this.modelManager.ignoreCase(argModel);
+        AutomatonModel baseIgnoreCase = baseModel.ignoreCase();
+        AutomatonModel argIgnoreCase = argModel.ignoreCase();
 
         // perform equals with ignore case models
         baseModel = performBaseEquals(result, baseIgnoreCase, argIgnoreCase);
@@ -307,20 +300,19 @@ public class AutomatonModelSolver
         if (offset >= 0) {
 
             // get prefix
-            AutomatonModel startModel =
-                    this.modelManager.prefix(baseModel, offset);
+            AutomatonModel startModel = baseModel.prefix(offset);
 
             // get suffix
-            AutomatonModel endModel =
-                    this.modelManager.suffix(baseModel, offset);
+            AutomatonModel endModel = baseModel.suffix(offset);
 
             // construct resulting automaton with concatenation
-            baseModel = startModel.concatenate(argModel).concatenate(endModel);
+            baseModel = startModel.concatenateIndividual(argModel)
+                                  .concatenateIndividual(endModel);
 
         } else {
 
             // construct resulting automaton with concatenation
-            baseModel = argModel.concatenate(baseModel);
+            baseModel = argModel.concatenateIndividual(baseModel);
 
         }
         return baseModel;
@@ -339,8 +331,7 @@ public class AutomatonModelSolver
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
         // get substring from arg model
-        AutomatonModel substrModel =
-                this.modelManager.substring(argModel, start, end);
+        AutomatonModel substrModel = argModel.substring(start, end);
 
         baseModel = performInsert(offset, baseModel, substrModel);
 
@@ -357,12 +348,12 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying automaton
-            baseModel = this.modelManager.assertEmpty(baseModel);
+            baseModel = baseModel.assertEmpty();
 
         } else {
 
             // get satisfying automaton
-            baseModel = this.modelManager.assertNotEmpty(baseModel);
+            baseModel = baseModel.assertNotEmpty();
 
         }
 
@@ -461,7 +452,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform replace string operation
-        baseModel = this.modelManager.replaceFindKnown(baseModel, find);
+        baseModel = baseModel.replaceFindKnown(find);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -475,7 +466,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform replace string operation
-        baseModel = this.modelManager.replace(baseModel, find, replace);
+        baseModel = baseModel.replace(find, replace);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -489,7 +480,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform replace string operation
-        baseModel = this.modelManager.replaceReplaceKnown(baseModel, replace);
+        baseModel = baseModel.replaceReplaceKnown(replace);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -502,7 +493,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform replace string operation
-        baseModel = this.modelManager.replaceChar(baseModel);
+        baseModel = baseModel.replaceChar();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -525,9 +516,7 @@ public class AutomatonModelSolver
         String arg2String = this.concreteStringMap.get(argTwo);
 
         // perform replace string operation
-        baseModel = this.modelManager.replace(baseModel,
-                                              arg1String,
-                                              arg2String);
+        baseModel = baseModel.replace(arg1String, arg2String);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -540,7 +529,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform operation
-        baseModel = this.modelManager.reverse(baseModel);
+        baseModel = baseModel.reverse();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -556,15 +545,14 @@ public class AutomatonModelSolver
         if (offset >= 0) {
 
             // get prefix
-            AutomatonModel startModel =
-                    this.modelManager.prefix(baseModel, offset);
+            AutomatonModel startModel = baseModel.prefix(offset);
 
             // get suffix
-            AutomatonModel endModel =
-                    this.modelManager.suffix(baseModel, offset + 1);
+            AutomatonModel endModel = baseModel.suffix(offset + 1);
 
             // get result from concatenation
-            baseModel = startModel.concatenate(argModel).concatenate(endModel);
+            baseModel = startModel.concatenateIndividual(argModel)
+                                  .concatenateIndividual(endModel);
         }
 
         // store result model
@@ -586,10 +574,10 @@ public class AutomatonModelSolver
 
             // concatenate any string model to base model
             AutomatonModel anyStr = this.modelManager.createAnyString();
-            baseModel = baseModel.concatenate(anyStr);
+            baseModel = baseModel.concatenateIndividual(anyStr);
 
             // assert length for concatenated model
-            baseModel = this.modelManager.assertHasLength(baseModel, 0, length);
+            baseModel = baseModel.assertHasLength(0, length);
 
         }
 
@@ -612,11 +600,11 @@ public class AutomatonModelSolver
         if (result) {
 
             // get satisfying base model
-            baseModel = this.modelManager.assertStartsWith(baseModel, argModel);
+            baseModel = baseModel.assertStartsWith(argModel);
 
             // get satisfying arg model
-            AutomatonModel x = this.modelManager.allPrefixes(baseModel);
-            argModel = this.modelManager.assertContainedInOther(argModel, x);
+            AutomatonModel x = baseModel.allPrefixes();
+            argModel = argModel.assertContainedInOther(x);
 
         } else {
 
@@ -657,7 +645,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform operation
-        baseModel = this.modelManager.suffix(baseModel, start);
+        baseModel = baseModel.suffix(start);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -670,7 +658,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform operation
-        baseModel = this.modelManager.substring(baseModel, start, end);
+        baseModel = baseModel.substring(start, end);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -683,7 +671,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform operation
-        baseModel = this.modelManager.toLowercase(baseModel);
+        baseModel = baseModel.toLowercase();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -696,7 +684,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform operation
-        baseModel = this.modelManager.toUppercase(baseModel);
+        baseModel = baseModel.toUppercase();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -709,7 +697,7 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
         // perform operation
-        baseModel = this.modelManager.trim(baseModel);
+        baseModel = baseModel.trim();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);

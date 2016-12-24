@@ -8,11 +8,7 @@
 package edu.boisestate.cs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dk.brics.automaton.*;
-import dk.brics.string.stringoperations.Delete;
-import edu.boisestate.cs.automaton.AutomatonModelManager;
-import edu.boisestate.cs.automaton.operations.PrecisePrefix;
-import edu.boisestate.cs.automaton.operations.PreciseSuffix;
+import edu.boisestate.cs.automatonModel.AutomatonModelManager;
 import edu.boisestate.cs.graph.PrintConstraint;
 import edu.boisestate.cs.graph.SymbolicEdge;
 import edu.boisestate.cs.reporting.MCReporter;
