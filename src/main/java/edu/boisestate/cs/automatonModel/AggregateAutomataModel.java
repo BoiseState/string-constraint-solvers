@@ -17,10 +17,6 @@ public class AggregateAutomataModel
 
     private Automaton[] automata;
 
-    Automaton[] getAutomata() {
-        return automata;
-    }
-
     AggregateAutomataModel(Automaton[] automata,
                            Alphabet alphabet,
                            int initialBoundLength) {
@@ -29,7 +25,7 @@ public class AggregateAutomataModel
         setAutomata(automata);
 
         this.modelManager = new AggregateAutomatonModelManager(alphabet,
-                                                              initialBoundLength);
+                                                               initialBoundLength);
     }
 
     private void setAutomata(Automaton[] automata) {
@@ -49,7 +45,7 @@ public class AggregateAutomataModel
 
         this.automata = new Automaton[]{automaton};
 
-        this.modelManager =  new AggregateAutomatonModelManager(alphabet, 0);
+        this.modelManager = new AggregateAutomatonModelManager(alphabet, 0);
     }
 
     @Override
@@ -66,6 +62,10 @@ public class AggregateAutomataModel
         return new AggregateAutomataModel(results,
                                           this.alphabet,
                                           this.boundLength);
+    }
+
+    Automaton[] getAutomata() {
+        return automata;
     }
 
     private Automaton[] performUnaryOperations(Automaton[] automata,
@@ -123,16 +123,6 @@ public class AggregateAutomataModel
 
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
-                                          this.alphabet,
-                                          this.boundLength);
-    }
-
-    @SuppressWarnings("CloneDoesntCallSuperClone")
-    @Override
-    public AutomatonModel clone() {
-
-        // create new model from existing automata
-        return new AggregateAutomataModel(this.automata,
                                           this.alphabet,
                                           this.boundLength);
     }
@@ -286,16 +276,63 @@ public class AggregateAutomataModel
     @Override
     public AutomatonModel delete(int start, int end) {
 
-        // get automata from model
+        // get automaton from model
         Automaton[] automata = this.getAutomata();
 
-        // perform operations
-        Automaton[] results =
-                this.performUnaryOperations(automata,
-                                            new ImpreciseDelete(start, end));
+        if (start < end) {
 
-        // return new model from resulting automata
-        return new AggregateAutomataModel(results,
+            // declare start automaton
+            Automaton[] startAutomata = new Automaton[automata.length];
+
+            // if start index is 0
+            if (start == 0) {
+
+                // set start automata as empty strings
+                for (int i = 0; i < automata.length; i++) {
+                    startAutomata[i] = BasicAutomata.makeEmptyString();
+                }
+
+            } else {
+
+                // get automaton prefix before start index
+                PrecisePrefix prefix = new PrecisePrefix(start);
+
+                for (int i = 0; i < automata.length; i++) {
+                    startAutomata[i] = prefix.op(automata[i]);
+                }
+            }
+
+            // get model suffix from end index
+            PreciseSuffix suffix = new PreciseSuffix(end);
+            Automaton[] endAutomata = new Automaton[automata.length];
+            for (int i = 0; i < automata.length; i++) {
+                endAutomata[i] = suffix.op(automata[i]);
+            }
+
+            // concatenate end model to start automaton
+            Automaton[] returnAutomata = new Automaton[automata.length];
+            for (int i = 0; i < automata.length; i++) {
+                returnAutomata[i] =
+                        startAutomata[i].concatenate(endAutomata[i]);
+            }
+
+            // return new unbounded automaton model
+            return new AggregateAutomataModel(returnAutomata,
+                                              this.alphabet,
+                                              this.boundLength);
+        } else if (start == end) {
+            return this.clone();
+        } else {
+            return this.modelManager.createEmpty();
+        }
+    }
+
+    @SuppressWarnings("CloneDoesntCallSuperClone")
+    @Override
+    public AutomatonModel clone() {
+
+        // create new model from existing automata
+        return new AggregateAutomataModel(this.automata,
                                           this.alphabet,
                                           this.boundLength);
     }

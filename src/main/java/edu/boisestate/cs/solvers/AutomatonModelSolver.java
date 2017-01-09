@@ -107,29 +107,8 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
-        if (start < end) {
-
-            // declare start model
-            AutomatonModel startModel;
-
-            // if start index is 0
-            if (start == 0) {
-
-                // set start as empty
-                startModel = this.modelManager.createEmptyString();
-
-            } else {
-
-                // get model prefix before start index
-                startModel = baseModel.prefix(start);
-            }
-
-            // get model suffix from end index
-            AutomatonModel endModel = baseModel.suffix(end);
-
-            // concatenate end model to start model
-            baseModel = startModel.concatenateIndividual(endModel);
-        }
+        // perform delete
+        baseModel = baseModel.delete(start, end);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
