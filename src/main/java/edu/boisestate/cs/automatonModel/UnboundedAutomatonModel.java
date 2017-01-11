@@ -142,41 +142,25 @@ public class UnboundedAutomatonModel
         // get automaton from model
         Automaton automaton = this.getAutomaton();
 
-        if (start < end) {
+        // perform operation
+        Automaton result =
+                this.performUnaryOperation(automaton, new PrecisePrefix(end));
 
-            // declare start automaton
-            Automaton startAutomaton;
-
-            // if start index is 0
-            if (start == 0) {
-
-                // set start as empty string
-                startAutomaton = BasicAutomata.makeEmptyString();
-
-            } else {
-
-                // get automaton prefix before start index
-                PrecisePrefix prefix = new PrecisePrefix(start);
-                startAutomaton = prefix.op(automaton);
-            }
-
-            // get model suffix from end index
-            PreciseSuffix suffix = new PreciseSuffix(end);
-            Automaton endAutomaton = suffix.op(automaton);
-
-            // concatenate end model to start automaton
-            Automaton returnAutomaton =
-                    startAutomaton.concatenate(endAutomaton);
-
-            // return new unbounded automaton model
-            return new UnboundedAutomatonModel(returnAutomaton,
-                                               this.alphabet,
-                                               this.boundLength);
-        } else if (start == end) {
-            return this.clone();
+        // determine new bound length
+        int newBoundLength;
+        if (this.boundLength < start) {
+            newBoundLength = 0;
+        } else if (this.boundLength < end) {
+            newBoundLength = start;
         } else {
-            return this.modelManager.createEmpty();
+            int charsDeleted = end - start;
+            newBoundLength = this.boundLength - charsDeleted;
         }
+
+        // return new model from resulting automaton
+        return new UnboundedAutomatonModel(result,
+                                           this.alphabet,
+                                           newBoundLength);
     }
 
     @SuppressWarnings("CloneDoesntCallSuperClone")

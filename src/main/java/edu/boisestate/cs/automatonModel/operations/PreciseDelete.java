@@ -7,10 +7,7 @@ import dk.brics.automaton.*;
 import dk.brics.string.charset.CharSet;
 import dk.brics.string.stringoperations.UnaryOperation;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("Duplicates")
 public class PreciseDelete
@@ -36,18 +33,12 @@ public class PreciseDelete
 
     @Override
     public Automaton op(Automaton a) {
-        // create first automaton clone without accepting states
-        Automaton clone1 = a.clone();
-        for (State acceptStates : clone1.getAcceptStates()) {
-            acceptStates.setAccept(false);
-        }
-
-        // create second automaton clone
-        Automaton clone2 = a.clone();
+        // create automaton clone
+        Automaton clone = a.clone();
 
         // if start and end indices are equal, return clone2
         if (this.start == this.end) {
-            return clone2;
+            return clone;
         }
 
         // if start is greater than end, return empty automaton (exception)
@@ -55,148 +46,132 @@ public class PreciseDelete
             BasicAutomata.makeEmpty();
         }
 
-        Map<State, State> stateMap = new HashMap<>();
-        stateMap.put(clone1.getInitialState(), clone2.getInitialState());
-
         // initialize state set
         Set<State> states = new HashSet<>();
-        states.add(clone1.getInitialState());
+        states.add(clone.getInitialState());
 
-        // walk automaton up to end index
+        // create new initial state
+        State initial = new State();
+
+        // create return automaton from initial state
+        Automaton returnAutomaton = new Automaton();
+        returnAutomaton.setInitialState(initial);
+
+        // initialize state map
+        Map<State, State> stateMap = new HashMap<>();
+        stateMap.put(clone.getInitialState(), initial);
+
+        // create copy of automaton before start
         for (int i = 0; i < this.start; i++) {
+            // if automaton not long enough
+            if (states.isEmpty()) {
+                return BasicAutomata.makeEmpty();
+            }
 
-            // initialize transistion set
-            Map<State, Set<Transition>> transitionMap = new HashMap<>();
+            // initialize next state set
+            Set<State> nextStates = new HashSet<>();
 
-            // get all transitions for states
-            for (State s : states) {
-                Set<Transition> transitionSet;
-                if (transitionMap.containsKey(s)) {
-                    transitionSet = transitionMap.get(s);
+            // get all transistions from each state
+            for (State state : states) {
+                // get or create copy state
+                State copy;
+                if (stateMap.containsKey(state)) {
+                    copy = stateMap.get(state);
                 } else {
-                    transitionSet = new HashSet<>();
-                    transitionMap.put(s, transitionSet);
+                    copy = new State();
+                    stateMap.put(state, copy);
                 }
-                transitionSet.addAll(s.getTransitions());
+
+                // add transitions to copied states
+                for (Transition transition : state.getTransitions()) {
+                    // add destination state as next state
+                    nextStates.add(transition.getDest());
+
+                    // create a copy of the destination state and add to map
+                    State destination = new State();
+                    stateMap.put(transition.getDest(), destination);
+
+                    // create a transition from the previous state copy
+                    copy.addTransition(new Transition(transition.getMin(),
+                                                      transition.getMax(),
+                                                      destination));
+                }
             }
 
-            // clear state set
+            // update states with new states
             states.clear();
+            states.addAll(nextStates);
+        }
 
-            // get next states from transitions
-            for (State s : transitionMap.keySet()) {
-                for (Transition t : transitionMap.get(s)) {
+        // initialize end states map
+        Map<State, Set<State>> endStatesMap = new HashMap<>();
+        for (State state : states) {
+            Set<State> stateSet = new HashSet<>();
+            stateSet.add(state);
+            endStatesMap.put(state, stateSet);
+        }
 
-                    // if destination state not in state map
-                    if (!stateMap.containsKey(t.getDest())) {
+        // walk automaton from start index to end index
+        for (int i = start; i < end; i++) {
+            for (State keyState : states) {
+                // get existing state set
+                Set<State> stateSet = endStatesMap.get(keyState);
 
-                        // get transitions from other state in map
-                        Set<Transition> otherTransitions =
-                                stateMap.get(s).getTransitions();
+                // if automaton is long enough
+                if (!stateSet.isEmpty()) {
+                    // initialize next state set
+                    Set<State> nextStates = new HashSet<>();
 
-                        // get other destination state
-                        State otherDest = null;
-                        for (Transition otherT : otherTransitions) {
-                            if (otherT.getMin() == t.getMin() &&
-                                otherT.getMax() == t.getMax()) {
-                                otherDest = otherT.getDest();
-                            }
+                    // get all transistions from each state
+                    for (State state : stateSet) {
+
+                        // add transitions to copied states
+                        for (Transition transition : state.getTransitions()) {
+                            // add destination state as next state
+                            nextStates.add(transition.getDest());
                         }
-
-                        stateMap.put(t.getDest(), otherDest);
                     }
 
-                    // add destination state to state set
-                    states.add(t.getDest());
+                    // update end states with new states
+                    endStatesMap.put(keyState, nextStates);
                 }
             }
         }
 
-        // initialize start end map from states set
-        Map<State, Set<State>> startEndMap = new HashMap<>();
-        for (State s : states) {
-            Set<State> endStates = new HashSet<>();
-            endStates.add(s);
-            startEndMap.put(s, endStates);
-        }
+        // handle empty end state sets
+        for (State state : states) {
+            if (endStatesMap.get(state).isEmpty()) {
+                // create new empty accepting state
+                State endState = new State();
+                endState.setAccept(true);
 
-        // walk automaton between start and end indicies
-        for (int i = this.start; i < this.end; i++) {
-            for (State startState : startEndMap.keySet()) {
+                // create set for new accepting state
+                Set<State> endStates = new HashSet<>();
+                endStates.add(endState);
 
-                // get end set as states variable
-                states = startEndMap.get(startState);
-
-                // initialize transistion set
-                Map<State, Set<Transition>> transitionMap = new HashMap<>();
-
-                // get all transitions for states
-                for (State s : states) {
-                    Set<Transition> transitionSet;
-                    if (transitionMap.containsKey(s)) {
-                        transitionSet = transitionMap.get(s);
-                    } else {
-                        transitionSet = new HashSet<>();
-                        transitionMap.put(s, transitionSet);
-                    }
-                    transitionSet.addAll(s.getTransitions());
-                }
-
-                // clear state set
-                states.clear();
-
-                // get next states from transitions
-                for (State s : transitionMap.keySet()) {
-                    for (Transition t : transitionMap.get(s)) {
-
-                        // if destination state not in state map
-                        if (!stateMap.containsKey(t.getDest())) {
-
-                            // get transitions from other state in map
-                            Set<Transition> otherTransitions =
-                                    stateMap.get(s).getTransitions();
-
-                            // get other destination state
-                            State otherDest = null;
-                            for (Transition otherT : otherTransitions) {
-                                if (otherT.getMin() == t.getMin() &&
-                                    otherT.getMax() == t.getMax()) {
-                                    otherDest = otherT.getDest();
-                                }
-                            }
-
-                            stateMap.put(t.getDest(), otherDest);
-                        }
-
-                        // add destination state to state set
-                        states.add(t.getDest());
-                    }
-                }
+                // set end states map from set
+                endStatesMap.put(state, endStates);
             }
         }
 
-        // initialize epsilon transition set
-        Set<StatePair> epsilons = new HashSet<StatePair>();
-
-        // create epsilon transitions for start and end
-        for (State startState : startEndMap.keySet()) {
-            for (State endState : startEndMap.get(startState)) {
-                // create episilon transition state pair and add to set
-                StatePair epsilon =
-                        new StatePair(startState, stateMap.get(endState));
-                epsilons.add(epsilon);
+        // add epsilon transitions from state set and map
+        List<StatePair> epsilons = new ArrayList<>();
+        for (State state : states) {
+            for (State endState: endStatesMap.get(state)){
+                State fromState = stateMap.get(state);
+                epsilons.add(new StatePair(fromState, endState));
             }
         }
 
-        // add epsilon transitions to deleted automaton
-        clone1.addEpsilons(epsilons);
+        // add epsilons to automaton
+        returnAutomaton.addEpsilons(epsilons);
 
-        // determinize and minimize deleted automaton
-        clone1.determinize();
-        clone1.minimize();
+        // minimize and determinize deleted automaton
+        returnAutomaton.minimize();
+        returnAutomaton.determinize();
 
         // return the deleted automaton
-        return clone1;
+        return returnAutomaton;
     }
 
     @Override

@@ -276,55 +276,26 @@ public class AggregateAutomataModel
     @Override
     public AutomatonModel delete(int start, int end) {
 
-        // get automaton from model
-        Automaton[] automata = this.getAutomata();
+        // initialize result automata array
+        Automaton[] results = new Automaton[this.automata.length];
 
-        if (start < end) {
+        // for each automaton
+        for (int i = 0; i < this.automata.length; i++) {
 
-            // declare start automaton
-            Automaton[] startAutomata = new Automaton[automata.length];
+            // create precise delete operation
+            PreciseDelete delete = new PreciseDelete(start, end);
 
-            // if start index is 0
-            if (start == 0) {
+            // perform operation on automaton at index
+            Automaton result = delete.op(this.automata[i]);
 
-                // set start automata as empty strings
-                for (int i = 0; i < automata.length; i++) {
-                    startAutomata[i] = BasicAutomata.makeEmptyString();
-                }
-
-            } else {
-
-                // get automaton prefix before start index
-                PrecisePrefix prefix = new PrecisePrefix(start);
-
-                for (int i = 0; i < automata.length; i++) {
-                    startAutomata[i] = prefix.op(automata[i]);
-                }
-            }
-
-            // get model suffix from end index
-            PreciseSuffix suffix = new PreciseSuffix(end);
-            Automaton[] endAutomata = new Automaton[automata.length];
-            for (int i = 0; i < automata.length; i++) {
-                endAutomata[i] = suffix.op(automata[i]);
-            }
-
-            // concatenate end model to start automaton
-            Automaton[] returnAutomata = new Automaton[automata.length];
-            for (int i = 0; i < automata.length; i++) {
-                returnAutomata[i] =
-                        startAutomata[i].concatenate(endAutomata[i]);
-            }
-
-            // return new unbounded automaton model
-            return new AggregateAutomataModel(returnAutomata,
-                                              this.alphabet,
-                                              this.boundLength);
-        } else if (start == end) {
-            return this.clone();
-        } else {
-            return this.modelManager.createEmpty();
+            // set array index with result
+            results[i] = result;
         }
+
+        // return new model from results automata array
+        return new AggregateAutomataModel(results,
+                                          this.alphabet,
+                                          this.boundLength);
     }
 
     @SuppressWarnings("CloneDoesntCallSuperClone")
