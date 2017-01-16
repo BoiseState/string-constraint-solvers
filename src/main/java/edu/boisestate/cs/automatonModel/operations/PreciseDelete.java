@@ -16,7 +16,7 @@ public class PreciseDelete
     private int start;
 
     public PreciseDelete(int start, int end) {
-        // initialize indicies from parameters
+        // initialize indices from parameters
         this.start = start;
         this.end = end;
     }
