@@ -256,7 +256,7 @@ def verify_data(data_map, solvers, f_name):
     other_solvers.remove('concrete')
 
     # for each operation id
-    for op_id in data_map.get(next(iter(solvers))).keys():
+    for op_id in data_map.get('concrete').keys():
         # get operations
         ops = get_operations(data_map.get('concrete')
                              .get(op_id)

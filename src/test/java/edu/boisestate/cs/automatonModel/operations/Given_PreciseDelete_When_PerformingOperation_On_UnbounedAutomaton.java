@@ -4,7 +4,6 @@ import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automatonModel.AutomatonTestUtilities;
-import edu.boisestate.cs.automatonModel.operations.ImpreciseDelete;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,10 +12,10 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
+import static edu.boisestate.cs.automatonModel.operations
+        .AutomatonOperationTestUtilities.addAutomatonTestInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -25,58 +24,56 @@ import static org.hamcrest.Matchers.is;
 @RunWith(Parameterized.class)
 public class Given_PreciseDelete_When_PerformingOperation_On_UnbounedAutomaton {
 
+    private static Alphabet alphabet;
     private static Automaton automaton;
     private static int initialBoundLength;
-    @Parameter(value = 1)
-    public int end;
-    @Parameter(value = 3)
-    public int expectedNumAcceptStates;
     @Parameter(value = 5)
+    public int end;
+    @Parameter(value = 1)
+    public int expectedNumAcceptStates;
+    @Parameter(value = 3)
     public int expectedNumAcceptedStrings;
-    @Parameter(value = 2)
-    public int expectedNumStates;
-    @Parameter(value = 4)
-    public int expectedNumTransitions;
     @Parameter // first data value (0) is default
+    public int expectedNumStates;
+    @Parameter(value = 2)
+    public int expectedNumTransitions;
+    @Parameter(value = 4)
     public int start;
     private Automaton actual;
 
     static {
         // initialize alphabet and initial bound length
-        Alphabet alphabet = new Alphabet("A-D");
+        alphabet = new Alphabet("A-D");
         initialBoundLength = 4;
 
         // create unbounded automaton
-        Automaton unbounded = BasicAutomata.makeCharSet(alphabet.getCharSet())
-                                           .repeat();
-        unbounded.minimize();
-
-        // store automaton as static variable
-        automaton = unbounded;
+        automaton = BasicAutomata.makeCharSet(alphabet.getCharSet())
+                                 .repeat();
+        automaton.minimize();
     }
 
-    @Parameters(name = "{index}: delete({0}, {1}) = [{2} states, {3} " +
-                       "accepting states, {4} transistions, {5} accepted " +
+    @Parameters(name = "{index}: delete({4}, {5}) = [{0} states, {1} " +
+                       "accepting states, {2} transistions, {3} accepted " +
                        "strings]")
     public static Iterable<Object[]> data() {
 
-        return Arrays.asList(new Object[][]{
-                {0, 0, 1, 1, 1, 341},
-                {0, 1, 1, 1, 1, 85},
-                {0, 2, 1, 1, 1, 21},
-                {0, 3, 1, 1, 1, 5},
-                {0, 4, 1, 1, 1, 1},
-                {1, 1, 1, 1, 1, 341},
-                {1, 2, 2, 1, 2, 84},
-                {1, 3, 2, 1, 2, 20},
-                {1, 4, 2, 1, 2, 4},
-                {2, 2, 1, 1, 1, 341},
-                {2, 3, 3, 1, 3, 80},
-                {2, 4, 3, 1, 3, 16},
-                {3, 3, 1, 1, 1, 341},
-                {3, 4, 4, 1, 4, 64},
-                {4, 4, 1, 1, 1, 341}
-        });
+        return Arrays.asList(addAutomatonTestInstance(1, 1, 1, 341, 0, 0),
+
+                             addAutomatonTestInstance(1, 1, 1, 85, 0, 1),
+                             addAutomatonTestInstance(1, 1, 1, 21, 0, 2),
+                             addAutomatonTestInstance(1, 1, 1, 5, 0, 3),
+                             addAutomatonTestInstance(1, 1, 1, 1, 0, 4),
+                             addAutomatonTestInstance(1, 1, 1, 341, 1, 1),
+                             addAutomatonTestInstance(2, 1, 2, 84, 1, 2),
+                             addAutomatonTestInstance(2, 1, 2, 20, 1, 3),
+                             addAutomatonTestInstance(2, 1, 2, 4, 1, 4),
+                             addAutomatonTestInstance(1, 1, 1, 341, 2, 2),
+                             addAutomatonTestInstance(3, 1, 3, 80, 2, 3),
+                             addAutomatonTestInstance(3, 1, 3, 16, 2, 4),
+                             addAutomatonTestInstance(1, 1, 1, 341, 3, 3),
+
+                             addAutomatonTestInstance(4, 1, 4, 64, 3, 4),
+                             addAutomatonTestInstance(1, 1, 1, 341, 4, 4));
     }
 
     @Before
