@@ -16,7 +16,7 @@ public class ImpreciseDelete
     private int start;
 
     public ImpreciseDelete(int start, int end) {
-        // initialize indicies from parameters
+        // initialize indices from parameters
         this.start = start;
         this.end = end;
     }

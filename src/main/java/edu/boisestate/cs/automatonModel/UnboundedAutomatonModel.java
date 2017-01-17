@@ -9,6 +9,8 @@ import edu.boisestate.cs.automatonModel.operations.*;
 import java.math.BigInteger;
 import java.util.Set;
 
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
 public class UnboundedAutomatonModel
         extends AutomatonModel {
 
@@ -143,8 +145,10 @@ public class UnboundedAutomatonModel
         Automaton automaton = this.getAutomaton();
 
         // perform operation
+//        Automaton result =
+//                this.performUnaryOperation(automaton, new PrecisePrefix(end));
         Automaton result =
-                this.performUnaryOperation(automaton, new PrecisePrefix(end));
+                this.performUnaryOperation(automaton, new ImpreciseDelete(start,end));
 
         // determine new bound length
         int newBoundLength;
@@ -156,7 +160,6 @@ public class UnboundedAutomatonModel
             int charsDeleted = end - start;
             newBoundLength = this.boundLength - charsDeleted;
         }
-
         // return new model from resulting automaton
         return new UnboundedAutomatonModel(result,
                                            this.alphabet,
