@@ -62,7 +62,7 @@ public class ImpreciseDelete
         // walk automaton up to end index
         for (int i = 0; i < this.start; i++) {
 
-            // initialize transistion set
+            // initialize transition set
             Map<State, Set<Transition>> transitionMap = new HashMap<>();
 
             // get all transitions for states
@@ -117,14 +117,14 @@ public class ImpreciseDelete
             startEndMap.put(s, endStates);
         }
 
-        // walk automaton between start and end indicies
+        // walk automaton between start and end indices
         for (int i = this.start; i < this.end; i++) {
             for (State startState : startEndMap.keySet()) {
 
                 // get end set as states variable
                 states = startEndMap.get(startState);
 
-                // initialize transistion set
+                // initialize transition set
                 Map<State, Set<Transition>> transitionMap = new HashMap<>();
 
                 // get all transitions for states
@@ -187,10 +187,12 @@ public class ImpreciseDelete
 
         // add epsilon transitions to deleted automaton
         clone1.addEpsilons(epsilons);
-
+        System.out.println("O \n"+clone1);
         // determinize and minimize deleted automaton
         clone1.determinize();
+        System.out.println("D \n" + clone1);
         clone1.minimize();
+        System.out.println("M \n" + clone1);
 
         // return the deleted automaton
         return clone1;
