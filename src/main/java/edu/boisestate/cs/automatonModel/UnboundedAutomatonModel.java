@@ -138,6 +138,7 @@ public class UnboundedAutomatonModel
         return this.automaton.run(actualValue);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public AutomatonModel delete(int start, int end) {
 
@@ -145,15 +146,16 @@ public class UnboundedAutomatonModel
         Automaton automaton = this.getAutomaton();
 
         // perform operation
-//        Automaton result =
-//                this.performUnaryOperation(automaton, new PrecisePrefix(end));
         System.out.println("Old \n" + automaton);
         Automaton result =
-                this.performUnaryOperation(automaton, new ImpreciseDelete(start,end));
+                this.performUnaryOperation(automaton,
+                                           new PreciseDelete(start,end));
 
         // determine new bound length
         int newBoundLength;
         if (this.boundLength < start) {
+            // automaton should already be empty after delete operation
+            // algorithm
             newBoundLength = 0;
         } else if (this.boundLength < end) {
             newBoundLength = start;

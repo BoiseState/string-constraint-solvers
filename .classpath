@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="graphs/|src/analysis/|src/|scripts/|lib/|SolverInterface/src/analysis/|SolverInterface/src/|SolverInterface/" kind="src" path=""/>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="main/resources/repo/|main/resources/|main/|main/java/|test/java/edu/boisestate/cs/|test/java/edu/boisestate/|test/java/edu/|test/java/|test/|test/java/" including="**/*.java" kind="src" path="src"/>
+	<classpathentry excluding="resources/repo/|resources/|java/edu/boisestate/cs/util/|java/edu/boisestate/cs/|java/edu/boisestate/|java/edu/|java/" kind="src" path="src/main"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="java/edu/boisestate/cs/|java/edu/boisestate/|java/edu/|java/" kind="src" path="src/test"/>
+	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="lib" path="/Users/elenasherman/Documents/research/BehavioralCoverage/PPCtools/lib/jgrapht-jdk1.6.jar"/>
-	<classpathentry kind="lib" path="/Users/elenasherman/git/string-constraint-solvers/lib/string.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="/Users/elenasherman/git/string-constraint-solvers/lib/automaton-1.11-8.jar"/>
-	<classpathentry kind="lib" path="/Users/elenasherman/git/string-constraint-solvers/lib/stranger.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="lib" path="/Users/elenasherman/git/string-constraint-solvers/src/main/resources/repo/dk/brics/string/2.1-1/string-2.1-1.jar"/>
+	<classpathentry kind="lib" path="/Users/elenasherman/Documents/libs/automaton.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/elenasherman/git/string-constraint-solvers/src/main/resources/repo/stranger/stranger/1.0/stranger-1.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

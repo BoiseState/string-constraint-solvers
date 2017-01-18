@@ -16,11 +16,16 @@ public class AggregateAutomataModel
         extends AutomatonModel {
 
     private Automaton[] automata;
+    private int[] factors;
 
     AggregateAutomataModel(Automaton[] automata,
                            Alphabet alphabet,
                            int initialBoundLength) {
         super(alphabet, initialBoundLength);
+
+        // create arrays from parameter
+        this.automata = new Automaton[automata.length];
+        this.factors = new int[automata.length];
 
         setAutomata(automata);
 
@@ -28,16 +33,35 @@ public class AggregateAutomataModel
                                                                initialBoundLength);
     }
 
-    private void setAutomata(Automaton[] automata) {
-
-        // create automata array from parameter
-        this.automata = new Automaton[automata.length];
+    private void setAutomata(Automaton[] automatonArray) {
 
         // fill automata array with automaton clones
-        for (int i = 0; i < automata.length; i++) {
-            Automaton clone = automata[i].clone();
+        for (int i = 0; i < automatonArray.length; i++) {
+            Automaton clone = automatonArray[i].clone();
             this.automata[i] = clone;
+
+            // add factors to factor array
+            this.factors[i] = 1;
         }
+    }
+
+    AggregateAutomataModel(Automaton[] automata,
+                           Alphabet alphabet,
+                           int initialBoundLength,
+                           int[] currentFactors) {
+        super(alphabet, initialBoundLength);
+
+        // create arrays from parameters
+        this.automata = new Automaton[automata.length];
+        this.factors = new int[currentFactors.length];
+
+        setAutomata(automata);
+
+        // copy existing factors into array
+        System.arraycopy(currentFactors, 0, factors, 0, currentFactors.length);
+
+        this.modelManager = new AggregateAutomatonModelManager(alphabet,
+                                                               initialBoundLength);
     }
 
     AggregateAutomataModel(Automaton automaton, Alphabet alphabet) {
@@ -61,7 +85,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     Automaton[] getAutomata() {
@@ -108,7 +133,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -124,7 +150,19 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
+    }
+
+    @SuppressWarnings("CloneDoesntCallSuperClone")
+    @Override
+    public AutomatonModel clone() {
+
+        // create new model from existing automata
+        return new AggregateAutomataModel(this.automata,
+                                          this.alphabet,
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -154,7 +192,8 @@ public class AggregateAutomataModel
         // return new model from results automata array
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -198,7 +237,8 @@ public class AggregateAutomataModel
         // return new model from results automata array
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     private Automaton[] getAutomataFromModel(AutomatonModel model) {
@@ -254,7 +294,8 @@ public class AggregateAutomataModel
         // return new model from results automata array
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -295,17 +336,8 @@ public class AggregateAutomataModel
         // return new model from results automata array
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
-    }
-
-    @SuppressWarnings("CloneDoesntCallSuperClone")
-    @Override
-    public AutomatonModel clone() {
-
-        // create new model from existing automata
-        return new AggregateAutomataModel(this.automata,
-                                          this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -396,7 +428,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -440,7 +473,8 @@ public class AggregateAutomataModel
         // return new model from results automata array
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -538,7 +572,8 @@ public class AggregateAutomataModel
         // return new model from results automata array
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -547,17 +582,18 @@ public class AggregateAutomataModel
         // initialize total model count as big integer
         BigInteger totalModelCount = new BigInteger("0");
 
-        // get automata from model
-        Automaton[] automata = this.getAutomata();
-
         // for each automaton in automata array
-        for (Automaton automaton : automata) {
+        for (int i = 0; i < this.automata.length; i++) {
 
             // get automaton model count
-            BigInteger modelCount = StringModelCounter.ModelCount(automaton);
+            BigInteger modelCount =
+                    StringModelCounter.ModelCount(this.automata[i]);
 
-            // add automaton model count to total model count
-            totalModelCount = totalModelCount.add(modelCount);
+            // correct model count against initial model counts
+            BigInteger adjustedModelCount =
+
+                    // add automaton model count to total model count
+                    totalModelCount = totalModelCount.add(modelCount);
         }
 
         // return final model count
@@ -577,7 +613,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -594,7 +631,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -611,7 +649,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -627,7 +666,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -643,7 +683,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -659,7 +700,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -675,7 +717,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -691,7 +734,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -707,7 +751,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -723,7 +768,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -739,7 +785,8 @@ public class AggregateAutomataModel
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 
     @Override
@@ -783,6 +830,7 @@ public class AggregateAutomataModel
         // return new model from results automata array
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength);
+                                          this.boundLength,
+                                          this.factors);
     }
 }
