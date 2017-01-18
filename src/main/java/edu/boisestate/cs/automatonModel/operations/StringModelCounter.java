@@ -12,7 +12,8 @@ public class StringModelCounter {
     // default model counter for bounded automata
     static public BigInteger ModelCount(Automaton automaton) {
 
-//        System.out.println("*** Starting model count for bounded automata ***");
+//        System.out.println("*** Starting model count for bounded automata
+// ***");
 
         // initialize big integer value
         BigInteger initialModelCount = new BigInteger("1");
@@ -39,12 +40,13 @@ public class StringModelCounter {
     // default model counter for unbounded automata, count is specified
     static public BigInteger ModelCount(Automaton automaton, int initialCount) {
 
-//        System.out.format("*** Starting model count for unbounded automata with count %d ***\n", initialCount);
+//        System.out.format("*** Starting model count for unbounded automata
+// with count %d ***\n", initialCount);
 
-        // TODO : Fix bug with unbounded automata and length 0
-
-        if (initialCount < 1) {
-
+        // allow empty string
+        if (initialCount == 0 && automaton.getInitialState().isAccept()) {
+            return new BigInteger("1");
+        } else if (initialCount < 1) {
             return new BigInteger("0");
         }
 

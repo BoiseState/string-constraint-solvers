@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.is;
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
 public class
-Given_PreciseDelete_When_PerformingOperation_On_AggregateBoundedAutomata {
+Given_PreciseDelete_When_DeletingAggregateBoundedAutomata {
 
     private static Automaton[] automata;
     private static int initialBoundLength;

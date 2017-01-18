@@ -36,11 +36,6 @@ public class PreciseDelete
         // create automaton clone
         Automaton clone = a.clone();
 
-        // if start and end indices are equal, return clone2
-        if (this.start == this.end) {
-            return clone;
-        }
-
         // if start is greater than end, return empty automaton (exception)
         if (this.start > this.end) {
             BasicAutomata.makeEmpty();
@@ -58,6 +53,7 @@ public class PreciseDelete
         returnAutomaton.setInitialState(initial);
 
         // initialize state map
+//        Map<State, Set<State>> startStatesMap = new HashMap<>();
         Map<State, State> stateMap = new HashMap<>();
         stateMap.put(clone.getInitialState(), initial);
 
