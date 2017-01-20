@@ -3,8 +3,6 @@ package edu.boisestate.cs.automatonModel;
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
-import edu.boisestate.cs.automatonModel.operations.PreciseDelete;
-import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,22 +18,23 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_AggregateBoundedAutomata_When_PreciselyDeleted {
+public class Given_BoundedAutomatonModel_When_PreciselyDeleted {
 
-    @Parameter(value = 2)
-    public AggregateAutomataModel model;
     @Parameter // first data value (0) is default
     public String description;
     @Parameter(value = 4)
     public int end;
     @Parameter(value = 1)
     public int expectedModelCount;
+    @Parameter(value = 2)
+    public BoundedAutomatonModel model;
     @Parameter(value = 3)
     public int start;
     private AutomatonModel deleteModel;
 
 
-    @Parameters(name = "{index}: <{0} Automaton Model>.delete({3}, {4}) - Expected MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton Model>.delete({3}, {4}) - " +
+                       "Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
@@ -49,7 +48,12 @@ public class Given_AggregateBoundedAutomata_When_PreciselyDeleted {
                                      .concatenate(uniform);
         Automaton nonUniform = uniform.intersection(intersect);
 
-        // determinize and minimize automata
+        // bound automata
+        Automaton bounding = BasicAutomata.makeCharSet(alphabet.getCharSet())
+                                          .repeat(0, initialBoundLength);
+        concrete = concrete.intersection(bounding);
+        uniform = uniform.intersection(bounding);
+        nonUniform = nonUniform.intersection(bounding);
         concrete.determinize();
         concrete.minimize();
         uniform.determinize();
@@ -57,21 +61,18 @@ public class Given_AggregateBoundedAutomata_When_PreciselyDeleted {
         nonUniform.determinize();
         nonUniform.minimize();
 
-        // create bounded automata
-        Automaton chars = BasicAutomata.makeCharSet(alphabet.getCharSet());
-        Automaton[] concreteAutomata = new Automaton[initialBoundLength + 1];
-        Automaton[] uniformAutomata = new Automaton[initialBoundLength + 1];
-        Automaton[] nonUniformAutomata = new Automaton[initialBoundLength + 1];
-        for (int i = 0; i <= initialBoundLength; i++) {
-            concreteAutomata[i] = concrete.intersection(chars.repeat(i, i));
-            uniformAutomata[i] = uniform.intersection(chars.repeat(i, i));
-            nonUniformAutomata[i] = nonUniform.intersection(chars.repeat(i, i));
-        }
-
-        // create aggregate bounded automata models
-        AggregateAutomataModel concreteModel = new AggregateAutomataModel(concreteAutomata, alphabet, initialBoundLength);
-        AggregateAutomataModel uniformModel = new AggregateAutomataModel(uniformAutomata, alphabet, initialBoundLength);
-        AggregateAutomataModel nonUniformModel = new AggregateAutomataModel(nonUniformAutomata, alphabet, initialBoundLength);
+        // create automaton models
+        BoundedAutomatonModel concreteModel =
+                new BoundedAutomatonModel(concrete,
+                                          alphabet,
+                                          initialBoundLength);
+        BoundedAutomatonModel uniformModel = new BoundedAutomatonModel(uniform,
+                                                                       alphabet,
+                                                                       initialBoundLength);
+        BoundedAutomatonModel nonUniformModel = new BoundedAutomatonModel(
+                nonUniform,
+                alphabet,
+                initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Concrete", 1, concreteModel, 0, 0},
@@ -85,26 +86,26 @@ public class Given_AggregateBoundedAutomata_When_PreciselyDeleted {
                 {"Concrete", 1, concreteModel, 2, 3},
                 {"Concrete", 1, concreteModel, 3, 3},
                 {"Uniform", 85, uniformModel, 0, 0},
-                {"Uniform", 22, uniformModel, 0, 1},
-                {"Uniform", 7, uniformModel, 0, 2},
-                {"Uniform", 4, uniformModel, 0, 3},
+                {"Uniform", 21, uniformModel, 0, 1},
+                {"Uniform", 5, uniformModel, 0, 2},
+                {"Uniform", 1, uniformModel, 0, 3},
                 {"Uniform", 84, uniformModel, 1, 1},
-                {"Uniform", 24, uniformModel, 1, 2},
-                {"Uniform", 12, uniformModel, 1, 3},
+                {"Uniform", 20, uniformModel, 1, 2},
+                {"Uniform", 4, uniformModel, 1, 3},
                 {"Uniform", 80, uniformModel, 2, 2},
-                {"Uniform", 32, uniformModel, 2, 3},
+                {"Uniform", 16, uniformModel, 2, 3},
                 {"Uniform", 64, uniformModel, 3, 3},
                 {"Non-uniform", 45, nonUniformModel, 0, 0},
                 {"Non-uniform", 21, nonUniformModel, 0, 1},
-                {"Non-uniform", 6, nonUniformModel, 0, 2},
-                {"Non-uniform", 3, nonUniformModel, 0, 3},
+                {"Non-uniform", 5, nonUniformModel, 0, 2},
+                {"Non-uniform", 1, nonUniformModel, 0, 3},
                 {"Non-uniform", 45, nonUniformModel, 1, 1},
-                {"Non-uniform", 21, nonUniformModel, 1, 2},
-                {"Non-uniform", 9, nonUniformModel, 1, 3},
+                {"Non-uniform", 20, nonUniformModel, 1, 2},
+                {"Non-uniform", 4, nonUniformModel, 1, 3},
                 {"Non-uniform", 44, nonUniformModel, 2, 2},
-                {"Non-uniform", 23, nonUniformModel, 2, 3},
-                {"Non-uniform", 37, nonUniformModel, 3, 3}
-        });
+                {"Non-uniform", 16, nonUniformModel, 2, 3},
+                {"Non-uniform", 37, nonUniformModel, 3, 3},
+                });
     }
 
     @Before

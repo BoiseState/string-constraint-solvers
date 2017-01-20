@@ -3,6 +3,8 @@ package edu.boisestate.cs.automatonModel;
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
+import edu.boisestate.cs.automatonModel.operations.PreciseDelete;
+import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,28 +20,29 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_AggregateBoundedAutomata_When_Concatenated {
+public class Given_AggregateAutomataModel_When_PreciselyDeleted {
 
-    @Parameter(value = 3)
-    public AggregateAutomataModel baseModel;
-    @Parameter // first data value (0) is default
-    public String baseDescription;
-    @Parameter(value = 1)
-    public String argDescription;
     @Parameter(value = 2)
-    public int expectedModelCount;
+    public AggregateAutomataModel model;
+    @Parameter // first data value (0) is default
+    public String description;
     @Parameter(value = 4)
-    public AggregateAutomataModel argModel;
-    private AutomatonModel concatModel;
+    public int end;
+    @Parameter(value = 1)
+    public int expectedModelCount;
+    @Parameter(value = 3)
+    public int start;
+    private AutomatonModel deleteModel;
 
-    @Parameters(name = "{index}: <{0} Automaton Model>.concat(<{1} Automaton Model>) - Expected MC = {2}")
+
+    @Parameters(name = "{index}: <{0} Automaton Model>.delete({3}, {4}) - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
-        int initialBoundLength = 2;
+        int initialBoundLength = 3;
 
         // create automata
-        Automaton concrete = BasicAutomata.makeString("AB");
+        Automaton concrete = BasicAutomata.makeString("ABC");
         Automaton uniform = BasicAutomata.makeCharSet(alphabet.getCharSet())
                                          .repeat();
         Automaton intersect = uniform.concatenate(BasicAutomata.makeChar('A'))
@@ -65,35 +68,56 @@ public class Given_AggregateBoundedAutomata_When_Concatenated {
             nonUniformAutomata[i] = nonUniform.intersection(chars.repeat(i, i));
         }
 
-        // create aggregate bounded automata models
+        // create automaton models
         AggregateAutomataModel concreteModel = new AggregateAutomataModel(concreteAutomata, alphabet, initialBoundLength);
         AggregateAutomataModel uniformModel = new AggregateAutomataModel(uniformAutomata, alphabet, initialBoundLength);
         AggregateAutomataModel nonUniformModel = new AggregateAutomataModel(nonUniformAutomata, alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Concrete base", "Concrete arg", 1, concreteModel, concreteModel},
-                {"Concrete base", "Uniform arg", 21, concreteModel, uniformModel},
-                {"Concrete base", "Non-uniform arg", 8, concreteModel, nonUniformModel},
-                {"Uniform base", "Concrete arg", 21, uniformModel, concreteModel},
-                {"Uniform base", "Uniform arg", 441, uniformModel, uniformModel},
-                {"Uniform base", "Non-uniform arg", 168, uniformModel, nonUniformModel},
-                {"Non-uniform base", "Concrete arg", 8, nonUniformModel, concreteModel},
-                {"Non-uniform base", "Uniform arg", 168, nonUniformModel, uniformModel},
-                {"Non-uniform base", "Non-uniform arg", 64, nonUniformModel, nonUniformModel},
-                });
+                {"Concrete", 1, concreteModel, 0, 0},
+                {"Concrete", 1, concreteModel, 0, 1},
+                {"Concrete", 1, concreteModel, 0, 2},
+                {"Concrete", 1, concreteModel, 0, 3},
+                {"Concrete", 1, concreteModel, 1, 1},
+                {"Concrete", 1, concreteModel, 1, 2},
+                {"Concrete", 1, concreteModel, 1, 3},
+                {"Concrete", 1, concreteModel, 2, 2},
+                {"Concrete", 1, concreteModel, 2, 3},
+                {"Concrete", 1, concreteModel, 3, 3},
+                {"Uniform", 85, uniformModel, 0, 0},
+                {"Uniform", 22, uniformModel, 0, 1},
+                {"Uniform", 7, uniformModel, 0, 2},
+                {"Uniform", 4, uniformModel, 0, 3},
+                {"Uniform", 84, uniformModel, 1, 1},
+                {"Uniform", 24, uniformModel, 1, 2},
+                {"Uniform", 12, uniformModel, 1, 3},
+                {"Uniform", 80, uniformModel, 2, 2},
+                {"Uniform", 32, uniformModel, 2, 3},
+                {"Uniform", 64, uniformModel, 3, 3},
+                {"Non-uniform", 45, nonUniformModel, 0, 0},
+                {"Non-uniform", 21, nonUniformModel, 0, 1},
+                {"Non-uniform", 6, nonUniformModel, 0, 2},
+                {"Non-uniform", 3, nonUniformModel, 0, 3},
+                {"Non-uniform", 45, nonUniformModel, 1, 1},
+                {"Non-uniform", 21, nonUniformModel, 1, 2},
+                {"Non-uniform", 9, nonUniformModel, 1, 3},
+                {"Non-uniform", 44, nonUniformModel, 2, 2},
+                {"Non-uniform", 23, nonUniformModel, 2, 3},
+                {"Non-uniform", 37, nonUniformModel, 3, 3}
+        });
     }
 
     @Before
     public void setup() {
         // *** act ***
-        this.concatModel = this.baseModel.concatenate(this.argModel);
+        this.deleteModel = this.model.delete(this.start, this.end);
 
     }
 
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = this.concatModel.modelCount().intValue();
+        int modelCount = this.deleteModel.modelCount().intValue();
 
         // *** assert ***
         assertThat(modelCount, is(equalTo(this.expectedModelCount)));
