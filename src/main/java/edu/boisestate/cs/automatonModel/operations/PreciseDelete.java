@@ -33,29 +33,29 @@ public class PreciseDelete
 
     @Override
     public Automaton op(Automaton a) {
+        // if start is greater than end or automaton is empy
+        if (this.start > this.end || a.isEmpty()) {
+            // return empty automaton (exception)
+            return BasicAutomata.makeEmpty();
+        }
+
         // create automaton clone
         Automaton clone = a.clone();
 
-        // if start is greater than end, return empty automaton (exception)
-        if (this.start > this.end) {
-            BasicAutomata.makeEmpty();
-        }
+        // create new initial state
+        State initial = new State();
 
         // initialize state set
         Set<State> states = new HashSet<>();
-        states.add(clone.getInitialState());
-
-        // create new initial state
-        State initial = new State();
+        states.add(initial);
 
         // create return automaton from initial state
         Automaton returnAutomaton = new Automaton();
         returnAutomaton.setInitialState(initial);
 
         // initialize state map
-//        Map<State, Set<State>> startStatesMap = new HashMap<>();
         Map<State, State> stateMap = new HashMap<>();
-        stateMap.put(clone.getInitialState(), initial);
+        stateMap.put(initial, clone.getInitialState());
 
         // create copy of automaton before start
         for (int i = 0; i < this.start; i++) {
@@ -69,41 +69,34 @@ public class PreciseDelete
 
             // get all transistions from each state
             for (State state : states) {
-                // get or create copy state
-                State copy;
-                if (stateMap.containsKey(state)) {
-                    copy = stateMap.get(state);
-                } else {
-                    copy = new State();
-                    stateMap.put(state, copy);
-                }
+                // get original state from clone
+                State originalState = stateMap.get(state);
 
                 // add transitions to copied states
-                for (Transition transition : state.getTransitions()) {
-                    // add destination state as next state
-                    nextStates.add(transition.getDest());
-
+                for (Transition transition : originalState.getTransitions()) {
                     // create a copy of the destination state and add to map
                     State destination = new State();
-                    stateMap.put(transition.getDest(), destination);
+                    stateMap.put(destination, transition.getDest());
+
+                    // add destination state as next state
+                    nextStates.add(destination);
 
                     // create a transition from the previous state copy
-                    copy.addTransition(new Transition(transition.getMin(),
+                    state.addTransition(new Transition(transition.getMin(),
                                                       transition.getMax(),
                                                       destination));
                 }
             }
 
             // update states with new states
-            states.clear();
-            states.addAll(nextStates);
+            states = nextStates;;
         }
 
         // initialize end states map
         Map<State, Set<State>> endStatesMap = new HashMap<>();
         for (State state : states) {
             Set<State> stateSet = new HashSet<>();
-            stateSet.add(state);
+            stateSet.add(stateMap.get(state));
             endStatesMap.put(state, stateSet);
         }
 
@@ -154,8 +147,7 @@ public class PreciseDelete
         List<StatePair> epsilons = new ArrayList<>();
         for (State state : states) {
             for (State endState: endStatesMap.get(state)){
-                State fromState = stateMap.get(state);
-                epsilons.add(new StatePair(fromState, endState));
+                epsilons.add(new StatePair(state, endState));
             }
         }
 

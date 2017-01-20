@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_PreciseDelete_When_DeletingUnboundedAutomaton {
+public class Given_PreciseDeletion_For_BoundedAutomata {
 
     @Parameter(value = 2)
     public Automaton automaton;
@@ -33,59 +33,66 @@ public class Given_PreciseDelete_When_DeletingUnboundedAutomaton {
     public int start;
     private Automaton deletedAutomaton;
 
-    @Parameters(name = "{index}: [{0} Automaton].delete({3}, {4}) - Expected" +
+
+    @Parameters(name = "{index}: <{0} Automaton>.delete({3}, {4}) - Expected" +
                        " MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
+        int initialBoundLength = 3;
 
         // create automata
-        Automaton known = BasicAutomata.makeString("ABC");
+        Automaton concrete = BasicAutomata.makeString("ABC");
         Automaton uniform = BasicAutomata.makeCharSet(alphabet.getCharSet())
                                          .repeat();
         Automaton intersect = uniform.concatenate(BasicAutomata.makeChar('A'))
                                      .concatenate(uniform);
         Automaton nonUniform = uniform.intersection(intersect);
 
-        // determinize and minimize automata
-        known.determinize();
-        known.minimize();
+        // bound automata
+        Automaton bounding = BasicAutomata.makeCharSet(alphabet.getCharSet())
+                                          .repeat(0, initialBoundLength);
+        concrete = concrete.intersection(bounding);
+        uniform = uniform.intersection(bounding);
+        nonUniform = nonUniform.intersection(bounding);
+        concrete.determinize();
+        concrete.minimize();
         uniform.determinize();
         uniform.minimize();
         nonUniform.determinize();
         nonUniform.minimize();
 
         return Arrays.asList(new Object[][]{
-                {"Known", 1, known, 0, 0},
-                {"Known", 1, known, 0, 1},
-                {"Known", 1, known, 0, 2},
-                {"Known", 1, known, 0, 3},
-                {"Known", 1, known, 1, 1},
-                {"Known", 1, known, 1, 2},
-                {"Known", 1, known, 1, 3},
-                {"Known", 1, known, 2, 2},
-                {"Known", 1, known, 2, 3},
-                {"Known", 1, known, 3, 3},
-                {"Unknown Uniform", 85, uniform, 0, 0},
-                {"Unknown Uniform", 21, uniform, 0, 1},
-                {"Unknown Uniform", 5, uniform, 0, 2},
-                {"Unknown Uniform", 1, uniform, 0, 3},
-                {"Unknown Uniform", 84, uniform, 1, 1},
-                {"Unknown Uniform", 20, uniform, 1, 2},
-                {"Unknown Uniform", 4, uniform, 1, 3},
-                {"Unknown Uniform", 80, uniform, 2, 2},
-                {"Unknown Uniform", 16, uniform, 2, 3},
-                {"Unknown Uniform", 64, uniform, 3, 3},
-                {"Unknown Non-uniform", 45, nonUniform, 0, 0},
-                {"Unknown Non-uniform", 21, nonUniform, 0, 1},
-                {"Unknown Non-uniform", 5, nonUniform, 0, 2},
-                {"Unknown Non-uniform", 1, nonUniform, 0, 3},
-                {"Unknown Non-uniform", 45, nonUniform, 1, 1},
-                {"Unknown Non-uniform", 20, nonUniform, 1, 2},
-                {"Unknown Non-uniform", 4, nonUniform, 1, 3},
-                {"Unknown Non-uniform", 44, nonUniform, 2, 2},
-                {"Unknown Non-uniform", 7, nonUniform, 2, 3},
-                {"Unknown Non-uniform", 37, nonUniform, 3, 3}
+                {"Concrete", 1, concrete, 0, 0},
+                {"Concrete", 1, concrete, 0, 1},
+                {"Concrete", 1, concrete, 0, 2},
+                {"Concrete", 1, concrete, 0, 3},
+                {"Concrete", 1, concrete, 1, 1},
+                {"Concrete", 1, concrete, 1, 2},
+                {"Concrete", 1, concrete, 1, 3},
+                {"Concrete", 1, concrete, 2, 2},
+                {"Concrete", 1, concrete, 2, 3},
+                {"Concrete", 1, concrete, 3, 3},
+                {"Uniform", 85, uniform, 0, 0},
+                {"Uniform", 21, uniform, 0, 1},
+                {"Uniform", 5, uniform, 0, 2},
+                {"Uniform", 1, uniform, 0, 3},
+                {"Uniform", 84, uniform, 1, 1},
+                {"Uniform", 20, uniform, 1, 2},
+                {"Uniform", 4, uniform, 1, 3},
+                {"Uniform", 80, uniform, 2, 2},
+                {"Uniform", 16, uniform, 2, 3},
+                {"Uniform", 64, uniform, 3, 3},
+                {"Non-uniform", 45, nonUniform, 0, 0},
+                {"Non-uniform", 21, nonUniform, 0, 1},
+                {"Non-uniform", 5, nonUniform, 0, 2},
+                {"Non-uniform", 1, nonUniform, 0, 3},
+                {"Non-uniform", 45, nonUniform, 1, 1},
+                {"Non-uniform", 20, nonUniform, 1, 2},
+                {"Non-uniform", 4, nonUniform, 1, 3},
+                {"Non-uniform", 44, nonUniform, 2, 2},
+                {"Non-uniform", 16, nonUniform, 2, 3},
+                {"Non-uniform", 37, nonUniform, 3, 3}
         });
     }
 
@@ -103,10 +110,7 @@ public class Given_PreciseDelete_When_DeletingUnboundedAutomaton {
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int difference = end - start;
-        int boundLength = 3;
-        int modelCount = StringModelCounter.ModelCount(this.deletedAutomaton,
-                                                       boundLength - difference)
+        int modelCount = StringModelCounter.ModelCount(this.deletedAutomaton)
                                            .intValue();
 
         // *** assert ***

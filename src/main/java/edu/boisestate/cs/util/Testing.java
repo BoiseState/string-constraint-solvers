@@ -35,6 +35,10 @@ public class Testing {
         nonUniform.determinize();
         nonUniform.minimize();
 
-        DotToGraph.outputDotFileAndPng(nonUniform.toDot(), "temp1");
+        PreciseDelete delete = new PreciseDelete(2,2);
+
+        Automaton temp = delete.op(nonUniform);
+
+        DotToGraph.outputDotFileAndPng(temp.toDot(), "temp1");
     }
 }
