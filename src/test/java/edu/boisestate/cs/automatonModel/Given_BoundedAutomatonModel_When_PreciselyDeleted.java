@@ -12,6 +12,9 @@ import org.junit.runners.Parameterized.Parameters;
 
 import java.util.Arrays;
 
+import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities.*;
+import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities
+        .getNonUniformBoundedModel;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -40,41 +43,34 @@ public class Given_BoundedAutomatonModel_When_PreciselyDeleted {
         Alphabet alphabet = new Alphabet("A-D");
         int initialBoundLength = 3;
 
-        // create automata
-        Automaton concrete = BasicAutomata.makeString("ABC");
-        Automaton uniform = BasicAutomata.makeCharSet(alphabet.getCharSet())
-                                         .repeat();
-        Automaton intersect = uniform.concatenate(BasicAutomata.makeChar('A'))
-                                     .concatenate(uniform);
-        Automaton nonUniform = uniform.intersection(intersect);
-
-        // bound automata
-        Automaton bounding = BasicAutomata.makeCharSet(alphabet.getCharSet())
-                                          .repeat(0, initialBoundLength);
-        concrete = concrete.intersection(bounding);
-        uniform = uniform.intersection(bounding);
-        nonUniform = nonUniform.intersection(bounding);
-        concrete.determinize();
-        concrete.minimize();
-        uniform.determinize();
-        uniform.minimize();
-        nonUniform.determinize();
-        nonUniform.minimize();
-
         // create automaton models
-        BoundedAutomatonModel concreteModel =
-                new BoundedAutomatonModel(concrete,
-                                          alphabet,
-                                          initialBoundLength);
-        BoundedAutomatonModel uniformModel = new BoundedAutomatonModel(uniform,
-                                                                       alphabet,
-                                                                       initialBoundLength);
-        BoundedAutomatonModel nonUniformModel = new BoundedAutomatonModel(
-                nonUniform,
-                alphabet,
-                initialBoundLength);
+        BoundedAutomatonModel emptyModel = getEmptyBoundedModel(alphabet);
+        BoundedAutomatonModel emptyStringModel = getEmptyStringBoundedModel(alphabet);
+        BoundedAutomatonModel concreteModel = getConcreteBoundedModel(alphabet,"ABC");
+        BoundedAutomatonModel uniformModel = getUniformBoundedModel(alphabet, initialBoundLength);
+        BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
+                {"Empty", 0, emptyModel, 0, 0},
+                {"Empty", 0, emptyModel, 0, 1},
+                {"Empty", 0, emptyModel, 0, 2},
+                {"Empty", 0, emptyModel, 0, 3},
+                {"Empty", 0, emptyModel, 1, 1},
+                {"Empty", 0, emptyModel, 1, 2},
+                {"Empty", 0, emptyModel, 1, 3},
+                {"Empty", 0, emptyModel, 2, 2},
+                {"Empty", 0, emptyModel, 2, 3},
+                {"Empty", 0, emptyModel, 3, 3},
+                {"Empty String", 1, emptyStringModel, 0, 0},
+                {"Empty String", 1, emptyStringModel, 0, 1},
+                {"Empty String", 1, emptyStringModel, 0, 2},
+                {"Empty String", 1, emptyStringModel, 0, 3},
+                {"Empty String", 0, emptyStringModel, 1, 1},
+                {"Empty String", 0, emptyStringModel, 1, 2},
+                {"Empty String", 0, emptyStringModel, 1, 3},
+                {"Empty String", 0, emptyStringModel, 2, 2},
+                {"Empty String", 0, emptyStringModel, 2, 3},
+                {"Empty String", 0, emptyStringModel, 3, 3},
                 {"Concrete", 1, concreteModel, 0, 0},
                 {"Concrete", 1, concreteModel, 0, 1},
                 {"Concrete", 1, concreteModel, 0, 2},
@@ -104,8 +100,8 @@ public class Given_BoundedAutomatonModel_When_PreciselyDeleted {
                 {"Non-uniform", 4, nonUniformModel, 1, 3},
                 {"Non-uniform", 44, nonUniformModel, 2, 2},
                 {"Non-uniform", 16, nonUniformModel, 2, 3},
-                {"Non-uniform", 37, nonUniformModel, 3, 3},
-                });
+                {"Non-uniform", 37, nonUniformModel, 3, 3}
+        });
     }
 
     @Before

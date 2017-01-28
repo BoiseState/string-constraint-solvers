@@ -78,14 +78,26 @@ public class AggregateAutomataModel
         // get automata from model
         Automaton[] automata = this.getAutomata();
 
+        // check if automata array has non-empty automata
+        boolean isEmpty = true;
+        for (Automaton a : automata) {
+            if (!a.isEmpty()) {
+                isEmpty = false;
+            }
+        }
+
         // perform operations
-        Automaton[] results =
-                this.performUnaryOperations(automata, new Prefix());
+        Automaton[] results = new Automaton[] {BasicAutomata.makeEmpty()};
+        int newBoundLength = 0;
+        if (isEmpty) {
+            results = this.performUnaryOperations(automata, new Prefix());
+            newBoundLength = this.boundLength;
+        }
 
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength,
+                                          newBoundLength,
                                           this.factors);
     }
 
@@ -126,14 +138,26 @@ public class AggregateAutomataModel
         // get automata from model
         Automaton[] automata = this.getAutomata();
 
+        // check if automata array has non-empty automata
+        boolean isEmpty = true;
+        for (Automaton a : automata) {
+            if (!a.isEmpty()) {
+                isEmpty = false;
+            }
+        }
+
         // perform operations
-        Automaton[] results =
-                this.performUnaryOperations(automata, new Substring());
+        Automaton[] results = new Automaton[] {BasicAutomata.makeEmpty()};
+        int newBoundLength = 0;
+        if (isEmpty) {
+            results = this.performUnaryOperations(automata, new Substring());
+            newBoundLength = this.boundLength;
+        }
 
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
                                           this.alphabet,
-                                          this.boundLength,
+                                          newBoundLength,
                                           this.factors);
     }
 

@@ -42,7 +42,10 @@ public class BoundedAutomatonModel
         Automaton automaton = this.getAutomaton();
 
         // perform operation
-        Automaton result = this.performUnaryOperation(automaton, new Prefix());
+        Automaton result = BasicAutomata.makeEmpty();
+        if (!automaton.isEmpty()) {
+            result = this.performUnaryOperation(automaton, new Prefix());
+        }
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result,
@@ -57,8 +60,10 @@ public class BoundedAutomatonModel
         Automaton automaton = this.getAutomaton();
 
         // perform operation
-        Automaton result =
-                this.performUnaryOperation(automaton, new Substring());
+        Automaton result = BasicAutomata.makeEmpty();
+        if (!automaton.isEmpty()) {
+            result = this.performUnaryOperation(automaton, new Substring());
+        }
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result,

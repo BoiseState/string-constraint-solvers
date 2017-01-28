@@ -12,6 +12,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import java.util.Arrays;
 
+import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -38,49 +39,40 @@ public class Given_AggregateAutomataModel_When_Concatenated {
         Alphabet alphabet = new Alphabet("A-D");
         int initialBoundLength = 2;
 
-        // create automata
-        Automaton concrete = BasicAutomata.makeString("AB");
-        Automaton uniform = BasicAutomata.makeCharSet(alphabet.getCharSet())
-                                         .repeat();
-        Automaton intersect = uniform.concatenate(BasicAutomata.makeChar('A'))
-                                     .concatenate(uniform);
-        Automaton nonUniform = uniform.intersection(intersect);
-
-        // determinize and minimize automata
-        concrete.determinize();
-        concrete.minimize();
-        uniform.determinize();
-        uniform.minimize();
-        nonUniform.determinize();
-        nonUniform.minimize();
-
-        // create bounded automata
-        Automaton chars = BasicAutomata.makeCharSet(alphabet.getCharSet());
-        Automaton[] concreteAutomata = new Automaton[initialBoundLength + 1];
-        Automaton[] uniformAutomata = new Automaton[initialBoundLength + 1];
-        Automaton[] nonUniformAutomata = new Automaton[initialBoundLength + 1];
-        for (int i = 0; i <= initialBoundLength; i++) {
-            concreteAutomata[i] = concrete.intersection(chars.repeat(i, i));
-            uniformAutomata[i] = uniform.intersection(chars.repeat(i, i));
-            nonUniformAutomata[i] = nonUniform.intersection(chars.repeat(i, i));
-        }
-
         // create automaton models
-        AggregateAutomataModel concreteModel = new AggregateAutomataModel(concreteAutomata, alphabet, initialBoundLength);
-        AggregateAutomataModel uniformModel = new AggregateAutomataModel(uniformAutomata, alphabet, initialBoundLength);
-        AggregateAutomataModel nonUniformModel = new AggregateAutomataModel(nonUniformAutomata, alphabet, initialBoundLength);
+        AggregateAutomataModel emptyModel = getEmptyAggregateModel(alphabet);
+        AggregateAutomataModel emptyStringModel = getEmptyStringAggregateModel(alphabet);
+        AggregateAutomataModel concreteModel = getConcreteAggregateModel(alphabet, "AB");
+        AggregateAutomataModel uniformModel = getUniformAggregateModel(alphabet, initialBoundLength);
+        AggregateAutomataModel nonUniformModel = getNonUniformAggregateModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Concrete base", "Concrete arg", 1, concreteModel, concreteModel},
-                {"Concrete base", "Uniform arg", 21, concreteModel, uniformModel},
-                {"Concrete base", "Non-uniform arg", 8, concreteModel, nonUniformModel},
-                {"Uniform base", "Concrete arg", 21, uniformModel, concreteModel},
-                {"Uniform base", "Uniform arg", 441, uniformModel, uniformModel},
-                {"Uniform base", "Non-uniform arg", 168, uniformModel, nonUniformModel},
-                {"Non-uniform base", "Concrete arg", 8, nonUniformModel, concreteModel},
-                {"Non-uniform base", "Uniform arg", 168, nonUniformModel, uniformModel},
-                {"Non-uniform base", "Non-uniform arg", 64, nonUniformModel, nonUniformModel},
-                });
+                {"Empty", "Empty", 0, emptyModel, emptyModel},
+                {"Empty", "Empty String", 0, emptyModel, emptyStringModel},
+                {"Empty", "Concrete", 0, emptyModel, concreteModel},
+                {"Empty", "Uniform", 0, emptyModel, uniformModel},
+                {"Empty", "Non-uniform", 0, emptyModel, nonUniformModel},
+                {"Empty String", "Empty", 0, emptyStringModel, emptyModel},
+                {"Empty String", "Empty String", 1, emptyStringModel, emptyStringModel},
+                {"Empty String", "Concrete", 1, emptyStringModel, concreteModel},
+                {"Empty String", "Uniform", 21, emptyStringModel, uniformModel},
+                {"Empty String", "Non-uniform", 8, emptyStringModel, nonUniformModel},
+                {"Concrete", "Empty", 0, concreteModel, emptyModel},
+                {"Concrete", "Empty String", 1, concreteModel, emptyStringModel},
+                {"Concrete", "Concrete", 1, concreteModel, concreteModel},
+                {"Concrete", "Uniform", 21, concreteModel, uniformModel},
+                {"Concrete", "Non-uniform", 8, concreteModel, nonUniformModel},
+                {"Uniform", "Empty", 0, uniformModel, emptyModel},
+                {"Uniform", "Empty String", 21, uniformModel, emptyStringModel},
+                {"Uniform", "Concrete", 21, uniformModel, concreteModel},
+                {"Uniform", "Uniform", 441, uniformModel, uniformModel},
+                {"Uniform", "Non-uniform", 168, uniformModel, nonUniformModel},
+                {"Non-uniform", "Empty", 0, nonUniformModel, emptyModel},
+                {"Non-uniform", "Empty String", 8, nonUniformModel, emptyStringModel},
+                {"Non-uniform", "Concrete", 8, nonUniformModel, concreteModel},
+                {"Non-uniform", "Uniform", 168, nonUniformModel, uniformModel},
+                {"Non-uniform", "Non-uniform", 64, nonUniformModel, nonUniformModel}
+        });
     }
 
     @Before

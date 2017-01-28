@@ -76,11 +76,8 @@ public class AutomatonModelSolver
 
             // TODO: False branch with appropriate bound tracking operations
 
-            // cache base model as temp
-            AutomatonModel tempModel = baseModel;
-
             // get satisfying base model as temp
-            tempModel = baseModel.assertNotContainsOther(argModel);
+           AutomatonModel tempModel = baseModel.assertNotContainsOther(argModel);
 
             // get satisfying arg model
             argModel = argModel.assertNotContainedInOther(baseModel);
@@ -127,34 +124,16 @@ public class AutomatonModelSolver
             baseModel = baseModel.assertEndsWith(argModel);
 
             // get satisfying arg model
-            AutomatonModel tempModel = baseModel.allSuffixes();
-            argModel = argModel.assertContainedInOther(tempModel);
-
+            argModel = argModel.assertEndsOther(baseModel);
         } else {
 
             // TODO: False branch with appropriate bound tracking operations
 
-            // cache temp as base model
-            AutomatonModel tempModel = baseModel;
+            // get satisfying base model as temp
+            AutomatonModel tempModel = baseModel.assertNotEndsWith(argModel);
 
-            // if arg model is singleton
-            if (argModel.isSingleton()) {
-
-                // get satisfying arg model
-                AutomatonModel x = this.modelManager.createAnyString();
-                x = x.concatenate(argModel);
-                tempModel = baseModel.minus(x);
-            }
-
-
-            // handle singleton base model
-            if (baseModel.isSingleton()) {
-
-                // get satisfying arg model
-                AutomatonModel x = baseModel.allSuffixes();
-                AutomatonModel argComplement = argModel.complement();
-                argModel = x.intersect(argComplement);
-            }
+            // get satisfying arg model
+            argModel = argModel.assertNotEndsOther(baseModel);
 
             // set base model from temp
             baseModel = tempModel;
@@ -173,62 +152,30 @@ public class AutomatonModelSolver
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
         // perform equals
-        baseModel = this.performBaseEquals(result, baseModel, argModel);
-        argModel = this.performArgEquals(result, baseModel, argModel);
-
-        // store result models
-        this.symbolicStringMap.put(base, baseModel);
-        this.symbolicStringMap.put(arg, argModel);
-    }
-
-    private AutomatonModel performArgEquals(boolean result,
-                                            AutomatonModel baseModel,
-                                            AutomatonModel argModel) {
-
-        if (result) {
-
-            // get satisfying arg model
-            argModel = argModel.assertEquals(baseModel);
-
-        } else {
-
-            // get satisfying base model
-            AutomatonModel temp = baseModel.assertNotEquals(argModel);
-
-            // get satisfying arg model
-            argModel = argModel.assertNotEquals(baseModel);
-
-            // handle singleton base model
-            if (baseModel.isSingleton()) {
-
-                // get satisfying arg automaton
-                AutomatonModel baseComplement = baseModel.complement();
-                argModel = argModel.intersect(baseComplement);
-            }
-        }
-
-        // return arg model
-        return argModel;
-    }
-
-    private AutomatonModel performBaseEquals(boolean result,
-                                             AutomatonModel baseModel,
-                                             AutomatonModel argModel) {
-
         if (result) {
 
             // get satisfying base model
             baseModel = baseModel.assertEquals(argModel);
 
+            // get satisfying arg model
+            argModel = argModel.assertEquals(baseModel);
         } else {
 
-            // get satisfying base model
-            baseModel = baseModel.assertNotEquals(argModel);
+            // TODO: False branch with appropriate bound tracking operations
 
+            // get satisfying base model as temp
+            AutomatonModel tempModel = baseModel.assertNotEquals(argModel);
+
+            // get satisfying arg model
+            argModel = argModel.assertNotEquals(baseModel);
+
+            // set base model from temp
+            baseModel = tempModel;
         }
 
-        // return base model
-        return baseModel;
+        // store result models
+        this.symbolicStringMap.put(base, baseModel);
+        this.symbolicStringMap.put(arg, argModel);
     }
 
     @Override
@@ -238,13 +185,27 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
-        // get ignore case equivalent automata
-        AutomatonModel baseIgnoreCase = baseModel.ignoreCase();
-        AutomatonModel argIgnoreCase = argModel.ignoreCase();
+        // perform equals
+        if (result) {
 
-        // perform equals with ignore case models
-        baseModel = performBaseEquals(result, baseIgnoreCase, argIgnoreCase);
-        argModel = performArgEquals(result, baseIgnoreCase, argIgnoreCase);
+            // get satisfying base model
+            baseModel = baseModel.assertEqualsIgnoreCase(argModel);
+
+            // get satisfying arg model
+            argModel = argModel.assertEqualsIgnoreCase(baseModel);
+        } else {
+
+            // TODO: False branch with appropriate bound tracking operations
+
+            // get satisfying base model as temp
+            AutomatonModel tempModel = baseModel.assertNotEqualsIgnoreCase(argModel);
+
+            // get satisfying arg model
+            argModel = argModel.assertNotEqualsIgnoreCase(baseModel);
+
+            // set base model from temp
+            baseModel = tempModel;
+        }
 
         // store result models
         this.symbolicStringMap.put(base, baseModel);
@@ -582,34 +543,18 @@ public class AutomatonModelSolver
             baseModel = baseModel.assertStartsWith(argModel);
 
             // get satisfying arg model
-            AutomatonModel x = baseModel.allPrefixes();
-            argModel = argModel.assertContainedInOther(x);
+            argModel = argModel.assertStartsOther(baseModel);
 
         } else {
 
-            // initialize temp as base
-            AutomatonModel temp = baseModel;
+            // get satisfying base model as temp
+            AutomatonModel tempModel = baseModel.assertNotStartsWith(argModel);
 
-            // if arg is singleton
-            if (argModel.isSingleton()) {
+            // get satisfying arg model
+            argModel = argModel.assertNotStartsOther(baseModel);
 
-                // get satisfying base model
-                AutomatonModel x = this.modelManager.createAnyString();
-                x = argModel.concatenate(x);
-                temp = baseModel.minus(x);
-            }
-
-            // if base is singleton
-            if (baseModel.isSingleton()) {
-
-                // get satisfying arg model
-                AutomatonModel baseComplement = baseModel.complement();
-                argModel = argModel.intersect(baseComplement);
-            }
-
-            // set base from temp
-            baseModel = temp;
-
+            // set base model from temp
+            baseModel = tempModel;
         }
 
         // store result models

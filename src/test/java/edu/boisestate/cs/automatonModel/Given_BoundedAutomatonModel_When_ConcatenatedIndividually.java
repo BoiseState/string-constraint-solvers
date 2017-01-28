@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_BoundedAutomatonModel_When_Concatenated {
+public class Given_BoundedAutomatonModel_When_ConcatenatedIndividually {
 
     @Parameter(value = 1)
     public String argDescription;
@@ -35,6 +35,7 @@ public class Given_BoundedAutomatonModel_When_Concatenated {
     public int expectedModelCount;
     private AutomatonModel concatModel;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.concat(<{1} Automaton " +
                        "Model>) - Expected MC = {2}")
     public static Iterable<Object[]> data() {
@@ -81,7 +82,7 @@ public class Given_BoundedAutomatonModel_When_Concatenated {
     @Before
     public void setup() {
         // *** act ***
-        this.concatModel = this.baseModel.concatenate(this.argModel);
+        this.concatModel = this.baseModel.concatenateIndividual(this.argModel);
 
     }
 

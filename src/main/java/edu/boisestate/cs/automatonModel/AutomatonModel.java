@@ -38,8 +38,6 @@ public abstract class AutomatonModel
         this.boundLength = initialBoundLength;
     }
 
-    public abstract AutomatonModel concatenateIndividual(AutomatonModel arg);
-
     public abstract AutomatonModel delete(int start, int end);
 
     public abstract boolean containsString(String actualValue);
@@ -47,8 +45,6 @@ public abstract class AutomatonModel
     public abstract boolean equals(AutomatonModel arg);
 
     public abstract AutomatonModel union(AutomatonModel arg);
-
-    public abstract AutomatonModel allSuffixes();
 
     public abstract AutomatonModel replaceChar();
 
@@ -76,20 +72,6 @@ public abstract class AutomatonModel
 
     public abstract AutomatonModel clone();
 
-    public AutomatonModel assertContainedInOther(AutomatonModel
-                                                         containingModel) {
-
-        // get all substrings for containing model
-        AutomatonModel substrings = containingModel.allSubstrings();
-
-        // intersect substrings with model
-        return this.intersect(substrings);
-    }
-
-    public abstract AutomatonModel intersect(AutomatonModel arg);
-
-    public abstract AutomatonModel allSubstrings();
-
     public AutomatonModel assertContainsOther(AutomatonModel containedModel) {
 
         // create any string models
@@ -104,6 +86,8 @@ public abstract class AutomatonModel
         return this.intersect(x);
     }
 
+    public abstract AutomatonModel intersect(AutomatonModel arg);
+
     public abstract AutomatonModel concatenate(AutomatonModel arg);
 
     public AutomatonModel assertEmpty() {
@@ -113,11 +97,30 @@ public abstract class AutomatonModel
         return this.intersect(empty);
     }
 
+    public AutomatonModel assertEndsOther(AutomatonModel baseModel) {
+        AutomatonModel suffixes = baseModel.allSuffixes();
+        return this.intersect(suffixes);
+    }
+
+    public abstract AutomatonModel allSuffixes();
+
+    public AutomatonModel assertContainedInOther(AutomatonModel containingModel) {
+
+        // get all substrings for containing model
+        AutomatonModel substrings = containingModel.allSubstrings();
+
+        // intersect substrings with model
+        return this.intersect(substrings);
+    }
+
+    public abstract AutomatonModel allSubstrings();
+
     public AutomatonModel assertEndsWith(AutomatonModel endingModel) {
 
         // get end model by concatenating any string and ending model
         AutomatonModel end =
-                modelManager.createAnyString().concatenate(endingModel);
+                this.modelManager.createAnyString()
+                                 .concatenateIndividual(endingModel);
 
         // return intersection of model and end
         return this.intersect(end);
@@ -127,6 +130,11 @@ public abstract class AutomatonModel
 
         // return intersection of model with equal model
         return this.intersect(equalModel);
+    }
+
+    public AutomatonModel assertEqualsIgnoreCase(AutomatonModel equalModel) {
+        AutomatonModel ignoreCase = equalModel.ignoreCase();
+        return this.intersect(ignoreCase);
     }
 
     public AutomatonModel assertHasLength(int min, int max) {
@@ -182,17 +190,52 @@ public abstract class AutomatonModel
         return this.minus(emptyString);
     }
 
+    public AutomatonModel assertNotEndsOther(AutomatonModel notEndingModel) {
+        AutomatonModel x = notEndingModel.allSuffixes();
+        AutomatonModel argComplement = this.complement();
+        return x.intersect(argComplement);
+    }
+
+    public AutomatonModel assertNotEndsWith(AutomatonModel notEndingModel) {
+        AutomatonModel subtract = this.modelManager.createAnyString();
+        subtract = subtract.concatenateIndividual(notEndingModel);
+        return this.minus(subtract);
+    }
+
+    public abstract AutomatonModel concatenateIndividual(AutomatonModel arg);
+
     public AutomatonModel assertNotEquals(AutomatonModel notEqualModel) {
 
         // subtract not equal model from model
         return this.minus(notEqualModel);
     }
 
+    public AutomatonModel assertNotEqualsIgnoreCase(AutomatonModel notEqualModel) {
+        AutomatonModel ignoreCase = notEqualModel.ignoreCase();
+        return this.minus(ignoreCase);
+    }
+
+    public AutomatonModel assertNotStartsOther(AutomatonModel notStartingModel) {
+        AutomatonModel baseComplement = notStartingModel.complement();
+        return this.intersect(baseComplement);
+    }
+
+    public AutomatonModel assertNotStartsWith(AutomatonModel notStartsModel) {
+        AutomatonModel x = this.modelManager.createAnyString();
+        x = notStartsModel.concatenateIndividual(x);
+        return this.minus(x);
+    }
+
+    public AutomatonModel assertStartsOther(AutomatonModel startingModel) {
+        AutomatonModel x = startingModel.allPrefixes();
+        return this.intersect(x);
+    }
+
     public AutomatonModel assertStartsWith(AutomatonModel startingModel) {
 
         // get start model by concatenating starting model and any string
-        AutomatonModel start =
-                startingModel.concatenate(modelManager.createAnyString());
+        AutomatonModel anyString = this.modelManager.createAnyString();
+        AutomatonModel start = startingModel.concatenateIndividual(anyString);
 
         // return intersection of model and start
         return this.intersect(start);

@@ -3,8 +3,6 @@ package edu.boisestate.cs.automatonModel;
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
-import edu.boisestate.cs.automatonModel.operations.PreciseDelete;
-import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,40 +14,39 @@ import java.util.Arrays;
 
 import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities.*;
 import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities
-        .getNonUniformAggregateModel;
+        .getNonUniformBoundedModel;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_AggregateAutomataModel_When_PreciselyDeleted {
+public class Given_BoundedAutomatonModel_When_AssertingHasLength {
 
-    @Parameter(value = 2)
-    public AggregateAutomataModel model;
     @Parameter // first data value (0) is default
     public String description;
     @Parameter(value = 4)
-    public int end;
+    public int max;
     @Parameter(value = 1)
     public int expectedModelCount;
+    @Parameter(value = 2)
+    public BoundedAutomatonModel model;
     @Parameter(value = 3)
-    public int start;
-    private AutomatonModel deleteModel;
+    public int min;
+    private AutomatonModel hasLengthModel;
 
-
-    @Parameters(name = "{index}: <{0} Automaton Model>.delete({3}, {4}) - Expected MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton Model>.assertHasLength({3}, {4}) - Expected MC = {2}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
         int initialBoundLength = 3;
 
         // create automaton models
-        AggregateAutomataModel emptyModel = getEmptyAggregateModel(alphabet);
-        AggregateAutomataModel emptyStringModel = getEmptyStringAggregateModel(alphabet);
-        AggregateAutomataModel concreteModel = getConcreteAggregateModel(alphabet, "ABC");
-        AggregateAutomataModel uniformModel = getUniformAggregateModel(alphabet, initialBoundLength);
-        AggregateAutomataModel nonUniformModel = getNonUniformAggregateModel(alphabet, initialBoundLength);
+        BoundedAutomatonModel emptyModel = getEmptyBoundedModel(alphabet);
+        BoundedAutomatonModel emptyStringModel = getEmptyStringBoundedModel(alphabet);
+        BoundedAutomatonModel concreteModel = getConcreteBoundedModel(alphabet,"ABC");
+        BoundedAutomatonModel uniformModel = getUniformBoundedModel(alphabet, initialBoundLength);
+        BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, emptyModel, 0, 0},
@@ -83,24 +80,24 @@ public class Given_AggregateAutomataModel_When_PreciselyDeleted {
                 {"Concrete", 1, concreteModel, 2, 3},
                 {"Concrete", 1, concreteModel, 3, 3},
                 {"Uniform", 85, uniformModel, 0, 0},
-                {"Uniform", 22, uniformModel, 0, 1},
-                {"Uniform", 7, uniformModel, 0, 2},
-                {"Uniform", 4, uniformModel, 0, 3},
+                {"Uniform", 21, uniformModel, 0, 1},
+                {"Uniform", 5, uniformModel, 0, 2},
+                {"Uniform", 1, uniformModel, 0, 3},
                 {"Uniform", 84, uniformModel, 1, 1},
-                {"Uniform", 24, uniformModel, 1, 2},
-                {"Uniform", 12, uniformModel, 1, 3},
+                {"Uniform", 20, uniformModel, 1, 2},
+                {"Uniform", 4, uniformModel, 1, 3},
                 {"Uniform", 80, uniformModel, 2, 2},
-                {"Uniform", 32, uniformModel, 2, 3},
+                {"Uniform", 16, uniformModel, 2, 3},
                 {"Uniform", 64, uniformModel, 3, 3},
                 {"Non-uniform", 45, nonUniformModel, 0, 0},
                 {"Non-uniform", 21, nonUniformModel, 0, 1},
-                {"Non-uniform", 6, nonUniformModel, 0, 2},
-                {"Non-uniform", 3, nonUniformModel, 0, 3},
+                {"Non-uniform", 5, nonUniformModel, 0, 2},
+                {"Non-uniform", 1, nonUniformModel, 0, 3},
                 {"Non-uniform", 45, nonUniformModel, 1, 1},
-                {"Non-uniform", 21, nonUniformModel, 1, 2},
-                {"Non-uniform", 9, nonUniformModel, 1, 3},
+                {"Non-uniform", 20, nonUniformModel, 1, 2},
+                {"Non-uniform", 4, nonUniformModel, 1, 3},
                 {"Non-uniform", 44, nonUniformModel, 2, 2},
-                {"Non-uniform", 23, nonUniformModel, 2, 3},
+                {"Non-uniform", 16, nonUniformModel, 2, 3},
                 {"Non-uniform", 37, nonUniformModel, 3, 3}
         });
     }
@@ -108,14 +105,14 @@ public class Given_AggregateAutomataModel_When_PreciselyDeleted {
     @Before
     public void setup() {
         // *** act ***
-        this.deleteModel = this.model.delete(this.start, this.end);
+        this.hasLengthModel = this.model.assertHasLength(this.min, this.max);
 
     }
 
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = this.deleteModel.modelCount().intValue();
+        int modelCount = this.hasLengthModel.modelCount().intValue();
 
         // *** assert ***
         assertThat(modelCount, is(equalTo(this.expectedModelCount)));
