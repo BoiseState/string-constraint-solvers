@@ -4,6 +4,7 @@ import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import dk.brics.string.stringoperations.UnaryOperation;
 import edu.boisestate.cs.Alphabet;
+import edu.boisestate.cs.automatonModel.operations.PreciseDelete;
 
 import java.math.BigInteger;
 import java.util.Set;
@@ -266,12 +267,17 @@ public abstract class AutomatonModel
 
         // use operation
         Automaton result = operation.op(automaton);
-
         // bound automaton to alphabet
         String charSet = this.alphabet.getCharSet();
         Automaton alphabet = BasicAutomata.makeCharSet(charSet).repeat();
         result = result.intersection(alphabet);
 
+        //eas: even so the operation return the minimized automaton
+        //the intersection might mess it up.
+        //no need to call determinize since a minimize does 
+        //call that method first - only deterministic FA
+        //can be minimized.
+        result.minimize();
         // return resulting automaton
         return result;
     }

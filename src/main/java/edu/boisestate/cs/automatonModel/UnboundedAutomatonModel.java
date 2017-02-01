@@ -151,7 +151,7 @@ public class UnboundedAutomatonModel
         Automaton automaton = this.getAutomaton();
 
         // perform operation
-       // System.out.println("Old \n" + automaton);
+      //System.out.println("start " + start + " end " + end +"\n Old \n" + automaton);
         Automaton result =
                 this.performUnaryOperation(automaton,
                                            new PreciseDelete(start,end));
@@ -168,7 +168,7 @@ public class UnboundedAutomatonModel
             int charsDeleted = end - start;
             newBoundLength = this.boundLength - charsDeleted;
         }
-        //System.out.println("new bound lenthg " + newBoundLength + " vs " + boundLength + " " + result.toString());
+        //System.out.println("new bound length " + newBoundLength + " vs " + boundLength + " " + result.toString());
         // return new model from resulting automaton
         return new UnboundedAutomatonModel(result,
                                            this.alphabet,

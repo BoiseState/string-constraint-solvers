@@ -33,14 +33,22 @@ public class PreciseDelete
 
     @Override
     public Automaton op(Automaton a) {
-        // if start is greater than end or automaton is empy
-        if (this.start > this.end || a.isEmpty()) {
+    	//eas per documentation:
+    	//StringIndexOutOfBoundsException - if start is negative, greater than length(), or greater than end.
+    	
+        // if start is greater than end or automaton is empty
+        if (this.start <0 || this.start > this.end || a.isEmpty()) {
             // return empty automaton (exception)
             return BasicAutomata.makeEmpty();
         }
 
         // create automaton clone
         Automaton clone = a.clone();
+        
+        //eas: even though start = end and per documentation the 
+        //string will not be changes, the shorter strings that
+        //the automaton represents will throw an exception, thus
+        //we have to remove those string from this DFA.
 
         // create new initial state
         State initial = new State();
@@ -153,10 +161,13 @@ public class PreciseDelete
 
         // add epsilons to automaton
         returnAutomaton.addEpsilons(epsilons);
-
+        //eas: the callee will do the minimzation
+        //which already includes determinization of a FA
+        //also, we always call first determize and
+        //only after that minimize
         // minimize and determinize deleted automaton
-        returnAutomaton.minimize();
-        returnAutomaton.determinize();
+//        returnAutomaton.minimize();
+//        returnAutomaton.determinize();
 
         // return the deleted automaton
         return returnAutomaton;
