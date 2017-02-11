@@ -1,7 +1,5 @@
 package edu.boisestate.cs.automatonModel;
 
-import dk.brics.automaton.Automaton;
-import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,25 +11,26 @@ import org.junit.runners.Parameterized.Parameters;
 import java.util.Arrays;
 
 import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities.*;
-import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities
-        .getNonUniformBoundedModel;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_BoundedAutomatonModel_When_GettingAllPrefixes {
+public class Given_BoundedAutomatonModel_When_SettingLength {
 
     @Parameter // first data value (0) is default
     public String description;
-    @Parameter(value = 2)
-    public BoundedAutomatonModel model;
     @Parameter(value = 1)
     public int expectedModelCount;
-    private AutomatonModel prefixesModel;
+    @Parameter(value = 2)
+    public BoundedAutomatonModel model;
+    @Parameter(value = 3)
+    public int length;
+    private AutomatonModel lengthModel;
 
-    @Parameters(name = "{index}: <{0} Automaton Model>.allPrefixes() - Expected MC = {1}")
+
+    @Parameters(name = "{index}: <{0} Automaton Model>.setLength({3}) - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
@@ -45,25 +44,40 @@ public class Given_BoundedAutomatonModel_When_GettingAllPrefixes {
         BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", 0, emptyModel},
-                {"Empty String", 1, emptyStringModel},
-                {"Concrete", 4, concreteModel},
-                {"Uniform", 85, uniformModel},
-                {"Non-uniform", 58, nonUniformModel}
+                {"Empty", -1, emptyModel, 0},
+                {"Empty", -1, emptyModel, 1},
+                {"Empty", -1, emptyModel, 2},
+                {"Empty", -1, emptyModel, 3},
+                {"Empty String", -1, emptyStringModel, 0},
+                {"Empty String", -1, emptyStringModel, 1},
+                {"Empty String", -1, emptyStringModel, 2},
+                {"Empty String", -1, emptyStringModel, 3},
+                {"Concrete", -1, concreteModel, 0},
+                {"Concrete", -1, concreteModel, 1},
+                {"Concrete", -1, concreteModel, 2},
+                {"Concrete", -1, concreteModel, 3},
+                {"Uniform", -1, uniformModel, 0},
+                {"Uniform", -1, uniformModel, 1},
+                {"Uniform", -1, uniformModel, 2},
+                {"Uniform", -1, uniformModel, 3},
+                {"Non-uniform", -1, nonUniformModel, 0},
+                {"Non-uniform", -1, nonUniformModel, 1},
+                {"Non-uniform", -1, nonUniformModel, 2},
+                {"Non-uniform", -1, nonUniformModel, 3},
         });
     }
 
     @Before
     public void setup() {
         // *** act ***
-        this.prefixesModel = this.model.allPrefixes();
+        this.lengthModel = this.model.setLength(this.length);
 
     }
 
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = this.prefixesModel.modelCount().intValue();
+        int modelCount = this.lengthModel.modelCount().intValue();
 
         // *** assert ***
         assertThat(modelCount, is(equalTo(this.expectedModelCount)));

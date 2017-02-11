@@ -96,6 +96,7 @@ public class Given_PreciseDeletion_For_UnboundedAutomata {
 
         // *** act ***
         this.deletedAutomaton = delete.op(this.automaton);
+        this.deletedAutomaton.minimize();
 
     }
 

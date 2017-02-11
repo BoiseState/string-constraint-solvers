@@ -4,7 +4,6 @@ import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import dk.brics.string.stringoperations.UnaryOperation;
 import edu.boisestate.cs.Alphabet;
-import edu.boisestate.cs.automatonModel.operations.PreciseDelete;
 
 import java.math.BigInteger;
 import java.util.Set;
@@ -39,23 +38,105 @@ public abstract class AutomatonModel
         this.boundLength = initialBoundLength;
     }
 
-    public abstract AutomatonModel delete(int start, int end);
+    static Automaton performUnaryOperation(Automaton automaton,
+                                           UnaryOperation operation,
+                                           Alphabet alphabet) {
+        // use operation
+        Automaton result = operation.op(automaton);
+
+        // bound resulting automaton to alphabet
+        String charSet = alphabet.getCharSet();
+        Automaton anyChar = BasicAutomata.makeCharSet(charSet).repeat();
+        result = result.intersection(anyChar);
+
+        //eas: even so the operation return the minimized automaton
+        //the intersection might mess it up.
+        //no need to call determinize since a minimize does
+        //call that method first - only deterministic FA
+        //can be minimized.
+        result.minimize();
+
+        // return resulting automaton
+        return result;
+    }
+
+    public abstract AutomatonModel assertContainedInOther(AutomatonModel containingModel);
+
+    public abstract AutomatonModel assertContainsOther(AutomatonModel containedModel);
+
+    public abstract AutomatonModel assertEmpty();
+
+    public abstract AutomatonModel assertEndsOther(AutomatonModel baseModel);
+
+    public abstract AutomatonModel assertEndsWith(AutomatonModel endingModel);
+
+    public abstract AutomatonModel assertEquals(AutomatonModel equalModel);
+
+    public abstract AutomatonModel assertEqualsIgnoreCase(AutomatonModel equalModel);
+
+    public abstract AutomatonModel assertHasLength(int min, int max);
+
+    public abstract AutomatonModel assertNotContainedInOther(AutomatonModel notContainingModel);
+
+    public abstract AutomatonModel assertNotContainsOther(AutomatonModel notContainedModel);
+
+    public abstract AutomatonModel assertNotEmpty();
+
+    public abstract AutomatonModel assertNotEndsOther(AutomatonModel notEndingModel);
+
+    public abstract AutomatonModel assertNotEndsWith(AutomatonModel notEndingModel);
+
+    public abstract AutomatonModel assertNotEquals(AutomatonModel notEqualModel);
+
+    public abstract AutomatonModel assertNotEqualsIgnoreCase(AutomatonModel notEqualModel);
+
+    public abstract AutomatonModel assertNotStartsOther(AutomatonModel notStartingModel);
+
+    public abstract AutomatonModel assertNotStartsWith(AutomatonModel notStartsModel);
+
+    public abstract AutomatonModel assertStartsOther(AutomatonModel startingModel);
+
+    public abstract AutomatonModel assertStartsWith(AutomatonModel startingModel);
+
+    public abstract AutomatonModel complement(int boundLength);
+
+    public abstract AutomatonModel concatenate(AutomatonModel arg);
 
     public abstract boolean containsString(String actualValue);
 
+    public abstract AutomatonModel delete(int start, int end);
+
     public abstract boolean equals(AutomatonModel arg);
 
-    public abstract AutomatonModel union(AutomatonModel arg);
+    public abstract AutomatonModel intersect(AutomatonModel arg);
 
-    public abstract AutomatonModel replaceChar();
+    public abstract AutomatonModel insert(int offset, AutomatonModel argModel);
+
+    public abstract AutomatonModel minus(AutomatonModel arg);
+
+    public abstract BigInteger modelCount();
+
+    public abstract AutomatonModel prefix(int end);
 
     public abstract AutomatonModel replace(char find, char replace);
 
     public abstract AutomatonModel replace(String find, String replace);
 
+    public abstract AutomatonModel replaceChar();
+
+    public abstract AutomatonModel replaceFindKnown(char find);
+
+    public abstract AutomatonModel replaceReplaceKnown(char replace);
+
     public abstract AutomatonModel reverse();
 
-    public abstract AutomatonModel allPrefixes();
+    public abstract AutomatonModel substring(int start, int end);
+
+    public abstract AutomatonModel setCharAt(int offset, AutomatonModel argModel);
+
+    public abstract AutomatonModel setLength(int length);
+
+    public abstract AutomatonModel suffix(int start);
 
     public abstract AutomatonModel toLowercase();
 
@@ -63,222 +144,7 @@ public abstract class AutomatonModel
 
     public abstract AutomatonModel trim();
 
-    public abstract BigInteger modelCount();
-
-    public abstract AutomatonModel ignoreCase();
-
-    public abstract AutomatonModel replaceFindKnown(char find);
-
-    public abstract AutomatonModel replaceReplaceKnown(char replace);
+    public abstract AutomatonModel union(AutomatonModel arg);
 
     public abstract AutomatonModel clone();
-
-    public AutomatonModel assertContainsOther(AutomatonModel containedModel) {
-
-        // create any string models
-        AutomatonModel anyString1 = this.modelManager.createAnyString();
-        AutomatonModel anyString2 = this.modelManager.createAnyString();
-
-        // concatenate with contained model
-        AutomatonModel x = anyString1.concatenate(containedModel)
-                                     .concatenate(anyString2);
-
-        // return intersection with model
-        return this.intersect(x);
-    }
-
-    public abstract AutomatonModel intersect(AutomatonModel arg);
-
-    public abstract AutomatonModel concatenate(AutomatonModel arg);
-
-    public AutomatonModel assertEmpty() {
-
-        // intersect model with empty string
-        AutomatonModel empty = modelManager.createEmptyString();
-        return this.intersect(empty);
-    }
-
-    public AutomatonModel assertEndsOther(AutomatonModel baseModel) {
-        AutomatonModel suffixes = baseModel.allSuffixes();
-        return this.intersect(suffixes);
-    }
-
-    public abstract AutomatonModel allSuffixes();
-
-    public AutomatonModel assertContainedInOther(AutomatonModel containingModel) {
-
-        // get all substrings for containing model
-        AutomatonModel substrings = containingModel.allSubstrings();
-
-        // intersect substrings with model
-        return this.intersect(substrings);
-    }
-
-    public abstract AutomatonModel allSubstrings();
-
-    public AutomatonModel assertEndsWith(AutomatonModel endingModel) {
-
-        // get end model by concatenating any string and ending model
-        AutomatonModel end =
-                this.modelManager.createAnyString()
-                                 .concatenateIndividual(endingModel);
-
-        // return intersection of model and end
-        return this.intersect(end);
-    }
-
-    public AutomatonModel assertEquals(AutomatonModel equalModel) {
-
-        // return intersection of model with equal model
-        return this.intersect(equalModel);
-    }
-
-    public AutomatonModel assertEqualsIgnoreCase(AutomatonModel equalModel) {
-        AutomatonModel ignoreCase = equalModel.ignoreCase();
-        return this.intersect(ignoreCase);
-    }
-
-    public AutomatonModel assertHasLength(int min, int max) {
-
-        // check min and max
-        if (min > max) {
-            return modelManager.createEmpty();
-        }
-
-        // get any string with length between min and max
-        AutomatonModel minMaxString = modelManager.createAnyString(min, max);
-
-        // return intersection of model and min max string
-        return this.intersect(minMaxString);
-    }
-
-    public AutomatonModel assertNotContainedInOther(AutomatonModel
-                                                            notContainingModel) {
-
-        // get all substrings for the not containing model
-        AutomatonModel substrings = notContainingModel.allSubstrings();
-
-        // get complement of substrings
-        AutomatonModel complement = substrings.complement();
-
-        // return intersection of model and complement
-        return this.intersect(complement);
-    }
-
-    public abstract AutomatonModel complement();
-
-    public AutomatonModel assertNotContainsOther(AutomatonModel
-                                                         notContainedModel) {
-
-        // concat not contained model with any strings
-        AutomatonModel concat = modelManager.createAnyString()
-                                            .concatenate(notContainedModel)
-                                            .concatenate(modelManager
-                                                                 .createAnyString());
-
-        // return model minus concatenation
-        return this.minus(concat);
-    }
-
-    public abstract AutomatonModel minus(AutomatonModel arg);
-
-    public AutomatonModel assertNotEmpty() {
-
-        // get empty string model
-        AutomatonModel emptyString = modelManager.createEmptyString();
-
-        // return model minus empty string
-        return this.minus(emptyString);
-    }
-
-    public AutomatonModel assertNotEndsOther(AutomatonModel notEndingModel) {
-        AutomatonModel x = notEndingModel.allSuffixes();
-        AutomatonModel argComplement = this.complement();
-        return x.intersect(argComplement);
-    }
-
-    public AutomatonModel assertNotEndsWith(AutomatonModel notEndingModel) {
-        AutomatonModel subtract = this.modelManager.createAnyString();
-        subtract = subtract.concatenateIndividual(notEndingModel);
-        return this.minus(subtract);
-    }
-
-    public abstract AutomatonModel concatenateIndividual(AutomatonModel arg);
-
-    public AutomatonModel assertNotEquals(AutomatonModel notEqualModel) {
-
-        // subtract not equal model from model
-        return this.minus(notEqualModel);
-    }
-
-    public AutomatonModel assertNotEqualsIgnoreCase(AutomatonModel notEqualModel) {
-        AutomatonModel ignoreCase = notEqualModel.ignoreCase();
-        return this.minus(ignoreCase);
-    }
-
-    public AutomatonModel assertNotStartsOther(AutomatonModel notStartingModel) {
-        AutomatonModel baseComplement = notStartingModel.complement();
-        return this.intersect(baseComplement);
-    }
-
-    public AutomatonModel assertNotStartsWith(AutomatonModel notStartsModel) {
-        AutomatonModel x = this.modelManager.createAnyString();
-        x = notStartsModel.concatenateIndividual(x);
-        return this.minus(x);
-    }
-
-    public AutomatonModel assertStartsOther(AutomatonModel startingModel) {
-        AutomatonModel x = startingModel.allPrefixes();
-        return this.intersect(x);
-    }
-
-    public AutomatonModel assertStartsWith(AutomatonModel startingModel) {
-
-        // get start model by concatenating starting model and any string
-        AutomatonModel anyString = this.modelManager.createAnyString();
-        AutomatonModel start = startingModel.concatenateIndividual(anyString);
-
-        // return intersection of model and start
-        return this.intersect(start);
-    }
-
-    public AutomatonModel substring(int start, int end) {
-
-        // check start and end indices
-        if (start == end) {
-            return this.modelManager.createEmptyString();
-        } else if (start == 0) {
-            return this.prefix(end);
-        }
-
-        // get suffix
-        AutomatonModel suffix = this.suffix(start);
-
-        // return prefix from suffix as substring
-        return suffix.prefix(end - start);
-    }
-
-    public abstract AutomatonModel prefix(int end);
-
-    public abstract AutomatonModel suffix(int start);
-
-    protected Automaton performUnaryOperation(Automaton automaton,
-                                              UnaryOperation operation) {
-
-        // use operation
-        Automaton result = operation.op(automaton);
-        // bound automaton to alphabet
-        String charSet = this.alphabet.getCharSet();
-        Automaton alphabet = BasicAutomata.makeCharSet(charSet).repeat();
-        result = result.intersection(alphabet);
-
-        //eas: even so the operation return the minimized automaton
-        //the intersection might mess it up.
-        //no need to call determinize since a minimize does 
-        //call that method first - only deterministic FA
-        //can be minimized.
-        result.minimize();
-        // return resulting automaton
-        return result;
-    }
 }

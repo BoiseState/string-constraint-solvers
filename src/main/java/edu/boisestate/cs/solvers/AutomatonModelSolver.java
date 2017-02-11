@@ -227,35 +227,11 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
-        baseModel = performInsert(offset, baseModel, argModel);
+        // perform insert
+        baseModel = baseModel.insert(offset, argModel);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
-    }
-
-    private AutomatonModel performInsert(int offset,
-                                         AutomatonModel baseModel,
-                                         AutomatonModel argModel) {
-
-        if (offset >= 0) {
-
-            // get prefix
-            AutomatonModel startModel = baseModel.prefix(offset);
-
-            // get suffix
-            AutomatonModel endModel = baseModel.suffix(offset);
-
-            // construct resulting automaton with concatenation
-            baseModel = startModel.concatenateIndividual(argModel)
-                                  .concatenateIndividual(endModel);
-
-        } else {
-
-            // construct resulting automaton with concatenation
-            baseModel = argModel.concatenateIndividual(baseModel);
-
-        }
-        return baseModel;
     }
 
     @Override
@@ -273,7 +249,8 @@ public class AutomatonModelSolver
         // get substring from arg model
         AutomatonModel substrModel = argModel.substring(start, end);
 
-        baseModel = performInsert(offset, baseModel, substrModel);
+        // perform insert
+        baseModel = baseModel.insert(offset, substrModel);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -482,18 +459,8 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
-        if (offset >= 0) {
-
-            // get prefix
-            AutomatonModel startModel = baseModel.prefix(offset);
-
-            // get suffix
-            AutomatonModel endModel = baseModel.suffix(offset + 1);
-
-            // get result from concatenation
-            baseModel = startModel.concatenateIndividual(argModel)
-                                  .concatenateIndividual(endModel);
-        }
+        // perform set char
+        baseModel = baseModel.setCharAt(offset, argModel);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -505,21 +472,8 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
-        if (length == 0) {
-
-            // set result model as empty string model
-            baseModel = this.modelManager.createEmptyString();
-
-        } else {
-
-            // concatenate any string model to base model
-            AutomatonModel anyStr = this.modelManager.createAnyString();
-            baseModel = baseModel.concatenateIndividual(anyStr);
-
-            // assert length for concatenated model
-            baseModel = baseModel.assertHasLength(0, length);
-
-        }
+        // perform set length
+        baseModel = baseModel.setLength(length);
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);

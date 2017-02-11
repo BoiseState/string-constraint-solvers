@@ -46,18 +46,18 @@ public class Given_BoundedAutomatonModel_When_Complemented {
         BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", -1, emptyModel},
-                {"Empty String", -1, emptyStringModel},
-                {"Concrete", -1, concreteModel},
-                {"Uniform", -1, uniformModel},
-                {"Non-uniform", -1, nonUniformModel}
+                {"Empty", 85, emptyModel},
+                {"Empty String", 84, emptyStringModel},
+                {"Concrete", 84, concreteModel},
+                {"Uniform", 0, uniformModel},
+                {"Non-uniform", 40, nonUniformModel}
         });
     }
 
     @Before
     public void setup() {
         // *** act ***
-        this.complementModel = this.model.complement();
+        this.complementModel = this.model.complement(3);
 
     }
 

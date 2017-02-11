@@ -161,13 +161,6 @@ public class PreciseDelete
 
         // add epsilons to automaton
         returnAutomaton.addEpsilons(epsilons);
-        //eas: the callee will do the minimzation
-        //which already includes determinization of a FA
-        //also, we always call first determize and
-        //only after that minimize
-        // minimize and determinize deleted automaton
-//        returnAutomaton.minimize();
-//        returnAutomaton.determinize();
 
         // return the deleted automaton
         return returnAutomaton;
