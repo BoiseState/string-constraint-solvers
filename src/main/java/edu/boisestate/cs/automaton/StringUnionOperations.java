@@ -285,20 +285,20 @@ final public class StringUnionOperations {
 	/**
 	 * Internal recursive traversal for conversion.
 	 */
-	private static edu.boisestate.cs.automaton.State convert(State s,
-			IdentityHashMap<State, edu.boisestate.cs.automaton.State> visited) {
-		edu.boisestate.cs.automaton.State converted = visited.get(s);
+	private static WeightedState convert(State s,
+										 IdentityHashMap<State, WeightedState> visited) {
+		WeightedState converted = visited.get(s);
 		if (converted != null)
 			return converted;
 
-		converted = new edu.boisestate.cs.automaton.State();
+		converted = new WeightedState();
 		converted.setAccept(s.is_final);
 
 		visited.put(s, converted);
 		int i = 0;
 		char [] labels = s.labels;
 		for (StringUnionOperations.State target : s.states) {
-			converted.addTransition(new Transition(labels[i++], convert(target, visited)));
+			converted.addTransition(new WeightedTransition(labels[i++], convert(target, visited)));
 		}
 
 		return converted;
@@ -307,13 +307,13 @@ final public class StringUnionOperations {
 	/**
 	 * Build a minimal, deterministic automaton from a sorted list of strings.
 	 */
-	public static edu.boisestate.cs.automaton.State build(CharSequence[] input) {
+	public static WeightedState build(CharSequence[] input) {
 		final StringUnionOperations builder = new StringUnionOperations(); 
 
 		for (CharSequence chs : input)
 			builder.add(chs);
 
-		return convert(builder.complete(), new IdentityHashMap<State, edu.boisestate.cs.automaton.State>());
+		return convert(builder.complete(), new IdentityHashMap<State, WeightedState>());
 	}
 
 	/**

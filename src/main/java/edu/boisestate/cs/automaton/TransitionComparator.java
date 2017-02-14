@@ -32,52 +32,74 @@ package edu.boisestate.cs.automaton;
 import java.io.Serializable;
 import java.util.Comparator;
 
-class TransitionComparator implements Comparator<Transition>, Serializable {
+class TransitionComparator implements Comparator<WeightedTransition>, Serializable {
 
 	static final long serialVersionUID = 10001;
 
-	boolean to_first;
+	private boolean to_first;
 	
 	TransitionComparator(boolean to_first) {
 		this.to_first = to_first;
 	}
 	
 	/** 
-	 * Compares by (min, reverse max, to) or (to, min, reverse max). 
+	 * Compares by (min, reverse max, to, weight) or
+	 * (to, min, reverse max, weight).
 	 */
-	public int compare(Transition t1, Transition t2) {
+	public int compare(WeightedTransition t1, WeightedTransition t2) {
 		if (to_first) {
-			if (t1.to != t2.to) {
-				if (t1.to == null)
-					return -1;
-				else if (t2.to == null)
-					return 1;
-				else if (t1.to.number < t2.to.number)
-					return -1;
-				else if (t1.to.number > t2.to.number)
-					return 1;
+			int diff = compareTo(t1, t2);
+			if (diff != 0) {
+				return diff;
 			}
 		}
-		if (t1.min < t2.min)
+
+		if (t1.getMin() < t2.getMin()) {
 			return -1;
-		if (t1.min > t2.min)
+		}
+
+		if (t1.getMin() > t2.getMin()) {
 			return 1;
-		if (t1.max > t2.max)
+		}
+
+		if (t1.getMax() > t2.getMax()) {
 			return -1;
-		if (t1.max < t2.max)
+		}
+
+		if (t1.getMax() < t2.getMax()) {
 			return 1;
+		}
+
 		if (!to_first) {
-			if (t1.to != t2.to) {
-				if (t1.to == null)
-					return -1;
-				else if (t2.to == null)
-					return 1;
-				else if (t1.to.number < t2.to.number)
-					return -1;
-				else if (t1.to.number > t2.to.number)
-					return 1;
+			int diff = compareTo(t1, t2);
+			if (diff != 0) {
+				return diff;
 			}
 		}
+
+		if (t1.getWeight() < t2.getWeight()) {
+			return -1;
+		}
+
+		if (t1.getWeight() > t2.getWeight()) {
+			return 1;
+		}
+
 		return 0;
+	}
+
+	private int compareTo(WeightedTransition t1, WeightedTransition t2) {
+		if (t1.getDest() != t2.getDest()) {
+            if (t1.getDest() == null)
+                return -1;
+            else if (t2.getDest() == null)
+                return 1;
+            else if (t1.getDest().getNumber() < t2.getDest().getNumber())
+                return -1;
+            else if (t1.getDest().getNumber() > t2.getDest().getNumber())
+                return 1;
+        }
+
+        return 0;
 	}
 }

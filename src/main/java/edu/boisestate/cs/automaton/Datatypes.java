@@ -39,9 +39,9 @@ import java.util.*;
  */
 final public class Datatypes {
 	
-	private static final Map<String,Automaton> automata;
+	private static final Map<String,WeightedAutomaton> automata;
 	
-	private static final Automaton ws;
+	private static final WeightedAutomaton ws;
 	
 	private static final Set<String> unicodeblock_names;
 
@@ -220,8 +220,8 @@ final public class Datatypes {
 	};
 	
 	static {
-		automata = new HashMap<String,Automaton>();
-		ws = Automaton.minimize(Automaton.makeCharSet(" \t\n\r").repeat());
+		automata = new HashMap<String,WeightedAutomaton>();
+		ws = WeightedAutomaton.minimize(WeightedAutomaton.makeCharSet(" \t\n\r").repeat());
 		unicodeblock_names = new HashSet<String>(Arrays.asList(unicodeblock_names_array));
 		unicodecategory_names = new HashSet<String>(Arrays.asList(unicodecategory_names_array));
 		xml_names = new HashSet<String>(Arrays.asList(xml_names_array));
@@ -236,11 +236,11 @@ final public class Datatypes {
 	 */
 	public static void main(String[] args) {
 		long t = System.currentTimeMillis();
-		boolean b = Automaton.setAllowMutate(true);
+		boolean b = WeightedAutomaton.setAllowMutate(true);
 		buildAll();
-		Automaton.setAllowMutate(b);
+		WeightedAutomaton.setAllowMutate(b);
 		System.out.println("Storing automata...");
-		for (Map.Entry<String,Automaton> e : automata.entrySet())
+		for (Map.Entry<String,WeightedAutomaton> e : automata.entrySet())
 			store(e.getKey(), e.getValue());
 		System.out.println("Time for building automata: " + (System.currentTimeMillis() - t) + "ms");
 	}
@@ -420,8 +420,8 @@ final public class Datatypes {
 	 * @param name name of automaton
 	 * @return automaton
 	 */
-	public static Automaton get(String name) {
-		Automaton a = automata.get(name);
+	public static WeightedAutomaton get(String name) {
+		WeightedAutomaton a = automata.get(name);
 		if (a == null) {
 			a = load(name);
 			automata.put(name, a);
@@ -464,10 +464,10 @@ final public class Datatypes {
 		return true;
 	}
 
-	private static Automaton load(String name) {
+	private static WeightedAutomaton load(String name) {
 		try {
 			URL url = Datatypes.class.getClassLoader().getResource(name + ".aut");
-			return Automaton.load(url.openStream());
+			return WeightedAutomaton.load(url.openStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -477,7 +477,7 @@ final public class Datatypes {
 		}
 	}
 	
-	private static void store(String name, Automaton a) {
+	private static void store(String name, WeightedAutomaton a) {
 		String dir = System.getProperty("dk.brics.automaton.datatypes");
 		if (dir == null)
 			dir = "build";
@@ -543,7 +543,7 @@ final public class Datatypes {
 		};
 		
 		System.out.println("Building XML automata...");
-		Map<String,Automaton> t = buildMap(xmlexps);
+		Map<String,WeightedAutomaton> t = buildMap(xmlexps);
 		putFrom("NCName", t);
 		putFrom("QName", t);
 		putFrom("Char", t);
@@ -603,7 +603,10 @@ final public class Datatypes {
 		};
 		System.out.println("Building URI automaton...");
 		putFrom("URI", buildMap(uriexps));
-		put(automata, "anyname", Automaton.minimize(Automaton.makeChar('{').concatenate(automata.get("URI").clone()).concatenate(Automaton.makeChar('}')).optional().concatenate(automata.get("NCName").clone())));
+		put(automata, "anyname", WeightedAutomaton.minimize(WeightedAutomaton.makeChar('{').concatenate(automata.get("URI").clone()).concatenate(
+
+
+                WeightedAutomaton.makeChar('}')).optional().concatenate(automata.get("NCName").clone())));
 
 		put(automata, "noap", new RegExp("~(@[@%]@)").toAutomaton());
 		
@@ -645,23 +648,24 @@ final public class Datatypes {
 				"positiveInteger", "<_>([1-9]<d>*)<_>",
 		};
 		System.out.println("Building XML Schema automata...");
-		Map<String,Automaton> m = buildMap(xsdmisc);
+		Map<String,WeightedAutomaton> m = buildMap(xsdmisc);
 		putWith(xsdexps, m);
 		
-		put(m, "UNSIGNEDLONG", Automaton.makeMaxInteger("18446744073709551615"));
-		put(m, "UNSIGNEDINT", Automaton.makeMaxInteger("4294967295"));
-		put(m, "UNSIGNEDSHORT", Automaton.makeMaxInteger("65535"));
-		put(m, "UNSIGNEDBYTE", Automaton.makeMaxInteger("255"));
-		put(m, "LONG", Automaton.makeMaxInteger("9223372036854775807"));
-		put(m, "LONG_NEG", Automaton.makeMaxInteger("9223372036854775808"));
-		put(m, "INT", Automaton.makeMaxInteger("2147483647"));
-		put(m, "INT_NEG", Automaton.makeMaxInteger("2147483648"));
-		put(m, "SHORT", Automaton.makeMaxInteger("32767"));
-		put(m, "SHORT_NEG", Automaton.makeMaxInteger("32768"));
-		put(m, "BYTE", Automaton.makeMaxInteger("127"));
-		put(m, "BYTE_NEG", Automaton.makeMaxInteger("128"));
+		put(m, "UNSIGNEDLONG", WeightedAutomaton.makeMaxInteger("18446744073709551615"));
+		put(m, "UNSIGNEDINT", WeightedAutomaton.makeMaxInteger("4294967295"));
+		put(m, "UNSIGNEDSHORT", WeightedAutomaton.makeMaxInteger("65535"));
+		put(m, "UNSIGNEDBYTE", WeightedAutomaton.makeMaxInteger("255"));
+		put(m, "LONG", WeightedAutomaton.makeMaxInteger("9223372036854775807" +
+                                                        ""));
+		put(m, "LONG_NEG", WeightedAutomaton.makeMaxInteger("9223372036854775808"));
+		put(m, "INT", WeightedAutomaton.makeMaxInteger("2147483647"));
+		put(m, "INT_NEG", WeightedAutomaton.makeMaxInteger("2147483648"));
+		put(m, "SHORT", WeightedAutomaton.makeMaxInteger("32767"));
+		put(m, "SHORT_NEG", WeightedAutomaton.makeMaxInteger("32768"));
+		put(m, "BYTE", WeightedAutomaton.makeMaxInteger("127"));
+		put(m, "BYTE_NEG", WeightedAutomaton.makeMaxInteger("128"));
 		
-		Map<String,Automaton> u = new HashMap<String,Automaton>();
+		Map<String,WeightedAutomaton> u = new HashMap<String,WeightedAutomaton>();
 		u.putAll(t);
 		u.putAll(m);
 		String[] xsdexps2 = {
@@ -685,109 +689,130 @@ final public class Datatypes {
 		putWith(xsdexps2, u);
 
 		System.out.println("Building Unicode block automata...");
-		put(automata, "BasicLatin", Automaton.makeCharRange('\u0000', '\u007F'));
-		put(automata, "Latin-1Supplement", Automaton.makeCharRange('\u0080', '\u00FF'));
-		put(automata, "LatinExtended-A", Automaton.makeCharRange('\u0100', '\u017F'));
-		put(automata, "LatinExtended-B", Automaton.makeCharRange('\u0180', '\u024F'));
-		put(automata, "IPAExtensions", Automaton.makeCharRange('\u0250', '\u02AF'));
-		put(automata, "SpacingModifierLetters", Automaton.makeCharRange('\u02B0', '\u02FF'));
-		put(automata, "CombiningDiacriticalMarks", Automaton.makeCharRange('\u0300', '\u036F'));
-		put(automata, "Greek", Automaton.makeCharRange('\u0370', '\u03FF'));
-		put(automata, "Cyrillic", Automaton.makeCharRange('\u0400', '\u04FF'));
-		put(automata, "Armenian", Automaton.makeCharRange('\u0530', '\u058F'));
-		put(automata, "Hebrew", Automaton.makeCharRange('\u0590', '\u05FF'));
-		put(automata, "Arabic", Automaton.makeCharRange('\u0600', '\u06FF'));
-		put(automata, "Syriac", Automaton.makeCharRange('\u0700', '\u074F'));
-		put(automata, "Thaana", Automaton.makeCharRange('\u0780', '\u07BF'));
-		put(automata, "Devanagari", Automaton.makeCharRange('\u0900', '\u097F'));
-		put(automata, "Bengali", Automaton.makeCharRange('\u0980', '\u09FF'));
-		put(automata, "Gurmukhi", Automaton.makeCharRange('\u0A00', '\u0A7F'));
-		put(automata, "Gujarati", Automaton.makeCharRange('\u0A80', '\u0AFF'));
-		put(automata, "Oriya", Automaton.makeCharRange('\u0B00', '\u0B7F'));
-		put(automata, "Tamil", Automaton.makeCharRange('\u0B80', '\u0BFF'));
-		put(automata, "Telugu", Automaton.makeCharRange('\u0C00', '\u0C7F'));
-		put(automata, "Kannada", Automaton.makeCharRange('\u0C80', '\u0CFF'));
-		put(automata, "Malayalam", Automaton.makeCharRange('\u0D00', '\u0D7F'));
-		put(automata, "Sinhala", Automaton.makeCharRange('\u0D80', '\u0DFF'));
-		put(automata, "Thai", Automaton.makeCharRange('\u0E00', '\u0E7F'));
-		put(automata, "Lao", Automaton.makeCharRange('\u0E80', '\u0EFF'));
-		put(automata, "Tibetan", Automaton.makeCharRange('\u0F00', '\u0FFF'));
-		put(automata, "Myanmar", Automaton.makeCharRange('\u1000', '\u109F'));
-		put(automata, "Georgian", Automaton.makeCharRange('\u10A0', '\u10FF'));
-		put(automata, "HangulJamo", Automaton.makeCharRange('\u1100', '\u11FF'));
-		put(automata, "Ethiopic", Automaton.makeCharRange('\u1200', '\u137F'));
-		put(automata, "Cherokee", Automaton.makeCharRange('\u13A0', '\u13FF'));
-		put(automata, "UnifiedCanadianAboriginalSyllabics", Automaton.makeCharRange('\u1400', '\u167F'));
-		put(automata, "Ogham", Automaton.makeCharRange('\u1680', '\u169F'));
-		put(automata, "Runic", Automaton.makeCharRange('\u16A0', '\u16FF'));
-		put(automata, "Khmer", Automaton.makeCharRange('\u1780', '\u17FF'));
-		put(automata, "Mongolian", Automaton.makeCharRange('\u1800', '\u18AF'));
-		put(automata, "LatinExtendedAdditional", Automaton.makeCharRange('\u1E00', '\u1EFF'));
-		put(automata, "GreekExtended", Automaton.makeCharRange('\u1F00', '\u1FFF'));
-		put(automata, "GeneralPunctuation", Automaton.makeCharRange('\u2000', '\u206F'));
-		put(automata, "SuperscriptsandSubscripts", Automaton.makeCharRange('\u2070', '\u209F'));
-		put(automata, "CurrencySymbols", Automaton.makeCharRange('\u20A0', '\u20CF'));
-		put(automata, "CombiningMarksforSymbols", Automaton.makeCharRange('\u20D0', '\u20FF'));
-		put(automata, "LetterlikeSymbols", Automaton.makeCharRange('\u2100', '\u214F'));
-		put(automata, "NumberForms", Automaton.makeCharRange('\u2150', '\u218F'));
-		put(automata, "Arrows", Automaton.makeCharRange('\u2190', '\u21FF'));
-		put(automata, "MathematicalOperators", Automaton.makeCharRange('\u2200', '\u22FF'));
-		put(automata, "MiscellaneousTechnical", Automaton.makeCharRange('\u2300', '\u23FF'));
-		put(automata, "ControlPictures", Automaton.makeCharRange('\u2400', '\u243F'));
-		put(automata, "OpticalCharacterRecognition", Automaton.makeCharRange('\u2440', '\u245F'));
-		put(automata, "EnclosedAlphanumerics", Automaton.makeCharRange('\u2460', '\u24FF'));
-		put(automata, "BoxDrawing", Automaton.makeCharRange('\u2500', '\u257F'));
-		put(automata, "BlockElements", Automaton.makeCharRange('\u2580', '\u259F'));
-		put(automata, "GeometricShapes", Automaton.makeCharRange('\u25A0', '\u25FF'));
-		put(automata, "MiscellaneousSymbols", Automaton.makeCharRange('\u2600', '\u26FF'));
-		put(automata, "Dingbats", Automaton.makeCharRange('\u2700', '\u27BF'));
-		put(automata, "BraillePatterns", Automaton.makeCharRange('\u2800', '\u28FF'));
-		put(automata, "CJKRadicalsSupplement", Automaton.makeCharRange('\u2E80', '\u2EFF'));
-		put(automata, "KangxiRadicals", Automaton.makeCharRange('\u2F00', '\u2FDF'));
-		put(automata, "IdeographicDescriptionCharacters", Automaton.makeCharRange('\u2FF0', '\u2FFF'));
-		put(automata, "CJKSymbolsandPunctuation", Automaton.makeCharRange('\u3000', '\u303F'));
-		put(automata, "Hiragana", Automaton.makeCharRange('\u3040', '\u309F'));
-		put(automata, "Katakana", Automaton.makeCharRange('\u30A0', '\u30FF'));
-		put(automata, "Bopomofo", Automaton.makeCharRange('\u3100', '\u312F'));
-		put(automata, "HangulCompatibilityJamo", Automaton.makeCharRange('\u3130', '\u318F'));
-		put(automata, "Kanbun", Automaton.makeCharRange('\u3190', '\u319F'));
-		put(automata, "BopomofoExtended", Automaton.makeCharRange('\u31A0', '\u31BF'));
-		put(automata, "EnclosedCJKLettersandMonths", Automaton.makeCharRange('\u3200', '\u32FF'));
-		put(automata, "CJKCompatibility", Automaton.makeCharRange('\u3300', '\u33FF'));
-		put(automata, "CJKUnifiedIdeographsExtensionA", Automaton.makeCharRange('\u3400', '\u4DB5'));
-		put(automata, "CJKUnifiedIdeographs", Automaton.makeCharRange('\u4E00', '\u9FFF'));
-		put(automata, "YiSyllables", Automaton.makeCharRange('\uA000', '\uA48F'));
-		put(automata, "YiRadicals", Automaton.makeCharRange('\uA490', '\uA4CF'));
-		put(automata, "HangulSyllables", Automaton.makeCharRange('\uAC00', '\uD7A3'));
-		put(automata, "CJKCompatibilityIdeographs", Automaton.makeCharRange('\uF900', '\uFAFF'));
-		put(automata, "AlphabeticPresentationForms", Automaton.makeCharRange('\uFB00', '\uFB4F'));
-		put(automata, "ArabicPresentationForms-A", Automaton.makeCharRange('\uFB50', '\uFDFF'));
-		put(automata, "CombiningHalfMarks", Automaton.makeCharRange('\uFE20', '\uFE2F'));
-		put(automata, "CJKCompatibilityForms", Automaton.makeCharRange('\uFE30', '\uFE4F'));
-		put(automata, "SmallFormVariants", Automaton.makeCharRange('\uFE50', '\uFE6F'));
-		put(automata, "ArabicPresentationForms-B", Automaton.makeCharRange('\uFE70', '\uFEFE'));
-		put(automata, "Specials", Automaton.makeCharRange('\uFEFF', '\uFEFF'));
-		put(automata, "HalfwidthandFullwidthForms", Automaton.makeCharRange('\uFF00', '\uFFEF'));
-		put(automata, "Specials", Automaton.makeCharRange('\uFFF0', '\uFFFD'));
+		put(automata, "BasicLatin", WeightedAutomaton.makeCharRange('\u0000', '\u007F'));
+		put(automata, "Latin-1Supplement", WeightedAutomaton.makeCharRange('\u0080', '\u00FF'));
+		put(automata, "LatinExtended-A", WeightedAutomaton.makeCharRange('\u0100', '\u017F'));
+		put(automata, "LatinExtended-B", WeightedAutomaton.makeCharRange('\u0180', '\u024F'));
+		put(automata, "IPAExtensions", WeightedAutomaton.makeCharRange('\u0250', '\u02AF'));
+		put(automata, "SpacingModifierLetters", WeightedAutomaton.makeCharRange('\u02B0', '\u02FF'));
+		put(automata, "CombiningDiacriticalMarks", WeightedAutomaton.makeCharRange('\u0300', '\u036F'));
+		put(automata, "Greek", WeightedAutomaton.makeCharRange('\u0370', '\u03FF'));
+		put(automata, "Cyrillic", WeightedAutomaton.makeCharRange('\u0400', '\u04FF'));
+		put(automata, "Armenian", WeightedAutomaton.makeCharRange('\u0530', '\u058F'));
+		put(automata, "Hebrew", WeightedAutomaton.makeCharRange('\u0590', '\u05FF'));
+		put(automata, "Arabic", WeightedAutomaton.makeCharRange('\u0600', '\u06FF'));
+		put(automata, "Syriac", WeightedAutomaton.makeCharRange('\u0700', '\u074F'));
+		put(automata, "Thaana", WeightedAutomaton.makeCharRange('\u0780', '\u07BF'));
+		put(automata, "Devanagari", WeightedAutomaton.makeCharRange('\u0900', '\u097F'));
+		put(automata, "Bengali", WeightedAutomaton.makeCharRange('\u0980', '\u09FF'));
+		put(automata, "Gurmukhi", WeightedAutomaton.makeCharRange('\u0A00', '\u0A7F'));
+		put(automata, "Gujarati", WeightedAutomaton.makeCharRange('\u0A80', '\u0AFF'));
+		put(automata, "Oriya", WeightedAutomaton.makeCharRange('\u0B00', '\u0B7F'));
+		put(automata, "Tamil", WeightedAutomaton.makeCharRange('\u0B80', '\u0BFF'));
+		put(automata, "Telugu", WeightedAutomaton.makeCharRange('\u0C00', '\u0C7F'));
+		put(automata, "Kannada", WeightedAutomaton.makeCharRange('\u0C80', '\u0CFF'));
+		put(automata, "Malayalam", WeightedAutomaton.makeCharRange('\u0D00', '\u0D7F'));
+		put(automata, "Sinhala", WeightedAutomaton.makeCharRange('\u0D80', '\u0DFF'));
+		put(automata, "Thai", WeightedAutomaton.makeCharRange('\u0E00', '\u0E7F'));
+		put(automata, "Lao", WeightedAutomaton.makeCharRange('\u0E80', '\u0EFF'));
+		put(automata, "Tibetan", WeightedAutomaton.makeCharRange('\u0F00', '\u0FFF'));
+		put(automata, "Myanmar", WeightedAutomaton.makeCharRange('\u1000', '\u109F'));
+		put(automata, "Georgian", WeightedAutomaton.makeCharRange('\u10A0', '\u10FF'));
+		put(automata, "HangulJamo", WeightedAutomaton.makeCharRange('\u1100', '\u11FF'));
+		put(automata, "Ethiopic", WeightedAutomaton.makeCharRange('\u1200', '\u137F'));
+		put(automata, "Cherokee", WeightedAutomaton.makeCharRange('\u13A0', '\u13FF'));
+		put(automata, "UnifiedCanadianAboriginalSyllabics", WeightedAutomaton.makeCharRange('\u1400', '\u167F'));
+		put(automata, "Ogham", WeightedAutomaton.makeCharRange('\u1680', '\u169F'));
+		put(automata, "Runic", WeightedAutomaton.makeCharRange('\u16A0', '\u16FF'));
+		put(automata, "Khmer", WeightedAutomaton.makeCharRange('\u1780', '\u17FF'));
+		put(automata, "Mongolian", WeightedAutomaton.makeCharRange('\u1800', '\u18AF'));
+		put(automata, "LatinExtendedAdditional", WeightedAutomaton.makeCharRange('\u1E00', '\u1EFF'));
+		put(automata, "GreekExtended", WeightedAutomaton.makeCharRange('\u1F00', '\u1FFF'));
+		put(automata, "GeneralPunctuation", WeightedAutomaton.makeCharRange('\u2000', '\u206F'));
+		put(automata, "SuperscriptsandSubscripts", WeightedAutomaton.makeCharRange('\u2070', '\u209F'));
+		put(automata, "CurrencySymbols", WeightedAutomaton.makeCharRange('\u20A0', '\u20CF'));
+		put(automata, "CombiningMarksforSymbols", WeightedAutomaton.makeCharRange('\u20D0', '\u20FF'));
+		put(automata, "LetterlikeSymbols", WeightedAutomaton.makeCharRange('\u2100', '\u214F'));
+		put(automata, "NumberForms", WeightedAutomaton.makeCharRange('\u2150', '\u218F'));
+		put(automata, "Arrows", WeightedAutomaton.makeCharRange('\u2190', '\u21FF'));
+		put(automata, "MathematicalOperators", WeightedAutomaton.makeCharRange('\u2200', '\u22FF'));
+		put(automata, "MiscellaneousTechnical", WeightedAutomaton.makeCharRange('\u2300', '\u23FF'));
+		put(automata, "ControlPictures", WeightedAutomaton.makeCharRange('\u2400', '\u243F'));
+		put(automata, "OpticalCharacterRecognition", WeightedAutomaton.makeCharRange('\u2440', '\u245F'));
+		put(automata, "EnclosedAlphanumerics", WeightedAutomaton.makeCharRange('\u2460', '\u24FF'));
+		put(automata, "BoxDrawing", WeightedAutomaton.makeCharRange('\u2500', '\u257F'));
+		put(automata, "BlockElements", WeightedAutomaton.makeCharRange('\u2580', '\u259F'));
+		put(automata, "GeometricShapes", WeightedAutomaton.makeCharRange('\u25A0', '\u25FF'));
+		put(automata, "MiscellaneousSymbols", WeightedAutomaton.makeCharRange('\u2600', '\u26FF'));
+		put(automata, "Dingbats", WeightedAutomaton.makeCharRange('\u2700', '\u27BF'));
+		put(automata, "BraillePatterns", WeightedAutomaton.makeCharRange('\u2800', '\u28FF'));
+		put(automata, "CJKRadicalsSupplement", WeightedAutomaton.makeCharRange('\u2E80', '\u2EFF'));
+		put(automata, "KangxiRadicals", WeightedAutomaton.makeCharRange('\u2F00', '\u2FDF'));
+		put(automata, "IdeographicDescriptionCharacters", WeightedAutomaton.makeCharRange('\u2FF0', '\u2FFF'));
+		put(automata, "CJKSymbolsandPunctuation", WeightedAutomaton.makeCharRange('\u3000', '\u303F'));
+		put(automata, "Hiragana", WeightedAutomaton.makeCharRange('\u3040', '\u309F'));
+		put(automata, "Katakana", WeightedAutomaton.makeCharRange('\u30A0', '\u30FF'));
+		put(automata, "Bopomofo", WeightedAutomaton.makeCharRange('\u3100', '\u312F'));
+		put(automata, "HangulCompatibilityJamo", WeightedAutomaton.makeCharRange('\u3130', '\u318F'));
+		put(automata, "Kanbun", WeightedAutomaton.makeCharRange('\u3190', '\u319F'));
+		put(automata, "BopomofoExtended", WeightedAutomaton.makeCharRange('\u31A0', '\u31BF'));
+		put(automata, "EnclosedCJKLettersandMonths", WeightedAutomaton.makeCharRange('\u3200', '\u32FF'));
+		put(automata, "CJKCompatibility", WeightedAutomaton.makeCharRange('\u3300', '\u33FF'));
+		put(automata, "CJKUnifiedIdeographsExtensionA", WeightedAutomaton.makeCharRange('\u3400', '\u4DB5'));
+		put(automata, "CJKUnifiedIdeographs", WeightedAutomaton.makeCharRange('\u4E00', '\u9FFF'));
+		put(automata, "YiSyllables", WeightedAutomaton.makeCharRange('\uA000', '\uA48F'));
+		put(automata, "YiRadicals", WeightedAutomaton.makeCharRange('\uA490', '\uA4CF'));
+		put(automata, "HangulSyllables", WeightedAutomaton.makeCharRange('\uAC00', '\uD7A3'));
+		put(automata, "CJKCompatibilityIdeographs", WeightedAutomaton.makeCharRange('\uF900', '\uFAFF'));
+		put(automata, "AlphabeticPresentationForms", WeightedAutomaton.makeCharRange('\uFB00', '\uFB4F'));
+		put(automata, "ArabicPresentationForms-A", WeightedAutomaton.makeCharRange('\uFB50', '\uFDFF'));
+		put(automata, "CombiningHalfMarks", WeightedAutomaton.makeCharRange('\uFE20', '\uFE2F'));
+		put(automata, "CJKCompatibilityForms", WeightedAutomaton.makeCharRange('\uFE30', '\uFE4F'));
+		put(automata, "SmallFormVariants", WeightedAutomaton.makeCharRange('\uFE50', '\uFE6F'));
+		put(automata, "ArabicPresentationForms-B", WeightedAutomaton.makeCharRange('\uFE70', '\uFEFE'));
+		put(automata, "Specials", WeightedAutomaton.makeCharRange('\uFEFF', '\uFEFF'));
+		put(automata, "HalfwidthandFullwidthForms", WeightedAutomaton.makeCharRange('\uFF00', '\uFFEF'));
+		put(automata, "Specials", WeightedAutomaton.makeCharRange('\uFFF0',
+                                                                  '\uFFFD'));
 
-		put(automata, "OldItalic", Automaton.makeChar('\ud800').concatenate(Automaton.makeCharRange('\udf00', '\udf2f')));
-		put(automata, "Gothic", Automaton.makeChar('\ud800').concatenate(Automaton.makeCharRange('\udf30', '\udf4f')));
-		put(automata, "Deseret", Automaton.makeChar('\ud801').concatenate(Automaton.makeCharRange('\udc00', '\udc4f')));
-		put(automata, "ByzantineMusicalSymbols", Automaton.makeChar('\ud834').concatenate(Automaton.makeCharRange('\udc00', '\udcff')));
-		put(automata, "MusicalSymbols", Automaton.makeChar('\ud834').concatenate(Automaton.makeCharRange('\udd00', '\uddff')));
-		put(automata, "MathematicalAlphanumericSymbols", Automaton.makeChar('\ud835').concatenate(Automaton.makeCharRange('\udc00', '\udfff')));
+		put(automata, "OldItalic", WeightedAutomaton.makeChar('\ud800').concatenate(
+                WeightedAutomaton.makeCharRange('\udf00', '\udf2f')));
+		put(automata, "Gothic", WeightedAutomaton.makeChar('\ud800').concatenate(
+                WeightedAutomaton.makeCharRange('\udf30', '\udf4f')));
+		put(automata, "Deseret", WeightedAutomaton.makeChar('\ud801').concatenate(
+                WeightedAutomaton.makeCharRange('\udc00', '\udc4f')));
+		put(automata, "ByzantineMusicalSymbols", WeightedAutomaton.makeChar('\ud834').concatenate(
+                WeightedAutomaton.makeCharRange('\udc00', '\udcff')));
+		put(automata, "MusicalSymbols", WeightedAutomaton.makeChar('\ud834').concatenate(
+                WeightedAutomaton.makeCharRange('\udd00', '\uddff')));
+		put(automata, "MathematicalAlphanumericSymbols", WeightedAutomaton.makeChar('\ud835').concatenate(
+                WeightedAutomaton.makeCharRange('\udc00', '\udfff')));
 		
-		put(automata, "CJKUnifiedIdeographsExtensionB", Automaton.makeCharRange('\ud840', '\ud868').concatenate(Automaton.makeCharRange('\udc00', '\udfff'))
-				                                       .union(Automaton.makeChar('\ud869').concatenate(Automaton.makeCharRange('\udc00', '\uded6'))));
+		put(automata, "CJKUnifiedIdeographsExtensionB", WeightedAutomaton.makeCharRange('\ud840', '\ud868').concatenate(
+                WeightedAutomaton.makeCharRange('\udc00', '\udfff'))
+                                                                         .union(WeightedAutomaton
+                                                                                        .makeChar('\ud869').concatenate(
+                                                                                         WeightedAutomaton
+                                                                                                 .makeCharRange('\udc00', '\uded6'))));
 		
-		put(automata, "CJKCompatibilityIdeographsSupplement", Automaton.makeChar('\ud87e').concatenate(Automaton.makeCharRange('\udc00', '\ude1f')));
-		put(automata, "Tags", Automaton.makeChar('\udb40').concatenate(Automaton.makeCharRange('\udc00', '\udc7f')));
+		put(automata, "CJKCompatibilityIdeographsSupplement", WeightedAutomaton.makeChar('\ud87e').concatenate(
+                WeightedAutomaton.makeCharRange('\udc00', '\ude1f')));
+		put(automata, "Tags", WeightedAutomaton.makeChar('\udb40').concatenate(
+                WeightedAutomaton.makeCharRange('\udc00', '\udc7f')));
 		
-		put(automata, "PrivateUse", Automaton.makeCharRange('\uE000', '\uF8FF')
-				                   .union(Automaton.makeCharRange('\udb80', '\udbbe').concatenate(Automaton.makeCharRange('\udc00', '\udfff'))
-	                                      .union(Automaton.makeChar('\udbbf').concatenate(Automaton.makeCharRange('\udc00', '\udffd'))))
-				                   .union(Automaton.makeCharRange('\udbc0', '\udbfe').concatenate(Automaton.makeCharRange('\udc00', '\udfff'))
-	                                      .union(Automaton.makeChar('\udbff').concatenate(Automaton.makeCharRange('\udc00', '\udffd')))));
+		put(automata, "PrivateUse", WeightedAutomaton.makeCharRange('\uE000', '\uF8FF')
+                                                     .union(WeightedAutomaton.makeCharRange('\udb80', '\udbbe').concatenate(
+                                                             WeightedAutomaton.makeCharRange('\udc00', '\udfff'))
+                                                                             .union(WeightedAutomaton
+                                                                                            .makeChar('\udbbf').concatenate(
+                                                                                             WeightedAutomaton
+                                                                                                     .makeCharRange('\udc00', '\udffd'))))
+                                                     .union(WeightedAutomaton.makeCharRange('\udbc0', '\udbfe').concatenate(
+                                                             WeightedAutomaton.makeCharRange('\udc00', '\udfff'))
+                                                                             .union(WeightedAutomaton
+                                                                                            .makeChar('\udbff').concatenate(
+                                                                                             WeightedAutomaton
+                                                                                                     .makeCharRange('\udc00', '\udffd')))));
 
 		System.out.println("Building Unicode category automata...");
 		Map<String,Set<Integer>> categories = new HashMap<String,Set<Integer>>();
@@ -821,60 +846,62 @@ final public class Datatypes {
 			e.printStackTrace();
 			System.exit(-1);
 		}
-		List<Automaton> assigned = new ArrayList<Automaton>();
+		List<WeightedAutomaton> assigned = new ArrayList<WeightedAutomaton>();
 		for (Map.Entry<String,Set<Integer>> me : categories.entrySet()) {
-			List<Automaton> la1 = new ArrayList<Automaton>();
-			List<Automaton> la2 = new ArrayList<Automaton>();
+			List<WeightedAutomaton> la1 = new ArrayList<WeightedAutomaton>();
+			List<WeightedAutomaton> la2 = new ArrayList<WeightedAutomaton>();
 			for (Integer cp : me.getValue()) {
 				la1.add(makeCodePoint(cp));
 				if (la1.size() == 50) {
-					la2.add(Automaton.minimize(Automaton.union(la1)));
+					la2.add(WeightedAutomaton.minimize(WeightedAutomaton.union(la1)));
 					la1.clear();
 				}
 			}
-			la2.add(Automaton.union(la1));
-			Automaton a = Automaton.minimize(Automaton.union(la2));
+			la2.add(WeightedAutomaton.union(la1));
+			WeightedAutomaton
+                    a = WeightedAutomaton.minimize(WeightedAutomaton.union(la2));
 			put(automata, me.getKey(), a);
 			assigned.add(a);
 		}
-		Automaton cn = Automaton.minimize(automata.get("Char").clone().intersection(Automaton.union(assigned).complement()));
+		WeightedAutomaton cn = WeightedAutomaton.minimize(automata.get("Char").clone().intersection(
+                WeightedAutomaton.union(assigned).complement()));
 		put(automata, "Cn", cn);
 		put(automata, "C", automata.get("C").clone().union(cn));
 	}
 	
-	private static Automaton makeCodePoint(int cp) {
+	private static WeightedAutomaton makeCodePoint(int cp) {
 		if (cp >= 0x10000) {
 			cp -= 0x10000;
 			char[] cu = { (char)(0xd800 + (cp >> 10)), (char)(0xdc00 + (cp & 0x3ff)) };
-			return Automaton.makeString(new String(cu));
+			return WeightedAutomaton.makeString(new String(cu));
 		} else
-			return Automaton.makeChar((char)cp);
+			return WeightedAutomaton.makeChar((char)cp);
 	}
 
-	private static Map<String,Automaton> buildMap(String[] exps) {
-		Map<String,Automaton> map = new HashMap<String,Automaton>();
+	private static Map<String,WeightedAutomaton> buildMap(String[] exps) {
+		Map<String,WeightedAutomaton> map = new HashMap<String,WeightedAutomaton>();
 		int i = 0;
 		while (i + 1 < exps.length) 
 			put(map, exps[i++], new RegExp(exps[i++]).toAutomaton(map));
 		return map;
 	}
 	
-	private static void putWith(String[] exps, Map<String,Automaton> use) {
+	private static void putWith(String[] exps, Map<String,WeightedAutomaton> use) {
 		int i = 0;
 		while (i + 1 < exps.length)  
 			put(automata, exps[i++], new RegExp(exps[i++]).toAutomaton(use));	
 	}
 	
-	private static void putFrom(String name, Map<String,Automaton> from) {
+	private static void putFrom(String name, Map<String,WeightedAutomaton> from) {
 		automata.put(name, from.get(name));
 	}
 	
-	private static void put(Map<String,Automaton> map, String name, Automaton a) {
+	private static void put(Map<String,WeightedAutomaton> map, String name, WeightedAutomaton a) {
 		map.put(name, a);
 		System.out.println("  " + name + ": " + a.getNumberOfStates() + " states, " + a.getNumberOfTransitions() + " transitions");
 	}
 	
-	static Automaton getWhitespaceAutomaton() {
+	static WeightedAutomaton getWhitespaceAutomaton() {
 		return ws;
 	}
 }

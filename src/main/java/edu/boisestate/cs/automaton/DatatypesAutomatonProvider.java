@@ -57,7 +57,7 @@ public class DatatypesAutomatonProvider implements AutomatonProvider {
 		this.enable_xml = enable_xml;
 	}
 	
-	public Automaton getAutomaton(String name) {
+	public WeightedAutomaton getAutomaton(String name) {
 		if ((enable_unicodeblocks && Datatypes.isUnicodeBlockName(name))
 				|| (enable_unicodecategories && Datatypes.isUnicodeCategoryName(name))
 				|| (enable_xml && Datatypes.isXMLName(name)))

@@ -34,11 +34,11 @@ package edu.boisestate.cs.automaton;
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
  */
 public class StatePair {
-	State s;
-	State s1;
-	State s2;
+	WeightedState s;
+	WeightedState s1;
+	WeightedState s2;
 	
-	StatePair(State s, State s1, State s2) {
+	StatePair(WeightedState s, WeightedState s1, WeightedState s2) {
 		this.s = s;
 		this.s1 = s1;
 		this.s2 = s2;
@@ -49,7 +49,7 @@ public class StatePair {
 	 * @param s1 first state
 	 * @param s2 second state
 	 */
-	public StatePair(State s1, State s2) {
+	public StatePair(WeightedState s1, WeightedState s2) {
 		this.s1 = s1;
 		this.s2 = s2;
 	}
@@ -58,7 +58,7 @@ public class StatePair {
 	 * Returns first component of this pair.
 	 * @return first state
 	 */
-	public State getFirstState() {
+	public WeightedState getFirstState() {
 		return s1;
 	}
 	
@@ -66,7 +66,7 @@ public class StatePair {
 	 * Returns second component of this pair.
 	 * @return second state
 	 */
-	public State getSecondState() {
+	public WeightedState getSecondState() {
 		return s2;
 	}
 	

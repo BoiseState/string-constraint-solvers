@@ -30,32 +30,41 @@
 package edu.boisestate.cs.automaton;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /** 
- * <tt>Automaton</tt> state. 
+ * <tt>Automaton</tt> state.
+ * @author Andrew Harris
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
  */
-public class State implements Serializable, Comparable<State> {
+public class WeightedState
+        implements Serializable, Comparable<WeightedState> {
 	
-	static final long serialVersionUID = 30001;
+	private boolean accept;
+	private Set<WeightedTransition> transitions;
 	
-	boolean accept;
-	Set<Transition> transitions;
-	
-	int number;
-	
-	int id;
-	static int next_id;
-	
+	private int number;
+
+	public int getNumber() {
+		return number;
+	}
+
+	private int id;
+	private static int next_id;
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public void setTransitions(Collection<WeightedTransition> transitions) {
+		this.transitions.clear();
+		this.transitions.addAll(transitions);
+	}
+
 	/** 
 	 * Constructs a new state. Initially, the new state is a reject state. 
 	 */
-	public State() {
+	public WeightedState() {
 		resetTransitions();
 		id = next_id++;
 	}
@@ -64,7 +73,7 @@ public class State implements Serializable, Comparable<State> {
 	 * Resets transition set. 
 	 */
 	final void resetTransitions() {
-		transitions = new HashSet<Transition>();
+		transitions = new HashSet<WeightedTransition>();
 	}
 	
 	/** 
@@ -72,7 +81,7 @@ public class State implements Serializable, Comparable<State> {
 	 * Subsequent changes are reflected in the automaton.
 	 * @return transition set
 	 */
-	public Set<Transition> getTransitions()	{
+	public Set<WeightedTransition> getTransitions()	{
 		return transitions;
 	}
 	
@@ -80,7 +89,7 @@ public class State implements Serializable, Comparable<State> {
 	 * Adds an outgoing transition.
 	 * @param t transition
 	 */
-	public void addTransition(Transition t)	{
+	public void addTransition(WeightedTransition t)	{
 		transitions.add(t);
 	}
 	
@@ -106,10 +115,10 @@ public class State implements Serializable, Comparable<State> {
 	 * @return destination state, null if no matching outgoing transition
 	 * @see #step(char, Collection)
 	 */
-	public State step(char c) {
-		for (Transition t : transitions)
-			if (t.min <= c && c <= t.max)
-				return t.to;
+	public StateWeight step(char c) {
+		for (WeightedTransition t : transitions)
+			if (t.getMin() <= c && c <= t.getMax())
+				return new StateWeight(t.getDest(), t.getWeight());
 		return null;
 	}
 
@@ -119,22 +128,23 @@ public class State implements Serializable, Comparable<State> {
 	 * @param dest collection where destination states are stored
 	 * @see #step(char)
 	 */
-	public void step(char c, Collection<State> dest) {
-		for (Transition t : transitions)
-			if (t.min <= c && c <= t.max)
-				dest.add(t.to);
+	public void step(char c, Collection<StateWeight> dest) {
+		for (WeightedTransition t : transitions)
+			if (t.getMin() <= c && c <= t.getMax())
+				dest.add(new StateWeight(t.getDest(), t.getWeight()));
 	}
 
-	void addEpsilon(State to) {
+	void addEpsilon(WeightedState to) {
 		if (to.accept)
 			accept = true;
-		for (Transition t : to.transitions)
+		for (WeightedTransition t : to.transitions)
 			transitions.add(t);
 	}
 	
-	/** Returns transitions sorted by (min, reverse max, to) or (to, min, reverse max) */
-	Transition[] getSortedTransitionArray(boolean to_first) {
-		Transition[] e = transitions.toArray(new Transition[transitions.size()]);
+	/** Returns transitions sorted by (min, reverse max, to, weight) or
+	 *  (to, min, reverse max, weight) */
+	WeightedTransition[] getSortedTransitionArray(boolean to_first) {
+		WeightedTransition[] e = transitions.toArray(new WeightedTransition[transitions.size()]);
 		Arrays.sort(e, new TransitionComparator(to_first));
 		return e;
 	}
@@ -144,13 +154,13 @@ public class State implements Serializable, Comparable<State> {
 	 * @param to_first if true, order by (to, min, reverse max); otherwise (min, reverse max, to)
 	 * @return transition list
 	 */
-	public List<Transition> getSortedTransitions(boolean to_first)	{
+	public List<WeightedTransition> getSortedTransitions(boolean to_first)	{
 		return Arrays.asList(getSortedTransitionArray(to_first));
 	}
 	
 	/** 
 	 * Returns string describing this state. Normally invoked via 
-	 * {@link Automaton#toString()}. 
+	 * {@link WeightedAutomaton#toString()}.
 	 */
 	@Override
 	public String toString() {
@@ -161,7 +171,7 @@ public class State implements Serializable, Comparable<State> {
 		else
 			b.append(" [reject]");
 		b.append(":\n");
-		for (Transition t : transitions)
+		for (WeightedTransition t : transitions)
 			b.append("  ").append(t.toString()).append("\n");
 		return b.toString();
 	}
@@ -170,7 +180,7 @@ public class State implements Serializable, Comparable<State> {
 	 * Compares this object with the specified object for order.
 	 * States are ordered by the time of construction.
 	 */
-	public int compareTo(State s) {
+	public int compareTo(WeightedState s) {
 		return s.id - id;
 	}
 

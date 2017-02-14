@@ -25,8 +25,6 @@ public class Given_BoundedAutomatonModel_When_GettingSuffix {
 
     @Parameter // first data value (0) is default
     public String description;
-    @Parameter(value = 4)
-    public int end;
     @Parameter(value = 1)
     public int expectedModelCount;
     @Parameter(value = 2)
@@ -51,43 +49,33 @@ public class Given_BoundedAutomatonModel_When_GettingSuffix {
         BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Concrete", 1, concreteModel, 0, 0},
-                {"Concrete", 1, concreteModel, 0, 1},
-                {"Concrete", 1, concreteModel, 0, 2},
-                {"Concrete", 1, concreteModel, 0, 3},
-                {"Concrete", 1, concreteModel, 1, 1},
-                {"Concrete", 1, concreteModel, 1, 2},
-                {"Concrete", 1, concreteModel, 1, 3},
-                {"Concrete", 1, concreteModel, 2, 2},
-                {"Concrete", 1, concreteModel, 2, 3},
-                {"Concrete", 1, concreteModel, 3, 3},
-                {"Uniform", 85, uniformModel, 0, 0},
-                {"Uniform", 21, uniformModel, 0, 1},
-                {"Uniform", 5, uniformModel, 0, 2},
-                {"Uniform", 1, uniformModel, 0, 3},
-                {"Uniform", 84, uniformModel, 1, 1},
-                {"Uniform", 20, uniformModel, 1, 2},
-                {"Uniform", 4, uniformModel, 1, 3},
-                {"Uniform", 80, uniformModel, 2, 2},
-                {"Uniform", 16, uniformModel, 2, 3},
-                {"Uniform", 64, uniformModel, 3, 3},
-                {"Non-uniform", 45, nonUniformModel, 0, 0},
-                {"Non-uniform", 21, nonUniformModel, 0, 1},
-                {"Non-uniform", 5, nonUniformModel, 0, 2},
-                {"Non-uniform", 1, nonUniformModel, 0, 3},
-                {"Non-uniform", 45, nonUniformModel, 1, 1},
-                {"Non-uniform", 20, nonUniformModel, 1, 2},
-                {"Non-uniform", 4, nonUniformModel, 1, 3},
-                {"Non-uniform", 44, nonUniformModel, 2, 2},
-                {"Non-uniform", 16, nonUniformModel, 2, 3},
-                {"Non-uniform", 37, nonUniformModel, 3, 3}
+                {"Empty", 0, emptyModel, 0},
+                {"Empty", 0, emptyModel, 1},
+                {"Empty", 0, emptyModel, 2},
+                {"Empty", 0, emptyModel, 3},
+                {"Empty String", 1, emptyStringModel, 0},
+                {"Empty String", 0, emptyStringModel, 1},
+                {"Empty String", 0, emptyStringModel, 2},
+                {"Empty String", 0, emptyStringModel, 3},
+                {"Concrete", 1, concreteModel, 0},
+                {"Concrete", 1, concreteModel, 1},
+                {"Concrete", 1, concreteModel, 2},
+                {"Concrete", 1, concreteModel, 3},
+                {"Uniform", 85, uniformModel, 0},
+                {"Uniform", 21, uniformModel, 1},
+                {"Uniform", 5, uniformModel, 2},
+                {"Uniform", 1, uniformModel, 3},
+                {"Non-uniform", 45, nonUniformModel, 0},
+                {"Non-uniform", 21, nonUniformModel, 1},
+                {"Non-uniform", 5, nonUniformModel, 2},
+                {"Non-uniform", 1, nonUniformModel, 3}
         });
     }
 
     @Before
     public void setup() {
         // *** act ***
-        this.deleteModel = this.model.delete(this.start, this.end);
+        this.deleteModel = this.model.suffix(this.start);
 
     }
 

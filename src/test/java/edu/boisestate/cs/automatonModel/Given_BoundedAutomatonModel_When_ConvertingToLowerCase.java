@@ -31,10 +31,11 @@ public class Given_BoundedAutomatonModel_When_ConvertingToLowerCase {
     public int expectedModelCount;
     private AutomatonModel lowerCaseModel;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.toLowerCase() - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
-        Alphabet alphabet = new Alphabet("A-D");
+        Alphabet alphabet = new Alphabet("A-D,a-d");
         int initialBoundLength = 3;
 
         // create automaton models
@@ -45,11 +46,11 @@ public class Given_BoundedAutomatonModel_When_ConvertingToLowerCase {
         BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", -1, emptyModel},
-                {"Empty String", -1, emptyStringModel},
-                {"Concrete", -1, concreteModel},
-                {"Uniform", -1, uniformModel},
-                {"Non-uniform", -1, nonUniformModel}
+                {"Empty", 0, emptyModel},
+                {"Empty String", 1, emptyStringModel},
+                {"Concrete", 1, concreteModel},
+                {"Uniform", 85, uniformModel},
+                {"Non-uniform", 45, nonUniformModel}
         });
     }
 

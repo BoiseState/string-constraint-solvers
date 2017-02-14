@@ -121,6 +121,9 @@ class Settings:
         self.inputs = options.inputs
         if options.empty_string:
             self.inputs.append('')
+        self.non_uniform = False
+        if options.non_uniform:
+            self.non_uniform = True
         # use unknown string if no other inputs specified
         if len(self.inputs) == 0 or options.unknown_string:
             self.inputs.append(chr(0))
@@ -1058,6 +1061,12 @@ def get_options(arguments):
                                       'strings used to generate graphs.',
                                  action='store_true')
 
+    generate_parser.add_argument('-f',
+                                 '--non-uniform',
+                                 help='Include non-uniform string before all '
+                                      'subsequent string operations.',
+                                 action='store_true')
+
     generate_parser.add_argument('-i',
                                  '--inputs',
                                  nargs='*',
@@ -1228,6 +1237,22 @@ def create_alphabet_declaration(alphabet):
     return ','.join(range_strings)
 
 
+def get_root_verticies(settings_inst):
+    verticies = list()
+    for value in settings_inst.inputs:
+        # create root node value
+        if len(value) == 1 and ord(value) == 0:
+            root_value = RootValue(False, method="getStringValue!!")
+        else:
+            root_value = RootValue(True, value, "init")
+
+        # create vertex from root node
+        val = root_value.get_value()
+        vertex = Vertex(val, root_value.string, generate_id(val))
+        vertices.append(vertex)
+    # TODO: Add contains vertex for non-uniform initial string
+
+
 def main(arguments):
     # get option from arguments
     options = get_options(arguments)
@@ -1243,18 +1268,10 @@ def main(arguments):
         if re.search('gen.*\.json', f):
             os.remove(os.path.join(dir_path, f))
 
+    root_verticies = get_root_verticies(settings)
+
     # for each input value
-    for value in settings.inputs:
-
-        # create root node value
-        if len(value) == 1 and ord(value) == 0:
-            root_value = RootValue(False, method="getStringValue!!")
-        else:
-            root_value = RootValue(True, value, "init")
-
-        # create vertex from root node
-        val = root_value.get_value()
-        root_vertex = Vertex(val, root_value.string, generate_id(val))
+    for root_vertex in root_verticies:
 
         # add operations to the vertex
         add_operation(root_vertex, settings.depth)
