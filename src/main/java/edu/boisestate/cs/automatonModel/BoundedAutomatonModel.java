@@ -464,11 +464,10 @@ public class BoundedAutomatonModel
 
         // get automata for operations
         Automaton arg = getAutomatonFromBoundedModel(argModel);
-        Automaton before = performUnaryOperation(this.automaton, new PrecisePrefix(offset), this.alphabet);
-        Automaton after = performUnaryOperation(this.automaton, new PreciseSuffix(offset), this.alphabet);
 
         // get resulting automaton
-        Automaton result = before.concatenate(arg).concatenate(after);
+        PreciseInsert insert = new PreciseInsert(offset);
+        Automaton result = insert.op(automaton, arg);
 
         // calculate new bound length
         int newBoundLength = this.boundLength + argModel.boundLength;
@@ -522,6 +521,10 @@ public class BoundedAutomatonModel
 
     @Override
     public AutomatonModel prefix(int end) {
+        // if automaton is empty
+        if (this.automaton.isEmpty()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), this.alphabet, 0);
+        }
 
         // perform operation
         Automaton result = performUnaryOperation(automaton, new PrecisePrefix(end), this.alphabet);
@@ -601,6 +604,10 @@ public class BoundedAutomatonModel
 
     @Override
     public AutomatonModel reverse() {
+        // if automaton is empty
+        if (this.automaton.isEmpty()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), this.alphabet, 0);
+        }
 
         // perform operation
         Automaton result = performUnaryOperation(automaton, new Reverse(), this.alphabet);
@@ -654,18 +661,8 @@ public class BoundedAutomatonModel
     @SuppressWarnings("Duplicates")
     @Override
     public AutomatonModel substring(int start, int end) {
-        // initialize result automaton
-        Automaton result;
-
         // get resulting automaton
-        if (start == end) {
-            result = BasicAutomata.makeEmptyString();
-        } else if (start == 0) {
-            result = performUnaryOperation(this.automaton, new PrecisePrefix(end), this.alphabet);
-        } else {
-            Automaton suffix = performUnaryOperation(this.automaton, new PreciseSuffix(start), this.alphabet);
-            result = performUnaryOperation(suffix, new PrecisePrefix(end - start), this.alphabet);
-        }
+        Automaton result = performUnaryOperation(automaton, new PreciseSubstring(start, end), this.alphabet);
 
         // get new bound length
         int newBoundLength = end - start;

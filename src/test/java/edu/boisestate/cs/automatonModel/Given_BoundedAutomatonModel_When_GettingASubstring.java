@@ -106,7 +106,7 @@ public class Given_BoundedAutomatonModel_When_GettingASubstring {
     @Before
     public void setup() {
         // *** act ***
-        this.deleteModel = this.model.delete(this.start, this.end);
+        this.deleteModel = this.model.substring(this.start, this.end);
 
     }
 

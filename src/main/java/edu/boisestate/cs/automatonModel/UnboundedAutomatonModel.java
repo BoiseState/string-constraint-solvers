@@ -657,18 +657,8 @@ public class UnboundedAutomatonModel
     @SuppressWarnings("Duplicates")
     @Override
     public AutomatonModel substring(int start, int end) {
-        // initialize result automaton
-        Automaton result;
-
         // get resulting automaton
-        if (start == end) {
-            result = BasicAutomata.makeEmptyString();
-        } else if (start == 0) {
-            result = performUnaryOperation(this.automaton, new PrecisePrefix(end), this.alphabet);
-        } else {
-            Automaton suffix = performUnaryOperation(this.automaton, new PreciseSuffix(start), this.alphabet);
-            result = performUnaryOperation(suffix, new PrecisePrefix(end - start), this.alphabet);
-        }
+        Automaton result = performUnaryOperation(automaton, new PreciseSubstring(start, end), this.alphabet);
 
         // get new bound length
         int newBoundLength = end - start;
