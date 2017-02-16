@@ -22,10 +22,10 @@ public class DotToGraph {
         Runtime rt = Runtime.getRuntime();
 
         try {
-            rt.exec("dot -Tpng ./" + filename + ".dot -o ./" + filename + ".png");
+            rt.exec("dot -Tpng " + filename + ".dot -o " + filename + ".png");
 
             // trim png using imagemagik
-            rt.exec("convert ./" + filename + ".png -trim ./" + filename + ".png");
+            rt.exec("convert " + filename + ".png -trim " + filename + ".png");
         } catch (IOException e) {
             e.printStackTrace();
         }

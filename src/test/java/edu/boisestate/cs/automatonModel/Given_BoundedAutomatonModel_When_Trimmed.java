@@ -31,6 +31,7 @@ public class Given_BoundedAutomatonModel_When_Trimmed {
     public int expectedModelCount;
     private AutomatonModel trimModel;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.trim() - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length

@@ -35,6 +35,7 @@ public class Given_BoundedAutomatonModel_When_AssertingNotStartsOther {
     public int expectedModelCount;
     private AutomatonModel notStartModel;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.assertNotStartsOther(<{1} Automaton Model>) - Expected MC = {2}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
@@ -49,31 +50,31 @@ public class Given_BoundedAutomatonModel_When_AssertingNotStartsOther {
         BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", "Empty", -1, emptyModel, emptyModel},
-                {"Empty", "Empty String", -1, emptyModel, emptyStringModel},
-                {"Empty", "Concrete", -1, emptyModel, concreteModel},
-                {"Empty", "Uniform", -1, emptyModel, uniformModel},
-                {"Empty", "Non-uniform", -1, emptyModel, nonUniformModel},
-                {"Empty String", "Empty", -1, emptyStringModel, emptyModel},
-                {"Empty String", "Empty String", -1, emptyStringModel, emptyStringModel},
-                {"Empty String", "Concrete", -1, emptyStringModel, concreteModel},
-                {"Empty String", "Uniform", -1, emptyStringModel, uniformModel},
-                {"Empty String", "Non-uniform", -1, emptyStringModel, nonUniformModel},
-                {"Concrete", "Empty", -1, concreteModel, emptyModel},
-                {"Concrete", "Empty String", -1, concreteModel, emptyStringModel},
-                {"Concrete", "Concrete", -1, concreteModel, concreteModel},
-                {"Concrete", "Uniform", -1, concreteModel, uniformModel},
-                {"Concrete", "Non-uniform", -1, concreteModel, nonUniformModel},
-                {"Uniform", "Empty", -1, uniformModel, emptyModel},
-                {"Uniform", "Empty String", -1, uniformModel, emptyStringModel},
-                {"Uniform", "Concrete", -1, uniformModel, concreteModel},
-                {"Uniform", "Uniform", -1, uniformModel, uniformModel},
-                {"Uniform", "Non-uniform", -1, uniformModel, nonUniformModel},
-                {"Non-uniform", "Empty", -1, nonUniformModel, emptyModel},
-                {"Non-uniform", "Empty String", -1, nonUniformModel, emptyStringModel},
-                {"Non-uniform", "Concrete", -1, nonUniformModel, concreteModel},
-                {"Non-uniform", "Uniform", -1, nonUniformModel, uniformModel},
-                {"Non-uniform", "Non-uniform", -1, nonUniformModel, nonUniformModel}
+                {"Empty", "Empty", 0, emptyModel, emptyModel},
+                {"Empty", "Empty String", 0, emptyModel, emptyStringModel},
+                {"Empty", "Concrete", 0, emptyModel, concreteModel},
+                {"Empty", "Uniform", 0, emptyModel, uniformModel},
+                {"Empty", "Non-uniform", 0, emptyModel, nonUniformModel},
+                {"Empty String", "Empty", 1, emptyStringModel, emptyModel},
+                {"Empty String", "Empty String", 0, emptyStringModel, emptyStringModel},
+                {"Empty String", "Concrete", 0, emptyStringModel, concreteModel},
+                {"Empty String", "Uniform", 0, emptyStringModel, uniformModel},
+                {"Empty String", "Non-uniform", 0, emptyStringModel, nonUniformModel},
+                {"Concrete", "Empty", 1, concreteModel, emptyModel},
+                {"Concrete", "Empty String", 1, concreteModel, emptyStringModel},
+                {"Concrete", "Concrete", 0, concreteModel, concreteModel},
+                {"Concrete", "Uniform", 0, concreteModel, uniformModel},
+                {"Concrete", "Non-uniform", 0, concreteModel, nonUniformModel},
+                {"Uniform", "Empty", 85, uniformModel, emptyModel},
+                {"Uniform", "Empty String", 84, uniformModel, emptyStringModel},
+                {"Uniform", "Concrete", 81, uniformModel, concreteModel},
+                {"Uniform", "Uniform", 0, uniformModel, uniformModel},
+                {"Uniform", "Non-uniform", 27, uniformModel, nonUniformModel},
+                {"Non-uniform", "Empty", 45, nonUniformModel, emptyModel},
+                {"Non-uniform", "Empty String", 45, nonUniformModel, emptyStringModel},
+                {"Non-uniform", "Concrete", 42, nonUniformModel, concreteModel},
+                {"Non-uniform", "Uniform", 0, nonUniformModel, uniformModel},
+                {"Non-uniform", "Non-uniform", 0, nonUniformModel, nonUniformModel}
         });
     }
 

@@ -39,8 +39,15 @@ public class BoundedAutomatonModel
     public AutomatonModel assertContainedInOther(AutomatonModel containingModel) {
         ensureBoundedModel(containingModel);
 
-        // get all substrings
+        // get containing automaton
         Automaton containing = getAutomatonFromBoundedModel(containingModel);
+
+        // if either automata is  empty
+        if (this.automaton.isEmpty() || containing.isEmpty()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), this.alphabet, 0);
+        }
+
+        // get all substrings
         Automaton substrings = performUnaryOperation(containing, new Substring(), this.alphabet);
 
         // get resulting automaton
@@ -80,6 +87,7 @@ public class BoundedAutomatonModel
 
         // get resulting automaton
         Automaton result =  this.automaton.intersection(x);
+        result.minimize();
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
@@ -98,8 +106,15 @@ public class BoundedAutomatonModel
     public AutomatonModel assertEndsOther(AutomatonModel containingModel) {
         ensureBoundedModel(containingModel);
 
-        // get all suffixes
+        // get containing automaton
         Automaton containing = getAutomatonFromBoundedModel(containingModel);
+
+        // if either automata is  empty
+        if (this.automaton.isEmpty() || containing.isEmpty()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), this.alphabet, 0);
+        }
+
+        // get all suffixes
         Automaton suffixes = performUnaryOperation(containing, new Postfix(), this.alphabet);
 
         // get resulting automaton
@@ -125,6 +140,7 @@ public class BoundedAutomatonModel
         // get bounded resulting automaton
         Automaton result =  this.automaton.intersection(x);
         result = boundAutomaton(result, boundLength, this.alphabet);
+        result.minimize();
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
@@ -171,9 +187,16 @@ public class BoundedAutomatonModel
     public AutomatonModel assertNotContainedInOther(AutomatonModel notContainingModel) {
         ensureBoundedModel(notContainingModel);
 
+        // get containing automaton
+        Automaton notContaining = getAutomatonFromBoundedModel(notContainingModel);
+
+        // if not containing automaton is  empty
+        if (notContaining.isEmpty()) {
+            return new BoundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
+        }
+
         // get all substrings
-        Automaton containing = getAutomatonFromBoundedModel(notContainingModel);
-        Automaton substrings = performUnaryOperation(containing, new Substring(), this.alphabet);
+        Automaton substrings = performUnaryOperation(notContaining, new Substring(), this.alphabet);
 
         // get resulting automaton
         Automaton result =  this.automaton.minus(substrings);
@@ -216,9 +239,16 @@ public class BoundedAutomatonModel
     public AutomatonModel assertNotEndsOther(AutomatonModel notContainingModel) {
         ensureBoundedModel(notContainingModel);
 
+        // get containing automaton
+        Automaton notContaining = getAutomatonFromBoundedModel(notContainingModel);
+
+        // if not containing automaton is  empty
+        if (notContaining.isEmpty()) {
+            return new BoundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
+        }
+
         // get all suffixes
-        Automaton containing = getAutomatonFromBoundedModel(notContainingModel);
-        Automaton suffixes = performUnaryOperation(containing, new Postfix(), this.alphabet);
+        Automaton suffixes = performUnaryOperation(notContaining, new Postfix(), this.alphabet);
 
         // get resulting automaton
         Automaton result =  this.automaton.minus(suffixes);
@@ -280,9 +310,16 @@ public class BoundedAutomatonModel
     public AutomatonModel assertNotStartsOther(AutomatonModel notContainingModel) {
         ensureBoundedModel(notContainingModel);
 
+        // get containing automaton
+        Automaton notContaining = getAutomatonFromBoundedModel(notContainingModel);
+
+        // if not containing automaton is  empty
+        if (notContaining.isEmpty()) {
+            return new BoundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
+        }
+
         // get all prefixes
-        Automaton containing = getAutomatonFromBoundedModel(notContainingModel);
-        Automaton prefixes = performUnaryOperation(containing, new Prefix(), this.alphabet);
+        Automaton prefixes = performUnaryOperation(notContaining, new Prefix(), this.alphabet);
 
         // get resulting automaton
         Automaton result =  this.automaton.minus(prefixes);
@@ -315,8 +352,15 @@ public class BoundedAutomatonModel
     public AutomatonModel assertStartsOther(AutomatonModel containingModel) {
         ensureBoundedModel(containingModel);
 
-        // get all prefixes
+        // get containing automaton
         Automaton containing = getAutomatonFromBoundedModel(containingModel);
+
+        // if either automata is  empty
+        if (this.automaton.isEmpty() || containing.isEmpty()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), this.alphabet, 0);
+        }
+
+        // get all prefixes
         Automaton prefixes = performUnaryOperation(containing, new Prefix(), this.alphabet);
 
         // get resulting automaton
@@ -341,6 +385,7 @@ public class BoundedAutomatonModel
 
         // get resulting automaton
         Automaton result =  this.automaton.intersection(x);
+        result.minimize();
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
@@ -468,6 +513,9 @@ public class BoundedAutomatonModel
         // get resulting automaton
         PreciseInsert insert = new PreciseInsert(offset);
         Automaton result = insert.op(automaton, arg);
+
+        // minimize resulting automaton
+        result.minimize();
 
         // calculate new bound length
         int newBoundLength = this.boundLength + argModel.boundLength;

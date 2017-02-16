@@ -35,7 +35,7 @@ public class Given_BoundedAutomatonModel_When_ReplacingKnownStrings {
     public String find;
     private AutomatonModel replacedModel;
 
-
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.replace(\"{3}\", \"{4}\") - " +
                        "Expected MC = {1}")
     public static Iterable<Object[]> data() {

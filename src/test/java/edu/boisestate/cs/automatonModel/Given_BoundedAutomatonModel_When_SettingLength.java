@@ -29,7 +29,7 @@ public class Given_BoundedAutomatonModel_When_SettingLength {
     public int length;
     private AutomatonModel lengthModel;
 
-
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.setLength({3}) - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length

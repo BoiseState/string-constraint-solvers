@@ -33,6 +33,7 @@ public class Given_BoundedAutomatonModel_When_SettingCharAt {
     public int offset;
     private AutomatonModel charSetModel;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.setCharAt({4}, <{1} Automaton Model>) - Expected MC = {3}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length

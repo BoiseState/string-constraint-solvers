@@ -35,6 +35,7 @@ public class Given_BoundedAutomatonModel_When_AssertingContainedInOther {
     public int expectedModelCount;
     private AutomatonModel containedModel;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.assertContainedInOther(<{1} Automaton Model>) - Expected MC = {2}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length

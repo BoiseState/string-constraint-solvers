@@ -106,31 +106,6 @@ public class PreciseInsert
             endStatesMap.put(state, stateSet);
         }
 
-        // walk automaton one character each
-            for (State keyState : states) {
-                // get existing state set
-                Set<State> stateSet = endStatesMap.get(keyState);
-
-                // if automaton is long enough
-                if (!stateSet.isEmpty()) {
-                    // initialize next state set
-                    Set<State> nextStates = new HashSet<>();
-
-                    // get all transistions from each state
-                    for (State state : stateSet) {
-
-                        // add transitions to copied states
-                        for (Transition transition : state.getTransitions()) {
-                            // add destination state as next state
-                            nextStates.add(transition.getDest());
-                        }
-                    }
-
-                    // update end states with new states
-                    endStatesMap.put(keyState, nextStates);
-                }
-            }
-
         // handle empty end state sets
         for (State state : states) {
             if (endStatesMap.get(state).isEmpty()) {

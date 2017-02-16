@@ -33,7 +33,6 @@ public class Given_BoundedAutomatonModel_When_GettingPrefix {
     public int end;
     private AutomatonModel prefixModel;
 
-
     @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.prefix({3}) - Expected MC = {1}")
     public static Iterable<Object[]> data() {

@@ -32,6 +32,7 @@ public class Given_BoundedAutomatonModel_When_AssertingEmpty {
     private AutomatonModel emptyModel;
 
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.assertEmpty() - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length

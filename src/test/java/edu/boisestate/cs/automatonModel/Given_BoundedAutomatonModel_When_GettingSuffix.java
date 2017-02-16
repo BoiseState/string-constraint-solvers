@@ -33,7 +33,7 @@ public class Given_BoundedAutomatonModel_When_GettingSuffix {
     public int start;
     private AutomatonModel deleteModel;
 
-
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.suffix({3}) - " +
                        "Expected MC = {1}")
     public static Iterable<Object[]> data() {

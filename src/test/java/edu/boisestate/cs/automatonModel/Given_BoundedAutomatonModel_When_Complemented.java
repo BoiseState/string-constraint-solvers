@@ -31,7 +31,7 @@ public class Given_BoundedAutomatonModel_When_Complemented {
     public int expectedModelCount;
     private AutomatonModel complementModel;
 
-
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.complement() - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length

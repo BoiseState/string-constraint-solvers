@@ -35,6 +35,7 @@ public class Given_BoundedAutomatonModel_When_AssertingEndsWith {
     public int expectedModelCount;
     private AutomatonModel endsWithModel;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.assertEndsWith(<{1} Automaton Model>) - Expected MC = {2}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
@@ -70,7 +71,7 @@ public class Given_BoundedAutomatonModel_When_AssertingEndsWith {
                 {"Uniform", "Uniform", 85, uniformModel, uniformModel},
                 {"Uniform", "Non-uniform", 45, uniformModel, nonUniformModel},
                 {"Non-uniform", "Empty", 0, nonUniformModel, emptyModel},
-                {"Non-uniform", "Empty String", 0, nonUniformModel, emptyStringModel},
+                {"Non-uniform", "Empty String", 45, nonUniformModel, emptyStringModel},
                 {"Non-uniform", "Concrete", 1, nonUniformModel, concreteModel},
                 {"Non-uniform", "Uniform", 45, nonUniformModel, uniformModel},
                 {"Non-uniform", "Non-uniform", 45, nonUniformModel, nonUniformModel}

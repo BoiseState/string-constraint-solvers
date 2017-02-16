@@ -39,7 +39,7 @@ public class Given_BoundedAutomatonModel_When_ReplacingAllStrings {
     public BoundedAutomatonModel findModel;
     private AutomatonModel replacedModel;
 
-
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.replace({1} Automaton, {2} Automaton) - " +
                        "Expected MC = {1}")
     public static Iterable<Object[]> data() {

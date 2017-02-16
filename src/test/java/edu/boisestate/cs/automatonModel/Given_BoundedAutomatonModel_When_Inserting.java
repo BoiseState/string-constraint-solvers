@@ -33,6 +33,7 @@ public class Given_BoundedAutomatonModel_When_Inserting {
     public int offset;
     private AutomatonModel insertedModel;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.insert({4}, <{1} Automaton Model>) - Expected MC = {2}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
@@ -162,6 +163,12 @@ public class Given_BoundedAutomatonModel_When_Inserting {
         int modelCount = this.insertedModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format(
+                "Expected Model Count Invalid for <%s Automaton Model>.insert" +
+                "(%d, <%s Automaton Model>)",
+                baseDescription,
+                offset,
+                argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

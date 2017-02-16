@@ -35,7 +35,7 @@ public class Given_BoundedAutomatonModel_When_PreciselyDeleted {
     public int start;
     private AutomatonModel deleteModel;
 
-
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.delete({3}, {4}) - " +
                        "Expected MC = {1}")
     public static Iterable<Object[]> data() {

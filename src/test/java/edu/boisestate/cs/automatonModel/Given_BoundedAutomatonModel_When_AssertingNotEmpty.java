@@ -32,6 +32,7 @@ public class Given_BoundedAutomatonModel_When_AssertingNotEmpty {
     private AutomatonModel notEmptyModel;
 
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.assertNotEmpty() - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length

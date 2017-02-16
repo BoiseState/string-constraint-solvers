@@ -35,6 +35,7 @@ public class Given_BoundedAutomatonModel_When_Concatenated {
     public int expectedModelCount;
     private AutomatonModel concatModel;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.concat(<{1} Automaton " +
                        "Model>) - Expected MC = {2}")
     public static Iterable<Object[]> data() {

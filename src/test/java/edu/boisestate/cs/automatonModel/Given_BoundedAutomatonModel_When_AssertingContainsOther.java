@@ -1,7 +1,5 @@
 package edu.boisestate.cs.automatonModel;
 
-import dk.brics.automaton.Automaton;
-import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +11,6 @@ import org.junit.runners.Parameterized.Parameters;
 import java.util.Arrays;
 
 import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities.*;
-import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities
-        .getNonUniformBoundedModel;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -35,6 +31,7 @@ public class Given_BoundedAutomatonModel_When_AssertingContainsOther {
     public int expectedModelCount;
     private AutomatonModel containsModel;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.assertContainsOther(<{1} Automaton Model>) - Expected MC = {2}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
@@ -90,6 +87,11 @@ public class Given_BoundedAutomatonModel_When_AssertingContainsOther {
         int modelCount = this.containsModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format(
+                "Expected Model Count Invalid for <%s Automaton Model>" +
+                ".assertContainsOther(<%s Automaton Model>)",
+                baseDescription,
+                argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

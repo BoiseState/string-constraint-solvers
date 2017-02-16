@@ -33,6 +33,7 @@ public class Given_BoundedAutomatonModel_When_Unioned {
     public int expectedModelCount;
     private AutomatonModel unionModel;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.union(<{1} Automaton Model>) - Expected MC = {2}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
