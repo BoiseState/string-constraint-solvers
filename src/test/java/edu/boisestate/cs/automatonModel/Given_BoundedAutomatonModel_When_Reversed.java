@@ -46,7 +46,7 @@ public class Given_BoundedAutomatonModel_When_Reversed {
         BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", 1, emptyModel},
+                {"Empty", 0, emptyModel},
                 {"Empty String", 1, emptyStringModel},
                 {"Concrete", 1, concreteModel},
                 {"Uniform", 85, uniformModel},
@@ -67,6 +67,8 @@ public class Given_BoundedAutomatonModel_When_Reversed {
         int modelCount = this.reversedModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.reverse()",
+                                       description);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

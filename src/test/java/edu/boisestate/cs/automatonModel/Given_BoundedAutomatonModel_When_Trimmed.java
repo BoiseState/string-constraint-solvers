@@ -35,22 +35,24 @@ public class Given_BoundedAutomatonModel_When_Trimmed {
     @Parameters(name = "{index}: <{0} Automaton Model>.trim() - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
-        Alphabet alphabet = new Alphabet("A-D");
+        Alphabet alphabet = new Alphabet(" ,A-D");
         int initialBoundLength = 3;
 
         // create automaton models
         BoundedAutomatonModel emptyModel = getEmptyBoundedModel(alphabet);
         BoundedAutomatonModel emptyStringModel = getEmptyStringBoundedModel(alphabet);
-        BoundedAutomatonModel concreteModel = getConcreteBoundedModel(alphabet,"ABC");
+        BoundedAutomatonModel whiteSpaceConcreteModel = getConcreteBoundedModel(alphabet," A ");
+        BoundedAutomatonModel noWhiteSpaceConcreteModel = getConcreteBoundedModel(alphabet,"ABC");
         BoundedAutomatonModel uniformModel = getUniformBoundedModel(alphabet, initialBoundLength);
         BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", -1, emptyModel},
-                {"Empty String", -1, emptyStringModel},
-                {"Concrete", -1, concreteModel},
-                {"Uniform", -1, uniformModel},
-                {"Non-uniform", -1, nonUniformModel}
+                {"Empty", 0, emptyModel},
+                {"Empty String", 1, emptyStringModel},
+                {"Concrete Whitespace", 1, whiteSpaceConcreteModel},
+                {"Concrete No Whitespace", 1, noWhiteSpaceConcreteModel},
+                {"Uniform", 109, uniformModel},
+                {"Non-uniform", 52, nonUniformModel}
         });
     }
 
@@ -58,7 +60,6 @@ public class Given_BoundedAutomatonModel_When_Trimmed {
     public void setup() {
         // *** act ***
         this.trimModel = this.model.trim();
-
     }
 
     @Test
@@ -67,6 +68,8 @@ public class Given_BoundedAutomatonModel_When_Trimmed {
         int modelCount = this.trimModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.trim()",
+                                       description);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

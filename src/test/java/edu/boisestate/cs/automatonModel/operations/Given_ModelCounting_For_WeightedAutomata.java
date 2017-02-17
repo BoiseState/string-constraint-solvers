@@ -33,6 +33,7 @@ public class Given_ModelCounting_For_WeightedAutomata {
     public int expectedModelCount;
     private BigInteger modelCount;
 
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: Automaton <{0}>, Bounding Length {2}, Expected MC {1}")
     public static Iterable<Object[]> data() {
 

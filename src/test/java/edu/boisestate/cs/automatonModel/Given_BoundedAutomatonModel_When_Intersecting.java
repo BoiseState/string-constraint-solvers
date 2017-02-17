@@ -91,6 +91,9 @@ public class Given_BoundedAutomatonModel_When_Intersecting {
         int modelCount = this.intersectModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.intersect(<%s Automaton Model>)",
+                                       baseDescription,
+                                       argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

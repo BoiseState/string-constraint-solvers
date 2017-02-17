@@ -91,6 +91,9 @@ public class Given_BoundedAutomatonModel_When_AssertingEndsOther {
         int modelCount = this.endModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.assertEndsOther(<%s Automaton Model>)",
+                                       baseDescription,
+                                       argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

@@ -42,7 +42,7 @@ public class Given_BoundedAutomatonModel_When_GettingASubstring {
         Alphabet alphabet = new Alphabet("A-D");
         int initialBoundLength = 3;
 
-        // create automaton models
+        // create baseAutomaton models
         BoundedAutomatonModel emptyModel = getEmptyBoundedModel(alphabet);
         BoundedAutomatonModel emptyStringModel = getEmptyStringBoundedModel(alphabet);
         BoundedAutomatonModel concreteModel = getConcreteBoundedModel(alphabet,"ABC");
@@ -116,6 +116,10 @@ public class Given_BoundedAutomatonModel_When_GettingASubstring {
         int modelCount = this.deleteModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.substring(%d, %d)",
+                                       description,
+                                       start,
+                                       end);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

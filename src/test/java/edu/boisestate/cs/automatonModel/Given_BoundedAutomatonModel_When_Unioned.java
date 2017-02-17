@@ -89,6 +89,9 @@ public class Given_BoundedAutomatonModel_When_Unioned {
         int modelCount = this.unionModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.union(<%s Automaton Model>)",
+                                       baseDescription,
+                                       argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

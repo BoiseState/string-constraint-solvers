@@ -40,80 +40,80 @@ public class Given_BoundedAutomatonModel_When_SettingCharAt {
         Alphabet alphabet = new Alphabet("A-D");
         int initialBoundLength = 3;
 
-        // create automaton models
+        // create baseAutomaton models
         BoundedAutomatonModel emptyModel = getEmptyBoundedModel(alphabet);
         BoundedAutomatonModel emptyStringModel = getEmptyStringBoundedModel(alphabet);
         BoundedAutomatonModel concreteModel = getConcreteBoundedModel(alphabet,"ABC");
         BoundedAutomatonModel uniformModel = getUniformBoundedModel(alphabet, initialBoundLength);
         BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
-        // create arg automaton models
+        // create arg baseAutomaton models
         BoundedAutomatonModel aModel = getConcreteBoundedModel(alphabet, "A");
         BoundedAutomatonModel bModel = getConcreteBoundedModel(alphabet, "B");
         BoundedAutomatonModel cModel = getConcreteBoundedModel(alphabet, "C");
         BoundedAutomatonModel dModel = getConcreteBoundedModel(alphabet, "D");
 
         return Arrays.asList(new Object[][]{
-                {"Empty", "'A'", -1, emptyModel, 0, aModel},
-                {"Empty", "'B'", -1, emptyModel, 0, bModel},
-                {"Empty", "'C'", -1, emptyModel, 0, cModel},
-                {"Empty", "'D'", -1, emptyModel, 0, dModel},
-                {"Empty", "'A'", -1, emptyModel, 1, aModel},
-                {"Empty", "'B'", -1, emptyModel, 1, bModel},
-                {"Empty", "'C'", -1, emptyModel, 1, cModel},
-                {"Empty", "'D'", -1, emptyModel, 1, dModel},
-                {"Empty", "'A'", -1, emptyModel, 2, aModel},
-                {"Empty", "'B'", -1, emptyModel, 2, bModel},
-                {"Empty", "'C'", -1, emptyModel, 2, cModel},
-                {"Empty", "'D'", -1, emptyModel, 2, dModel},
-                {"Empty String", "'A'", -1, emptyStringModel, 0, aModel},
-                {"Empty String", "'B'", -1, emptyStringModel, 0, bModel},
-                {"Empty String", "'C'", -1, emptyStringModel, 0, cModel},
-                {"Empty String", "'D'", -1, emptyStringModel, 0, dModel},
-                {"Empty String", "'A'", -1, emptyStringModel, 1, aModel},
-                {"Empty String", "'B'", -1, emptyStringModel, 1, bModel},
-                {"Empty String", "'C'", -1, emptyStringModel, 1, cModel},
-                {"Empty String", "'D'", -1, emptyStringModel, 1, dModel},
-                {"Empty String", "'A'", -1, emptyStringModel, 2, aModel},
-                {"Empty String", "'B'", -1, emptyStringModel, 2, bModel},
-                {"Empty String", "'C'", -1, emptyStringModel, 2, cModel},
-                {"Empty String", "'D'", -1, emptyStringModel, 2, dModel},
-                {"Concrete", "'A'", -1, concreteModel, 0, aModel},
-                {"Concrete", "'B'", -1, concreteModel, 0, bModel},
-                {"Concrete", "'C'", -1, concreteModel, 0, cModel},
-                {"Concrete", "'D'", -1, concreteModel, 0, dModel},
-                {"Concrete", "'A'", -1, concreteModel, 1, aModel},
-                {"Concrete", "'B'", -1, concreteModel, 1, bModel},
-                {"Concrete", "'C'", -1, concreteModel, 1, cModel},
-                {"Concrete", "'D'", -1, concreteModel, 1, dModel},
-                {"Concrete", "'A'", -1, concreteModel, 2, aModel},
-                {"Concrete", "'B'", -1, concreteModel, 2, bModel},
-                {"Concrete", "'C'", -1, concreteModel, 2, cModel},
-                {"Concrete", "'D'", -1, concreteModel, 2, dModel},
-                {"Uniform", "'A'", -1, uniformModel, 0, aModel},
-                {"Uniform", "'B'", -1, uniformModel, 0, bModel},
-                {"Uniform", "'C'", -1, uniformModel, 0, cModel},
-                {"Uniform", "'D'", -1, uniformModel, 0, dModel},
-                {"Uniform", "'A'", -1, uniformModel, 1, aModel},
-                {"Uniform", "'B'", -1, uniformModel, 1, bModel},
-                {"Uniform", "'C'", -1, uniformModel, 1, cModel},
-                {"Uniform", "'D'", -1, uniformModel, 1, dModel},
-                {"Uniform", "'A'", -1, uniformModel, 2, aModel},
-                {"Uniform", "'B'", -1, uniformModel, 2, bModel},
-                {"Uniform", "'C'", -1, uniformModel, 2, cModel},
-                {"Uniform", "'D'", -1, uniformModel, 2, dModel},
-                {"Non-uniform", "'A'", -1, nonUniformModel, 0, aModel},
-                {"Non-uniform", "'B'", -1, nonUniformModel, 0, bModel},
-                {"Non-uniform", "'C'", -1, nonUniformModel, 0, cModel},
-                {"Non-uniform", "'D'", -1, nonUniformModel, 0, dModel},
-                {"Non-uniform", "'A'", -1, nonUniformModel, 1, aModel},
-                {"Non-uniform", "'B'", -1, nonUniformModel, 1, bModel},
-                {"Non-uniform", "'C'", -1, nonUniformModel, 1, cModel},
-                {"Non-uniform", "'D'", -1, nonUniformModel, 1, dModel},
-                {"Non-uniform", "'A'", -1, nonUniformModel, 2, aModel},
-                {"Non-uniform", "'B'", -1, nonUniformModel, 2, bModel},
-                {"Non-uniform", "'C'", -1, nonUniformModel, 2, cModel},
-                {"Non-uniform", "'D'", -1, nonUniformModel, 2, dModel},
+                {"Empty", "'A'", 0, emptyModel, 0, aModel},
+                {"Empty", "'B'", 0, emptyModel, 0, bModel},
+                {"Empty", "'C'", 0, emptyModel, 0, cModel},
+                {"Empty", "'D'", 0, emptyModel, 0, dModel},
+                {"Empty", "'A'", 0, emptyModel, 1, aModel},
+                {"Empty", "'B'", 0, emptyModel, 1, bModel},
+                {"Empty", "'C'", 0, emptyModel, 1, cModel},
+                {"Empty", "'D'", 0, emptyModel, 1, dModel},
+                {"Empty", "'A'", 0, emptyModel, 2, aModel},
+                {"Empty", "'B'", 0, emptyModel, 2, bModel},
+                {"Empty", "'C'", 0, emptyModel, 2, cModel},
+                {"Empty", "'D'", 0, emptyModel, 2, dModel},
+                {"Empty String", "'A'", 0, emptyStringModel, 0, aModel},
+                {"Empty String", "'B'", 0, emptyStringModel, 0, bModel},
+                {"Empty String", "'C'", 0, emptyStringModel, 0, cModel},
+                {"Empty String", "'D'", 0, emptyStringModel, 0, dModel},
+                {"Empty String", "'A'", 0, emptyStringModel, 1, aModel},
+                {"Empty String", "'B'", 0, emptyStringModel, 1, bModel},
+                {"Empty String", "'C'", 0, emptyStringModel, 1, cModel},
+                {"Empty String", "'D'", 0, emptyStringModel, 1, dModel},
+                {"Empty String", "'A'", 0, emptyStringModel, 2, aModel},
+                {"Empty String", "'B'", 0, emptyStringModel, 2, bModel},
+                {"Empty String", "'C'", 0, emptyStringModel, 2, cModel},
+                {"Empty String", "'D'", 0, emptyStringModel, 2, dModel},
+                {"Concrete", "'A'", 1, concreteModel, 0, aModel},
+                {"Concrete", "'B'", 1, concreteModel, 0, bModel},
+                {"Concrete", "'C'", 1, concreteModel, 0, cModel},
+                {"Concrete", "'D'", 1, concreteModel, 0, dModel},
+                {"Concrete", "'A'", 1, concreteModel, 1, aModel},
+                {"Concrete", "'B'", 1, concreteModel, 1, bModel},
+                {"Concrete", "'C'", 1, concreteModel, 1, cModel},
+                {"Concrete", "'D'", 1, concreteModel, 1, dModel},
+                {"Concrete", "'A'", 1, concreteModel, 2, aModel},
+                {"Concrete", "'B'", 1, concreteModel, 2, bModel},
+                {"Concrete", "'C'", 1, concreteModel, 2, cModel},
+                {"Concrete", "'D'", 1, concreteModel, 2, dModel},
+                {"Uniform", "'A'", 21, uniformModel, 0, aModel},
+                {"Uniform", "'B'", 21, uniformModel, 0, bModel},
+                {"Uniform", "'C'", 21, uniformModel, 0, cModel},
+                {"Uniform", "'D'", 21, uniformModel, 0, dModel},
+                {"Uniform", "'A'", 20, uniformModel, 1, aModel},
+                {"Uniform", "'B'", 20, uniformModel, 1, bModel},
+                {"Uniform", "'C'", 20, uniformModel, 1, cModel},
+                {"Uniform", "'D'", 20, uniformModel, 1, dModel},
+                {"Uniform", "'A'", 16, uniformModel, 2, aModel},
+                {"Uniform", "'B'", 16, uniformModel, 2, bModel},
+                {"Uniform", "'C'", 16, uniformModel, 2, cModel},
+                {"Uniform", "'D'", 16, uniformModel, 2, dModel},
+                {"Non-uniform", "'A'", 21, nonUniformModel, 0, aModel},
+                {"Non-uniform", "'B'", 21, nonUniformModel, 0, bModel},
+                {"Non-uniform", "'C'", 21, nonUniformModel, 0, cModel},
+                {"Non-uniform", "'D'", 21, nonUniformModel, 0, dModel},
+                {"Non-uniform", "'A'", 20, nonUniformModel, 1, aModel},
+                {"Non-uniform", "'B'", 20, nonUniformModel, 1, bModel},
+                {"Non-uniform", "'C'", 20, nonUniformModel, 1, cModel},
+                {"Non-uniform", "'D'", 20, nonUniformModel, 1, dModel},
+                {"Non-uniform", "'A'", 16, nonUniformModel, 2, aModel},
+                {"Non-uniform", "'B'", 16, nonUniformModel, 2, bModel},
+                {"Non-uniform", "'C'", 16, nonUniformModel, 2, cModel},
+                {"Non-uniform", "'D'", 16, nonUniformModel, 2, dModel},
         });
     }
 
@@ -130,6 +130,10 @@ public class Given_BoundedAutomatonModel_When_SettingCharAt {
         int modelCount = this.charSetModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.setCharAt(%d, <%s Automaton Model>)",
+                                       baseDescription,
+                                       offset,
+                                       argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

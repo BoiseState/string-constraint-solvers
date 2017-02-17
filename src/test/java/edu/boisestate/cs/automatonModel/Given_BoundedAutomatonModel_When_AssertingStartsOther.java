@@ -42,7 +42,7 @@ public class Given_BoundedAutomatonModel_When_AssertingStartsOther {
         Alphabet alphabet = new Alphabet("A-D");
         int initialBoundLength = 3;
 
-        // create automaton models
+        // create baseAutomaton models
         BoundedAutomatonModel emptyModel = getEmptyBoundedModel(alphabet);
         BoundedAutomatonModel emptyStringModel = getEmptyStringBoundedModel(alphabet);
         BoundedAutomatonModel concreteModel = getConcreteBoundedModel(alphabet,"ABC");
@@ -91,11 +91,9 @@ public class Given_BoundedAutomatonModel_When_AssertingStartsOther {
         int modelCount = this.startModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format(
-                "Expected Model Count Invalid for <%s Automaton Model>" +
-                ".assertStartsOther(<%s Automaton Model>)",
-                baseDescription,
-                argDescription);
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.assertStartsOther(<%s Automaton Model>)",
+                                       baseDescription,
+                                       argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

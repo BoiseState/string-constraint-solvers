@@ -1,7 +1,5 @@
 package edu.boisestate.cs.automatonModel;
 
-import dk.brics.automaton.Automaton;
-import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +31,7 @@ public class Given_BoundedAutomatonModel_When_Subtracting {
     public BoundedAutomatonModel baseModel;
     @Parameter(value = 2)
     public int expectedModelCount;
-    private AutomatonModel subtractedtModel;
+    private AutomatonModel subtractedModel;
 
     @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.minus(<{1} Automaton Model>) - Expected MC = {2}")
@@ -81,16 +79,19 @@ public class Given_BoundedAutomatonModel_When_Subtracting {
     @Before
     public void setup() {
         // *** act ***
-        this.subtractedtModel = this.baseModel.minus(this.argModel);
+        this.subtractedModel = this.baseModel.minus(this.argModel);
 
     }
 
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = this.subtractedtModel.modelCount().intValue();
+        int modelCount = this.subtractedModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.minus(<%s Automaton Model>)",
+                                       baseDescription,
+                                       argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

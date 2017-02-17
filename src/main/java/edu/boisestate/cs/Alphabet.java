@@ -1,5 +1,7 @@
 package edu.boisestate.cs;
 
+import dk.brics.automaton.Automaton;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,6 +73,20 @@ public class Alphabet {
         }
 
         return returnList;
+    }
+
+    public String getWhitespaceCharSet() {
+
+        // get char set as string from symbol set
+        StringBuilder charSet = new StringBuilder();
+        for (char c : this.symbolSet) {
+            if (c <= '\u0020') {
+                charSet.append(c);
+            }
+        }
+
+        // return char set string
+        return charSet.toString();
     }
 
     private void createCharRanges() {

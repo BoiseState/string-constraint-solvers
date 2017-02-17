@@ -44,26 +44,26 @@ public class Given_BoundedAutomatonModel_When_SettingLength {
         BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", -1, emptyModel, 0},
-                {"Empty", -1, emptyModel, 1},
-                {"Empty", -1, emptyModel, 2},
-                {"Empty", -1, emptyModel, 3},
-                {"Empty String", -1, emptyStringModel, 0},
-                {"Empty String", -1, emptyStringModel, 1},
-                {"Empty String", -1, emptyStringModel, 2},
-                {"Empty String", -1, emptyStringModel, 3},
-                {"Concrete", -1, concreteModel, 0},
-                {"Concrete", -1, concreteModel, 1},
-                {"Concrete", -1, concreteModel, 2},
-                {"Concrete", -1, concreteModel, 3},
-                {"Uniform", -1, uniformModel, 0},
-                {"Uniform", -1, uniformModel, 1},
-                {"Uniform", -1, uniformModel, 2},
-                {"Uniform", -1, uniformModel, 3},
-                {"Non-uniform", -1, nonUniformModel, 0},
-                {"Non-uniform", -1, nonUniformModel, 1},
-                {"Non-uniform", -1, nonUniformModel, 2},
-                {"Non-uniform", -1, nonUniformModel, 3},
+                {"Empty", 0, emptyModel, 0},
+                {"Empty", 0, emptyModel, 1},
+                {"Empty", 0, emptyModel, 2},
+                {"Empty", 0, emptyModel, 3},
+                {"Empty String", 1, emptyStringModel, 0},
+                {"Empty String", 1, emptyStringModel, 1},
+                {"Empty String", 1, emptyStringModel, 2},
+                {"Empty String", 1, emptyStringModel, 3},
+                {"Concrete", 1, concreteModel, 0},
+                {"Concrete", 1, concreteModel, 1},
+                {"Concrete", 1, concreteModel, 2},
+                {"Concrete", 1, concreteModel, 3},
+                {"Uniform", 1, uniformModel, 0},
+                {"Uniform", 5, uniformModel, 1},
+                {"Uniform", 21, uniformModel, 2},
+                {"Uniform", 85, uniformModel, 3},
+                {"Non-uniform", 0, nonUniformModel, 0},
+                {"Non-uniform", 1, nonUniformModel, 1},
+                {"Non-uniform", 8, nonUniformModel, 2},
+                {"Non-uniform", 45, nonUniformModel, 3},
         });
     }
 
@@ -80,6 +80,9 @@ public class Given_BoundedAutomatonModel_When_SettingLength {
         int modelCount = this.lengthModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.setLength(%d)",
+                                       description,
+                                       length);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

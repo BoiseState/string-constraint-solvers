@@ -116,6 +116,10 @@ public class Given_BoundedAutomatonModel_When_AssertingHasLength {
         int modelCount = this.hasLengthModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.assertHasLength(%d, %d)",
+                                       description,
+                                       min,
+                                       max);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

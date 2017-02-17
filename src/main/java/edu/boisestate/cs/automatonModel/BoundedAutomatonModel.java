@@ -513,8 +513,6 @@ public class BoundedAutomatonModel
         // get resulting automaton
         PreciseInsert insert = new PreciseInsert(offset);
         Automaton result = insert.op(automaton, arg);
-
-        // minimize resulting automaton
         result.minimize();
 
         // calculate new bound length
@@ -678,29 +676,17 @@ public class BoundedAutomatonModel
         // get resulting automaton
         Automaton result = before.concatenate(arg).concatenate(after);
 
-        // calculate new bound length
-        int newBoundLength = this.boundLength + 1;
-
         // return unbounded model from automaton
-        return new BoundedAutomatonModel(result, this.alphabet, newBoundLength);
+        return new BoundedAutomatonModel(result, this.alphabet, boundLength);
     }
 
     @Override
     public AutomatonModel setLength(int length) {
-        // if length is 0, return empty string model
-        if (length == 0) {
-            return new BoundedAutomatonModel(BasicAutomata.makeEmptyString(),
-                                               this.alphabet,
-                                               0);
-        }
-
-        // create automata for operations
-        Automaton nullChars = BasicAutomata.makeChar('\u0000').repeat(0,length);
-        Automaton bounding = BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat(0, length);
 
         // get resulting automaton
-        Automaton result = this.automaton.concatenate(nullChars)
-                                         .intersection(bounding);
+        Automaton result = performUnaryOperation(automaton,
+                                                 new PreciseSetLength(length),
+                                                 alphabet);
 
         // return unbounded model from automaton
         return new BoundedAutomatonModel(result, this.alphabet, length);
@@ -756,22 +742,46 @@ public class BoundedAutomatonModel
                                          this.boundLength);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public AutomatonModel trim() {
+//        // workaround for trim bug
+//        AutomatonModel hasLength = this.assertHasLength(1, 1);
+//        AutomatonModel temp = this.intersect(hasLength);
+//
+//        if (temp.equals(this)) {
+//
+//            // return union of temp and empty string
+//            return temp.union(this.modelManager.createEmptyString());
+//
+//        }
+//
+//        // return automaton model from trim operation
+//        Automaton result = performUnaryOperation(automaton, new Trim(), this.alphabet);
 
-        // workaround for trim bug
-        AutomatonModel hasLength = this.assertHasLength(1, 1);
-        AutomatonModel temp = this.intersect(hasLength);
+        // initialize result automaton as current automaton clone
+        Automaton result = this.automaton.clone();
 
-        if (temp.equals(this)) {
+        // get whitespace chars from alphabet
+        String whitespaceChars = this.alphabet.getWhitespaceCharSet();
 
-            // return union of temp and empty string
-            return temp.union(this.modelManager.createEmptyString());
+        // if whitespace characters are in the alphabet
+        if (whitespaceChars.length() > 0) {
 
+            // create automata for operation
+            Automaton whitespace =
+                    BasicAutomata.makeCharSet(whitespaceChars).repeat();
+            Automaton anyString =
+                    BasicAutomata.makeCharSet(this.alphabet.getCharSet())
+                                 .repeat();
+            Automaton x =
+                    whitespace.concatenate(anyString).concatenate(whitespace);
+
+
+            // get resulting automaton
+            result = this.automaton.minus(x);
+            result.minimize();
         }
-
-        // return automaton model from trim operation
-        Automaton result = performUnaryOperation(automaton, new Trim(), this.alphabet);
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result,

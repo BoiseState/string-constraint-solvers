@@ -103,6 +103,9 @@ public class Given_BoundedAutomatonModel_When_AssertingEqualsIgnoreCase {
         int modelCount = this.equalModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.assertEqualsIgnoreCase(<%s Automaton Model>)",
+                                       baseDescription,
+                                       argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

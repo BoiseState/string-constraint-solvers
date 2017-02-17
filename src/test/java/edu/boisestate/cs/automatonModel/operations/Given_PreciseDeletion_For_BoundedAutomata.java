@@ -13,6 +13,12 @@ import org.junit.runners.Parameterized.Parameters;
 
 import java.util.Arrays;
 
+import static edu.boisestate.cs.automatonModel.operations
+        .AutomatonOperationTestUtilities.getConcreteAutomaton;
+import static edu.boisestate.cs.automatonModel.operations
+        .AutomatonOperationTestUtilities.getNonUniformUnboundAutomaton;
+import static edu.boisestate.cs.automatonModel.operations
+        .AutomatonOperationTestUtilities.getUniformBoundedAutomaton;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -33,7 +39,7 @@ public class Given_PreciseDeletion_For_BoundedAutomata {
     public int start;
     private Automaton deletedAutomaton;
 
-
+    @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton>.delete({3}, {4}) - Expected" +
                        " MC = {1}")
     public static Iterable<Object[]> data() {
@@ -41,28 +47,36 @@ public class Given_PreciseDeletion_For_BoundedAutomata {
         Alphabet alphabet = new Alphabet("A-D");
         int initialBoundLength = 3;
 
-        // create automata
-        Automaton concrete = BasicAutomata.makeString("ABC");
-        Automaton uniform = BasicAutomata.makeCharSet(alphabet.getCharSet())
-                                         .repeat();
-        Automaton intersect = uniform.concatenate(BasicAutomata.makeChar('A'))
-                                     .concatenate(uniform);
-        Automaton nonUniform = uniform.intersection(intersect);
-
-        // bound automata
-        Automaton bounding = BasicAutomata.makeCharSet(alphabet.getCharSet())
-                                          .repeat(0, initialBoundLength);
-        concrete = concrete.intersection(bounding);
-        uniform = uniform.intersection(bounding);
-        nonUniform = nonUniform.intersection(bounding);
-        concrete.determinize();
-        concrete.minimize();
-        uniform.determinize();
-        uniform.minimize();
-        nonUniform.determinize();
-        nonUniform.minimize();
+        // get Automata
+        Automaton empty = BasicAutomata.makeEmpty();
+        Automaton emptyString = BasicAutomata.makeEmptyString();
+        Automaton concrete = getConcreteAutomaton(alphabet, "ABC");
+        Automaton uniform = getUniformBoundedAutomaton(alphabet,
+                                                       initialBoundLength);
+        Automaton nonUniform = getNonUniformUnboundAutomaton(alphabet,
+                                                             initialBoundLength);
 
         return Arrays.asList(new Object[][]{
+                {"Empty", 0, empty, 0, 0},
+                {"Empty", 0, empty, 0, 1},
+                {"Empty", 0, empty, 0, 2},
+                {"Empty", 0, empty, 0, 3},
+                {"Empty", 0, empty, 1, 1},
+                {"Empty", 0, empty, 1, 2},
+                {"Empty", 0, empty, 1, 3},
+                {"Empty", 0, empty, 2, 2},
+                {"Empty", 0, empty, 2, 3},
+                {"Empty", 0, empty, 3, 3},
+                {"Empty String", 1, emptyString, 0, 0},
+                {"Empty String", 1, emptyString, 0, 1},
+                {"Empty String", 1, emptyString, 0, 2},
+                {"Empty String", 1, emptyString, 0, 3},
+                {"Empty String", 0, emptyString, 1, 1},
+                {"Empty String", 0, emptyString, 1, 2},
+                {"Empty String", 0, emptyString, 1, 3},
+                {"Empty String", 0, emptyString, 2, 2},
+                {"Empty String", 0, emptyString, 2, 3},
+                {"Empty String", 0, emptyString, 3, 3},
                 {"Concrete", 1, concrete, 0, 0},
                 {"Concrete", 1, concrete, 0, 1},
                 {"Concrete", 1, concrete, 0, 2},

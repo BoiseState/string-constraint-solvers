@@ -41,7 +41,7 @@ public class Given_BoundedAutomatonModel_When_GettingSuffix {
         Alphabet alphabet = new Alphabet("A-D");
         int initialBoundLength = 3;
 
-        // create automaton models
+        // create baseAutomaton models
         BoundedAutomatonModel emptyModel = getEmptyBoundedModel(alphabet);
         BoundedAutomatonModel emptyStringModel = getEmptyStringBoundedModel(alphabet);
         BoundedAutomatonModel concreteModel = getConcreteBoundedModel(alphabet,"ABC");
@@ -85,6 +85,9 @@ public class Given_BoundedAutomatonModel_When_GettingSuffix {
         int modelCount = this.deleteModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.suffix(%d)",
+                                       description,
+                                       start);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

@@ -45,7 +45,7 @@ public class Given_AggregateAutomataModel_When_PreciselyDeleted {
         Alphabet alphabet = new Alphabet("A-D");
         int initialBoundLength = 3;
 
-        // create automaton models
+        // create baseAutomaton models
         AggregateAutomataModel emptyModel = getEmptyAggregateModel(alphabet);
         AggregateAutomataModel emptyStringModel = getEmptyStringAggregateModel(alphabet);
         AggregateAutomataModel concreteModel = getConcreteAggregateModel(alphabet, "ABC");
@@ -119,6 +119,10 @@ public class Given_AggregateAutomataModel_When_PreciselyDeleted {
         int modelCount = this.deleteModel.modelCount().intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.delete(%d, %d)",
+                                       description,
+                                       start,
+                                       end);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }
