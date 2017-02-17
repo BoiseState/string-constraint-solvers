@@ -11,41 +11,39 @@ import org.junit.runners.Parameterized.Parameters;
 import java.util.Arrays;
 
 import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities.*;
-import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities
-        .getNonUniformBoundedModel;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_BoundedAutomatonModel_When_Subtracting {
+public class Given_AggregateAutomataModel_When_AssertingNotStartsOther {
 
     @Parameter(value = 1)
     public String argDescription;
     @Parameter(value = 4)
-    public BoundedAutomatonModel argModel;
+    public AggregateAutomataModel argModel;
     @Parameter // first data value (0) is default
     public String baseDescription;
     @Parameter(value = 3)
-    public BoundedAutomatonModel baseModel;
+    public AggregateAutomataModel baseModel;
     @Parameter(value = 2)
     public int expectedModelCount;
-    private AutomatonModel subtractedModel;
+    private AutomatonModel notStartModel;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton Model>.minus(<{1} Automaton Model>) - Expected MC = {2}")
+    @Parameters(name = "{index}: <{0} Automaton Model>.assertNotStartsOther(<{1} Automaton Model>) - Expected MC = {2}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
         int initialBoundLength = 3;
 
         // create automaton models
-        BoundedAutomatonModel emptyModel = getEmptyBoundedModel(alphabet);
-        BoundedAutomatonModel emptyStringModel = getEmptyStringBoundedModel(alphabet);
-        BoundedAutomatonModel concreteModel = getConcreteBoundedModel(alphabet,"ABC");
-        BoundedAutomatonModel uniformModel = getUniformBoundedModel(alphabet, initialBoundLength);
-        BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
+        AggregateAutomataModel emptyModel = getEmptyAggregateModel(alphabet);
+        AggregateAutomataModel emptyStringModel = getEmptyStringAggregateModel(alphabet);
+        AggregateAutomataModel concreteModel = getConcreteAggregateModel(alphabet,"ABC");
+        AggregateAutomataModel uniformModel = getUniformAggregateModel(alphabet, initialBoundLength);
+        AggregateAutomataModel nonUniformModel = getNonUniformAggregateModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", "Empty", 0, emptyModel, emptyModel},
@@ -55,9 +53,9 @@ public class Given_BoundedAutomatonModel_When_Subtracting {
                 {"Empty", "Non-uniform", 0, emptyModel, nonUniformModel},
                 {"Empty String", "Empty", 1, emptyStringModel, emptyModel},
                 {"Empty String", "Empty String", 0, emptyStringModel, emptyStringModel},
-                {"Empty String", "Concrete", 1, emptyStringModel, concreteModel},
+                {"Empty String", "Concrete", 0, emptyStringModel, concreteModel},
                 {"Empty String", "Uniform", 0, emptyStringModel, uniformModel},
-                {"Empty String", "Non-uniform", 1, emptyStringModel, nonUniformModel},
+                {"Empty String", "Non-uniform", 0, emptyStringModel, nonUniformModel},
                 {"Concrete", "Empty", 1, concreteModel, emptyModel},
                 {"Concrete", "Empty String", 1, concreteModel, emptyStringModel},
                 {"Concrete", "Concrete", 0, concreteModel, concreteModel},
@@ -65,12 +63,12 @@ public class Given_BoundedAutomatonModel_When_Subtracting {
                 {"Concrete", "Non-uniform", 0, concreteModel, nonUniformModel},
                 {"Uniform", "Empty", 85, uniformModel, emptyModel},
                 {"Uniform", "Empty String", 84, uniformModel, emptyStringModel},
-                {"Uniform", "Concrete", 84, uniformModel, concreteModel},
+                {"Uniform", "Concrete", 81, uniformModel, concreteModel},
                 {"Uniform", "Uniform", 0, uniformModel, uniformModel},
-                {"Uniform", "Non-uniform", 40, uniformModel, nonUniformModel},
+                {"Uniform", "Non-uniform", 27, uniformModel, nonUniformModel},
                 {"Non-uniform", "Empty", 45, nonUniformModel, emptyModel},
                 {"Non-uniform", "Empty String", 45, nonUniformModel, emptyStringModel},
-                {"Non-uniform", "Concrete", 44, nonUniformModel, concreteModel},
+                {"Non-uniform", "Concrete", 42, nonUniformModel, concreteModel},
                 {"Non-uniform", "Uniform", 0, nonUniformModel, uniformModel},
                 {"Non-uniform", "Non-uniform", 0, nonUniformModel, nonUniformModel}
         });
@@ -79,17 +77,17 @@ public class Given_BoundedAutomatonModel_When_Subtracting {
     @Before
     public void setup() {
         // *** act ***
-        this.subtractedModel = this.baseModel.minus(this.argModel);
+        this.notStartModel = this.baseModel.assertNotStartsOther(this.argModel);
 
     }
 
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = this.subtractedModel.modelCount().intValue();
+        int modelCount = this.notStartModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.minus(<%s Automaton Model>)",
+        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.assertNotStartsOther(<%s Automaton Model>)",
                                        baseDescription,
                                        argDescription);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));

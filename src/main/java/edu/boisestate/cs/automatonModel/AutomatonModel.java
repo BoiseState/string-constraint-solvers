@@ -98,8 +98,6 @@ public abstract class AutomatonModel
 
     public abstract AutomatonModel assertStartsWith(AutomatonModel startingModel);
 
-    public abstract AutomatonModel complement(int boundLength);
-
     public abstract AutomatonModel concatenate(AutomatonModel arg);
 
     public abstract boolean containsString(String actualValue);
@@ -111,8 +109,6 @@ public abstract class AutomatonModel
     public abstract AutomatonModel intersect(AutomatonModel arg);
 
     public abstract AutomatonModel insert(int offset, AutomatonModel argModel);
-
-    public abstract AutomatonModel minus(AutomatonModel arg);
 
     public abstract BigInteger modelCount();
 
@@ -143,8 +139,6 @@ public abstract class AutomatonModel
     public abstract AutomatonModel toUppercase();
 
     public abstract AutomatonModel trim();
-
-    public abstract AutomatonModel union(AutomatonModel arg);
 
     public abstract AutomatonModel clone();
 }

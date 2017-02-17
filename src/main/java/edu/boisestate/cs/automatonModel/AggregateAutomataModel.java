@@ -77,9 +77,18 @@ public class AggregateAutomataModel
     public AutomatonModel assertContainedInOther(AutomatonModel containingModel) {
         ensureAggregateModel(containingModel);
 
-        // get all substrings
+        // get containing automata
         Automaton[] containingArray = getAutomataFromAggregateModel(containingModel);
         Automaton containing = mergeAutomata(containingArray);
+
+        // if either automata is  empty
+        if (containing.isEmpty()) {
+            Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
+            int[] f = new int[] {1};
+            return new AggregateAutomataModel(a, this.alphabet, 0, f);
+        }
+
+        // get all substrings
         Automaton substrings = performUnaryOperation(containing, new Substring(), this.alphabet);
 
         // get resulting automaton
@@ -133,6 +142,7 @@ public class AggregateAutomataModel
         Automaton[] results = new Automaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = this.automata[i].intersection(x);
+            results[i].minimize();
         }
 
         // return new model from resulting automaton
@@ -155,9 +165,18 @@ public class AggregateAutomataModel
     public AutomatonModel assertEndsOther(AutomatonModel containingModel) {
         ensureAggregateModel(containingModel);
 
-        // get all suffixes
+        // get containing automata
         Automaton[] containingArray = getAutomataFromAggregateModel(containingModel);
         Automaton containing = mergeAutomata(containingArray);
+
+        // if either automata is  empty
+        if (containing.isEmpty()) {
+            Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
+            int[] f = new int[] {1};
+            return new AggregateAutomataModel(a, this.alphabet, 0, f);
+        }
+
+        // get all suffixes
         Automaton suffixes = performUnaryOperation(containing, new Postfix(), this.alphabet);
 
         // get resulting automaton
@@ -188,6 +207,7 @@ public class AggregateAutomataModel
         Automaton[] results = new Automaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = this.automata[i].intersection(x);
+            results[i].minimize();
         }
 
         // return new model from resulting automaton
@@ -263,9 +283,16 @@ public class AggregateAutomataModel
     public AutomatonModel assertNotContainedInOther(AutomatonModel notContainingModel) {
         ensureAggregateModel(notContainingModel);
 
-        // get all substrings
+        // get containing automata
         Automaton[] notContainingArray = getAutomataFromAggregateModel(notContainingModel);
         Automaton notContaining = mergeAutomata(notContainingArray);
+
+        // if either automata is  empty
+        if (notContaining.isEmpty()) {
+            return this.clone();
+        }
+
+        // get all substrings
         Automaton substrings = performUnaryOperation(notContaining, new Substring(), this.alphabet);
 
         // get resulting automaton
@@ -319,9 +346,16 @@ public class AggregateAutomataModel
     public AutomatonModel assertNotEndsOther(AutomatonModel notContainingModel) {
         ensureAggregateModel(notContainingModel);
 
-        // get all suffixes
+        // get containing automata
         Automaton[] notContainingArray = getAutomataFromAggregateModel(notContainingModel);
         Automaton notContaining = mergeAutomata(notContainingArray);
+
+        // if either automata is  empty
+        if (notContaining.isEmpty()) {
+            return this.clone();
+        }
+
+        // get all suffixes
         Automaton suffixes = performUnaryOperation(notContaining, new Postfix(), this.alphabet);
 
         // get resulting automaton
@@ -399,9 +433,16 @@ public class AggregateAutomataModel
     public AutomatonModel assertNotStartsOther(AutomatonModel notContainingModel) {
         ensureAggregateModel(notContainingModel);
 
-        // get all prefixes
+        // get containing automata
         Automaton[] notContainingArray = getAutomataFromAggregateModel(notContainingModel);
         Automaton notContaining = mergeAutomata(notContainingArray);
+
+        // if either automata is  empty
+        if (notContaining.isEmpty()) {
+            return this.clone();
+        }
+
+        // get all prefixes
         Automaton prefixes = performUnaryOperation(notContaining, new Prefix(), this.alphabet);
 
         // get resulting automaton
@@ -442,9 +483,18 @@ public class AggregateAutomataModel
     public AutomatonModel assertStartsOther(AutomatonModel containingModel) {
         ensureAggregateModel(containingModel);
 
-        // get all prefixes
+        // get containing automata
         Automaton[] containingArray = getAutomataFromAggregateModel(containingModel);
         Automaton containing = mergeAutomata(containingArray);
+
+        // if either automata is  empty
+        if (containing.isEmpty()) {
+            Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
+            int[] f = new int[] {1};
+            return new AggregateAutomataModel(a, this.alphabet, 0, f);
+        }
+
+        // get all prefixes
         Automaton prefixes = performUnaryOperation(containing, new Prefix(), this.alphabet);
 
         // get resulting automaton
@@ -475,6 +525,7 @@ public class AggregateAutomataModel
         Automaton[] results = new Automaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = this.automata[i].intersection(x);
+            results[i].minimize();
         }
 
         // return new model from resulting automaton
@@ -489,43 +540,6 @@ public class AggregateAutomataModel
         return new AggregateAutomataModel(this.automata,
                                           this.alphabet,
                                           this.boundLength,
-                                          this.factors);
-    }
-
-    @Override
-    public AutomatonModel complement(int boundLength) {
-
-        // initialize result automata array
-        Automaton[] results = new Automaton[this.automata.length];
-
-        // get any string automaton for bounding to alphabet
-        String charSet = this.alphabet.getCharSet();
-        Automaton anyString = BasicAutomata.makeCharSet(charSet);
-
-        // set current bound length
-        int currentBoundLength = boundLength;
-        if (this.boundLength > boundLength) {
-            currentBoundLength = this.boundLength;
-        }
-
-        // for each automaton
-        for (int i = 0; i < this.automata.length; i++) {
-
-            // perform operation on automaton at index
-            Automaton result = this.automata[i].complement();
-
-            // bound result to alphabet
-            Automaton bounding = anyString.repeat(0, currentBoundLength);
-            result = result.intersection(bounding);
-
-            // set array index with result
-            results[i] = result;
-        }
-
-        // return new model from results automata array
-        return new AggregateAutomataModel(results,
-                                          this.alphabet,
-                                          currentBoundLength,
                                           this.factors);
     }
 
@@ -818,54 +832,6 @@ public class AggregateAutomataModel
     }
 
     @Override
-    public AutomatonModel minus(AutomatonModel argModel) {
-
-        // initialize result automata array
-        Automaton[] results = new Automaton[this.automata.length];
-
-        // get arg automata array
-        Automaton[] argAutomata = this.getAutomataFromAggregateModel(argModel);
-        // get any string automaton for bounding to alphabet
-        String charSet = this.alphabet.getCharSet();
-        Automaton anyString = BasicAutomata.makeCharSet(charSet).repeat();
-
-        // for each automaton in model
-        for (int i = 0; i < this.automata.length; i++) {
-
-            // initialize temp automata array
-            Automaton[] temp = new Automaton[argAutomata.length];
-
-            // for each automaton in arg model
-            for (int j = 0; j < argAutomata.length; j++) {
-
-                // minus automata
-                temp[j] = this.automata[i].minus(argAutomata[j]);
-            }
-
-            // intersect temp automaton for result
-            Automaton result = temp[0];
-            for (int j = 1; j < temp.length; j++) {
-                result = result.intersection(temp[j]);
-            }
-
-            // minimize result automaton
-            result.minimize();
-
-            // bound result to alphabet
-            result = result.intersection(anyString);
-
-            // set array index with result
-            results[i] = result;
-        }
-
-        // return new model from results automata array
-        return new AggregateAutomataModel(results,
-                                          this.alphabet,
-                                          this.boundLength,
-                                          this.factors);
-    }
-
-    @Override
     public BigInteger modelCount() {
 
         // initialize total model count as big integer
@@ -954,9 +920,7 @@ public class AggregateAutomataModel
         Automaton[] automata = this.getAutomata();
 
         // perform operations
-        Automaton[] results =
-                this.performUnaryOperations(automata,
-                                            new Replace6(find, replace));
+        Automaton[] results = this.performUnaryOperations(automata, new Replace6(find, replace));
 
         // return new model from resulting automata
         return new AggregateAutomataModel(results,
@@ -1076,25 +1040,7 @@ public class AggregateAutomataModel
 
     @Override
     public AutomatonModel substring(int start, int end) {
-        // empty string produced
-        if (start == end) {
-            Automaton[] a = new Automaton[] {BasicAutomata.makeEmptyString()};
-            int[] f = new int[] {1};
-            return new AggregateAutomataModel(a, this.alphabet, 0, f);
-        }
-
-        // get resulting automaton
-        Automaton[] results = new Automaton[this.automata.length];
-        if (start == 0) {
-            for (int i = 0; i < results.length; i++) {
-                results[i] = performUnaryOperation(this.automata[i], new PrecisePrefix(end), this.alphabet);
-            }
-        } else {
-            for (int i = 0; i < results.length; i++) {
-                Automaton suffix = performUnaryOperation(this.automata[i], new PreciseSuffix(start), this.alphabet);
-                results[i] = performUnaryOperation(suffix, new PrecisePrefix(end - start), this.alphabet);
-            }
-        }
+        Automaton[] results = performUnaryOperations(automata, new PreciseSubstring(start, end));
 
         // calculate new bound length
         int newBoundLength = end - start;
@@ -1165,51 +1111,6 @@ public class AggregateAutomataModel
                 this.performUnaryOperations(automata, new Substring());
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results,
-                                          this.alphabet,
-                                          this.boundLength,
-                                          this.factors);
-    }
-
-    @Override
-    public AutomatonModel union(AutomatonModel argModel) {
-
-        // initialize result automata array
-        Automaton[] results = new Automaton[this.automata.length];
-
-        // get arg automata array
-        Automaton[] argAutomata = this.getAutomataFromAggregateModel(argModel);
-        // get any string automaton for bounding to alphabet
-        String charSet = this.alphabet.getCharSet();
-        Automaton anyString = BasicAutomata.makeCharSet(charSet).repeat();
-
-        // for each automaton in model
-        for (int i = 0; i < this.automata.length; i++) {
-
-            // initialize temp automata array
-            Automaton[] temp = new Automaton[argAutomata.length];
-
-            // for each automaton in arg model
-            for (int j = 0; j < argAutomata.length; j++) {
-
-                // union automata
-                temp[j] = this.automata[i].union(argAutomata[j]);
-            }
-
-            // union temp automaton for result
-            Automaton result = BasicOperations.union(Arrays.asList(temp));
-
-            // minimize result automaton
-            result.minimize();
-
-            // bound result to alphabet
-            result = result.intersection(anyString);
-
-            // set array index with result
-            results[i] = result;
-        }
-
-        // return new model from results automata array
         return new AggregateAutomataModel(results,
                                           this.alphabet,
                                           this.boundLength,

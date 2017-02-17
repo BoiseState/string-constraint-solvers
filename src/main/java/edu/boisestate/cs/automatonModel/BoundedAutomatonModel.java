@@ -403,32 +403,6 @@ public class BoundedAutomatonModel
     }
 
     @Override
-    public AutomatonModel complement(int boundLength) {
-
-        // get complement of automaton
-        Automaton complement = this.automaton.complement();
-
-        // set current bounding length
-        int currentBoundLength = boundLength;
-        if (this.boundLength > boundLength) {
-            currentBoundLength = this.boundLength;
-        }
-
-        // get any string automaton up to current bound length from alphabet
-        String charSet = this.alphabet.getCharSet();
-        Automaton anyString = BasicAutomata.makeCharSet(charSet)
-                                           .repeat(0, currentBoundLength);
-
-        // get intersection of complement and alphabet any string
-        Automaton automaton = complement.intersection(anyString);
-
-        // return new model from complement automaton
-        return new BoundedAutomatonModel(automaton,
-                                         this.alphabet,
-                                         currentBoundLength);
-    }
-
-    @Override
     public AutomatonModel concatenate(AutomatonModel argModel) {
         ensureBoundedModel(argModel);
 
@@ -537,25 +511,6 @@ public class BoundedAutomatonModel
         return strings != null &&
                strings.size() == 1 &&
                strings.iterator().next() != null;
-    }
-
-    @Override
-    public AutomatonModel minus(AutomatonModel arg) {
-        ensureBoundedModel(arg);
-
-        // cast arg model
-        BoundedAutomatonModel argModel = (BoundedAutomatonModel) arg;
-
-        // get intersection of automata
-        Automaton result = this.automaton.minus(argModel.automaton);
-
-        // minimize result automaton
-        result.minimize();
-
-        // return bounded model from automaton
-        return new BoundedAutomatonModel(result,
-                                         this.alphabet,
-                                         this.boundLength);
     }
 
     @Override
@@ -830,28 +785,6 @@ public class BoundedAutomatonModel
         if (argModel.boundLength < this.boundLength) {
             boundLength = argModel.boundLength;
         }
-
-        // return bounded model from automaton
-        return new BoundedAutomatonModel(result, this.alphabet, boundLength);
-    }
-
-    @Override
-    public AutomatonModel union(AutomatonModel argModel) {
-        ensureBoundedModel(argModel);
-
-        // get arg model automaton
-        Automaton argAutomaton = getAutomatonFromBoundedModel(argModel);
-
-        // calculate new bound length
-        int boundLength = this.boundLength;
-        if (argModel.boundLength > this.boundLength) {
-            boundLength = argModel.boundLength;
-        }
-
-        // get bounded resulting automaton
-        Automaton result = this.automaton.union(argAutomaton);
-        result.minimize();
-        result = boundAutomaton(result, boundLength, this.alphabet);
 
         // return bounded model from automaton
         return new BoundedAutomatonModel(result, this.alphabet, boundLength);
