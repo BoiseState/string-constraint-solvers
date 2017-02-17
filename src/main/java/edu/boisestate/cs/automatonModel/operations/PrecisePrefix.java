@@ -3,10 +3,7 @@
  */
 package edu.boisestate.cs.automatonModel.operations;
 
-import dk.brics.automaton.Automaton;
-import dk.brics.automaton.State;
-import dk.brics.automaton.StatePair;
-import dk.brics.automaton.Transition;
+import dk.brics.automaton.*;
 import dk.brics.string.charset.CharSet;
 import dk.brics.string.stringoperations.AssertHasLength;
 import dk.brics.string.stringoperations.UnaryOperation;
@@ -36,6 +33,12 @@ public class PrecisePrefix
 
     @Override
     public Automaton op(Automaton a) {
+        // if start is greater than end or automaton is empty
+        if (this.end < 0 || a.isEmpty()) {
+            // return empty automaton (exception)
+            return BasicAutomata.makeEmpty();
+        }
+
         // clone automaton
         Automaton clone = a.clone();
 

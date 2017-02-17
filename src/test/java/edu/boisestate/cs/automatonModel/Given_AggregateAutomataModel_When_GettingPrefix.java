@@ -56,13 +56,13 @@ public class Given_AggregateAutomataModel_When_GettingPrefix {
                 {"Concrete", 1, concreteModel, 1},
                 {"Concrete", 1, concreteModel, 2},
                 {"Concrete", 1, concreteModel, 3},
-                {"Uniform", 1, uniformModel, 0},
-                {"Uniform", 4, uniformModel, 1},
-                {"Uniform", 16, uniformModel, 2},
+                {"Uniform", 4, uniformModel, 0},
+                {"Uniform", 12, uniformModel, 1},
+                {"Uniform", 32, uniformModel, 2},
                 {"Uniform", 64, uniformModel, 3},
-                {"Non-uniform", 1, nonUniformModel, 0},
-                {"Non-uniform", 4, nonUniformModel, 1},
-                {"Non-uniform", 16, nonUniformModel, 2},
+                {"Non-uniform", 3, nonUniformModel, 0},
+                {"Non-uniform", 9, nonUniformModel, 1},
+                {"Non-uniform", 23, nonUniformModel, 2},
                 {"Non-uniform", 37, nonUniformModel, 3}
         });
     }

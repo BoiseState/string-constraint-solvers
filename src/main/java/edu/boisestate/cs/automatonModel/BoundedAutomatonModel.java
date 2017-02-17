@@ -522,11 +522,6 @@ public class BoundedAutomatonModel
 
     @Override
     public AutomatonModel prefix(int end) {
-        // if automaton is empty
-        if (this.automaton.isEmpty()) {
-            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), this.alphabet, 0);
-        }
-
         // perform operation
         Automaton result = performUnaryOperation(automaton, new PrecisePrefix(end), this.alphabet);
 

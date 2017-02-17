@@ -853,10 +853,6 @@ public class AggregateAutomataModel
 
     @Override
     public AutomatonModel prefix(int end) {
-
-        // get automata from model
-        Automaton[] automata = this.getAutomata();
-
         // perform operations
         Automaton[] results =
                 this.performUnaryOperations(automata, new PrecisePrefix(end));
