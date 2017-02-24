@@ -356,22 +356,22 @@ public class RegExp {
 			a.minimize();
 			break;
 		case REGEXP_CHAR:
-			a = BasicAutomata.makeChar(c);
+			a = BasicWeightedAutomata.makeChar(c);
 			break;
 		case REGEXP_CHAR_RANGE:
-			a = BasicAutomata.makeCharRange(from, to);
+			a = BasicWeightedAutomata.makeCharRange(from, to);
 			break;
 		case REGEXP_ANYCHAR:
-			a = BasicAutomata.makeAnyChar();
+			a = BasicWeightedAutomata.makeAnyChar();
 			break;
 		case REGEXP_EMPTY:
-			a = BasicAutomata.makeEmpty();
+			a = BasicWeightedAutomata.makeEmpty();
 			break;
 		case REGEXP_STRING:
-			a = BasicAutomata.makeString(s);
+			a = BasicWeightedAutomata.makeString(s);
 			break;
 		case REGEXP_ANYSTRING:
-			a = BasicAutomata.makeAnyString();
+			a = BasicWeightedAutomata.makeAnyString();
 			break;
 		case REGEXP_AUTOMATON:
 			WeightedAutomaton aa = null;
@@ -388,7 +388,7 @@ public class RegExp {
 			a = aa.clone(); // always clone here (ignore allow_mutate)
 			break;
 		case REGEXP_INTERVAL:
-			a = BasicAutomata.makeInterval(min, max, digits);
+			a = BasicWeightedAutomata.makeInterval(min, max, digits);
 			break;
 		}
 		return a;

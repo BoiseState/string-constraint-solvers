@@ -113,7 +113,7 @@ public class Given_BoundedAutomatonModel_When_SettingCharAt {
                 {"Non-uniform", "'A'", 16, nonUniformModel, 2, aModel},
                 {"Non-uniform", "'B'", 16, nonUniformModel, 2, bModel},
                 {"Non-uniform", "'C'", 16, nonUniformModel, 2, cModel},
-                {"Non-uniform", "'D'", 16, nonUniformModel, 2, dModel},
+                {"Non-uniform", "'D'", 16, nonUniformModel, 2, dModel}
         });
     }
 

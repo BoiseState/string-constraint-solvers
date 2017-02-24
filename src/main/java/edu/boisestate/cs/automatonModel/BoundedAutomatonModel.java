@@ -24,7 +24,6 @@ public class BoundedAutomatonModel
         super(alphabet, boundLength);
 
         this.automaton = automaton;
-
         this.modelManager =
                 new BoundedAutomatonModelManager(alphabet, boundLength);
     }
@@ -518,21 +517,6 @@ public class BoundedAutomatonModel
 
         // return model count of automaton
         return StringModelCounter.ModelCount(automaton);
-    }
-
-    @Override
-    public AutomatonModel prefix(int end) {
-        // perform operation
-        Automaton result = performUnaryOperation(automaton, new PrecisePrefix(end), this.alphabet);
-
-        // determine new bound length
-        int newBoundLength = end;
-        if (this.boundLength < newBoundLength) {
-            newBoundLength = this.boundLength;
-        }
-
-        // return new model from resulting automaton
-        return new BoundedAutomatonModel(result, this.alphabet, newBoundLength);
     }
 
     @Override

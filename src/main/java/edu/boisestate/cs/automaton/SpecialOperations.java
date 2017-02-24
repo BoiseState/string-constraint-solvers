@@ -326,7 +326,7 @@ final public class SpecialOperations {
         acceptToAccept(b2);
         reverse(b2);
         b2.determinize();
-        return b1.intersection(b2).minus(BasicAutomata.makeEmptyString());
+        return b1.intersection(b2).minus(BasicWeightedAutomata.makeEmptyString());
     }
 
     /**
@@ -410,7 +410,7 @@ final public class SpecialOperations {
                 char sc = a.singleton.charAt(i);
                 if (!(normalchars && (sc <= '\udfff' || sc >= '\uf900') ||
                       Arrays.binarySearch(cc, sc) >= 0)) {
-                    return BasicAutomata.makeEmpty();
+                    return BasicWeightedAutomata.makeEmpty();
                 }
             }
             return a.cloneIfRequired();

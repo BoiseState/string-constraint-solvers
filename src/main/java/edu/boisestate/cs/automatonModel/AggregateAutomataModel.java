@@ -851,19 +851,6 @@ public class AggregateAutomataModel
         return totalModelCount;
     }
 
-    @Override
-    public AutomatonModel prefix(int end) {
-        // perform operations
-        Automaton[] results =
-                this.performUnaryOperations(automata, new PrecisePrefix(end));
-
-        // return new model from resulting automata
-        return new AggregateAutomataModel(results,
-                                          this.alphabet,
-                                          this.boundLength,
-                                          this.factors);
-    }
-
     private Automaton[] performUnaryOperations(Automaton[] automata,
                                                UnaryOperation operation) {
 

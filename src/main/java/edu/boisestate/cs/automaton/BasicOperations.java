@@ -135,10 +135,10 @@ final public class BasicOperations {
     static public WeightedAutomaton concatenate(WeightedAutomaton a1,
                                                 WeightedAutomaton a2) {
         if (a1.isSingleton() && a2.isSingleton()) {
-            return BasicAutomata.makeString(a1.singleton + a2.singleton);
+            return BasicWeightedAutomata.makeString(a1.singleton + a2.singleton);
         }
         if (isEmpty(a1) || isEmpty(a2)) {
-            return BasicAutomata.makeEmpty();
+            return BasicWeightedAutomata.makeEmpty();
         }
         boolean deterministic = a1.isSingleton() && a2.isDeterministic();
         if (a1 == a2) {
@@ -335,14 +335,14 @@ final public class BasicOperations {
     static public WeightedAutomaton minus(WeightedAutomaton a1,
                                           WeightedAutomaton a2) {
         if (a1.isEmpty() || a1 == a2) {
-            return BasicAutomata.makeEmpty();
+            return BasicWeightedAutomata.makeEmpty();
         }
         if (a2.isEmpty()) {
             return a1.cloneIfRequired();
         }
         if (a1.isSingleton()) {
             if (a2.run(a1.singleton)) {
-                return BasicAutomata.makeEmpty();
+                return BasicWeightedAutomata.makeEmpty();
             } else {
                 return a1.cloneIfRequired();
             }
@@ -363,14 +363,14 @@ final public class BasicOperations {
             if (a2.run(a1.singleton)) {
                 return a1.cloneIfRequired();
             } else {
-                return BasicAutomata.makeEmpty();
+                return BasicWeightedAutomata.makeEmpty();
             }
         }
         if (a2.isSingleton()) {
             if (a1.run(a2.singleton)) {
                 return a2.cloneIfRequired();
             } else {
-                return BasicAutomata.makeEmpty();
+                return BasicWeightedAutomata.makeEmpty();
             }
         }
         if (a1 == a2) {
@@ -471,7 +471,7 @@ final public class BasicOperations {
      */
     static public WeightedAutomaton concatenate(List<WeightedAutomaton> l) {
         if (l.isEmpty()) {
-            return BasicAutomata.makeEmptyString();
+            return BasicWeightedAutomata.makeEmptyString();
         }
         boolean all_singleton = true;
         for (WeightedAutomaton a : l) {
@@ -485,11 +485,11 @@ final public class BasicOperations {
             for (WeightedAutomaton a : l) {
                 b.append(a.singleton);
             }
-            return BasicAutomata.makeString(b.toString());
+            return BasicWeightedAutomata.makeString(b.toString());
         } else {
             for (WeightedAutomaton a : l) {
                 if (a.isEmpty()) {
-                    return BasicAutomata.makeEmpty();
+                    return BasicWeightedAutomata.makeEmpty();
                 }
             }
             Set<Integer> ids = new HashSet<Integer>();
@@ -569,13 +569,13 @@ final public class BasicOperations {
     static public WeightedAutomaton repeat(WeightedAutomaton a, int min, int
             max) {
         if (min > max) {
-            return BasicAutomata.makeEmpty();
+            return BasicWeightedAutomata.makeEmpty();
         }
         max -= min;
         a.expandSingleton();
         WeightedAutomaton b;
         if (min == 0) {
-            b = BasicAutomata.makeEmptyString();
+            b = BasicWeightedAutomata.makeEmptyString();
         } else if (min == 1) {
             b = a.clone();
         } else {

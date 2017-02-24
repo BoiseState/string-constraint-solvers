@@ -41,14 +41,16 @@ public class Given_BoundedAutomatonModel_When_ConvertingToLowerCase {
         // create automaton models
         BoundedAutomatonModel emptyModel = getEmptyBoundedModel(alphabet);
         BoundedAutomatonModel emptyStringModel = getEmptyStringBoundedModel(alphabet);
-        BoundedAutomatonModel concreteModel = getConcreteBoundedModel(alphabet,"ABC");
+        BoundedAutomatonModel concreteLowerModel = getConcreteBoundedModel(alphabet,"abc");
+        BoundedAutomatonModel concreteUpperModel = getConcreteBoundedModel(alphabet,"ABC");
         BoundedAutomatonModel uniformModel = getUniformBoundedModel(alphabet, initialBoundLength);
         BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, emptyModel},
                 {"Empty String", 1, emptyStringModel},
-                {"Concrete", 1, concreteModel},
+                {"Concrete", 1, concreteLowerModel},
+                {"Concrete", 1, concreteUpperModel},
                 {"Uniform", 85, uniformModel},
                 {"Non-uniform", 45, nonUniformModel}
         });

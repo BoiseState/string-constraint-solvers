@@ -63,7 +63,7 @@ public class Given_BoundedAutomatonModel_When_SettingLength {
                 {"Non-uniform", 0, nonUniformModel, 0},
                 {"Non-uniform", 1, nonUniformModel, 1},
                 {"Non-uniform", 8, nonUniformModel, 2},
-                {"Non-uniform", 45, nonUniformModel, 3},
+                {"Non-uniform", 45, nonUniformModel, 3}
         });
     }
 

@@ -41,7 +41,7 @@ public class Given_AggregateAutomataModel_When_AssertingEqualsIgnoreCase {
         // create automaton models
         AggregateAutomataModel emptyModel = getEmptyAggregateModel(alphabet);
         AggregateAutomataModel emptyStringModel = getEmptyStringAggregateModel(alphabet);
-        AggregateAutomataModel concreteLowerModel = getConcreteAggregateModel(alphabet,"ABC");
+        AggregateAutomataModel concreteLowerModel = getConcreteAggregateModel(alphabet,"abc");
         AggregateAutomataModel concreteUpperModel = getConcreteAggregateModel(alphabet,"ABC");
         AggregateAutomataModel uniformModel = getUniformAggregateModel(alphabet, initialBoundLength);
         AggregateAutomataModel nonUniformModel = getNonUniformAggregateModel(alphabet, initialBoundLength);

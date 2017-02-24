@@ -37,14 +37,16 @@ public class Given_AggregateAutomataModel_When_ConvertingToUpperCase {
         // create automaton models
         AggregateAutomataModel emptyModel = getEmptyAggregateModel(alphabet);
         AggregateAutomataModel emptyStringModel = getEmptyStringAggregateModel(alphabet);
-        AggregateAutomataModel concreteModel = getConcreteAggregateModel(alphabet,"ABC");
+        AggregateAutomataModel concreteLowerModel = getConcreteAggregateModel(alphabet,"abc");
+        AggregateAutomataModel concreteUpperModel = getConcreteAggregateModel(alphabet,"ABC");
         AggregateAutomataModel uniformModel = getUniformAggregateModel(alphabet, initialBoundLength);
         AggregateAutomataModel nonUniformModel = getNonUniformAggregateModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, emptyModel},
                 {"Empty String", 1, emptyStringModel},
-                {"Concrete", 1, concreteModel},
+                {"Concrete", 1, concreteLowerModel},
+                {"Concrete", 1, concreteUpperModel},
                 {"Uniform", 85, uniformModel},
                 {"Non-uniform", 45, nonUniformModel}
         });

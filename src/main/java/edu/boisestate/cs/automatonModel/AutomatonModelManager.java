@@ -41,9 +41,5 @@ public abstract class AutomatonModelManager {
 
     public abstract AutomatonModel createAnyString();
 
-    public abstract AutomatonModel createEmptyString();
-
     public abstract AutomatonModel createAnyString(int min, int max);
-
-    public abstract AutomatonModel createEmpty();
 }

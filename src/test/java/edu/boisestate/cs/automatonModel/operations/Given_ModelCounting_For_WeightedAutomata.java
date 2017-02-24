@@ -1,7 +1,7 @@
 package edu.boisestate.cs.automatonModel.operations;
 
 import edu.boisestate.cs.Alphabet;
-import edu.boisestate.cs.automaton.BasicAutomata;
+import edu.boisestate.cs.automaton.BasicWeightedAutomata;
 import edu.boisestate.cs.automaton.WeightedAutomaton;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,12 +42,12 @@ public class Given_ModelCounting_For_WeightedAutomata {
         int initialBoundLength = 3;
 
         // create automata
-        WeightedAutomaton empty = BasicAutomata.makeEmpty();
-        WeightedAutomaton emptyString = BasicAutomata.makeEmptyString();
-        WeightedAutomaton concrete = BasicAutomata.makeString("ABC");
-        WeightedAutomaton uniform = BasicAutomata.makeCharSet(alphabet.getCharSet())
-                                         .repeat();
-        WeightedAutomaton intersect = uniform.concatenate(BasicAutomata.makeChar('A'))
+        WeightedAutomaton empty = BasicWeightedAutomata.makeEmpty();
+        WeightedAutomaton emptyString = BasicWeightedAutomata.makeEmptyString();
+        WeightedAutomaton concrete = BasicWeightedAutomata.makeString("ABC");
+        WeightedAutomaton uniform = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet())
+                                                         .repeat();
+        WeightedAutomaton intersect = uniform.concatenate(BasicWeightedAutomata.makeChar('A'))
                                      .concatenate(uniform);
         WeightedAutomaton nonUniform = uniform.intersection(intersect);
 
@@ -56,8 +56,8 @@ public class Given_ModelCounting_For_WeightedAutomata {
         nonUniform.minimize();
 
         // bound automata
-        WeightedAutomaton bounding = BasicAutomata.makeCharSet(alphabet.getCharSet())
-                                          .repeat(0, initialBoundLength);
+        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet())
+                                                          .repeat(0, initialBoundLength);
         WeightedAutomaton boundUniform = uniform.intersection(bounding);
         WeightedAutomaton boundNonUniform = nonUniform.intersection(bounding);
         boundUniform.determinize();

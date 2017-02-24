@@ -147,7 +147,7 @@ public class Given_AggregateAutomataModel_When_Inserting {
                 {"Non-uniform", "Non-uniform", 2025, nonUniformModel, 0, nonUniformModel},
                 {"Non-uniform", "Non-uniform", 2025, nonUniformModel, 1, nonUniformModel},
                 {"Non-uniform", "Non-uniform", 2025, nonUniformModel, 2, nonUniformModel},
-                {"Non-uniform", "Non-uniform", 2025, nonUniformModel, 3, nonUniformModel},
+                {"Non-uniform", "Non-uniform", 2025, nonUniformModel, 3, nonUniformModel}
         });
     }
 

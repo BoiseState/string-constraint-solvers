@@ -37,14 +37,16 @@ public class Given_UnboundedAutomatonModel_When_ConvertingToUpperCase {
         // create automaton models
         UnboundedAutomatonModel emptyModel = getEmptyUnboundedModel(alphabet);
         UnboundedAutomatonModel emptyStringModel = getEmptyStringUnboundedModel(alphabet);
-        UnboundedAutomatonModel concreteModel = getConcreteUnboundedModel(alphabet,"ABC");
+        UnboundedAutomatonModel concreteLowerModel = getConcreteUnboundedModel(alphabet,"abc");
+        UnboundedAutomatonModel concreteUpperModel = getConcreteUnboundedModel(alphabet,"ABC");
         UnboundedAutomatonModel uniformModel = getUniformUnboundedModel(alphabet, initialBoundLength);
         UnboundedAutomatonModel nonUniformModel = getNonUniformUnboundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, emptyModel},
                 {"Empty String", 1, emptyStringModel},
-                {"Concrete", 1, concreteModel},
+                {"Concrete", 1, concreteLowerModel},
+                {"Concrete", 1, concreteUpperModel},
                 {"Uniform", 85, uniformModel},
                 {"Non-uniform", 45, nonUniformModel}
         });

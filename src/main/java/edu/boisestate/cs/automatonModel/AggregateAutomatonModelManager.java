@@ -72,30 +72,6 @@ public class AggregateAutomatonModelManager
     }
 
     @Override
-    public AutomatonModel createEmpty() {
-
-        // create empty automata array
-        Automaton[] automata = new Automaton[]{BasicAutomata.makeEmpty()};
-
-        // return aggregate model from automata array
-        return new AggregateAutomataModel(automata,
-                                          this.alphabet,
-                                          this.boundLength);
-    }
-
-    @Override
-    public AutomatonModel createEmptyString() {
-
-        // create empty string automata array
-        Automaton[] automata = new Automaton[]{BasicAutomata.makeEmptyString()};
-
-        // return aggregate model from automata array
-        return new AggregateAutomataModel(automata,
-                                          this.alphabet,
-                                          0);
-    }
-
-    @Override
     public AutomatonModel createString(String string) {
 
         // declare automata array

@@ -34,9 +34,9 @@ import java.util.*;
 /**
  * Construction of basic automata.
  */
-final public class BasicAutomata {
+final public class BasicWeightedAutomata {
 
-    private BasicAutomata() {
+    private BasicWeightedAutomata() {
     }
 
     /**

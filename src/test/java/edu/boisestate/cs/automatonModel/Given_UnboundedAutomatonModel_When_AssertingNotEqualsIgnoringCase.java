@@ -41,7 +41,7 @@ public class Given_UnboundedAutomatonModel_When_AssertingNotEqualsIgnoringCase {
         // create automaton models
         UnboundedAutomatonModel emptyModel = getEmptyUnboundedModel(alphabet);
         UnboundedAutomatonModel emptyStringModel = getEmptyStringUnboundedModel(alphabet);
-        UnboundedAutomatonModel concreteLowerModel = getConcreteUnboundedModel(alphabet,"ABC");
+        UnboundedAutomatonModel concreteLowerModel = getConcreteUnboundedModel(alphabet,"abc");
         UnboundedAutomatonModel concreteUpperModel = getConcreteUnboundedModel(alphabet,"ABC");
         UnboundedAutomatonModel uniformModel = getUniformUnboundedModel(alphabet, initialBoundLength);
         UnboundedAutomatonModel nonUniformModel = getNonUniformUnboundedModel(alphabet, initialBoundLength);

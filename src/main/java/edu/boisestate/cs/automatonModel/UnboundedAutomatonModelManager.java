@@ -64,18 +64,6 @@ public class UnboundedAutomatonModelManager
     }
 
     @Override
-    public AutomatonModel createEmpty() {
-
-        // create empty automaton
-        Automaton empty = BasicAutomata.makeEmpty();
-
-        // create new model from automaton
-        return new UnboundedAutomatonModel(empty,
-                                           this.alphabet,
-                                           0);
-    }
-
-    @Override
     public AutomatonModel createString(String string) {
 
         // create string automaton
@@ -88,17 +76,5 @@ public class UnboundedAutomatonModelManager
         return new UnboundedAutomatonModel(stringAutomaton,
                                            this.alphabet,
                                            length);
-    }
-
-    @Override
-    public AutomatonModel createEmptyString() {
-
-        // create empty string automaton
-        Automaton emptyString = BasicAutomata.makeEmptyString();
-
-        // return model from automaton
-        return new UnboundedAutomatonModel(emptyString,
-                                           this.alphabet,
-                                           0);
     }
 }

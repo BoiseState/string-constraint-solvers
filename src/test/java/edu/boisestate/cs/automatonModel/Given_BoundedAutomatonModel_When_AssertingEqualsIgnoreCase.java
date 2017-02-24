@@ -45,7 +45,7 @@ public class Given_BoundedAutomatonModel_When_AssertingEqualsIgnoreCase {
         // create automaton models
         BoundedAutomatonModel emptyModel = getEmptyBoundedModel(alphabet);
         BoundedAutomatonModel emptyStringModel = getEmptyStringBoundedModel(alphabet);
-        BoundedAutomatonModel concreteLowerModel = getConcreteBoundedModel(alphabet,"ABC");
+        BoundedAutomatonModel concreteLowerModel = getConcreteBoundedModel(alphabet,"abc");
         BoundedAutomatonModel concreteUpperModel = getConcreteBoundedModel(alphabet,"ABC");
         BoundedAutomatonModel uniformModel = getUniformBoundedModel(alphabet, initialBoundLength);
         BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);

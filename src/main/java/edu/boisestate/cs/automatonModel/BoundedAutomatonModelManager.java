@@ -61,18 +61,6 @@ public class BoundedAutomatonModelManager
     }
 
     @Override
-    public AutomatonModel createEmpty() {
-
-        // create empty automaton
-        Automaton empty = BasicAutomata.makeEmpty();
-
-        // return model from automaton
-        return new BoundedAutomatonModel(empty,
-                                         this.alphabet,
-                                         this.boundLength);
-    }
-
-    @Override
     public AutomatonModel createString(String string) {
 
         // create string automaton
@@ -82,17 +70,5 @@ public class BoundedAutomatonModelManager
         return new BoundedAutomatonModel(stringAutomaton,
                                          this.alphabet,
                                          this.boundLength);
-    }
-
-    @Override
-    public AutomatonModel createEmptyString() {
-
-        // create empty string automaton
-        Automaton emptyString = BasicAutomata.makeEmptyString();
-
-        // return model from automaton
-        return new BoundedAutomatonModel(emptyString,
-                                         this.alphabet,
-                                         0);
     }
 }

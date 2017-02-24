@@ -112,8 +112,6 @@ public abstract class AutomatonModel
 
     public abstract BigInteger modelCount();
 
-    public abstract AutomatonModel prefix(int end);
-
     public abstract AutomatonModel replace(char find, char replace);
 
     public abstract AutomatonModel replace(String find, String replace);

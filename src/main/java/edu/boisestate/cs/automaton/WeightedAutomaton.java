@@ -492,123 +492,123 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link BasicAutomata#makeAnyChar()}.
+     * See {@link BasicWeightedAutomata#makeAnyChar()}.
      */
     public static WeightedAutomaton makeAnyChar() {
-        return BasicAutomata.makeAnyChar();
+        return BasicWeightedAutomata.makeAnyChar();
     }
 
     /**
-     * See {@link BasicAutomata#makeAnyString()}.
+     * See {@link BasicWeightedAutomata#makeAnyString()}.
      */
     public static WeightedAutomaton makeAnyString() {
-        return BasicAutomata.makeAnyString();
+        return BasicWeightedAutomata.makeAnyString();
     }
 
     /**
-     * See {@link BasicAutomata#makeChar(char)}.
+     * See {@link BasicWeightedAutomata#makeChar(char)}.
      */
     public static WeightedAutomaton makeChar(char c) {
-        return BasicAutomata.makeChar(c);
+        return BasicWeightedAutomata.makeChar(c);
     }
 
     /**
-     * See {@link BasicAutomata#makeCharRange(char, char)}.
+     * See {@link BasicWeightedAutomata#makeCharRange(char, char)}.
      */
     public static WeightedAutomaton makeCharRange(char min, char max) {
-        return BasicAutomata.makeCharRange(min, max);
+        return BasicWeightedAutomata.makeCharRange(min, max);
     }
 
     /**
-     * See {@link BasicAutomata#makeCharSet(String)}.
+     * See {@link BasicWeightedAutomata#makeCharSet(String)}.
      */
     public static WeightedAutomaton makeCharSet(String set) {
-        return BasicAutomata.makeCharSet(set);
+        return BasicWeightedAutomata.makeCharSet(set);
     }
 
     /**
-     * See {@link BasicAutomata#makeDecimalValue(String)}.
+     * See {@link BasicWeightedAutomata#makeDecimalValue(String)}.
      */
     public static WeightedAutomaton makeDecimalValue(String value) {
-        return BasicAutomata.makeDecimalValue(value);
+        return BasicWeightedAutomata.makeDecimalValue(value);
     }
 
     /**
-     * See {@link BasicAutomata#makeEmpty()}.
+     * See {@link BasicWeightedAutomata#makeEmpty()}.
      */
     public static WeightedAutomaton makeEmpty() {
-        return BasicAutomata.makeEmpty();
+        return BasicWeightedAutomata.makeEmpty();
     }
 
     /**
-     * See {@link BasicAutomata#makeEmptyString()}.
+     * See {@link BasicWeightedAutomata#makeEmptyString()}.
      */
     public static WeightedAutomaton makeEmptyString() {
-        return BasicAutomata.makeEmptyString();
+        return BasicWeightedAutomata.makeEmptyString();
     }
 
     /**
-     * See {@link BasicAutomata#makeFractionDigits(int)}.
+     * See {@link BasicWeightedAutomata#makeFractionDigits(int)}.
      */
     public static WeightedAutomaton makeFractionDigits(int i) {
-        return BasicAutomata.makeFractionDigits(i);
+        return BasicWeightedAutomata.makeFractionDigits(i);
     }
 
     /**
-     * See {@link BasicAutomata#makeIntegerValue(String)}.
+     * See {@link BasicWeightedAutomata#makeIntegerValue(String)}.
      */
     public static WeightedAutomaton makeIntegerValue(String value) {
-        return BasicAutomata.makeIntegerValue(value);
+        return BasicWeightedAutomata.makeIntegerValue(value);
     }
 
     /**
-     * See {@link BasicAutomata#makeInterval(int, int, int)}.
+     * See {@link BasicWeightedAutomata#makeInterval(int, int, int)}.
      */
     public static WeightedAutomaton makeInterval(int min, int max, int digits)
             throws IllegalArgumentException {
-        return BasicAutomata.makeInterval(min, max, digits);
+        return BasicWeightedAutomata.makeInterval(min, max, digits);
     }
 
     /**
-     * See {@link BasicAutomata#makeMaxInteger(String)}.
+     * See {@link BasicWeightedAutomata#makeMaxInteger(String)}.
      */
     public static WeightedAutomaton makeMaxInteger(String n) {
-        return BasicAutomata.makeMaxInteger(n);
+        return BasicWeightedAutomata.makeMaxInteger(n);
     }
 
     /**
-     * See {@link BasicAutomata#makeMinInteger(String)}.
+     * See {@link BasicWeightedAutomata#makeMinInteger(String)}.
      */
     public static WeightedAutomaton makeMinInteger(String n) {
-        return BasicAutomata.makeMinInteger(n);
+        return BasicWeightedAutomata.makeMinInteger(n);
     }
 
     /**
-     * See {@link BasicAutomata#makeString(String)}.
+     * See {@link BasicWeightedAutomata#makeString(String)}.
      */
     public static WeightedAutomaton makeString(String s) {
-        return BasicAutomata.makeString(s);
+        return BasicWeightedAutomata.makeString(s);
     }
 
     /**
-     * See {@link BasicAutomata#makeStringMatcher(String)}.
+     * See {@link BasicWeightedAutomata#makeStringMatcher(String)}.
      */
     public static WeightedAutomaton makeStringMatcher(String s) {
-        return BasicAutomata.makeStringMatcher(s);
+        return BasicWeightedAutomata.makeStringMatcher(s);
     }
 
     /**
-     * See {@link BasicAutomata#makeStringUnion(CharSequence...)}.
+     * See {@link BasicWeightedAutomata#makeStringUnion(CharSequence...)}.
      */
     public static WeightedAutomaton makeStringUnion(CharSequence... strings) {
-        return BasicAutomata.makeStringUnion(strings);
+        return BasicWeightedAutomata.makeStringUnion(strings);
     }
 
     /**
-     * See {@link BasicAutomata#makeTotalDigits(int)}.
+     * See {@link BasicWeightedAutomata#makeTotalDigits(int)}.
      */
     public static WeightedAutomaton makeTotalDigits(int i) {
-        return BasicAutomata.makeTotalDigits(i);
+        return BasicWeightedAutomata.makeTotalDigits(i);
     }
 
     /**

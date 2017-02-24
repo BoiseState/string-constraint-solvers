@@ -522,28 +522,6 @@ public class UnboundedAutomatonModel
     }
 
     @Override
-    public AutomatonModel prefix(int end) {
-        // if automaton is empty
-        if (this.automaton.isEmpty()) {
-            return new UnboundedAutomatonModel(BasicAutomata.makeEmpty(), this.alphabet, 0);
-        }
-
-        // perform operation
-        Automaton result = performUnaryOperation(automaton, new PrecisePrefix(end), this.alphabet);
-
-        // determine new bound length
-        int newBoundLength = end;
-        if (this.boundLength < newBoundLength) {
-            newBoundLength = this.boundLength;
-        }
-
-        // return new model from resulting automaton
-        return new UnboundedAutomatonModel(result,
-                                           this.alphabet,
-                                           newBoundLength);
-    }
-
-    @Override
     public AutomatonModel replace(char find, char replace) {
 
         // perform operation
