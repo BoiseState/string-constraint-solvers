@@ -1,7 +1,13 @@
 package edu.boisestate.cs.automatonModel;
 
 import edu.boisestate.cs.Alphabet;
+import edu.boisestate.cs.automaton.BasicWeightedAutomata;
 import edu.boisestate.cs.automaton.WeightedAutomaton;
+import edu.boisestate.cs.automatonModel.operations.weighted.UnaryWeightedOperation;
+
+
+import edu.boisestate.cs.automatonModel.operations.weighted
+        .WeightedAllSubstrings;
 
 import java.math.BigInteger;
 import java.util.Set;
@@ -26,6 +32,22 @@ public class WeightedAutomatonModel extends AutomatonModel {
         this.automaton = automaton;
     }
 
+    private static WeightedAutomaton performUnaryOperation(WeightedAutomaton automaton,
+                                                           UnaryWeightedOperation operation,
+                                                           Alphabet alphabet) {
+        // use operation
+        WeightedAutomaton result = operation.op(automaton);
+
+        // bound resulting automaton to alphabet
+        String charSet = alphabet.getCharSet();
+        WeightedAutomaton anyChar = BasicWeightedAutomata.makeCharSet(charSet).repeat();
+        result = result.intersection(anyChar);
+        result.minimize();
+
+        // return resulting automaton
+        return result;
+    }
+
     @Override
     public String getAcceptedStringExample() {
         return null;
@@ -46,9 +68,40 @@ public class WeightedAutomatonModel extends AutomatonModel {
         return false;
     }
 
+    private void ensureWeightedModel(AutomatonModel arg) {
+        // check if automaton model is bounded
+        if (!(arg instanceof WeightedAutomatonModel)) {
+
+            throw new UnsupportedOperationException(
+                    "The WeightedAutomatonModel only supports binary " +
+                    "operations with other WeightedAutomatonModel.");
+        }
+    }
+
+    private static WeightedAutomaton getAutomatonFromWeightedModel(AutomatonModel model) {
+        return ((WeightedAutomatonModel)model).automaton;
+    }
+
     @Override
     public AutomatonModel assertContainedInOther(AutomatonModel containingModel) {
-        return null;
+        ensureWeightedModel(containingModel);
+
+        // get containing automaton
+        WeightedAutomaton containing = getAutomatonFromWeightedModel(containingModel);
+
+        // if either automata is  empty
+        if (this.automaton.isEmpty() || containing.isEmpty()) {
+            return new WeightedAutomatonModel(BasicWeightedAutomata.makeEmpty(), this.alphabet, 0);
+        }
+
+        // get all substrings
+        WeightedAutomaton substrings = performUnaryOperation(containing, new WeightedAllSubstrings(), this.alphabet);
+
+        // get resulting automaton
+        WeightedAutomaton result =  this.automaton.intersection(substrings);
+
+        // return new model from resulting automaton
+        return new WeightedAutomatonModel(result, this.alphabet, this.boundLength);
     }
 
     @Override
