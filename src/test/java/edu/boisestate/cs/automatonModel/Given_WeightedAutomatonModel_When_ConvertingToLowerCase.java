@@ -45,12 +45,12 @@ public class Given_WeightedAutomatonModel_When_ConvertingToLowerCase {
         WeightedAutomatonModel nonUniformModel = getNonUniformWeightedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", -1, emptyModel},
-                {"Empty String", -1, emptyStringModel},
-                {"Concrete", -1, concreteLowerModel},
-                {"Concrete", -1, concreteUpperModel},
-                {"Uniform", -1, uniformModel},
-                {"Non-uniform", -1, nonUniformModel}
+                {"Empty", 0, emptyModel},
+                {"Empty String", 1, emptyStringModel},
+                {"Concrete", 1, concreteLowerModel},
+                {"Concrete", 1, concreteUpperModel},
+                {"Uniform", 585, uniformModel},
+                {"Non-uniform", 185, nonUniformModel}
         });
     }
 

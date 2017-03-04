@@ -45,11 +45,11 @@ public class Given_WeightedAutomatonModel_When_AssertingNotEmpty {
         WeightedAutomatonModel nonUniformModel = getNonUniformWeightedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", -1, emptyModel},
-                {"Empty String", -1, emptyStringModel},
-                {"Concrete", -1, concreteModel},
-                {"Uniform", -1, uniformModel},
-                {"Non-uniform", -1, nonUniformModel}
+                {"Empty", 0, emptyModel},
+                {"Empty String", 0, emptyStringModel},
+                {"Concrete", 1, concreteModel},
+                {"Uniform", 84, uniformModel},
+                {"Non-uniform", 45, nonUniformModel}
         });
     }
 
