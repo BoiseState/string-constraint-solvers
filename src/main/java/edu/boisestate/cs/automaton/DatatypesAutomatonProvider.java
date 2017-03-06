@@ -32,7 +32,7 @@ package edu.boisestate.cs.automaton;
 /**
  * Automaton provider based on {@link Datatypes}.
  */
-public class DatatypesAutomatonProvider implements AutomatonProvider {
+public class DatatypesAutomatonProvider implements WeightedAutomatonProvider {
 	
 	private boolean enable_unicodeblocks, enable_unicodecategories, enable_xml;
 	

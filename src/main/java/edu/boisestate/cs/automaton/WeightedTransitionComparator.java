@@ -32,13 +32,14 @@ package edu.boisestate.cs.automaton;
 import java.io.Serializable;
 import java.util.Comparator;
 
-class TransitionComparator implements Comparator<WeightedTransition>, Serializable {
+class WeightedTransitionComparator
+        implements Comparator<WeightedTransition>, Serializable {
 
 	static final long serialVersionUID = 10001;
 
 	private boolean to_first;
 	
-	TransitionComparator(boolean to_first) {
+	WeightedTransitionComparator(boolean to_first) {
 		this.to_first = to_first;
 	}
 	

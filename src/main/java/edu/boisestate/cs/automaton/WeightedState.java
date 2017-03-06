@@ -145,7 +145,7 @@ public class WeightedState
 	 *  (to, min, reverse max, weight) */
 	WeightedTransition[] getSortedTransitionArray(boolean to_first) {
 		WeightedTransition[] e = transitions.toArray(new WeightedTransition[transitions.size()]);
-		Arrays.sort(e, new TransitionComparator(to_first));
+		Arrays.sort(e, new WeightedTransitionComparator(to_first));
 		return e;
 	}
 	

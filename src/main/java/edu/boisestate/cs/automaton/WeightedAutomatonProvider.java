@@ -32,9 +32,9 @@ package edu.boisestate.cs.automaton;
 import java.io.IOException;
 
 /**
- * Automaton provider for <code>RegExp.</code>{@link RegExp#toAutomaton(AutomatonProvider)}
+ * Automaton provider for <code>RegExp.</code>{@link RegExp#toAutomaton(WeightedAutomatonProvider)}
  */
-public interface AutomatonProvider {
+public interface WeightedAutomatonProvider {
 	
 	/**
 	 * Returns automaton of the given name.

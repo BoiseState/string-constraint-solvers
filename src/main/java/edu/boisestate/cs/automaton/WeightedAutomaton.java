@@ -162,17 +162,17 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link SpecialOperations#getCommonPrefix(WeightedAutomaton)}.
+     * See {@link SpecialWeightedOperations#getCommonPrefix(WeightedAutomaton)}.
      */
     public String getCommonPrefix() {
-        return SpecialOperations.getCommonPrefix(this);
+        return SpecialWeightedOperations.getCommonPrefix(this);
     }
 
     /**
-     * See {@link SpecialOperations#getFiniteStrings(WeightedAutomaton)}.
+     * See {@link SpecialWeightedOperations#getFiniteStrings(WeightedAutomaton)}.
      */
     public Set<String> getFiniteStrings() {
-        return SpecialOperations.getFiniteStrings(this);
+        return SpecialWeightedOperations.getFiniteStrings(this);
     }
 
     /**
@@ -271,7 +271,7 @@ public class WeightedAutomaton
     /**
      * Returns sorted array of all interval start points.
      */
-    char[] getStartPoints() {
+    public char[] getStartPoints() {
         Set<Character> pointset = new HashSet<Character>();
         for (WeightedState s : getStates()) {
             pointset.add(Character.MIN_VALUE);
@@ -302,31 +302,31 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link BasicOperations#isEmpty(WeightedAutomaton)}.
+     * See {@link BasicWeightedOperations#isEmpty(WeightedAutomaton)}.
      */
     public boolean isEmpty() {
-        return BasicOperations.isEmpty(this);
+        return BasicWeightedOperations.isEmpty(this);
     }
 
     /**
-     * See {@link BasicOperations#isEmptyString(WeightedAutomaton)}.
+     * See {@link BasicWeightedOperations#isEmptyString(WeightedAutomaton)}.
      */
     public boolean isEmptyString() {
-        return BasicOperations.isEmptyString(this);
+        return BasicWeightedOperations.isEmptyString(this);
     }
 
     /**
-     * See {@link SpecialOperations#isFinite(WeightedAutomaton)}.
+     * See {@link SpecialWeightedOperations#isFinite(WeightedAutomaton)}.
      */
     public boolean isFinite() {
-        return SpecialOperations.isFinite(this);
+        return SpecialWeightedOperations.isFinite(this);
     }
 
     /**
-     * See {@link BasicOperations#isTotal(WeightedAutomaton)}.
+     * See {@link BasicWeightedOperations#isTotal(WeightedAutomaton)}.
      */
     public boolean isTotal() {
-        return BasicOperations.isTotal(this);
+        return BasicWeightedOperations.isTotal(this);
     }
 
     /**
@@ -401,10 +401,10 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link BasicOperations#concatenate(List)}.
+     * See {@link BasicWeightedOperations#concatenate(List)}.
      */
     static public WeightedAutomaton concatenate(List<WeightedAutomaton> l) {
-        return BasicOperations.concatenate(l);
+        return BasicWeightedOperations.concatenate(l);
     }
 
     /**
@@ -433,10 +433,10 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link SpecialOperations#hexCases(WeightedAutomaton)}.
+     * See {@link SpecialWeightedOperations#hexCases(WeightedAutomaton)}.
      */
     public static WeightedAutomaton hexCases(WeightedAutomaton a) {
-        return SpecialOperations.hexCases(a);
+        return SpecialWeightedOperations.hexCases(a);
     }
 
     /**
@@ -621,10 +621,10 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link SpecialOperations#replaceWhitespace(WeightedAutomaton)}.
+     * See {@link SpecialWeightedOperations#replaceWhitespace(WeightedAutomaton)}.
      */
     public static WeightedAutomaton replaceWhitespace(WeightedAutomaton a) {
-        return SpecialOperations.replaceWhitespace(a);
+        return SpecialWeightedOperations.replaceWhitespace(a);
     }
 
     /**
@@ -660,10 +660,10 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link BasicOperations#union(Collection)}.
+     * See {@link BasicWeightedOperations#union(Collection)}.
      */
     static public WeightedAutomaton union(Collection<WeightedAutomaton> l) {
-        return BasicOperations.union(l);
+        return BasicWeightedOperations.union(l);
     }
 
     /**
@@ -700,11 +700,11 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link BasicOperations#subsetOf(WeightedAutomaton,
+     * See {@link BasicWeightedOperations#subsetOf(WeightedAutomaton,
      * WeightedAutomaton)}.
      */
     public boolean subsetOf(WeightedAutomaton a) {
-        return BasicOperations.subsetOf(this, a);
+        return BasicWeightedOperations.subsetOf(this, a);
     }
 
     /**
@@ -733,113 +733,113 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link BasicOperations#addEpsilons(WeightedAutomaton, Collection)}.
+     * See {@link BasicWeightedOperations#addEpsilons(WeightedAutomaton, Collection)}.
      */
     public void addEpsilons(Collection<StatePair> pairs) {
-        BasicOperations.addEpsilons(this, pairs);
+        BasicWeightedOperations.addEpsilons(this, pairs);
     }
 
     /**
-     * See {@link BasicOperations#complement(WeightedAutomaton)}.
+     * See {@link BasicWeightedOperations#complement(WeightedAutomaton)}.
      */
     public WeightedAutomaton complement() {
-        return BasicOperations.complement(this);
+        return BasicWeightedOperations.complement(this);
     }
 
     /**
-     * See {@link SpecialOperations#compress(WeightedAutomaton, String, char)}.
+     * See {@link SpecialWeightedOperations#compress(WeightedAutomaton, String, char)}.
      */
     public WeightedAutomaton compress(String set, char c) {
-        return SpecialOperations.compress(this, set, c);
+        return SpecialWeightedOperations.compress(this, set, c);
     }
 
     /**
-     * See {@link BasicOperations#concatenate(WeightedAutomaton,
+     * See {@link BasicWeightedOperations#concatenate(WeightedAutomaton,
      * WeightedAutomaton)}.
      */
     public WeightedAutomaton concatenate(WeightedAutomaton a) {
-        return BasicOperations.concatenate(this, a);
+        return BasicWeightedOperations.concatenate(this, a);
     }
 
     /**
-     * See {@link BasicOperations#determinize(WeightedAutomaton)}.
+     * See {@link BasicWeightedOperations#determinize(WeightedAutomaton)}.
      */
     public void determinize() {
-        BasicOperations.determinize(this);
+        BasicWeightedOperations.determinize(this);
     }
 
     /**
-     * See {@link SpecialOperations#getFiniteStrings(WeightedAutomaton, int)}.
+     * See {@link SpecialWeightedOperations#getFiniteStrings(WeightedAutomaton, int)}.
      */
     public Set<String> getFiniteStrings(int limit) {
-        return SpecialOperations.getFiniteStrings(this, limit);
+        return SpecialWeightedOperations.getFiniteStrings(this, limit);
     }
 
     /**
-     * See {@link BasicOperations#getShortestExample(WeightedAutomaton,
+     * See {@link BasicWeightedOperations#getShortestExample(WeightedAutomaton,
      * boolean)}.
      */
     public String getShortestExample(boolean accepted) {
-        return BasicOperations.getShortestExample(this, accepted);
+        return BasicWeightedOperations.getShortestExample(this, accepted);
     }
 
     /**
-     * See {@link SpecialOperations#getStrings(WeightedAutomaton, int)}.
+     * See {@link SpecialWeightedOperations#getStrings(WeightedAutomaton, int)}.
      */
     public Set<String> getStrings(int length) {
-        return SpecialOperations.getStrings(this, length);
+        return SpecialWeightedOperations.getStrings(this, length);
     }
 
     /**
-     * See {@link SpecialOperations#homomorph(WeightedAutomaton, char[],
+     * See {@link SpecialWeightedOperations#homomorph(WeightedAutomaton, char[],
      * char[])}.
      */
     public WeightedAutomaton homomorph(char[] source, char[] dest) {
-        return SpecialOperations.homomorph(this, source, dest);
+        return SpecialWeightedOperations.homomorph(this, source, dest);
     }
 
     /**
-     * See {@link BasicOperations#intersection(WeightedAutomaton,
+     * See {@link BasicWeightedOperations#intersection(WeightedAutomaton,
      * WeightedAutomaton)}.
      */
     public WeightedAutomaton intersection(WeightedAutomaton a) {
-        return BasicOperations.intersection(this, a);
+        return BasicWeightedOperations.intersection(this, a);
     }
 
     /**
-     * See {@link BasicOperations#minus(WeightedAutomaton, WeightedAutomaton)}.
+     * See {@link BasicWeightedOperations#minus(WeightedAutomaton, WeightedAutomaton)}.
      */
     public WeightedAutomaton minus(WeightedAutomaton a) {
-        return BasicOperations.minus(this, a);
+        return BasicWeightedOperations.minus(this, a);
     }
 
     /**
-     * See {@link BasicOperations#optional(WeightedAutomaton)}.
+     * See {@link BasicWeightedOperations#optional(WeightedAutomaton)}.
      */
     public WeightedAutomaton optional() {
-        return BasicOperations.optional(this);
+        return BasicWeightedOperations.optional(this);
     }
 
     /**
-     * See {@link SpecialOperations#overlap(WeightedAutomaton,
+     * See {@link SpecialWeightedOperations#overlap(WeightedAutomaton,
      * WeightedAutomaton)}.
      */
     public WeightedAutomaton overlap(WeightedAutomaton a) {
-        return SpecialOperations.overlap(this, a);
+        return SpecialWeightedOperations.overlap(this, a);
     }
 
     /**
-     * See {@link SpecialOperations#prefixClose(WeightedAutomaton)}.
+     * See {@link SpecialWeightedOperations#prefixClose(WeightedAutomaton)}.
      */
     public void prefixClose() {
-        SpecialOperations.prefixClose(this);
+        SpecialWeightedOperations.prefixClose(this);
     }
 
     /**
-     * See {@link SpecialOperations#projectChars(WeightedAutomaton, Set)}.
+     * See {@link SpecialWeightedOperations#projectChars(WeightedAutomaton, Set)}.
      */
     public WeightedAutomaton projectChars(Set<Character> chars) {
-        return SpecialOperations.projectChars(this, chars);
+        return SpecialWeightedOperations.projectChars(this, chars);
     }
 
     /**
@@ -918,24 +918,24 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link BasicOperations#repeat(WeightedAutomaton)}.
+     * See {@link BasicWeightedOperations#repeat(WeightedAutomaton)}.
      */
     public WeightedAutomaton repeat() {
-        return BasicOperations.repeat(this);
+        return BasicWeightedOperations.repeat(this);
     }
 
     /**
-     * See {@link BasicOperations#repeat(WeightedAutomaton, int)}.
+     * See {@link BasicWeightedOperations#repeat(WeightedAutomaton, int)}.
      */
     public WeightedAutomaton repeat(int min) {
-        return BasicOperations.repeat(this, min);
+        return BasicWeightedOperations.repeat(this, min);
     }
 
     /**
-     * See {@link BasicOperations#repeat(WeightedAutomaton, int, int)}.
+     * See {@link BasicWeightedOperations#repeat(WeightedAutomaton, int, int)}.
      */
     public WeightedAutomaton repeat(int min, int max) {
-        return BasicOperations.repeat(this, min, max);
+        return BasicWeightedOperations.repeat(this, min, max);
     }
 
     /**
@@ -950,10 +950,10 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link BasicOperations#run(WeightedAutomaton, String)}.
+     * See {@link BasicWeightedOperations#run(WeightedAutomaton, String)}.
      */
     public boolean run(String s) {
-        return BasicOperations.run(this, s);
+        return BasicWeightedOperations.run(this, s);
     }
 
     /**
@@ -965,10 +965,10 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link SpecialOperations#singleChars(WeightedAutomaton)}.
+     * See {@link SpecialWeightedOperations#singleChars(WeightedAutomaton)}.
      */
     public WeightedAutomaton singleChars() {
-        return SpecialOperations.singleChars(this);
+        return SpecialWeightedOperations.singleChars(this);
     }
 
     /**
@@ -988,17 +988,17 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link SpecialOperations#subst(WeightedAutomaton, Map)}.
+     * See {@link SpecialWeightedOperations#subst(WeightedAutomaton, Map)}.
      */
     public WeightedAutomaton subst(Map<Character, Set<Character>> map) {
-        return SpecialOperations.subst(this, map);
+        return SpecialWeightedOperations.subst(this, map);
     }
 
     /**
-     * See {@link SpecialOperations#subst(WeightedAutomaton, char, String)}.
+     * See {@link SpecialWeightedOperations#subst(WeightedAutomaton, char, String)}.
      */
     public WeightedAutomaton subst(char c, String s) {
-        return SpecialOperations.subst(this, c, s);
+        return SpecialWeightedOperations.subst(this, c, s);
     }
 
     /**
@@ -1030,17 +1030,17 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link SpecialOperations#trim(WeightedAutomaton, String, char)}.
+     * See {@link SpecialWeightedOperations#trim(WeightedAutomaton, String, char)}.
      */
     public WeightedAutomaton trim(String set, char c) {
-        return SpecialOperations.trim(this, set, c);
+        return SpecialWeightedOperations.trim(this, set, c);
     }
 
     /**
-     * See {@link BasicOperations#union(WeightedAutomaton, WeightedAutomaton)}.
+     * See {@link BasicWeightedOperations#union(WeightedAutomaton, WeightedAutomaton)}.
      */
     public WeightedAutomaton union(WeightedAutomaton a) {
-        return BasicOperations.union(this, a);
+        return BasicWeightedOperations.union(this, a);
     }
 
     void checkMinimizeAlways() {

@@ -243,7 +243,7 @@ public class RegExp {
 	 * @exception IllegalArgumentException if this regular expression uses
 	 *   a named identifier that is not available from the automaton provider
 	 */
-	public WeightedAutomaton toAutomaton(AutomatonProvider automaton_provider) throws IllegalArgumentException {
+	public WeightedAutomaton toAutomaton(WeightedAutomatonProvider automaton_provider) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(null, automaton_provider, true);
 	}
 		
@@ -255,7 +255,7 @@ public class RegExp {
 	 * @exception IllegalArgumentException if this regular expression uses
 	 *   a named identifier that is not available from the automaton provider
 	 */
-	public WeightedAutomaton toAutomaton(AutomatonProvider automaton_provider, boolean minimize) throws IllegalArgumentException {
+	public WeightedAutomaton toAutomaton(WeightedAutomatonProvider automaton_provider, boolean minimize) throws IllegalArgumentException {
 		return toAutomatonAllowMutate(null, automaton_provider, minimize);
 	}
 		
@@ -300,7 +300,7 @@ public class RegExp {
 	}
 	
 	private WeightedAutomaton toAutomatonAllowMutate(Map<String, WeightedAutomaton> automata,
-                                                     AutomatonProvider automaton_provider,
+                                                     WeightedAutomatonProvider automaton_provider,
                                                      boolean minimize) throws IllegalArgumentException {
 		boolean b = false;
 		if (allow_mutation)
@@ -312,7 +312,7 @@ public class RegExp {
 	}
 		
 	private WeightedAutomaton toAutomaton(Map<String, WeightedAutomaton> automata,
-                                          AutomatonProvider automaton_provider,
+                                          WeightedAutomatonProvider automaton_provider,
                                           boolean minimize) throws IllegalArgumentException {
 		List<WeightedAutomaton> list;
 		WeightedAutomaton a = null;
@@ -321,14 +321,14 @@ public class RegExp {
 			list = new ArrayList<WeightedAutomaton>();
 			findLeaves(exp1, Kind.REGEXP_UNION, list, automata, automaton_provider, minimize);
 			findLeaves(exp2, Kind.REGEXP_UNION, list, automata, automaton_provider, minimize);
-			a = BasicOperations.union(list);
+			a = BasicWeightedOperations.union(list);
 			a.minimize();
 			break;
 		case REGEXP_CONCATENATION:
 			list = new ArrayList<WeightedAutomaton>();
 			findLeaves(exp1, Kind.REGEXP_CONCATENATION, list, automata, automaton_provider, minimize);
 			findLeaves(exp2, Kind.REGEXP_CONCATENATION, list, automata, automaton_provider, minimize);
-			a = BasicOperations.concatenate(list);
+			a = BasicWeightedOperations.concatenate(list);
 			a.minimize();
 			break;
 		case REGEXP_INTERSECTION:
@@ -395,7 +395,7 @@ public class RegExp {
 	}
 
 	private void findLeaves(RegExp exp, Kind kind, List<WeightedAutomaton> list, Map<String, WeightedAutomaton> automata,
-                            AutomatonProvider automaton_provider,
+                            WeightedAutomatonProvider automaton_provider,
                             boolean minimize) {
 		if (exp.kind == kind) {
 			findLeaves(exp.exp1, kind, list, automata, automaton_provider, minimize);

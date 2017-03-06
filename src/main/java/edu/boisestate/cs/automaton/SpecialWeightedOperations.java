@@ -34,9 +34,9 @@ import java.util.*;
 /**
  * Special automata operations.
  */
-final public class SpecialOperations {
+final public class SpecialWeightedOperations {
 
-    private SpecialOperations() {
+    private SpecialWeightedOperations() {
     }
 
     /**

@@ -39,9 +39,10 @@ import java.util.regex.MatchResult;
  * @see RunAutomaton#newMatcher(java.lang.CharSequence)
  * @see RunAutomaton#newMatcher(java.lang.CharSequence, int, int)
  */
-public class AutomatonMatcher implements MatchResult {
+public class WeightedAutomatonMatcher
+        implements MatchResult {
 
-	AutomatonMatcher(final CharSequence chars, final RunAutomaton automaton) {
+	WeightedAutomatonMatcher(final CharSequence chars, final RunAutomaton automaton) {
 		this.chars = chars;
 		this.automaton = automaton;
 	}
@@ -257,7 +258,8 @@ public class AutomatonMatcher implements MatchResult {
 	 *  {@code AutomatonMatcher}.
 	 */
 	public MatchResult toMatchResult() {
-		final AutomatonMatcher match = new AutomatonMatcher(chars, automaton);
+		final WeightedAutomatonMatcher
+                match = new WeightedAutomatonMatcher(chars, automaton);
 		match.matchStart = this.matchStart;
 		match.matchEnd = this.matchEnd;
 		return match;

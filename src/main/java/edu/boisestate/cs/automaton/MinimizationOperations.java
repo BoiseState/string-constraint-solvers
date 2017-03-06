@@ -211,8 +211,8 @@ final public class MinimizationOperations {
 	public static void minimizeBrzozowski(WeightedAutomaton a) {
 		if (a.isSingleton())
 			return;
-		BasicOperations.determinize(a, SpecialOperations.reverse(a));
-		BasicOperations.determinize(a, SpecialOperations.reverse(a));
+		BasicWeightedOperations.determinize(a, SpecialWeightedOperations.reverse(a));
+		BasicWeightedOperations.determinize(a, SpecialWeightedOperations.reverse(a));
 	}
 	
 	/** 

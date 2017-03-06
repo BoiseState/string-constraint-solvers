@@ -247,8 +247,8 @@ public class RunAutomaton
      *
      * @return A new automaton matcher for the given input
      */
-    public AutomatonMatcher newMatcher(CharSequence s) {
-        return new AutomatonMatcher(s, this);
+    public WeightedAutomatonMatcher newMatcher(CharSequence s) {
+        return new WeightedAutomatonMatcher(s, this);
     }
 
     /**
@@ -263,10 +263,10 @@ public class RunAutomaton
      *
      * @return A new automaton matcher for the given input
      */
-    public AutomatonMatcher newMatcher(CharSequence s, int startOffset, int
+    public WeightedAutomatonMatcher newMatcher(CharSequence s, int startOffset, int
             endOffset) {
-        return new AutomatonMatcher(s.subSequence(startOffset, endOffset),
-                                    this);
+        return new WeightedAutomatonMatcher(s.subSequence(startOffset, endOffset),
+                                            this);
     }
 
     /**
@@ -304,7 +304,7 @@ public class RunAutomaton
      * Gets character class of given char.
      */
     int getCharClass(char c) {
-        return SpecialOperations.findIndex(c, points);
+        return SpecialWeightedOperations.findIndex(c, points);
     }
 
     /**

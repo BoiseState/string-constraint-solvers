@@ -34,9 +34,9 @@ import java.util.*;
 /**
  * Basic automata operations.
  */
-final public class BasicOperations {
+final public class BasicWeightedOperations {
 
-    private BasicOperations() {
+    private BasicWeightedOperations() {
     }
 
     /**
@@ -49,13 +49,11 @@ final public class BasicOperations {
      *         source/destination states where epsilon transitions should be
      *         added
      */
-    public static void addEpsilons(WeightedAutomaton a, Collection<StatePair>
-            pairs) {
+    public static void addEpsilons(WeightedAutomaton a,
+                                   Collection<StatePair> pairs) {
         a.expandSingleton();
-        HashMap<WeightedState, HashSet<WeightedState>> forward = new
-                HashMap<WeightedState, HashSet<WeightedState>>();
-        HashMap<WeightedState, HashSet<WeightedState>> back =
-                new HashMap<WeightedState, HashSet<WeightedState>>();
+        HashMap<WeightedState, HashSet<WeightedState>> forward = new HashMap <WeightedState, HashSet<WeightedState>>();
+        HashMap<WeightedState, HashSet<WeightedState>> back = new HashMap<WeightedState, HashSet<WeightedState>>();
         for (StatePair p : pairs) {
             HashSet<WeightedState> to = forward.get(p.s1);
             if (to == null) {

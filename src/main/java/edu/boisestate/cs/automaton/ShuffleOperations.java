@@ -304,7 +304,7 @@ final public class ShuffleOperations {
         }
         WeightedTransition[][] a_transitions =
                 WeightedAutomaton.getSortedTransitions(a.getStates());
-        TransitionComparator tc = new TransitionComparator(false);
+        WeightedTransitionComparator tc = new WeightedTransitionComparator(false);
         ShuffleConfiguration init = new ShuffleConfiguration(ca, a);
         LinkedList<ShuffleConfiguration> pending =
                 new LinkedList<ShuffleConfiguration>();
@@ -404,15 +404,15 @@ final public class ShuffleOperations {
                         sb2.append(sb.charAt(m));
                     }
                     if (c.shuffle_suspended) {
-                        sb2.append(BasicOperations.getShortestExample(nc
+                        sb2.append(BasicWeightedOperations.getShortestExample(nc
                                                                               .ca_states[c.suspended1],
-                                                                      true));
+                                                                              true));
                     }
                     for (i1 = 0; i1 < ca.size(); i1++) {
                         if (!c.shuffle_suspended || i1 != c.suspended1) {
-                            sb2.append(BasicOperations.getShortestExample(nc
+                            sb2.append(BasicWeightedOperations.getShortestExample(nc
                                                                                   .ca_states[i1],
-                                                                          true));
+                                                                                  true));
                         }
                     }
                     return sb2.toString();
