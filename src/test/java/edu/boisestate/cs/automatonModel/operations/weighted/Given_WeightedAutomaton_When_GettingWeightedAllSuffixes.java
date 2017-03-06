@@ -10,7 +10,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmpty;
@@ -23,7 +22,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_WeightedAllSubstrings_For_UnboundedWeightedAutomata {
+public class Given_WeightedAutomaton_When_GettingWeightedAllSuffixes {
 
     @Parameter(value = 2)
     public WeightedAutomaton automaton;
@@ -34,25 +33,30 @@ public class Given_WeightedAllSubstrings_For_UnboundedWeightedAutomata {
     private WeightedAutomaton substringAutomaton;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.substring(?, ?) - Expected MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton>.allSuffixes() - Expected MC = {1}")
     public static Iterable<Object[]> data() {
 
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
+        int initialBoundLength = 3;
 
         // create automata
         WeightedAutomaton empty = makeEmpty();
         WeightedAutomaton emptyString = makeEmptyString();
         WeightedAutomaton concrete = getConcreteWeightedAutomaton(alphabet, "ABC");
-        WeightedAutomaton uniform = getUniformUnboundedWeightedAutomaton(alphabet);
-        WeightedAutomaton nonUniform = getNonUniformUnboundedWeightedAutomaton(alphabet);
+        WeightedAutomaton uniformBounded = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
+        WeightedAutomaton nonUniformBounded = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
+        WeightedAutomaton uniformUnbounded = getUniformUnboundedWeightedAutomaton(alphabet);
+        WeightedAutomaton nonUniformUnbounded = getNonUniformUnboundedWeightedAutomaton(alphabet);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty},
                 {"Empty String", 1, emptyString},
-                {"Concrete", 1, concrete},
-                {"Uniform", 85, uniform},
-                {"Non-uniform", 45, nonUniform},
+                {"Concrete", 4, concrete},
+                {"Uniform Bounded", 85, uniformBounded},
+                {"Non-uniform Bounded", 58, nonUniformBounded},
+                {"Uniform Unbounded", 85, uniformBounded},
+                {"Non-uniform Unbounded", 58, nonUniformBounded}
         });
     }
 
