@@ -3,7 +3,6 @@ package edu.boisestate.cs.automatonModel.operations;
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
-import edu.boisestate.cs.util.DotToGraph;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +15,7 @@ import java.util.Arrays;
 import static edu.boisestate.cs.automatonModel.operations
         .AutomatonOperationTestUtilities.getConcreteAutomaton;
 import static edu.boisestate.cs.automatonModel.operations
-        .AutomatonOperationTestUtilities.getNonUniformUnboundAutomaton;
+        .AutomatonOperationTestUtilities.getNonUniformBoundAutomaton;
 import static edu.boisestate.cs.automatonModel.operations
         .AutomatonOperationTestUtilities.getUniformBoundedAutomaton;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -53,8 +52,8 @@ public class Given_PreciseDeletion_For_BoundedAutomata {
         Automaton concrete = getConcreteAutomaton(alphabet, "ABC");
         Automaton uniform = getUniformBoundedAutomaton(alphabet,
                                                        initialBoundLength);
-        Automaton nonUniform = getNonUniformUnboundAutomaton(alphabet,
-                                                             initialBoundLength);
+        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet,
+                                                           initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty, 0, 0},

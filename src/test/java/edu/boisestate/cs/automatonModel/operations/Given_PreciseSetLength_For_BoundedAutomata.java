@@ -46,8 +46,8 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
         Automaton concrete = getConcreteAutomaton(alphabet, "ABC");
         Automaton uniform = getUniformBoundedAutomaton(alphabet,
                                                        initialBoundLength);
-        Automaton nonUniform = getNonUniformUnboundAutomaton(alphabet,
-                                                             initialBoundLength);
+        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet,
+                                                           initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty, 0},

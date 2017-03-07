@@ -14,7 +14,7 @@ class AutomatonOperationTestUtilities {
         return concrete;
     }
 
-    static Automaton getNonUniformUnboundAutomaton(Alphabet alphabet, int boundLength) {
+    static Automaton getNonUniformBoundAutomaton(Alphabet alphabet, int boundLength) {
         Automaton uniform = BasicAutomata.makeCharSet(alphabet.getCharSet()).repeat();
         Automaton intersect = uniform.concatenate(BasicAutomata.makeChar('A')).concatenate(uniform);
         Automaton nonUniform = uniform.intersection(intersect);

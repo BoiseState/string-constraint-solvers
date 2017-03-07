@@ -6,7 +6,6 @@ package edu.boisestate.cs.automatonModel.operations;
 import dk.brics.automaton.*;
 import dk.brics.string.charset.CharSet;
 import dk.brics.string.stringoperations.BinaryOperation;
-import dk.brics.string.stringoperations.UnaryOperation;
 
 import java.util.*;
 
@@ -31,9 +30,10 @@ public class PreciseInsert
 
     @Override
     public Automaton op(Automaton baseAutomaton, Automaton argAutomaton) {
-    	//eas per documentation:
-    	//StringIndexOutOfBoundsException - if start is negative, greater than length(), or greater than end.
-    	
+        //eas per documentation:
+        //StringIndexOutOfBoundsException - if start is negative, greater
+        // than length(), or greater than end.
+
         // if start is greater than end or automaton is empty
         if (this.offset < 0 || baseAutomaton.isEmpty()) {
             // return empty automaton (exception)
@@ -42,7 +42,7 @@ public class PreciseInsert
 
         // clone base automaton
         Automaton clone1 = baseAutomaton.clone();
-        
+
         //eas: even though start = end and per documentation the 
         //string will not be changes, the shorter strings that
         //the automaton represents will throw an exception, thus
@@ -89,56 +89,23 @@ public class PreciseInsert
 
                     // create a transition from the previous state copy
                     state.addTransition(new Transition(transition.getMin(),
-                                                      transition.getMax(),
-                                                      destination));
+                                                       transition.getMax(),
+                                                       destination));
                 }
             }
 
             // update states with new states
-            states = nextStates;;
-        }
-
-        // initialize end states map
-        Map<State, Set<State>> endStatesMap = new HashMap<>();
-        for (State state : states) {
-            Set<State> stateSet = new HashSet<>();
-            stateSet.add(stateMap.get(state));
-            endStatesMap.put(state, stateSet);
-        }
-
-        // handle empty end state sets
-        for (State state : states) {
-            if (endStatesMap.get(state).isEmpty()) {
-                // create new empty accepting state
-                State endState = new State();
-                endState.setAccept(true);
-
-                // create set for new accepting state
-                Set<State> endStates = new HashSet<>();
-                endStates.add(endState);
-
-                // set end states map from set
-                endStatesMap.put(state, endStates);
-            }
-        }
-
-        // clone second automaton
-        Automaton clone2 = argAutomaton.clone();
-
-        // get final states from arg clone and set as not accepting
-        Set<State> argFinal = clone2.getAcceptStates();
-        for (State state: argFinal) {
-            state.setAccept(false);
+            states = nextStates;
         }
 
         // add epsilon transitions
         List<StatePair> epsilons = new ArrayList<>();
         for (State state : states) {
-            for (State endState: endStatesMap.get(state)){
-                epsilons.add(new StatePair(state, clone2.getInitialState()));
-                for(State argAccept: argFinal) {
-                    epsilons.add(new StatePair(argAccept, endState));
-                }
+            Automaton argClone = argAutomaton.clone();
+            epsilons.add(new StatePair(state, argClone.getInitialState()));
+            for (State argAccept : argClone.getAcceptStates()) {
+                argAccept.setAccept(false);
+                epsilons.add(new StatePair(argAccept, stateMap.get(state)));
             }
         }
 
