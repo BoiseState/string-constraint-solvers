@@ -33,12 +33,12 @@ package edu.boisestate.cs.automaton;
  * Pair of states.
  * @author Anders M&oslash;ller &lt;<a href="mailto:amoeller@cs.au.dk">amoeller@cs.au.dk</a>&gt;
  */
-public class StatePair {
+public class WeightedStatePair {
 	WeightedState s;
 	WeightedState s1;
 	WeightedState s2;
 	
-	StatePair(WeightedState s, WeightedState s1, WeightedState s2) {
+	WeightedStatePair(WeightedState s, WeightedState s1, WeightedState s2) {
 		this.s = s;
 		this.s1 = s1;
 		this.s2 = s2;
@@ -49,7 +49,7 @@ public class StatePair {
 	 * @param s1 first state
 	 * @param s2 second state
 	 */
-	public StatePair(WeightedState s1, WeightedState s2) {
+	public WeightedStatePair(WeightedState s1, WeightedState s2) {
 		this.s1 = s1;
 		this.s2 = s2;
 	}
@@ -77,8 +77,8 @@ public class StatePair {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof StatePair) {
-			StatePair p = (StatePair)obj;
+		if (obj instanceof WeightedStatePair) {
+			WeightedStatePair p = (WeightedStatePair)obj;
 			return p.s1 == s1 && p.s2 == s2;
 		}
 		else

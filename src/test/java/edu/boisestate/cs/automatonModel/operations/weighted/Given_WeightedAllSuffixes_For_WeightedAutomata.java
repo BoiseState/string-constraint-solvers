@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_WeightedAutomaton_When_GettingWeightedAllPrefixes {
+public class Given_WeightedAllSuffixes_For_WeightedAutomata {
 
     @Parameter(value = 2)
     public WeightedAutomaton automaton;
@@ -33,7 +33,7 @@ public class Given_WeightedAutomaton_When_GettingWeightedAllPrefixes {
     private WeightedAutomaton substringAutomaton;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.allPrefixes() - Expected MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton>.allSuffixes() - Expected MC = {1}")
     public static Iterable<Object[]> data() {
 
         // initialize alphabet and initial bound length
@@ -63,7 +63,7 @@ public class Given_WeightedAutomaton_When_GettingWeightedAllPrefixes {
     @Before
     public void setup() {
         // *** arrange ***
-        WeightedAllSubstrings substring = new WeightedAllSubstrings();
+        WeightedAllSuffixes substring = new WeightedAllSuffixes();
 
         // *** act ***
         substringAutomaton = substring.op(automaton);

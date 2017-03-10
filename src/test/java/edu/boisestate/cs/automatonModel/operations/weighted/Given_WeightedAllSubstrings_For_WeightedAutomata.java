@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_WeightedAutomaton_When_GettingWeightedAllSubstrings {
+public class Given_WeightedAllSubstrings_For_WeightedAutomata {
 
     @Parameter(value = 2)
     public WeightedAutomaton automaton;

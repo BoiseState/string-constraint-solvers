@@ -412,10 +412,10 @@ final public class BasicWeightedAutomata {
         Collection<WeightedState> initials = new ArrayList<WeightedState>();
         a.initial = between(x, y, 0, initials, digits <= 0);
         if (digits <= 0) {
-            ArrayList<StatePair> pairs = new ArrayList<StatePair>();
+            ArrayList<WeightedStatePair> pairs = new ArrayList<WeightedStatePair>();
             for (WeightedState p : initials) {
                 if (a.initial != p) {
-                    pairs.add(new StatePair(a.initial, p));
+                    pairs.add(new WeightedStatePair(a.initial, p));
                 }
             }
             a.addEpsilons(pairs);

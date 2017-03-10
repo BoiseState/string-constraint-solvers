@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_WeightedAutomatonModel_When_PreciselyDeleted {
+public class Given_WeightedAutomatonModel_When_Deleted {
 
     @Parameter // first data value (0) is default
     public String description;

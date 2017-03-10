@@ -32,56 +32,6 @@ public class WeightedAutomatonModel extends AutomatonModel {
         this.automaton = automaton;
     }
 
-    private static WeightedAutomaton performUnaryOperation(WeightedAutomaton automaton,
-                                                           UnaryWeightedOperation operation,
-                                                           Alphabet alphabet) {
-        // use operation
-        WeightedAutomaton result = operation.op(automaton);
-
-        // bound resulting automaton to alphabet
-        String charSet = alphabet.getCharSet();
-        WeightedAutomaton anyChar = BasicWeightedAutomata.makeCharSet(charSet).repeat();
-        result = result.intersection(anyChar);
-        result.minimize();
-
-        // return resulting automaton
-        return result;
-    }
-
-    @Override
-    public String getAcceptedStringExample() {
-        return null;
-    }
-
-    @Override
-    public Set<String> getFiniteStrings() {
-        return null;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public boolean isSingleton() {
-        return false;
-    }
-
-    private void ensureWeightedModel(AutomatonModel arg) {
-        // check if automaton model is bounded
-        if (!(arg instanceof WeightedAutomatonModel)) {
-
-            throw new UnsupportedOperationException(
-                    "The WeightedAutomatonModel only supports binary " +
-                    "operations with other WeightedAutomatonModel.");
-        }
-    }
-
-    private static WeightedAutomaton getAutomatonFromWeightedModel(AutomatonModel model) {
-        return ((WeightedAutomatonModel)model).automaton;
-    }
-
     @Override
     public AutomatonModel assertContainedInOther(AutomatonModel containingModel) {
         ensureWeightedModel(containingModel);
@@ -102,6 +52,36 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
         // return new model from resulting automaton
         return new WeightedAutomatonModel(result, this.alphabet, this.boundLength);
+    }
+
+    private static WeightedAutomaton performUnaryOperation(WeightedAutomaton automaton,
+                                                           UnaryWeightedOperation operation,
+                                                           Alphabet alphabet) {
+        // use operation
+        WeightedAutomaton result = operation.op(automaton);
+
+        // bound resulting automaton to alphabet
+        String charSet = alphabet.getCharSet();
+        WeightedAutomaton anyChar = BasicWeightedAutomata.makeCharSet(charSet).repeat();
+        result = result.intersection(anyChar);
+        result.minimize();
+
+        // return resulting automaton
+        return result;
+    }
+
+    private void ensureWeightedModel(AutomatonModel arg) {
+        // check if automaton model is bounded
+        if (!(arg instanceof WeightedAutomatonModel)) {
+
+            throw new UnsupportedOperationException(
+                    "The WeightedAutomatonModel only supports binary " +
+                    "operations with other WeightedAutomatonModel.");
+        }
+    }
+
+    private static WeightedAutomaton getAutomatonFromWeightedModel(AutomatonModel model) {
+        return ((WeightedAutomatonModel)model).automaton;
     }
 
     @Override
@@ -223,6 +203,11 @@ public class WeightedAutomatonModel extends AutomatonModel {
     }
 
     @Override
+    public AutomatonModel clone() {
+        return null;
+    }
+
+    @Override
     public AutomatonModel concatenate(AutomatonModel arg) {
         return null;
     }
@@ -243,13 +228,33 @@ public class WeightedAutomatonModel extends AutomatonModel {
     }
 
     @Override
-    public AutomatonModel intersect(AutomatonModel arg) {
+    public String getAcceptedStringExample() {
+        return null;
+    }
+
+    @Override
+    public Set<String> getFiniteStrings() {
         return null;
     }
 
     @Override
     public AutomatonModel insert(int offset, AutomatonModel argModel) {
         return null;
+    }
+
+    @Override
+    public AutomatonModel intersect(AutomatonModel arg) {
+        return null;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return false;
     }
 
     @Override
@@ -288,17 +293,17 @@ public class WeightedAutomatonModel extends AutomatonModel {
     }
 
     @Override
-    public AutomatonModel substring(int start, int end) {
-        return null;
-    }
-
-    @Override
     public AutomatonModel setCharAt(int offset, AutomatonModel argModel) {
         return null;
     }
 
     @Override
     public AutomatonModel setLength(int length) {
+        return null;
+    }
+
+    @Override
+    public AutomatonModel substring(int start, int end) {
         return null;
     }
 
@@ -319,11 +324,6 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
     @Override
     public AutomatonModel trim() {
-        return null;
-    }
-
-    @Override
-    public AutomatonModel clone() {
         return null;
     }
 }

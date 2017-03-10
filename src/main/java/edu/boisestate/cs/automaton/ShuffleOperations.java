@@ -213,12 +213,12 @@ final public class ShuffleOperations {
         WeightedTransition[][] transitions2 =
                 WeightedAutomaton.getSortedTransitions(a2.getStates());
         WeightedAutomaton c = new WeightedAutomaton();
-        LinkedList<StatePair> worklist = new LinkedList<StatePair>();
-        HashMap<StatePair, StatePair> newstates =
-                new HashMap<StatePair, StatePair>();
+        LinkedList<WeightedStatePair> worklist = new LinkedList<WeightedStatePair>();
+        HashMap<WeightedStatePair, WeightedStatePair> newstates =
+                new HashMap<WeightedStatePair, WeightedStatePair>();
         WeightedState s = new WeightedState();
         c.initial = s;
-        StatePair p = new StatePair(s, a1.initial, a2.initial);
+        WeightedStatePair p = new WeightedStatePair(s, a1.initial, a2.initial);
         worklist.add(p);
         newstates.put(p, p);
         while (worklist.size() > 0) {
@@ -226,8 +226,8 @@ final public class ShuffleOperations {
             p.s.setAccept(p.s1.isAccept() && p.s2.isAccept());
             WeightedTransition[] t1 = transitions1[p.s1.getNumber()];
             for (int n1 = 0; n1 < t1.length; n1++) {
-                StatePair q = new StatePair(t1[n1].getDest(), p.s2);
-                StatePair r = newstates.get(q);
+                WeightedStatePair q = new WeightedStatePair(t1[n1].getDest(), p.s2);
+                WeightedStatePair r = newstates.get(q);
                 if (r == null) {
                     q.s = new WeightedState();
                     worklist.add(q);
@@ -241,8 +241,8 @@ final public class ShuffleOperations {
             }
             WeightedTransition[] t2 = transitions2[p.s2.getNumber()];
             for (int n2 = 0; n2 < t2.length; n2++) {
-                StatePair q = new StatePair(p.s1, t2[n2].getDest());
-                StatePair r = newstates.get(q);
+                WeightedStatePair q = new WeightedStatePair(p.s1, t2[n2].getDest());
+                WeightedStatePair r = newstates.get(q);
                 if (r == null) {
                     q.s = new WeightedState();
                     worklist.add(q);

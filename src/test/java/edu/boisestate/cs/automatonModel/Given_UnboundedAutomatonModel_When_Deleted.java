@@ -13,15 +13,13 @@ import org.junit.runners.Parameterized.Parameters;
 import java.util.Arrays;
 
 import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities.*;
-import static edu.boisestate.cs.automatonModel.AutomatonTestUtilities
-        .getNonUniformBoundedModel;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_BoundedAutomatonModel_When_PreciselyDeleted {
+public class Given_UnboundedAutomatonModel_When_Deleted {
 
     @Parameter // first data value (0) is default
     public String description;
@@ -30,7 +28,7 @@ public class Given_BoundedAutomatonModel_When_PreciselyDeleted {
     @Parameter(value = 1)
     public int expectedModelCount;
     @Parameter(value = 2)
-    public BoundedAutomatonModel model;
+    public UnboundedAutomatonModel model;
     @Parameter(value = 3)
     public int start;
     private AutomatonModel deleteModel;
@@ -44,11 +42,11 @@ public class Given_BoundedAutomatonModel_When_PreciselyDeleted {
         int initialBoundLength = 3;
 
         // create baseAutomaton models
-        BoundedAutomatonModel emptyModel = getEmptyBoundedModel(alphabet);
-        BoundedAutomatonModel emptyStringModel = getEmptyStringBoundedModel(alphabet);
-        BoundedAutomatonModel concreteModel = getConcreteBoundedModel(alphabet,"ABC");
-        BoundedAutomatonModel uniformModel = getUniformBoundedModel(alphabet, initialBoundLength);
-        BoundedAutomatonModel nonUniformModel = getNonUniformBoundedModel(alphabet, initialBoundLength);
+        UnboundedAutomatonModel emptyModel = getEmptyUnboundedModel(alphabet);
+        UnboundedAutomatonModel emptyStringModel = getEmptyStringUnboundedModel(alphabet);
+        UnboundedAutomatonModel concreteModel = getConcreteUnboundedModel(alphabet, "ABC");
+        UnboundedAutomatonModel uniformModel = getUniformUnboundedModel(alphabet, initialBoundLength);
+        UnboundedAutomatonModel nonUniformModel = getNonUniformUnboundedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, emptyModel, 0, 0},
@@ -100,8 +98,8 @@ public class Given_BoundedAutomatonModel_When_PreciselyDeleted {
                 {"Non-uniform", 4, nonUniformModel, 1, 3},
                 {"Non-uniform", 44, nonUniformModel, 2, 2},
                 {"Non-uniform", 16, nonUniformModel, 2, 3},
-                {"Non-uniform", 37, nonUniformModel, 3, 3}
-        });
+                {"Non-uniform", 37, nonUniformModel, 3, 3},
+                });
     }
 
     @Before

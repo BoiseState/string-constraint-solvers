@@ -45,16 +45,16 @@ final public class BasicWeightedOperations {
      * epsilon transitions.
      *
      * @param pairs
-     *         collection of {@link StatePair} objects representing pairs of
+     *         collection of {@link WeightedStatePair} objects representing pairs of
      *         source/destination states where epsilon transitions should be
      *         added
      */
     public static void addEpsilons(WeightedAutomaton a,
-                                   Collection<StatePair> pairs) {
+                                   Collection<WeightedStatePair> pairs) {
         a.expandSingleton();
         HashMap<WeightedState, HashSet<WeightedState>> forward = new HashMap <WeightedState, HashSet<WeightedState>>();
         HashMap<WeightedState, HashSet<WeightedState>> back = new HashMap<WeightedState, HashSet<WeightedState>>();
-        for (StatePair p : pairs) {
+        for (WeightedStatePair p : pairs) {
             HashSet<WeightedState> to = forward.get(p.s1);
             if (to == null) {
                 to = new HashSet<WeightedState>();
@@ -69,16 +69,16 @@ final public class BasicWeightedOperations {
             from.add(p.s1);
         }
         // calculate epsilon closure
-        LinkedList<StatePair> worklist = new LinkedList<StatePair>(pairs);
-        HashSet<StatePair> workset = new HashSet<StatePair>(pairs);
+        LinkedList<WeightedStatePair> worklist = new LinkedList<WeightedStatePair>(pairs);
+        HashSet<WeightedStatePair> workset = new HashSet<WeightedStatePair>(pairs);
         while (!worklist.isEmpty()) {
-            StatePair p = worklist.removeFirst();
+            WeightedStatePair p = worklist.removeFirst();
             workset.remove(p);
             HashSet<WeightedState> to = forward.get(p.s2);
             HashSet<WeightedState> from = back.get(p.s1);
             if (to != null) {
                 for (WeightedState s : to) {
-                    StatePair pp = new StatePair(p.s1, s);
+                    WeightedStatePair pp = new WeightedStatePair(p.s1, s);
                     if (!pairs.contains(pp)) {
                         pairs.add(pp);
                         forward.get(p.s1).add(s);
@@ -87,7 +87,8 @@ final public class BasicWeightedOperations {
                         workset.add(pp);
                         if (from != null) {
                             for (WeightedState q : from) {
-                                StatePair qq = new StatePair(q, p.s1);
+                                WeightedStatePair
+                                        qq = new WeightedStatePair(q, p.s1);
                                 if (!workset.contains(qq)) {
                                     worklist.add(qq);
                                     workset.add(qq);
@@ -99,7 +100,7 @@ final public class BasicWeightedOperations {
             }
         }
         // add transitions
-        for (StatePair p : pairs) {
+        for (WeightedStatePair p : pairs) {
             p.s1.addEpsilon(p.s2);
         }
         a.deterministic = false;
@@ -357,6 +358,9 @@ final public class BasicWeightedOperations {
      */
     static public WeightedAutomaton intersection(WeightedAutomaton a1,
                                                  WeightedAutomaton a2) {
+        if (a1.isEmpty() || a2.isEmpty()) {
+            return BasicWeightedAutomata.makeEmpty();
+        }
         if (a1.isSingleton()) {
             if (a2.run(a1.singleton)) {
                 return a1.cloneIfRequired();
@@ -379,10 +383,10 @@ final public class BasicWeightedOperations {
         WeightedTransition[][] transitions2 =
                 WeightedAutomaton.getSortedTransitions(a2.getStates());
         WeightedAutomaton c = new WeightedAutomaton();
-        LinkedList<StatePair> worklist = new LinkedList<StatePair>();
-        HashMap<StatePair, StatePair> newstates =
-                new HashMap<StatePair, StatePair>();
-        StatePair p = new StatePair(c.initial, a1.initial, a2.initial);
+        LinkedList<WeightedStatePair> worklist = new LinkedList<WeightedStatePair>();
+        HashMap<WeightedStatePair, WeightedStatePair> newstates =
+                new HashMap<WeightedStatePair, WeightedStatePair>();
+        WeightedStatePair p = new WeightedStatePair(c.initial, a1.initial, a2.initial);
         worklist.add(p);
         newstates.put(p, p);
         while (worklist.size() > 0) {
@@ -398,9 +402,9 @@ final public class BasicWeightedOperations {
                      n2 < t2.length && t1[n1].getMax() >= t2[n2].getMin();
                      n2++) {
                     if (t2[n2].getMax() >= t1[n1].getMin()) {
-                        StatePair q = new StatePair(t1[n1].getDest(),
-                                                    t2[n2].getDest());
-                        StatePair r = newstates.get(q);
+                        WeightedStatePair q = new WeightedStatePair(t1[n1].getDest(),
+                                                                    t2[n2].getDest());
+                        WeightedStatePair r = newstates.get(q);
                         if (r == null) {
                             q.s = new WeightedState();
                             worklist.add(q);
@@ -686,9 +690,9 @@ final public class BasicWeightedOperations {
                 WeightedAutomaton.getSortedTransitions(a1.getStates());
         WeightedTransition[][] transitions2 =
                 WeightedAutomaton.getSortedTransitions(a2.getStates());
-        LinkedList<StatePair> worklist = new LinkedList<StatePair>();
-        HashSet<StatePair> visited = new HashSet<StatePair>();
-        StatePair p = new StatePair(a1.initial, a2.initial);
+        LinkedList<WeightedStatePair> worklist = new LinkedList<WeightedStatePair>();
+        HashSet<WeightedStatePair> visited = new HashSet<WeightedStatePair>();
+        WeightedStatePair p = new WeightedStatePair(a1.initial, a2.initial);
         worklist.add(p);
         visited.add(p);
         while (worklist.size() > 0) {
@@ -715,8 +719,8 @@ final public class BasicWeightedOperations {
                         min1 = Character.MAX_VALUE;
                         max1 = Character.MIN_VALUE;
                     }
-                    StatePair q =
-                            new StatePair(t1[n1].getDest(), t2[n2].getDest());
+                    WeightedStatePair q =
+                            new WeightedStatePair(t1[n1].getDest(), t2[n2].getDest());
                     if (!visited.contains(q)) {
                         worklist.add(q);
                         visited.add(q);

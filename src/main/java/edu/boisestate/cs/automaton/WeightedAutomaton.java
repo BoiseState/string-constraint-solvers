@@ -123,6 +123,11 @@ public class WeightedAutomaton
     String singleton;
 
     /**
+     * Number of empty strings modeled by automaton
+     */
+    int emptyStrings;
+
+    /**
      * Returns the set of reachable accept states.
      *
      * @return set of {@link WeightedState} objects
@@ -735,7 +740,7 @@ public class WeightedAutomaton
     /**
      * See {@link BasicWeightedOperations#addEpsilons(WeightedAutomaton, Collection)}.
      */
-    public void addEpsilons(Collection<StatePair> pairs) {
+    public void addEpsilons(Collection<WeightedStatePair> pairs) {
         BasicWeightedOperations.addEpsilons(this, pairs);
     }
 

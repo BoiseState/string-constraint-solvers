@@ -415,7 +415,7 @@ final public class SpecialWeightedOperations {
             }
             return a.cloneIfRequired();
         } else {
-            HashSet<StatePair> epsilons = new HashSet<StatePair>();
+            HashSet<WeightedStatePair> epsilons = new HashSet<WeightedStatePair>();
             a = a.cloneExpandedIfRequired();
             for (WeightedState s : a.getStates()) {
                 HashSet<WeightedTransition> new_transitions =
@@ -478,7 +478,7 @@ final public class SpecialWeightedOperations {
                         addepsilon = true;
                     }
                     if (addepsilon) {
-                        epsilons.add(new StatePair(s, t.getDest()));
+                        epsilons.add(new WeightedStatePair(s, t.getDest()));
                     }
                 }
                 s.setTransitions(new_transitions);
@@ -658,7 +658,7 @@ final public class SpecialWeightedOperations {
     public static WeightedAutomaton subst(WeightedAutomaton a, char c, String
             s) {
         a = a.cloneExpandedIfRequired();
-        Set<StatePair> epsilons = new HashSet<StatePair>();
+        Set<WeightedStatePair> epsilons = new HashSet<WeightedStatePair>();
         for (WeightedState p : a.getStates()) {
             Set<WeightedTransition> st = p.getTransitions();
             p.resetTransitions();
@@ -679,7 +679,7 @@ final public class SpecialWeightedOperations {
                                                      t.getDest()));
                     }
                     if (s.length() == 0) {
-                        epsilons.add(new StatePair(p, t.getDest()));
+                        epsilons.add(new WeightedStatePair(p, t.getDest()));
                     } else {
                         WeightedState q = p;
                         for (int i = 0; i < s.length(); i++) {
