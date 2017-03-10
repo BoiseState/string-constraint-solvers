@@ -124,10 +124,10 @@ public class Given_UnboundedAutomatonModel_When_Inserting {
                 {"Uniform", "Uniform", 5460, uniformModel, 1, uniformModel},
                 {"Uniform", "Uniform", 5456, uniformModel, 2, uniformModel},
                 {"Uniform", "Uniform", 5440, uniformModel, 3, uniformModel},
-                {"Uniform", "Non-uniform", 3825, uniformModel, 0, nonUniformModel},
-                {"Uniform", "Non-uniform", 3824, uniformModel, 1, nonUniformModel},
-                {"Uniform", "Non-uniform", 3820, uniformModel, 2, nonUniformModel},
-                {"Uniform", "Non-uniform", 3804, uniformModel, 3, nonUniformModel},
+                {"Uniform", "Non-uniform", 4368, uniformModel, 0, nonUniformModel},
+                {"Uniform", "Non-uniform", 4004, uniformModel, 1, nonUniformModel},
+                {"Uniform", "Non-uniform", 3520, uniformModel, 2, nonUniformModel},
+                {"Uniform", "Non-uniform", 2880, uniformModel, 3, nonUniformModel},
                 {"Non-uniform", "Empty", 0, nonUniformModel, 0, emptyModel},
                 {"Non-uniform", "Empty", 0, nonUniformModel, 1, emptyModel},
                 {"Non-uniform", "Empty", 0, nonUniformModel, 2, emptyModel},
@@ -140,14 +140,14 @@ public class Given_UnboundedAutomatonModel_When_Inserting {
                 {"Non-uniform", "Concrete", 45, nonUniformModel, 1, concreteModel},
                 {"Non-uniform", "Concrete", 44, nonUniformModel, 2, concreteModel},
                 {"Non-uniform", "Concrete", 37, nonUniformModel, 3, concreteModel},
-                {"Non-uniform", "Uniform", 3825, nonUniformModel, 0, uniformModel},
-                {"Non-uniform", "Uniform", 3825, nonUniformModel, 1, uniformModel},
-                {"Non-uniform", "Uniform", 3825, nonUniformModel, 2, uniformModel},
-                {"Non-uniform", "Uniform", 3825, nonUniformModel, 3, uniformModel},
-                {"Non-uniform", "Non-uniform", 2025, nonUniformModel, 0, nonUniformModel},
-                {"Non-uniform", "Non-uniform", 2025, nonUniformModel, 1, nonUniformModel},
-                {"Non-uniform", "Non-uniform", 2025, nonUniformModel, 2, nonUniformModel},
-                {"Non-uniform", "Non-uniform", 2025, nonUniformModel, 3, nonUniformModel}
+                {"Non-uniform", "Uniform", 4368, nonUniformModel, 0, uniformModel},
+                {"Non-uniform", "Uniform", 4368, nonUniformModel, 1, uniformModel},
+                {"Non-uniform", "Uniform", 4367, nonUniformModel, 2, uniformModel},
+                {"Non-uniform", "Uniform", 4360, nonUniformModel, 3, uniformModel},
+                {"Non-uniform", "Non-uniform", 2363, nonUniformModel, 0, nonUniformModel},
+                {"Non-uniform", "Non-uniform", 2363, nonUniformModel, 1, nonUniformModel},
+                {"Non-uniform", "Non-uniform", 2242, nonUniformModel, 2, nonUniformModel},
+                {"Non-uniform", "Non-uniform", 1962, nonUniformModel, 3, nonUniformModel}
         });
     }
 

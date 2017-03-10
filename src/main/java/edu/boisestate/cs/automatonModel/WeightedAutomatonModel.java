@@ -106,7 +106,21 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
     @Override
     public AutomatonModel assertContainsOther(AutomatonModel containedModel) {
-        return null;
+        ensureWeightedModel(containedModel);
+
+        // create any string automata
+        WeightedAutomaton anyString1 = BasicWeightedAutomata.makeCharSet(this.alphabet.getCharSet()).repeat();
+        WeightedAutomaton anyString2 = BasicWeightedAutomata.makeCharSet(this.alphabet.getCharSet()).repeat();
+
+        // concatenate with contained automaton
+        WeightedAutomaton contained = getAutomatonFromWeightedModel(containedModel);
+        WeightedAutomaton x = anyString1.concatenate(contained).concatenate(anyString2);
+
+        // get resulting automaton
+        WeightedAutomaton result = this.automaton.intersection(x);
+
+        // return new model from resulting automaton
+        return new WeightedAutomatonModel(result, this.alphabet, this.boundLength);
     }
 
     @Override
@@ -121,7 +135,20 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
     @Override
     public AutomatonModel assertEndsWith(AutomatonModel endingModel) {
-        return null;
+        ensureWeightedModel(endingModel);
+
+        // create any string automata
+        WeightedAutomaton anyString = BasicWeightedAutomata.makeCharSet(this.alphabet.getCharSet()).repeat();
+
+        // concatenate with contained automaton
+        WeightedAutomaton end = getAutomatonFromWeightedModel(endingModel);
+        WeightedAutomaton x = anyString.concatenate(end);
+
+        // get resulting automaton
+        WeightedAutomaton result = this.automaton.intersection(x);
+
+        // return new model from resulting automaton
+        return new WeightedAutomatonModel(result, this.alphabet, this.boundLength);
     }
 
     @Override

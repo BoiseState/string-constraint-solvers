@@ -138,19 +138,10 @@ public class BoundedAutomatonModel
 
         // get bounded resulting automaton
         Automaton result =  this.automaton.intersection(x);
-        result = boundAutomaton(result, boundLength, this.alphabet);
         result.minimize();
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
-    }
-
-    private static Automaton boundAutomaton(Automaton automaton, int length, Alphabet alphabet) {
-        // create bounding automaton
-        Automaton bounding = BasicAutomata.makeCharSet(alphabet.getCharSet()).repeat(0, length);
-
-        // return bounded automaton
-        return automaton.intersection(bounding);
     }
 
     @Override

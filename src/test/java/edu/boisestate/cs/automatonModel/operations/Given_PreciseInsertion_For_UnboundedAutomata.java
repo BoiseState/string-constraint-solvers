@@ -131,8 +131,8 @@ public class Given_PreciseInsertion_For_UnboundedAutomata {
                 {"Uniform", "Uniform", 5460, uniform, 1, uniform, 3, 3},
                 {"Uniform", "Uniform", 5456, uniform, 2, uniform, 3, 3},
                 {"Uniform", "Uniform", 5440, uniform, 3, uniform, 3, 3},
-                {"Uniform", "Non-Uniform", 3153, uniform, 0, nonUniform, 3, 3},
-                {"Uniform", "Non-Uniform", 3140, uniform, 1, nonUniform, 3, 3},
+                {"Uniform", "Non-Uniform", 4368, uniform, 0, nonUniform, 3, 3},
+                {"Uniform", "Non-Uniform", 4004, uniform, 1, nonUniform, 3, 3},
                 {"Uniform", "Non-Uniform", 3520, uniform, 2, nonUniform, 3, 3},
                 {"Uniform", "Non-Uniform", 2880, uniform, 3, nonUniform, 3, 3},
                 {"Non-Uniform", "Empty", 0, nonUniform, 0, empty, 3, 0},
@@ -147,14 +147,14 @@ public class Given_PreciseInsertion_For_UnboundedAutomata {
                 {"Non-Uniform", "Concrete", 45, nonUniform, 1, concrete, 3, 3},
                 {"Non-Uniform", "Concrete", 44, nonUniform, 2, concrete, 3, 3},
                 {"Non-Uniform", "Concrete", 37, nonUniform, 3, concrete, 3, 3},
-                {"Non-Uniform", "Uniform", 3153, nonUniform, 0, uniform, 3, 3},
-                {"Non-Uniform", "Uniform", 3153, nonUniform, 1, uniform, 3, 3},
-                {"Non-Uniform", "Uniform", 3152, nonUniform, 2, uniform, 3, 3},
-                {"Non-Uniform", "Uniform", 3145, nonUniform, 3, uniform, 3, 3},
-                {"Non-Uniform", "Non-Uniform", 1769, nonUniform, 0, nonUniform, 3, 3},
-                {"Non-Uniform", "Non-Uniform", 1769, nonUniform, 1, nonUniform, 3, 3},
-                {"Non-Uniform", "Non-Uniform", 1756, nonUniform, 2, nonUniform, 3, 3},
-                {"Non-Uniform", "Non-Uniform", 1665, nonUniform, 3, nonUniform, 3, 3}
+                {"Non-Uniform", "Uniform", 4368, nonUniform, 0, uniform, 3, 3},
+                {"Non-Uniform", "Uniform", 4368, nonUniform, 1, uniform, 3, 3},
+                {"Non-Uniform", "Uniform", 4367, nonUniform, 2, uniform, 3, 3},
+                {"Non-Uniform", "Uniform", 4360, nonUniform, 3, uniform, 3, 3},
+                {"Non-Uniform", "Non-Uniform", 2363, nonUniform, 0, nonUniform, 3, 3},
+                {"Non-Uniform", "Non-Uniform", 2363, nonUniform, 1, nonUniform, 3, 3},
+                {"Non-Uniform", "Non-Uniform", 2242, nonUniform, 2, nonUniform, 3, 3},
+                {"Non-Uniform", "Non-Uniform", 1962, nonUniform, 3, nonUniform, 3, 3}
         });
     }
 
