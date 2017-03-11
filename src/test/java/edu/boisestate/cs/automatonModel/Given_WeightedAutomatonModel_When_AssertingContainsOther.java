@@ -59,18 +59,18 @@ public class Given_WeightedAutomatonModel_When_AssertingContainsOther {
                 {"Concrete", "Empty", 0, concreteModel, emptyModel},
                 {"Concrete", "Empty String", 1, concreteModel, emptyStringModel},
                 {"Concrete", "Concrete", 1, concreteModel, concreteModel},
-                {"Concrete", "Uniform", 7, concreteModel, uniformModel},
-                {"Concrete", "Non-uniform", 3, concreteModel, nonUniformModel},
+                {"Concrete", "Uniform", 1, concreteModel, uniformModel},
+                {"Concrete", "Non-uniform", 1, concreteModel, nonUniformModel},
                 {"Uniform", "Empty", 0, uniformModel, emptyModel},
                 {"Uniform", "Empty String", 85, uniformModel, emptyStringModel},
                 {"Uniform", "Concrete", 1, uniformModel, concreteModel},
-                {"Uniform", "Uniform", 469, uniformModel, uniformModel},
-                {"Uniform", "Non-uniform", 144, uniformModel, nonUniformModel},
+                {"Uniform", "Uniform", 85, uniformModel, uniformModel},
+                {"Uniform", "Non-uniform", 45, uniformModel, nonUniformModel},
                 {"Non-uniform", "Empty", 0, nonUniformModel, emptyModel},
                 {"Non-uniform", "Empty String", 45, nonUniformModel, emptyStringModel},
                 {"Non-uniform", "Concrete", 1, nonUniformModel, concreteModel},
-                {"Non-uniform", "Uniform", 267, nonUniformModel, uniformModel},
-                {"Non-uniform", "Non-uniform", 144, nonUniformModel, nonUniformModel}
+                {"Non-uniform", "Uniform", 45, nonUniformModel, uniformModel},
+                {"Non-uniform", "Non-uniform", 45, nonUniformModel, nonUniformModel}
         });
     }
 

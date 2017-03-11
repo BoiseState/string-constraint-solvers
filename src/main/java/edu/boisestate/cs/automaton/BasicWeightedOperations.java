@@ -620,11 +620,11 @@ final public class BasicWeightedOperations {
         if (a.deterministic) {
             WeightedState p = a.initial;
             for (int i = 0; i < s.length(); i++) {
-                WeightedState q = p.step(s.charAt(i)).getState();
+                StateWeight q = p.step(s.charAt(i));
                 if (q == null) {
                     return false;
                 }
-                p = q;
+                p = q.getState();
             }
             return p.isAccept();
         } else {

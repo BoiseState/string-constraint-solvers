@@ -56,6 +56,10 @@ public class PreciseWeightedDelete
         Map<WeightedState, WeightedState> stateMap = new HashMap<>();
         stateMap.put(initial, clone.getInitialState());
 
+        // initialize state map
+        Map<WeightedState, Set<WeightedState>> incomingStateMap = new HashMap<>();
+        incomingStateMap.put(initial, new HashSet<WeightedState>());
+
         // create copy of automaton before start
         for (int i = 0; i < this.start; i++) {
             // if automaton not long enough

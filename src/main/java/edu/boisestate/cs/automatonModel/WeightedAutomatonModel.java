@@ -3,6 +3,9 @@ package edu.boisestate.cs.automatonModel;
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automaton.BasicWeightedAutomata;
 import edu.boisestate.cs.automaton.WeightedAutomaton;
+import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
+import edu.boisestate.cs.automatonModel.operations.weighted
+        .PreciseWeightedDelete;
 import edu.boisestate.cs.automatonModel.operations.weighted.UnaryWeightedOperation;
 
 
@@ -98,6 +101,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
         // get resulting automaton
         WeightedAutomaton result = this.automaton.intersection(x);
+        result.minimize();
 
         // return new model from resulting automaton
         return new WeightedAutomatonModel(result, this.alphabet, this.boundLength);
@@ -219,7 +223,22 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
     @Override
     public AutomatonModel delete(int start, int end) {
-        return null;
+        // perform operation
+        WeightedAutomaton result = performUnaryOperation(automaton, new PreciseWeightedDelete(start, end), this.alphabet);
+
+        // determine new bound length
+        int newBoundLength;
+        if (this.boundLength < start) {
+            newBoundLength = 0;
+        } else if (this.boundLength < end) {
+            newBoundLength = start;
+        } else {
+            int charsDeleted = end - start;
+            newBoundLength = this.boundLength - charsDeleted;
+        }
+
+        // return new model from resulting automaton
+        return new WeightedAutomatonModel(result, this.alphabet, newBoundLength);
     }
 
     @Override
@@ -259,7 +278,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
     @Override
     public BigInteger modelCount() {
-        return null;
+        return StringModelCounter.ModelCount(automaton);
     }
 
     @Override

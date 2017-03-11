@@ -24,7 +24,7 @@ public class StringModelCounter {
 
         // account for empty string
         if (automaton.isEmptyString()) {
-            return initialModelCount;
+            return initialModelCount.add(BigInteger.valueOf(automaton.getNumEmptyStrings()));
         }
 
         // get model count
@@ -36,7 +36,7 @@ public class StringModelCounter {
         // account for empty string
         if (automaton.getInitialState().isAccept()) {
 
-            modelCount = modelCount.add(new BigInteger("1"));
+            modelCount = modelCount.add(BigInteger.valueOf(automaton.getNumEmptyStrings()));
         }
         return modelCount;
     }

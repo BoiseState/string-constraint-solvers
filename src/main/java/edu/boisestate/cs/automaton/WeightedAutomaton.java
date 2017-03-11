@@ -122,10 +122,18 @@ public class WeightedAutomaton
      */
     String singleton;
 
+    public int getNumEmptyStrings() {
+        return numEmptyStrings;
+    }
+
+    public void setNumEmptyStrings(int numEmptyStrings) {
+        this.numEmptyStrings = numEmptyStrings;
+    }
+
     /**
      * Number of empty strings modeled by automaton
      */
-    int emptyStrings;
+    int numEmptyStrings;
 
     /**
      * Returns the set of reachable accept states.
@@ -200,6 +208,8 @@ public class WeightedAutomaton
         expandSingleton();
         return initial;
     }
+
+
 
     /**
      * Expands singleton representation to normal representation.
@@ -403,6 +413,7 @@ public class WeightedAutomaton
         initial = new WeightedState();
         deterministic = true;
         singleton = null;
+        numEmptyStrings = 1;
     }
 
     /**
@@ -1023,7 +1034,11 @@ public class WeightedAutomaton
                 b.append(" [shape=circle,label=\"\"];\n");
             }
             if (s == initial) {
-                b.append("  initial [shape=plaintext,label=\"\"];\n");
+                b.append("  initial [shape=plaintext,label=\"");
+                if (numEmptyStrings > 1){
+                    b.append(numEmptyStrings);
+                }
+                b.append("\"];\n");
                 b.append("  initial -> ").append(s.getNumber()).append("\n");
             }
             for (WeightedTransition t : s.getTransitions()) {
