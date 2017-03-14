@@ -96,6 +96,7 @@ public class AutomatonTestUtilities {
         Automaton[] nonUniformAutomata = new Automaton[boundLength + 1];
         for (int i = 0; i <= boundLength; i++) {
             nonUniformAutomata[i] = nonUniform.intersection(chars.repeat(i, i));
+            nonUniformAutomata[i].determinize();
         }
         return new AggregateAutomataModel(nonUniformAutomata, alphabet, boundLength);
     }
@@ -146,6 +147,7 @@ public class AutomatonTestUtilities {
         Automaton[] uniformAutomata = new Automaton[boundLength + 1];
         for (int i = 0; i <= boundLength; i++) {
             uniformAutomata[i] = uniform.intersection(chars.repeat(i, i));
+            uniformAutomata[i].determinize();
         }
         return new AggregateAutomataModel(uniformAutomata, alphabet, boundLength);
     }

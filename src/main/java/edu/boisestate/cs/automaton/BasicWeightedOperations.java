@@ -185,22 +185,22 @@ final public class BasicWeightedOperations {
      * Determinizes the given automaton using the given set of initial states.
      */
     static void determinize(WeightedAutomaton a,
-                            Set<WeightedState> initialset) {
+                            Set<WeightedState> initialSet) {
         char[] points = a.getStartPoints();
         // subset construction
         Map<Set<WeightedState>, Set<WeightedState>> sets =
                 new HashMap<Set<WeightedState>, Set<WeightedState>>();
-        LinkedList<Set<WeightedState>> worklist =
+        LinkedList<Set<WeightedState>> workList =
                 new LinkedList<Set<WeightedState>>();
-        Map<Set<WeightedState>, WeightedState> newstate =
+        Map<Set<WeightedState>, WeightedState> newState =
                 new HashMap<Set<WeightedState>, WeightedState>();
-        sets.put(initialset, initialset);
-        worklist.add(initialset);
+        sets.put(initialSet, initialSet);
+        workList.add(initialSet);
         a.initial = new WeightedState();
-        newstate.put(initialset, a.initial);
-        while (worklist.size() > 0) {
-            Set<WeightedState> s = worklist.removeFirst();
-            WeightedState r = newstate.get(s);
+        newState.put(initialSet, a.initial);
+        while (workList.size() > 0) {
+            Set<WeightedState> s = workList.removeFirst();
+            WeightedState r = newState.get(s);
             for (WeightedState q : s) {
                 if (q.isAccept()) {
                     r.setAccept(true);
@@ -219,10 +219,10 @@ final public class BasicWeightedOperations {
                 }
                 if (!sets.containsKey(p)) {
                     sets.put(p, p);
-                    worklist.add(p);
-                    newstate.put(p, new WeightedState());
+                    workList.add(p);
+                    newState.put(p, new WeightedState());
                 }
-                WeightedState q = newstate.get(p);
+                WeightedState q = newState.get(p);
                 char min = points[n];
                 char max;
                 if (n + 1 < points.length) {

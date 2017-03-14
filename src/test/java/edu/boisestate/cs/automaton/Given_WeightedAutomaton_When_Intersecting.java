@@ -56,6 +56,9 @@ public class Given_WeightedAutomaton_When_Intersecting {
         WeightedAutomaton nonUniformBounded = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
         WeightedAutomaton uniformUnbounded = getUniformUnboundedWeightedAutomaton(alphabet);
         WeightedAutomaton nonUniformUnbounded = getNonUniformUnboundedWeightedAutomaton(alphabet);
+        WeightedAutomaton unbalancedUniform0 = getUnbalancedUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
+        WeightedAutomaton unbalancedUniform1 = getUnbalancedUniformBoundedWeightedAutomaton(alphabet, initialBoundLength, 1);
+        WeightedAutomaton unbalancedUniform2 = getUnbalancedUniformBoundedWeightedAutomaton(alphabet, initialBoundLength, 2);
 
         // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{
@@ -107,7 +110,28 @@ public class Given_WeightedAutomaton_When_Intersecting {
                 {"Non-Uniform Bounded", "Uniform Unbounded", 45, nonUniformBounded, uniformUnbounded},
                 {"Non-Uniform Bounded", "Non-Uniform Unbounded", 45, nonUniformBounded, nonUniformUnbounded},
                 {"Non-Uniform Bounded", "Uniform Bounded", 45, nonUniformBounded, uniformBounded},
-                {"Non-Uniform Bounded", "Non-Uniform Bounded", 45, nonUniformBounded, nonUniformBounded}
+                {"Non-Uniform Bounded", "Non-Uniform Bounded", 45, nonUniformBounded, nonUniformBounded},
+                {"Unbalanced Uniform Bounded 0", "Empty", 0, unbalancedUniform0, empty},
+                {"Unbalanced Uniform Bounded 0", "Empty String", -1, unbalancedUniform0, emptyString},
+                {"Unbalanced Uniform Bounded 0", "Concrete", -1, unbalancedUniform0, concrete},
+                {"Unbalanced Uniform Bounded 0", "Uniform Unbounded", -1, unbalancedUniform0, uniformUnbounded},
+                {"Unbalanced Uniform Bounded 0", "Non-Uniform Unbounded", -1, unbalancedUniform0, nonUniformUnbounded},
+                {"Unbalanced Uniform Bounded 0", "Uniform Bounded", -1, unbalancedUniform0, uniformBounded},
+                {"Unbalanced Uniform Bounded 0", "Non-Uniform Bounded", -1, unbalancedUniform0, nonUniformBounded},
+                {"Unbalanced Uniform Bounded 1", "Empty", -1, unbalancedUniform1, empty},
+                {"Unbalanced Uniform Bounded 1", "Empty String", -1, unbalancedUniform1, emptyString},
+                {"Unbalanced Uniform Bounded 1", "Concrete", -1, unbalancedUniform1, concrete},
+                {"Unbalanced Uniform Bounded 1", "Uniform Unbounded", -1, unbalancedUniform1, uniformUnbounded},
+                {"Unbalanced Uniform Bounded 1", "Non-Uniform Unbounded", -1, unbalancedUniform1, nonUniformUnbounded},
+                {"Unbalanced Uniform Bounded 1", "Uniform Bounded", -1, unbalancedUniform1, uniformBounded},
+                {"Unbalanced Uniform Bounded 1", "Non-Uniform Bounded", -1, unbalancedUniform1, nonUniformBounded},
+                {"Unbalanced Uniform Bounded 2", "Empty", -1, unbalancedUniform2, empty},
+                {"Unbalanced Uniform Bounded 2", "Empty String", -1, unbalancedUniform2, emptyString},
+                {"Unbalanced Uniform Bounded 2", "Concrete", -1, unbalancedUniform2, concrete},
+                {"Unbalanced Uniform Bounded 2", "Uniform Unbounded", -1, unbalancedUniform2, uniformUnbounded},
+                {"Unbalanced Uniform Bounded 2", "Non-Uniform Unbounded", -1, unbalancedUniform2, nonUniformUnbounded},
+                {"Unbalanced Uniform Bounded 2", "Uniform Bounded", -1, unbalancedUniform2, uniformBounded},
+                {"Unbalanced Uniform Bounded 2", "Non-Uniform Bounded", -1, unbalancedUniform2, nonUniformBounded},
         });
     }
 

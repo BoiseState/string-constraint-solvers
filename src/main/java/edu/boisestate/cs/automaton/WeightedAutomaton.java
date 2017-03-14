@@ -122,6 +122,19 @@ public class WeightedAutomaton
      */
     String singleton;
 
+    public int getInitialFactor() {
+        return initialFactor;
+    }
+
+    public void setInitialFactor(int initialFactor) {
+        this.initialFactor = initialFactor;
+    }
+
+    /**
+     * Number of empty strings modeled by automaton
+     */
+    int initialFactor;
+
     public int getNumEmptyStrings() {
         return numEmptyStrings;
     }
@@ -130,9 +143,6 @@ public class WeightedAutomaton
         this.numEmptyStrings = numEmptyStrings;
     }
 
-    /**
-     * Number of empty strings modeled by automaton
-     */
     int numEmptyStrings;
 
     /**
@@ -413,6 +423,7 @@ public class WeightedAutomaton
         initial = new WeightedState();
         deterministic = true;
         singleton = null;
+        initialFactor = 1;
         numEmptyStrings = 1;
     }
 
@@ -872,9 +883,9 @@ public class WeightedAutomaton
             List<WeightedTransition> st = s.getSortedTransitions(true);
             s.resetTransitions();
             WeightedState p = null;
-            int min = -1, max = -1;
+            int min = -1, max = -1, weight = -1;
             for (WeightedTransition t : st) {
-                if (p == t.getDest()) {
+                if (p == t.getDest() && weight == t.getWeight()) {
                     if (t.getMin() <= max + 1) {
                         if (t.getMax() > max) {
                             max = t.getMax();
@@ -882,9 +893,7 @@ public class WeightedAutomaton
                     } else {
                         if (p != null) {
                             s.getTransitions()
-                             .add(new WeightedTransition((char) min,
-                                                         (char) max,
-                                                         p));
+                             .add(new WeightedTransition((char) min, (char) max, p, weight));
                         }
                         min = t.getMin();
                         max = t.getMax();
@@ -892,18 +901,17 @@ public class WeightedAutomaton
                 } else {
                     if (p != null) {
                         s.getTransitions()
-                         .add(new WeightedTransition((char) min,
-                                                     (char) max,
-                                                     p));
+                         .add(new WeightedTransition((char) min, (char) max, p, weight));
                     }
                     p = t.getDest();
                     min = t.getMin();
                     max = t.getMax();
+                    weight = t.getWeight();
                 }
             }
             if (p != null) {
                 s.getTransitions()
-                 .add(new WeightedTransition((char) min, (char) max, p));
+                 .add(new WeightedTransition((char) min, (char) max, p, weight));
             }
         }
         clearHashCode();
@@ -1029,14 +1037,15 @@ public class WeightedAutomaton
         for (WeightedState s : states) {
             b.append("  ").append(s.getNumber());
             if (s.isAccept()) {
-                b.append(" [shape=doublecircle,label=\"\"];\n");
+                b.append(" [shape=doublecircle");
             } else {
-                b.append(" [shape=circle,label=\"\"];\n");
+                b.append(" [shape=circle");
             }
+            b.append(",label=\"").append(s.getNumber()).append("\"];\n");
             if (s == initial) {
                 b.append("  initial [shape=plaintext,label=\"");
-                if (numEmptyStrings > 1){
-                    b.append(numEmptyStrings);
+                if (initialFactor > 1){
+                    b.append(initialFactor);
                 }
                 b.append("\"];\n");
                 b.append("  initial -> ").append(s.getNumber()).append("\n");

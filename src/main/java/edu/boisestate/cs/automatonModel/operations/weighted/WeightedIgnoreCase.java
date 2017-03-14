@@ -1,10 +1,13 @@
-package edu.boisestate.cs.automatonModel.operations;
+package edu.boisestate.cs.automatonModel.operations.weighted;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.State;
 import dk.brics.automaton.Transition;
 import dk.brics.string.charset.CharSet;
 import dk.brics.string.stringoperations.UnaryOperation;
+import edu.boisestate.cs.automaton.WeightedAutomaton;
+import edu.boisestate.cs.automaton.WeightedState;
+import edu.boisestate.cs.automaton.WeightedTransition;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -12,7 +15,8 @@ import java.util.Set;
 /**
  *
  */
-public class IgnoreCase extends UnaryOperation {
+public class WeightedIgnoreCase
+        extends UnaryWeightedOperation {
 
     /**
      * Unary operation on automata.
@@ -23,24 +27,25 @@ public class IgnoreCase extends UnaryOperation {
      * @return output automaton
      */
     @Override
-    public Automaton op(Automaton a) {
+    public WeightedAutomaton op(WeightedAutomaton a) {
 
         // clone automaton
-        Automaton clone = a.clone();
+        WeightedAutomaton clone = a.clone();
 
         // for all states
-        for (State state : clone.getStates()) {
+        for (WeightedState state : clone.getStates()) {
 
             // all transitions from state
-            Set<Transition> transitions = state.getTransitions();
+            Set<WeightedTransition> transitions = state.getTransitions();
 
             // for all transitions in current set of transitions
-            for (Transition t : new ArrayList<>(transitions)) {
+            for (WeightedTransition t : new ArrayList<>(transitions)) {
 
                 // get transition values
                 char min = t.getMin();
                 char max = t.getMax();
-                State dest = t.getDest();
+                WeightedState dest = t.getDest();
+                int weight = t.getWeight();
 
                 // if transition represents subset of characters
                 if (min != Character.MIN_VALUE || max != Character.MAX_VALUE) {
@@ -56,7 +61,7 @@ public class IgnoreCase extends UnaryOperation {
 
                             // add corresponding lowercase transition
                             char lc = Character.toLowerCase(c);
-                            Transition lcTrans = new Transition(lc, dest);
+                            WeightedTransition lcTrans = new WeightedTransition(lc, dest, weight);
                             transitions.add(lcTrans);
                         }
 
@@ -65,7 +70,7 @@ public class IgnoreCase extends UnaryOperation {
 
                             // add corresponding uppercase transition
                             char uc = Character.toUpperCase(c);
-                            Transition ucTrans = new Transition(uc, dest);
+                            WeightedTransition ucTrans = new WeightedTransition(uc, dest, weight);
                             transitions.add(ucTrans);
                         }
                     }
@@ -74,20 +79,9 @@ public class IgnoreCase extends UnaryOperation {
         }
 
         clone.setDeterministic(false);
+        clone.reduce();
 
         return clone;
-    }
-
-    /**
-     * Transfer function for character set analysis.
-     *
-     * @param a
-     */
-    @Override
-    public CharSet charsetTransfer(CharSet a) {
-        CharSet lower = a.toLowerCase();
-        CharSet upper = a.toUpperCase();
-        return lower.union(upper);
     }
 
     /**
@@ -96,14 +90,5 @@ public class IgnoreCase extends UnaryOperation {
     @Override
     public String toString() {
         return "ignoreCase";
-    }
-
-    /**
-     * Returns priority of this operation. When approximating operation loops in
-     * grammars, operations with high priority are considered first.
-     */
-    @Override
-    public int getPriority() {
-        return 2;
     }
 }

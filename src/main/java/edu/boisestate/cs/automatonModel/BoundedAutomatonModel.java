@@ -34,6 +34,10 @@ public class BoundedAutomatonModel
         this.automaton = automaton;
     }
 
+    private static Automaton getAutomatonFromBoundedModel(AutomatonModel model) {
+        return ((BoundedAutomatonModel)model).automaton;
+    }
+
     @Override
     public AutomatonModel assertContainedInOther(AutomatonModel containingModel) {
         ensureBoundedModel(containingModel);
@@ -54,20 +58,6 @@ public class BoundedAutomatonModel
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
-    }
-
-    private void ensureBoundedModel(AutomatonModel arg) {
-        // check if automaton model is bounded
-        if (!(arg instanceof BoundedAutomatonModel)) {
-
-            throw new UnsupportedOperationException(
-                    "The BoundedAutomatonModel only supports binary " +
-                    "operations with other BoundedAutomatonModels.");
-        }
-    }
-
-    private static Automaton getAutomatonFromBoundedModel(AutomatonModel model) {
-        return ((BoundedAutomatonModel)model).automaton;
     }
 
     @Override
@@ -171,6 +161,29 @@ public class BoundedAutomatonModel
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
+    }
+
+    @Override
+    public AutomatonModel assertHasLength(int min, int max) {
+        // check min and max
+        if (min > max) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), this.alphabet, 0);
+        }
+
+        // get any string with length between min and max
+        Automaton minMax = BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat(min, max);
+
+        // get resulting automaton
+        Automaton result =  this.automaton.intersection(minMax);
+
+        // get new bound length
+        int newBoundLength = max;
+        if (this.boundLength < max) {
+            newBoundLength = this.boundLength;
+        }
+
+        // return new model from resulting automaton
+        return new BoundedAutomatonModel(result, this.alphabet, newBoundLength);
     }
 
     @Override
@@ -384,7 +397,6 @@ public class BoundedAutomatonModel
     @SuppressWarnings("CloneDoesntCallSuperClone")
     @Override
     public AutomatonModel clone() {
-
         // create new model from existing automata
         Automaton cloneAutomaton = this.automaton.clone();
         return new BoundedAutomatonModel(cloneAutomaton,
@@ -487,13 +499,35 @@ public class BoundedAutomatonModel
     }
 
     @Override
+    public AutomatonModel intersect(AutomatonModel arg) {
+        ensureBoundedModel(arg);
+
+        // cast arg model
+        BoundedAutomatonModel argModel = (BoundedAutomatonModel) arg;
+
+        // get intersection of automata
+        Automaton result = this.automaton.intersection(argModel.automaton);
+
+        // minimize result automaton
+        result.minimize();
+
+        // calculate new bound length
+        int boundLength = this.boundLength;
+        if (argModel.boundLength < this.boundLength) {
+            boundLength = argModel.boundLength;
+        }
+
+        // return bounded model from automaton
+        return new BoundedAutomatonModel(result, this.alphabet, boundLength);
+    }
+
+    @Override
     public boolean isEmpty() {
         return this.automaton.isEmptyString();
     }
 
     @Override
     public boolean isSingleton() {
-
         // get one finite string, null if more
         Set<String> strings = this.automaton.getFiniteStrings(1);
 
@@ -505,14 +539,12 @@ public class BoundedAutomatonModel
 
     @Override
     public BigInteger modelCount() {
-
         // return model count of automaton
         return StringModelCounter.ModelCount(automaton);
     }
 
     @Override
     public AutomatonModel replace(char find, char replace) {
-
         // perform operation
         Automaton result = performUnaryOperation(automaton, new Replace1(find, replace), this.alphabet);
 
@@ -584,9 +616,7 @@ public class BoundedAutomatonModel
         Automaton result = performUnaryOperation(automaton, new Reverse(), this.alphabet);
 
         // return new model from resulting automaton
-        return new BoundedAutomatonModel(result,
-                                         this.alphabet,
-                                         this.boundLength);
+        return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
     }
 
     @Override
@@ -714,49 +744,13 @@ public class BoundedAutomatonModel
                                          this.boundLength);
     }
 
-    @Override
-    public AutomatonModel assertHasLength(int min, int max) {
-        // check min and max
-        if (min > max) {
-            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), this.alphabet, 0);
+    private void ensureBoundedModel(AutomatonModel arg) {
+        // check if automaton model is bounded
+        if (!(arg instanceof BoundedAutomatonModel)) {
+
+            throw new UnsupportedOperationException(
+                    "The BoundedAutomatonModel only supports binary " +
+                    "operations with other BoundedAutomatonModels.");
         }
-
-        // get any string with length between min and max
-        Automaton minMax = BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat(min, max);
-
-        // get resulting automaton
-        Automaton result =  this.automaton.intersection(minMax);
-
-        // get new bound length
-        int newBoundLength = max;
-        if (this.boundLength < max) {
-            newBoundLength = this.boundLength;
-        }
-
-        // return new model from resulting automaton
-        return new BoundedAutomatonModel(result, this.alphabet, newBoundLength);
-    }
-
-    @Override
-    public AutomatonModel intersect(AutomatonModel arg) {
-        ensureBoundedModel(arg);
-
-        // cast arg model
-        BoundedAutomatonModel argModel = (BoundedAutomatonModel) arg;
-
-        // get intersection of automata
-        Automaton result = this.automaton.intersection(argModel.automaton);
-
-        // minimize result automaton
-        result.minimize();
-
-        // calculate new bound length
-        int boundLength = this.boundLength;
-        if (argModel.boundLength < this.boundLength) {
-            boundLength = argModel.boundLength;
-        }
-
-        // return bounded model from automaton
-        return new BoundedAutomatonModel(result, this.alphabet, boundLength);
     }
 }

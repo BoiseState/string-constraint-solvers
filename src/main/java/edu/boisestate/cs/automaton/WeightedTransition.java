@@ -77,6 +77,10 @@ public class WeightedTransition
         return weight;
     }
 
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
     public void setMin(char min) {
         this.min = min;
     }
@@ -216,16 +220,15 @@ public class WeightedTransition
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
+        b.append("(");
         appendCharString(min, b);
         if (min != max) {
             b.append("-");
             appendCharString(max, b);
         }
-        b.append(" -> (")
-         .append(to.getNumber())
-         .append(", ")
-         .append(weight)
-         .append(")");
+        b.append(", ").append(weight).append(")");
+        b.append(" -> ")
+         .append(to.getNumber());
         return b.toString();
     }
 

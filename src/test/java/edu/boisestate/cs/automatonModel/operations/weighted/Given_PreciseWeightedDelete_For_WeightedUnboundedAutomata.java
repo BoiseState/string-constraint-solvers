@@ -36,7 +36,7 @@ public class Given_PreciseWeightedDelete_For_WeightedUnboundedAutomata {
     public String description;
 
     private WeightedAutomaton resultAutomaton;
-    public static int initialBoundLength = 3;
+    private static int initialBoundLength = 3;
 
 
     @SuppressWarnings("Duplicates")

@@ -1,17 +1,11 @@
 package edu.boisestate.cs.util;
 
-import dk.brics.automaton.*;
-import dk.brics.string.stringoperations.Replace1;
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automaton.BasicWeightedAutomata;
 import edu.boisestate.cs.automaton.WeightedAutomaton;
 import edu.boisestate.cs.automaton.WeightedState;
 import edu.boisestate.cs.automaton.WeightedTransition;
-import edu.boisestate.cs.automatonModel.AutomatonModel;
 import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
-import edu.boisestate.cs.automatonModel.operations.weighted
-        .PreciseWeightedDelete;
-import edu.boisestate.cs.solvers.ModelCountSolver;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -41,7 +35,7 @@ public class Testing {
 
         // constuct unbalanced uniform bounded automata
         WeightedAutomaton a0 = anyChar.repeat(0,2);
-        a0.setNumEmptyStrings(4);
+        a0.setInitialFactor(4);
 
         WeightedState q0_1 = new WeightedState();
         WeightedState q1_1 = new WeightedState();
@@ -68,15 +62,15 @@ public class Testing {
         WeightedState q3_3 = new WeightedState();
         q1_3.setAccept(true);
         q3_3.setAccept(true);
-        q0_3.addTransition(new WeightedTransition('A', q1_3, 1));
-        q0_3.addTransition(new WeightedTransition('A', q2_3, 1));
-        q0_3.addTransition(new WeightedTransition('C', 'D', q2_3, 1));
-        q1_3.addTransition(new WeightedTransition('A', q3_3, 2));
-        q1_3.addTransition(new WeightedTransition('C', 'D', q3_3, 1));
+        q0_3.addTransition(new WeightedTransition('A', q1_3, 4));
+        q0_3.addTransition(new WeightedTransition('A', q2_3, 8));
+        q0_3.addTransition(new WeightedTransition('D', q2_3, 4));
+        q1_3.addTransition(new WeightedTransition('A', q3_3, 3));
+        q1_3.addTransition(new WeightedTransition('D', q3_3, 1));
         q2_3.addTransition(new WeightedTransition('A', q3_3, 1));
         WeightedAutomaton a3 = new WeightedAutomaton();
         a3.setInitialState(q0_3);
-        a0.setNumEmptyStrings(4);
+        a3.setDeterministic(false);
 
         // add automata to map
         Map<String, WeightedAutomaton> automata = new HashMap<>();
@@ -92,10 +86,19 @@ public class Testing {
         automata.put("Uniform Unbalanced 2 Bounded", a2);
         automata.put("Non-Uniform Unbalanced 0 Bounded", a3);
 
-        System.out.println("Start Points");
-        for (char c : nonUniformBounded.getStartPoints()) {
-            System.out.println(c);
+        a3.determinize();
+
+        char [] points = a3.getStartPoints();
+        System.out.print("Start Points: ");
+        System.out.printf("'%c'", points[0]);
+        for (int i = 1; i < points.length; i++) {
+            System.out.printf(", '%c'", points[i]);
         }
+        System.out.print("\n");
+
+        BigInteger mc = StringModelCounter.ModelCount(a3);
+        System.out.printf("Model Count : %d\n", mc.intValue());
+        DotToGraph.outputDotFileAndPng(a3.toDot(), "temp");
 
 //        for (String str : automata.keySet()) {
 //            WeightedAutomaton a = automata.get(str);
