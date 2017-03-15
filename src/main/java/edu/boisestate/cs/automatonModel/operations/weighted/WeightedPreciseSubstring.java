@@ -30,11 +30,6 @@ public class WeightedPreciseSubstring
 
     @Override
     public WeightedAutomaton op(WeightedAutomaton automaton) {
-        // if start is greater than end or automaton is empty
-        if (start < 0 || end < 0 || start > end || automaton.isEmpty()) {
-            // return empty automaton (exception)
-            return BasicWeightedAutomata.makeEmpty();
-        }
         return null;
     }
 

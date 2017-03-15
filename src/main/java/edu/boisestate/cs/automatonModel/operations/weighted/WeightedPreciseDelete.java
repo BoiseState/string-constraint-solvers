@@ -12,12 +12,12 @@ import static edu.boisestate.cs.automatonModel.operations.StringModelCounter
         .pseudoModelCount;
 
 @SuppressWarnings("Duplicates")
-public class PreciseWeightedDelete
+public class WeightedPreciseDelete
         extends UnaryWeightedOperation {
     private int end;
     private int start;
 
-    public PreciseWeightedDelete(int start, int end) {
+    public WeightedPreciseDelete(int start, int end) {
         // initialize indices from parameters
         this.start = start;
         this.end = end;

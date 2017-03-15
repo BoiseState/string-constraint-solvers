@@ -112,7 +112,7 @@ public class Given_PreciseWeightedDelete_For_WeightedBoundedAutomata {
     @Before
     public void setup() {
         // *** arrange ***
-         PreciseWeightedDelete operation = new PreciseWeightedDelete(start, end);
+         WeightedPreciseDelete operation = new WeightedPreciseDelete(start, end);
 
         // *** act ***
         resultAutomaton = operation.op(automaton);

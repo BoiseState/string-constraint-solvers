@@ -18,9 +18,7 @@ public class AutomatonTestUtilities {
         for (int i = 0; i <= string.length(); i++) {
             concreteAutomata[i] = concrete.intersection(chars.repeat(i, i));
         }
-        return new AggregateAutomataModel(concreteAutomata,
-                                          alphabet,
-                                          string.length());
+        return new AggregateAutomataModel(concreteAutomata, alphabet, string.length());
     }
 
     public static BoundedAutomatonModel getConcreteBoundedModel(Alphabet alphabet, String string) {
@@ -39,10 +37,13 @@ public class AutomatonTestUtilities {
 
     public static WeightedAutomatonModel getConcreteWeightedModel(Alphabet alphabet, String string) {
         WeightedAutomaton concrete = BasicWeightedAutomata.makeString(string);
-        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat(0, string.length());
-        concrete = concrete.intersection(bounding);
         concrete.minimize();
-        return new WeightedAutomatonModel(concrete, alphabet, string.length());
+        WeightedAutomaton chars = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet());
+        WeightedAutomaton[] concreteAutomata = new WeightedAutomaton[string.length() + 1];
+        for (int i = 0; i <= string.length(); i++) {
+            concreteAutomata[i] = concrete.intersection(chars.repeat(i, i));
+        }
+        return new WeightedAutomatonModel(concreteAutomata, alphabet, string.length());
     }
 
     public static AggregateAutomataModel getEmptyAggregateModel(Alphabet alphabet) {
@@ -55,10 +56,8 @@ public class AutomatonTestUtilities {
         return new BoundedAutomatonModel(empty, alphabet, 0);
     }
 
-    public static AggregateAutomataModel getEmptyStringAggregateModel
-            (Alphabet alphabet) {
-        Automaton[] emptyStringAutomata =
-                new Automaton[]{BasicAutomata.makeEmptyString()};
+    public static AggregateAutomataModel getEmptyStringAggregateModel(Alphabet alphabet) {
+        Automaton[] emptyStringAutomata = new Automaton[]{BasicAutomata.makeEmptyString()};
         return new AggregateAutomataModel(emptyStringAutomata, alphabet, 0);
     }
 
@@ -73,8 +72,8 @@ public class AutomatonTestUtilities {
     }
 
     public static WeightedAutomatonModel getEmptyStringWeightedModel(Alphabet alphabet) {
-        WeightedAutomaton emptyString = BasicWeightedAutomata.makeEmptyString();
-        return new WeightedAutomatonModel(emptyString, alphabet, 0);
+        WeightedAutomaton[] emptyStringAutomata = new WeightedAutomaton[]{BasicWeightedAutomata.makeEmptyString()};
+        return new WeightedAutomatonModel(emptyStringAutomata, alphabet, 0);
     }
 
     public static UnboundedAutomatonModel getEmptyUnboundedModel(Alphabet alphabet) {
@@ -83,8 +82,8 @@ public class AutomatonTestUtilities {
     }
 
     public static WeightedAutomatonModel getEmptyWeightedModel(Alphabet alphabet) {
-        WeightedAutomaton empty = BasicWeightedAutomata.makeEmpty();
-        return new WeightedAutomatonModel(empty, alphabet, 0);
+        WeightedAutomaton[] emptyStringAutomata = new WeightedAutomaton[]{BasicWeightedAutomata.makeEmpty()};
+        return new WeightedAutomatonModel(emptyStringAutomata, alphabet, 0);
     }
 
     public static AggregateAutomataModel getNonUniformAggregateModel(Alphabet alphabet, int boundLength) {
@@ -123,10 +122,14 @@ public class AutomatonTestUtilities {
         WeightedAutomaton uniform = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat();
         WeightedAutomaton intersect = uniform.concatenate(BasicWeightedAutomata.makeChar('A')).concatenate(uniform);
         WeightedAutomaton nonUniform = uniform.intersection(intersect);
-        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat(0, boundLength);
-        nonUniform = nonUniform.intersection(bounding);
         nonUniform.minimize();
-        return new WeightedAutomatonModel(nonUniform, alphabet, boundLength);
+        WeightedAutomaton chars = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet());
+        WeightedAutomaton[] nonUniformAutomata = new WeightedAutomaton[boundLength + 1];
+        for (int i = 0; i <= boundLength; i++) {
+            nonUniformAutomata[i] = nonUniform.intersection(chars.repeat(i, i));
+            nonUniformAutomata[i].determinize();
+        }
+        return new WeightedAutomatonModel(nonUniformAutomata, alphabet, boundLength);
     }
 
     public static Set<String> getStrings(Automaton automaton, int minLength, int maxLength) {
@@ -168,9 +171,13 @@ public class AutomatonTestUtilities {
 
     public static WeightedAutomatonModel getUniformWeightedModel(Alphabet alphabet, int boundLength) {
         WeightedAutomaton uniform = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat();
-        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat(0, boundLength);
-        uniform = uniform.intersection(bounding);
         uniform.minimize();
-        return new WeightedAutomatonModel(uniform, alphabet, boundLength);
+        WeightedAutomaton chars = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet());
+        WeightedAutomaton[] uniformAutomata = new WeightedAutomaton[boundLength + 1];
+        for (int i = 0; i <= boundLength; i++) {
+            uniformAutomata[i] = uniform.intersection(chars.repeat(i, i));
+            uniformAutomata[i].determinize();
+        }
+        return new WeightedAutomatonModel(uniformAutomata, alphabet, boundLength);
     }
 }

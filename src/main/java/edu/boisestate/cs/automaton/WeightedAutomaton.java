@@ -639,7 +639,7 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link MinimizationOperations#minimize(WeightedAutomaton)}.
+     * See {@link WeightedMinimizationOperations#minimize(WeightedAutomaton)}.
      * Returns the automaton being given as argument.
      */
     public static WeightedAutomaton minimize(WeightedAutomaton a) {
@@ -1079,10 +1079,10 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link MinimizationOperations#minimize(WeightedAutomaton)}.
+     * See {@link WeightedMinimizationOperations#minimize(WeightedAutomaton)}.
      */
     public void minimize() {
-        MinimizationOperations.minimize(this);
+        WeightedMinimizationOperations.minimize(this);
     }
 
     /**

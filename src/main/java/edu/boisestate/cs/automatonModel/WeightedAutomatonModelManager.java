@@ -9,12 +9,12 @@ public class WeightedAutomatonModelManager extends AutomatonModelManager {
 
     private final int boundLength;
 
-    public WeightedAutomatonModelManager(Alphabet alphabet, int boundLength) {
+    public WeightedAutomatonModelManager(Alphabet alphabet, int initialBoundLength) {
         this.alphabet = alphabet;
-        this.boundLength = boundLength;
+        this.boundLength = initialBoundLength;
 
-        // set automaton minimization as huffman
-        Automaton.setMinimization(0);
+        // set automaton minimization as Brzozowski
+        Automaton.setMinimization(1);
     }
 
     static void setInstance(Alphabet alphabet, int initialBoundLength) {
@@ -24,14 +24,27 @@ public class WeightedAutomatonModelManager extends AutomatonModelManager {
 
     @Override
     public AutomatonModel createString(String string) {
+        // declare automata array
+        WeightedAutomaton[] automata;
 
-        // create string automaton
-        WeightedAutomaton stringAutomaton = BasicWeightedAutomata.makeString(string);
+        // string is null
+        if (string == null) {
+            // automata array is empty
+            automata = new WeightedAutomaton[0];
+        }
+        // empty string
+        else if (string.equals("")) {
+            // automata array contains single empty string automata
+            automata = new WeightedAutomaton[]{BasicWeightedAutomata.makeEmptyString()};
+        }
+        // normal string value
+        else {
+            // automata array for concrete string contains single automaton
+            automata = new WeightedAutomaton[]{BasicWeightedAutomata.makeString(string)};
+        }
 
-        // return model from automaton
-        return new WeightedAutomatonModel(stringAutomaton,
-                                         this.alphabet,
-                                         this.boundLength);
+        // create automaton model from automata array
+        return new WeightedAutomatonModel(automata, alphabet, boundLength);
     }
 
     @Override
@@ -41,29 +54,26 @@ public class WeightedAutomatonModelManager extends AutomatonModelManager {
 
     @Override
     public AutomatonModel createAnyString() {
-
-        // create any string automaton from alphabet
-        String charSet = this.alphabet.getCharSet();
-        WeightedAutomaton anyString = BasicWeightedAutomata.makeCharSet(charSet)
-                                                           .repeat();
-
-        // return model from automaton
-        return new WeightedAutomatonModel(anyString, this.alphabet);
+        return createAnyString(0, boundLength);
     }
 
     @Override
     public AutomatonModel createAnyString(int min, int max) {
+        // create automata array from bounding length size
+        int size = max - min + 1;
+        WeightedAutomaton[] automata = new WeightedAutomaton[size];
 
         // create any string automaton from alphabet
         String charSet = this.alphabet.getCharSet();
         WeightedAutomaton anyChar = BasicWeightedAutomata.makeCharSet(charSet);
 
-        // create bounded automaton
-        WeightedAutomaton boundedAutomaton = anyChar.repeat(min, max);
+        // fill automata array with appropriately length automata
+        for (int i = min; i <= max; i++) {
+            WeightedAutomaton boundedAutomaton = anyChar.repeat(i, i);
+            automata[i] = boundedAutomaton;
+        }
 
-        // return model from bounded automaton
-        return new WeightedAutomatonModel(boundedAutomaton,
-                                          this.alphabet,
-                                          this.boundLength);
+        // return aggregate model from automata array
+        return new WeightedAutomatonModel(automata, this.alphabet, max);
     }
 }

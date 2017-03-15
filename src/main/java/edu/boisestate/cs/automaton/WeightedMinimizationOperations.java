@@ -37,9 +37,9 @@ import java.util.Set;
 /**
  * Operations for minimizing automata.
  */
-final public class MinimizationOperations {
+final public class WeightedMinimizationOperations {
 
-	private MinimizationOperations() {}
+	private WeightedMinimizationOperations() {}
 
 	/**
 	 * Minimizes (and determinizes if not already deterministic) the given automaton.

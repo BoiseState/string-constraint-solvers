@@ -15,8 +15,7 @@ public class AggregateAutomatonModelManager
 
     private final int boundLength;
 
-    AggregateAutomatonModelManager(Alphabet alphabet,
-                                           int initialBoundLength) {
+    AggregateAutomatonModelManager(Alphabet alphabet, int initialBoundLength) {
         this.alphabet = alphabet;
         this.boundLength = initialBoundLength;
 
@@ -36,7 +35,6 @@ public class AggregateAutomatonModelManager
 
     @Override
     public AutomatonModel createAnyString(int min, int max) {
-
         // create automata array from bounding length size
         int size = max - min + 1;
         Automaton[] automata = new Automaton[size];
@@ -52,50 +50,33 @@ public class AggregateAutomatonModelManager
         }
 
         // return aggregate model from automata array
-        return new AggregateAutomataModel(automata,
-                                          this.alphabet,
-                                          max);
+        return new AggregateAutomataModel(automata, this.alphabet, max);
     }
 
     @Override
     public AutomatonModel createAnyString() {
-
-        // create any string automaton from alphabet
-        String charSet = this.alphabet.getCharSet();
-        Automaton anyChar = BasicAutomata.makeCharSet(charSet);
-
-        // repeat any char
-        Automaton anyString = anyChar.repeat();
-
-        // return new aggregate model from automata array
-        return new AggregateAutomataModel(anyString, this.alphabet);
+        return createAnyString(0, boundLength);
     }
 
     @Override
     public AutomatonModel createString(String string) {
-
         // declare automata array
         Automaton[] automata;
 
         // string is null
         if (string == null) {
-
             // automata array is empty
             automata = new Automaton[0];
-
         }
         // empty string
         else if (string.equals("")) {
-
             // automata array contains single empty string automata
             automata = new Automaton[]{BasicAutomata.makeEmptyString()};
         }
         // normal string value
         else {
-
             // automata array for concrete string contains single automaton
             automata = new Automaton[]{BasicAutomata.makeString(string)};
-
         }
 
         // create automaton model from automata array

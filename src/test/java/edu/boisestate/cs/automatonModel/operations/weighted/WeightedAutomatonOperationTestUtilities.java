@@ -10,6 +10,31 @@ import java.util.Set;
 
 public class WeightedAutomatonOperationTestUtilities {
 
+    public enum Type {
+        EMPTY,
+        EMPTY_STRING,
+        CONCRETE,
+        UNIFORM,
+        NON_UNIFORM
+    }
+
+    public enum Bounding {
+        BOUNDED,
+        UNBOUNDED
+    }
+
+    public enum Balance {
+        BALANCED,
+        UNBALANCED
+    }
+
+    public static WeightedAutomaton getWeightedAutomaton(Type type,
+                                                         Bounding bounding,
+                                                         int length,
+                                                         Balance balance) {
+        return null;
+    }
+
     public static WeightedAutomaton getConcreteWeightedAutomaton(Alphabet alphabet, String string) {
         WeightedAutomaton concrete = BasicWeightedAutomata.makeString(string);
         WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()) .repeat(0, string.length());
