@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_WeightedAllSubstrings_For_WeightedAutomata {
+public class Given_WeightedToUpperCase_For_WeightedAutomata {
 
     @Parameter(value = 2)
     public WeightedAutomaton automaton;
@@ -33,40 +33,38 @@ public class Given_WeightedAllSubstrings_For_WeightedAutomata {
     private WeightedAutomaton resultAutomaton;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.allSubstrings() - Expected MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton>.toUpperCase() - Expected MC = {1}")
     public static Iterable<Object[]> data() {
 
         // initialize alphabet and initial bound length
-        Alphabet alphabet = new Alphabet("A-D");
+        Alphabet alphabet = new Alphabet("A-D,a-d");
         int initialBoundLength = 3;
 
         // create automata
         WeightedAutomaton empty = makeEmpty();
         WeightedAutomaton emptyString = makeEmptyString();
-        WeightedAutomaton concrete = getConcreteWeightedAutomaton(alphabet, "ABC");
-        WeightedAutomaton uniformBounded = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
-        WeightedAutomaton nonUniformBounded = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
-        WeightedAutomaton uniformUnbounded = getUniformUnboundedWeightedAutomaton(alphabet);
-        WeightedAutomaton nonUniformUnbounded = getNonUniformUnboundedWeightedAutomaton(alphabet);
+        WeightedAutomaton concreteLower = getConcreteWeightedAutomaton(alphabet, "abc");
+        WeightedAutomaton concreteUpper = getConcreteWeightedAutomaton(alphabet, "ABC");
+        WeightedAutomaton uniform = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
+        WeightedAutomaton nonUniform = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty},
                 {"Empty String", 1, emptyString},
-                {"Concrete", 7, concrete},
-                {"Uniform Bounded", 85, uniformBounded},
-                {"Non-uniform Bounded", 58, nonUniformBounded},
-                {"Uniform Unbounded", 85, uniformBounded},
-                {"Non-uniform Unbounded", 58, nonUniformBounded}
+                {"Concrete Lower", 1, concreteLower},
+                {"Concrete Upper", 1, concreteUpper},
+                {"Uniform Unbounded", 585, uniform},
+                {"Non-uniform Unbounded", 185, nonUniform}
         });
     }
 
     @Before
     public void setup() {
         // *** arrange ***
-        WeightedAllSubstrings substring = new WeightedAllSubstrings();
+        WeightedToUpperCase operation = new WeightedToUpperCase();
 
         // *** act ***
-        resultAutomaton = substring.op(automaton);
+        resultAutomaton = operation.op(automaton);
     }
 
     @Test
@@ -76,7 +74,7 @@ public class Given_WeightedAllSubstrings_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.allSubstrings()", description);
+        String message = String.format("<%s Automaton>.toUpperCase()", description);
         assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

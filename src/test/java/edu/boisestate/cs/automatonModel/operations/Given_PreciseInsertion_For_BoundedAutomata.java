@@ -38,7 +38,7 @@ public class Given_PreciseInsertion_For_BoundedAutomata {
     public int expectedModelCount;
     @Parameter(value = 4)
     public int offset;
-    private Automaton insertedAutomaton;
+    private Automaton resultAutomaton;
 
     @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton>.insert({4}, <{1} Automaton>) - Expected" +
@@ -165,18 +165,18 @@ public class Given_PreciseInsertion_For_BoundedAutomata {
     public void setup() {
 
         // *** arrange ***
-        PreciseInsert insert = new PreciseInsert(this.offset);
+        PreciseInsert operation = new PreciseInsert(this.offset);
 
         // *** act ***
-        this.insertedAutomaton = insert.op(baseAutomaton, argAutomaton);
-        this.insertedAutomaton.minimize();
+        this.resultAutomaton = operation.op(baseAutomaton, argAutomaton);
+        this.resultAutomaton.minimize();
 
     }
 
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = StringModelCounter.ModelCount(this.insertedAutomaton)
+        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton)
                                            .intValue();
 
         // *** assert ***

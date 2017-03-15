@@ -1,7 +1,6 @@
-package edu.boisestate.cs.automatonModel.operations.weighted;
+package edu.boisestate.cs.automaton;
 
 import edu.boisestate.cs.Alphabet;
-import edu.boisestate.cs.automaton.WeightedAutomaton;
 import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,68 +14,60 @@ import java.util.Arrays;
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmpty;
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmptyString;
 import static edu.boisestate.cs.automatonModel.operations.weighted
-        .WeightedAutomatonOperationTestUtilities.*;
+        .WeightedAutomatonOperationTestUtilities.getConcreteWeightedAutomaton;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_WeightedAllSubstrings_For_WeightedAutomata {
+public class Given_WeightedAutomaton_When_Reducing {
 
     @Parameter(value = 2)
     public WeightedAutomaton automaton;
-    @Parameter(value = 0) // first data value (0) is default
-    public String description;
     @Parameter(value = 1)
     public int expectedModelCount;
-    private WeightedAutomaton resultAutomaton;
+    @Parameter(value = 0) // first data value (0) is default
+    public String baseDescription;
+
+    private static int initialBoundLength;
+
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.allSubstrings() - Expected MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton>.reduce() ->" +
+                       " Expected MC = {1}")
     public static Iterable<Object[]> data() {
 
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
-        int initialBoundLength = 3;
+        initialBoundLength = 3;
 
         // create automata
         WeightedAutomaton empty = makeEmpty();
         WeightedAutomaton emptyString = makeEmptyString();
         WeightedAutomaton concrete = getConcreteWeightedAutomaton(alphabet, "ABC");
-        WeightedAutomaton uniformBounded = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
-        WeightedAutomaton nonUniformBounded = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
-        WeightedAutomaton uniformUnbounded = getUniformUnboundedWeightedAutomaton(alphabet);
-        WeightedAutomaton nonUniformUnbounded = getNonUniformUnboundedWeightedAutomaton(alphabet);
 
+        // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty},
                 {"Empty String", 1, emptyString},
-                {"Concrete", 7, concrete},
-                {"Uniform Bounded", 85, uniformBounded},
-                {"Non-uniform Bounded", 58, nonUniformBounded},
-                {"Uniform Unbounded", 85, uniformBounded},
-                {"Non-uniform Unbounded", 58, nonUniformBounded}
+                {"Concrete", 1, concrete},
         });
     }
 
     @Before
     public void setup() {
-        // *** arrange ***
-        WeightedAllSubstrings substring = new WeightedAllSubstrings();
-
         // *** act ***
-        resultAutomaton = substring.op(automaton);
+        automaton.reduce();
     }
 
     @Test
     public void it_should_return_the_correct_model_count() {
         // *** act ***
-        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton)
+        int modelCount = StringModelCounter.ModelCount(automaton, initialBoundLength)
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.allSubstrings()", description);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

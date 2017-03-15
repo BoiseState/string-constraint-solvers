@@ -20,41 +20,38 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_PreciseSetLength_For_BoundedAutomata {
+public class Given_PrecisePrefix_For_UnboundedAutomata {
 
     @Parameter(value = 2)
     public Automaton automaton;
     @Parameter // first data value (0) is default
     public String description;
+    @Parameter(value = 3)
+    public int end;
     @Parameter(value = 1)
     public int expectedModelCount;
-    @Parameter(value = 3)
-    public int start;
     private Automaton resultAutomaton;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.setLength({3}) - Expected" +
+    @Parameters(name = "{index}: <{0} Automaton>.prefix({3}) - Expected" +
                        " MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
-        int initialBoundLength = 3;
 
-        // get Automata
+        // get automata
         Automaton empty = BasicAutomata.makeEmpty();
         Automaton emptyString = BasicAutomata.makeEmptyString();
         Automaton concrete = getConcreteAutomaton(alphabet, "ABC");
-        Automaton uniform = getUniformBoundedAutomaton(alphabet,
-                                                       initialBoundLength);
-        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet,
-                                                           initialBoundLength);
+        Automaton uniform = getUniformUnboundedAutomaton(alphabet);
+        Automaton nonUniform = getNonUniformUnboundedAutomaton(alphabet);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty, 0},
                 {"Empty", 0, empty, 1},
                 {"Empty", 0, empty, 2},
                 {"Empty", 0, empty, 3},
-                {"Empty String", 0, emptyString, 0},
+                {"Empty String", 1, emptyString, 0},
                 {"Empty String", 0, emptyString, 1},
                 {"Empty String", 0, emptyString, 2},
                 {"Empty String", 0, emptyString, 3},
@@ -62,14 +59,14 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
                 {"Concrete", 1, concrete, 1},
                 {"Concrete", 1, concrete, 2},
                 {"Concrete", 1, concrete, 3},
-                {"Uniform", 21, uniform, 0},
-                {"Uniform", 20, uniform, 1},
+                {"Uniform", 1, uniform, 0},
+                {"Uniform", 4, uniform, 1},
                 {"Uniform", 16, uniform, 2},
-                {"Uniform", 0, uniform, 3},
-                {"Non-uniform", 21, nonUniform, 0},
-                {"Non-uniform", 20, nonUniform, 1},
+                {"Uniform", 64, uniform, 3},
+                {"Non-uniform", 1, nonUniform, 0},
+                {"Non-uniform", 4, nonUniform, 1},
                 {"Non-uniform", 16, nonUniform, 2},
-                {"Non-uniform", 0, nonUniform, 3}
+                {"Non-uniform", 64, nonUniform, 3}
         });
     }
 
@@ -77,7 +74,7 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
     public void setup() {
 
         // *** arrange ***
-        PreciseSetLength operation = new PreciseSetLength(this.start);
+        PrecisePrefix operation = new PrecisePrefix(this.end);
 
         // *** act ***
         this.resultAutomaton = operation.op(this.automaton);
@@ -88,7 +85,8 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton)
+        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton,
+                                                       end)
                                            .intValue();
 
         // *** assert ***

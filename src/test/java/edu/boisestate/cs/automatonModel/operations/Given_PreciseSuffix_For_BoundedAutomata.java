@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_PreciseSetLength_For_BoundedAutomata {
+public class Given_PreciseSuffix_For_BoundedAutomata {
 
     @Parameter(value = 2)
     public Automaton automaton;
@@ -33,7 +33,7 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
     private Automaton resultAutomaton;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.setLength({3}) - Expected" +
+    @Parameters(name = "{index}: <{0} Automaton>.suffix({3}) - Expected" +
                        " MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
@@ -44,10 +44,8 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
         Automaton empty = BasicAutomata.makeEmpty();
         Automaton emptyString = BasicAutomata.makeEmptyString();
         Automaton concrete = getConcreteAutomaton(alphabet, "ABC");
-        Automaton uniform = getUniformBoundedAutomaton(alphabet,
-                                                       initialBoundLength);
-        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet,
-                                                           initialBoundLength);
+        Automaton uniform = getUniformBoundedAutomaton(alphabet, initialBoundLength);
+        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty, 0},
@@ -62,14 +60,14 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
                 {"Concrete", 1, concrete, 1},
                 {"Concrete", 1, concrete, 2},
                 {"Concrete", 1, concrete, 3},
-                {"Uniform", 21, uniform, 0},
-                {"Uniform", 20, uniform, 1},
-                {"Uniform", 16, uniform, 2},
-                {"Uniform", 0, uniform, 3},
-                {"Non-uniform", 21, nonUniform, 0},
-                {"Non-uniform", 20, nonUniform, 1},
-                {"Non-uniform", 16, nonUniform, 2},
-                {"Non-uniform", 0, nonUniform, 3}
+                {"Uniform", 64, uniform, 0},
+                {"Uniform", 16, uniform, 1},
+                {"Uniform", 4, uniform, 2},
+                {"Uniform", 1, uniform, 3},
+                {"Non-uniform", 37, nonUniform, 0},
+                {"Non-uniform", 16, nonUniform, 1},
+                {"Non-uniform", 4, nonUniform, 2},
+                {"Non-uniform", 1, nonUniform, 3}
         });
     }
 
@@ -77,7 +75,7 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
     public void setup() {
 
         // *** arrange ***
-        PreciseSetLength operation = new PreciseSetLength(this.start);
+        PreciseSuffix operation = new PreciseSuffix(this.start);
 
         // *** act ***
         this.resultAutomaton = operation.op(this.automaton);

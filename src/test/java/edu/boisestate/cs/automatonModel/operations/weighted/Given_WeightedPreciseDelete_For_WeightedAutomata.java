@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_PreciseWeightedDelete_For_WeightedUnboundedAutomata {
+public class Given_WeightedPreciseDelete_For_WeightedAutomata {
 
     @Parameter(value = 3)
     public int start;
@@ -36,7 +36,6 @@ public class Given_PreciseWeightedDelete_For_WeightedUnboundedAutomata {
     public String description;
 
     private WeightedAutomaton resultAutomaton;
-    private static int initialBoundLength = 3;
 
 
     @SuppressWarnings("Duplicates")
@@ -46,13 +45,14 @@ public class Given_PreciseWeightedDelete_For_WeightedUnboundedAutomata {
 
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
+        int initialBoundLength = 3;
 
         // create automata
         WeightedAutomaton empty = makeEmpty();
         WeightedAutomaton emptyString = makeEmptyString();
         WeightedAutomaton concrete = getConcreteWeightedAutomaton(alphabet, "ABC");
-        WeightedAutomaton uniform = getUniformUnboundedWeightedAutomaton(alphabet);
-        WeightedAutomaton nonUniform = getNonUniformUnboundedWeightedAutomaton(alphabet);
+        WeightedAutomaton uniform = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
+        WeightedAutomaton nonUniform = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
 
         // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{
@@ -121,11 +121,11 @@ public class Given_PreciseWeightedDelete_For_WeightedUnboundedAutomata {
     @Test
     public void it_should_return_the_correct_model_count() {
         // *** act ***
-        int length = initialBoundLength - (end - start);
-        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton, length)
+        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton)
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String message = String.format("<%s Automaton>.delete(%d, %d)", description, start, end);
+        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

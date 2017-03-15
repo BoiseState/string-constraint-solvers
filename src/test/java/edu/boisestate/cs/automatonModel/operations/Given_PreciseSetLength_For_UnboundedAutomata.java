@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_PreciseSetLength_For_BoundedAutomata {
+public class Given_PreciseSetLength_For_UnboundedAutomata {
 
     @Parameter(value = 2)
     public Automaton automaton;
@@ -31,6 +31,7 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
     @Parameter(value = 3)
     public int start;
     private Automaton resultAutomaton;
+    private int initialBoundLength = 3;
 
     @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton>.setLength({3}) - Expected" +
@@ -38,16 +39,13 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
-        int initialBoundLength = 3;
 
         // get Automata
         Automaton empty = BasicAutomata.makeEmpty();
         Automaton emptyString = BasicAutomata.makeEmptyString();
         Automaton concrete = getConcreteAutomaton(alphabet, "ABC");
-        Automaton uniform = getUniformBoundedAutomaton(alphabet,
-                                                       initialBoundLength);
-        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet,
-                                                           initialBoundLength);
+        Automaton uniform = getUniformUnboundedAutomaton(alphabet);
+        Automaton nonUniform = getNonUniformUnboundedAutomaton(alphabet);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty, 0},
@@ -75,7 +73,6 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
 
     @Before
     public void setup() {
-
         // *** arrange ***
         PreciseSetLength operation = new PreciseSetLength(this.start);
 
@@ -88,7 +85,8 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton)
+        int modelCount = StringModelCounter.ModelCount(resultAutomaton,
+                                                       initialBoundLength)
                                            .intValue();
 
         // *** assert ***

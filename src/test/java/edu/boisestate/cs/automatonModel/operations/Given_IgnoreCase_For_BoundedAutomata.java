@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_PreciseSetLength_For_BoundedAutomata {
+public class Given_IgnoreCase_For_BoundedAutomata {
 
     @Parameter(value = 2)
     public Automaton automaton;
@@ -28,48 +28,29 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
     public String description;
     @Parameter(value = 1)
     public int expectedModelCount;
-    @Parameter(value = 3)
-    public int start;
     private Automaton resultAutomaton;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.setLength({3}) - Expected" +
+    @Parameters(name = "{index}: <{0} Automaton>.ignoreCase() - Expected" +
                        " MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
-        Alphabet alphabet = new Alphabet("A-D");
+        Alphabet alphabet = new Alphabet("A-D,a-d");
         int initialBoundLength = 3;
 
         // get Automata
         Automaton empty = BasicAutomata.makeEmpty();
         Automaton emptyString = BasicAutomata.makeEmptyString();
         Automaton concrete = getConcreteAutomaton(alphabet, "ABC");
-        Automaton uniform = getUniformBoundedAutomaton(alphabet,
-                                                       initialBoundLength);
-        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet,
-                                                           initialBoundLength);
+        Automaton uniform = getUniformBoundedAutomaton(alphabet, initialBoundLength);
+        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", 0, empty, 0},
-                {"Empty", 0, empty, 1},
-                {"Empty", 0, empty, 2},
-                {"Empty", 0, empty, 3},
-                {"Empty String", 0, emptyString, 0},
-                {"Empty String", 0, emptyString, 1},
-                {"Empty String", 0, emptyString, 2},
-                {"Empty String", 0, emptyString, 3},
-                {"Concrete", 1, concrete, 0},
-                {"Concrete", 1, concrete, 1},
-                {"Concrete", 1, concrete, 2},
-                {"Concrete", 1, concrete, 3},
-                {"Uniform", 21, uniform, 0},
-                {"Uniform", 20, uniform, 1},
-                {"Uniform", 16, uniform, 2},
-                {"Uniform", 0, uniform, 3},
-                {"Non-uniform", 21, nonUniform, 0},
-                {"Non-uniform", 20, nonUniform, 1},
-                {"Non-uniform", 16, nonUniform, 2},
-                {"Non-uniform", 0, nonUniform, 3}
+                {"Empty", 0, empty},
+                {"Empty String", 1, emptyString},
+                {"Concrete", 8, concrete},
+                {"Uniform", 585, uniform},
+                {"Non-uniform", 326, nonUniform}
         });
     }
 
@@ -77,7 +58,7 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
     public void setup() {
 
         // *** arrange ***
-        PreciseSetLength operation = new PreciseSetLength(this.start);
+        IgnoreCase operation = new IgnoreCase();
 
         // *** act ***
         this.resultAutomaton = operation.op(this.automaton);

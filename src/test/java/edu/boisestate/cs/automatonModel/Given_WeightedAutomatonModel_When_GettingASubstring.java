@@ -97,7 +97,7 @@ public class Given_WeightedAutomatonModel_When_GettingASubstring {
                 {"Non-uniform", 37, nonUniformModel, 1, 3},
                 {"Non-uniform", 44, nonUniformModel, 2, 2},
                 {"Non-uniform", 37, nonUniformModel, 2, 3},
-                {"Non-uniform", 37, nonUniformModel, 3, 3},
+                {"Non-uniform", 37, nonUniformModel, 3, 3}
         });
     }
 

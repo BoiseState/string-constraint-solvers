@@ -36,7 +36,7 @@ public class Given_PreciseDeletion_For_BoundedAutomata {
     public int expectedModelCount;
     @Parameter(value = 3)
     public int start;
-    private Automaton deletedAutomaton;
+    private Automaton resultAutomaton;
 
     @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton>.delete({3}, {4}) - Expected" +
@@ -113,18 +113,18 @@ public class Given_PreciseDeletion_For_BoundedAutomata {
     public void setup() {
 
         // *** arrange ***
-        PreciseDelete delete = new PreciseDelete(this.start, this.end);
+        PreciseDelete operation = new PreciseDelete(this.start, this.end);
 
         // *** act ***
-        this.deletedAutomaton = delete.op(this.automaton);
-        this.deletedAutomaton.minimize();
+        this.resultAutomaton = operation.op(this.automaton);
+        this.resultAutomaton.minimize();
 
     }
 
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = StringModelCounter.ModelCount(this.deletedAutomaton)
+        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton)
                                            .intValue();
 
         // *** assert ***

@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_ModelCounting_For_WeightedAutomata {
+public class Given_StringModelCounter_When_ModelCounting_For_WeightedAutomata {
 
     @Parameter(value = 3)
     public WeightedAutomaton automaton;

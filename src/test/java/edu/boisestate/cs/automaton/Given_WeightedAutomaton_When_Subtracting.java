@@ -50,62 +50,12 @@ public class Given_WeightedAutomaton_When_Subtracting {
         WeightedAutomaton empty = makeEmpty();
         WeightedAutomaton emptyString = makeEmptyString();
         WeightedAutomaton concrete = getConcreteWeightedAutomaton(alphabet, "ABC");
-        WeightedAutomaton uniformBounded = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
-        WeightedAutomaton nonUniformBounded = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
-        WeightedAutomaton uniformUnbounded = getUniformUnboundedWeightedAutomaton(alphabet);
-        WeightedAutomaton nonUniformUnbounded = getNonUniformUnboundedWeightedAutomaton(alphabet);
 
         // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{
                 {"Empty", "Empty", 0, empty, empty},
                 {"Empty", "Empty String", 0, empty, emptyString},
                 {"Empty", "Concrete", 0, empty, concrete},
-                {"Empty", "Uniform Unbounded", 0, empty, uniformUnbounded},
-                {"Empty", "Non-Uniform Unbounded", 0, empty, nonUniformUnbounded},
-                {"Empty", "Uniform Bounded", 0, empty, uniformBounded},
-                {"Empty", "Non-Uniform Bounded", 0, empty, nonUniformBounded},
-                {"Empty String", "Empty", 1, emptyString, empty},
-                {"Empty String", "Empty String", 0, emptyString, emptyString},
-                {"Empty String", "Concrete", 1, emptyString, concrete},
-                {"Empty String", "Uniform Unbounded", 0, emptyString, uniformUnbounded},
-                {"Empty String", "Non-Uniform Unbounded", 1, emptyString, nonUniformUnbounded},
-                {"Empty String", "Uniform Bounded", 0, emptyString, uniformBounded},
-                {"Empty String", "Non-Uniform Bounded", 1, emptyString, nonUniformBounded},
-                {"Concrete", "Empty", 1, concrete, empty},
-                {"Concrete", "Empty String", 1, concrete, emptyString},
-                {"Concrete", "Concrete", 0, concrete, concrete},
-                {"Concrete", "Uniform Unbounded", 0, concrete, uniformUnbounded},
-                {"Concrete", "Non-Uniform Unbounded", 0, concrete, nonUniformUnbounded},
-                {"Concrete", "Uniform Bounded", 0, concrete, uniformBounded},
-                {"Concrete", "Non-Uniform Bounded", 0, concrete, nonUniformBounded},
-                {"Uniform Unbounded", "Empty", 85, uniformUnbounded, empty},
-                {"Uniform Unbounded", "Empty String", 84, uniformUnbounded, emptyString},
-                {"Uniform Unbounded", "Concrete", 84, uniformUnbounded, concrete},
-                {"Uniform Unbounded", "Uniform Unbounded", 0, uniformUnbounded, uniformUnbounded},
-                {"Uniform Unbounded", "Non-Uniform Unbounded", 40, uniformUnbounded, nonUniformUnbounded},
-                {"Uniform Unbounded", "Uniform Bounded", 0, uniformUnbounded, uniformBounded},
-                {"Uniform Unbounded", "Non-Uniform Bounded", 40, uniformUnbounded, nonUniformBounded},
-                {"Non-Uniform Unbounded", "Empty", 45, nonUniformUnbounded, empty},
-                {"Non-Uniform Unbounded", "Empty String", 45, nonUniformUnbounded, emptyString},
-                {"Non-Uniform Unbounded", "Concrete", 44, nonUniformUnbounded, concrete},
-                {"Non-Uniform Unbounded", "Uniform Unbounded", 0, nonUniformUnbounded, uniformUnbounded},
-                {"Non-Uniform Unbounded", "Non-Uniform Unbounded", 0, nonUniformUnbounded, nonUniformUnbounded},
-                {"Non-Uniform Unbounded", "Uniform Bounded", 0, nonUniformUnbounded, uniformBounded},
-                {"Non-Uniform Unbounded", "Non-Uniform Bounded", 0, nonUniformUnbounded, nonUniformBounded},
-                {"Uniform Bounded", "Empty", 85, uniformBounded, empty},
-                {"Uniform Bounded", "Empty String", 84, uniformBounded, emptyString},
-                {"Uniform Bounded", "Concrete", 84, uniformBounded, concrete},
-                {"Uniform Bounded", "Uniform Unbounded", 0, uniformBounded, uniformUnbounded},
-                {"Uniform Bounded", "Non-Uniform Unbounded", 40, uniformBounded, nonUniformUnbounded},
-                {"Uniform Bounded", "Uniform Bounded", 0, uniformBounded, uniformBounded},
-                {"Uniform Bounded", "Non-Uniform Bounded", 40, uniformBounded, nonUniformBounded},
-                {"Non-Uniform Bounded", "Empty", 45, nonUniformBounded, empty},
-                {"Non-Uniform Bounded", "Empty String", 45, nonUniformBounded, emptyString},
-                {"Non-Uniform Bounded", "Concrete", 44, nonUniformBounded, concrete},
-                {"Non-Uniform Bounded", "Uniform Unbounded", 0, nonUniformBounded, uniformUnbounded},
-                {"Non-Uniform Bounded", "Non-Uniform Unbounded", 0, nonUniformBounded, nonUniformUnbounded},
-                {"Non-Uniform Bounded", "Uniform Bounded", 0, nonUniformBounded, uniformBounded},
-                {"Non-Uniform Bounded", "Non-Uniform Bounded", 0, nonUniformBounded, nonUniformBounded}
         });
     }
 

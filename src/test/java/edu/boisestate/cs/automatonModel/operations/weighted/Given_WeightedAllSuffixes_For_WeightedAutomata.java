@@ -30,7 +30,7 @@ public class Given_WeightedAllSuffixes_For_WeightedAutomata {
     public String description;
     @Parameter(value = 1)
     public int expectedModelCount;
-    private WeightedAutomaton substringAutomaton;
+    private WeightedAutomaton resultAutomaton;
 
     @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton>.allSuffixes() - Expected MC = {1}")
@@ -66,16 +66,18 @@ public class Given_WeightedAllSuffixes_For_WeightedAutomata {
         WeightedAllSuffixes substring = new WeightedAllSuffixes();
 
         // *** act ***
-        substringAutomaton = substring.op(automaton);
+        resultAutomaton = substring.op(automaton);
     }
 
     @Test
     public void it_should_return_the_correct_model_count() {
         // *** act ***
-        int modelCount = StringModelCounter.ModelCount(this.substringAutomaton)
+        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton)
                                            .intValue();
 
         // *** assert ***
+        String message = String.format("<%s Automaton>.allSuffixes()", description);
+        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
         assertThat(modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

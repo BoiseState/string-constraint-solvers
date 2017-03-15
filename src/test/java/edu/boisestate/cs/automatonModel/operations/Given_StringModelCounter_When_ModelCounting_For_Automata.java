@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_ModelCounting_For_Automata {
+public class Given_StringModelCounter_When_ModelCounting_For_Automata {
 
     @Parameter(value = 3)
     public Automaton automaton;
