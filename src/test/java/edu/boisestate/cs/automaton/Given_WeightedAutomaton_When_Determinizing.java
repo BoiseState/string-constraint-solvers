@@ -48,6 +48,8 @@ public class Given_WeightedAutomaton_When_Determinizing {
         WeightedAutomaton empty = makeEmpty();
         WeightedAutomaton emptyString = makeEmptyString();
         WeightedAutomaton concrete = getConcreteWeightedAutomaton(alphabet, "ABC");
+        WeightedAutomaton uniform = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
+        WeightedAutomaton nonUniform = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
 
         // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{

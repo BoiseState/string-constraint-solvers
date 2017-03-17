@@ -33,7 +33,7 @@ public class Testing {
         nonUniformBounded.minimize();
         nonUniformBounded.minimize();
 
-        // constuct unbalanced uniform bounded automata
+        // construct unbalanced uniform bounded automata
         WeightedAutomaton a0 = anyChar.repeat(0,2);
         a0.setInitialFactor(4);
 

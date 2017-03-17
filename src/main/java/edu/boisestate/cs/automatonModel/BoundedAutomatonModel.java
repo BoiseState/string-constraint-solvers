@@ -625,11 +625,10 @@ public class BoundedAutomatonModel
 
         // get automata for operations
         Automaton arg = getAutomatonFromBoundedModel(argModel);
-        Automaton before = performUnaryOperation(this.automaton, new PrecisePrefix(offset), this.alphabet);
-        Automaton after = performUnaryOperation(this.automaton, new PreciseSuffix(offset + 1), this.alphabet);
 
         // get resulting automaton
-        Automaton result = before.concatenate(arg).concatenate(after);
+        PreciseSetCharAt operation = new PreciseSetCharAt(offset);
+        Automaton result = operation.op(automaton, arg);
 
         // return unbounded model from automaton
         return new BoundedAutomatonModel(result, this.alphabet, boundLength);

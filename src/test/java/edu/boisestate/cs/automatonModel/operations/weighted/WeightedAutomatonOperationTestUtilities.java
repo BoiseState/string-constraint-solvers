@@ -10,31 +10,6 @@ import java.util.Set;
 
 public class WeightedAutomatonOperationTestUtilities {
 
-    public enum Type {
-        EMPTY,
-        EMPTY_STRING,
-        CONCRETE,
-        UNIFORM,
-        NON_UNIFORM
-    }
-
-    public enum Bounding {
-        BOUNDED,
-        UNBOUNDED
-    }
-
-    public enum Balance {
-        BALANCED,
-        UNBALANCED
-    }
-
-    public static WeightedAutomaton getWeightedAutomaton(Type type,
-                                                         Bounding bounding,
-                                                         int length,
-                                                         Balance balance) {
-        return null;
-    }
-
     public static WeightedAutomaton getConcreteWeightedAutomaton(Alphabet alphabet, String string) {
         WeightedAutomaton concrete = BasicWeightedAutomata.makeString(string);
         WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()) .repeat(0, string.length());
@@ -51,7 +26,7 @@ public class WeightedAutomatonOperationTestUtilities {
         return nonUniform;
     }
 
-    public static WeightedAutomaton getNonUniformUnboundedWeightedAutomaton(Alphabet alphabet) {
+    private static WeightedAutomaton getNonUniformUnboundedWeightedAutomaton(Alphabet alphabet) {
         WeightedAutomaton uniform = getUniformUnboundedWeightedAutomaton(alphabet);
         char c = alphabet.getCharSet().charAt(0);
         WeightedAutomaton intersect = uniform.concatenate(BasicWeightedAutomata.makeChar(c)) .concatenate(uniform);
@@ -68,138 +43,179 @@ public class WeightedAutomatonOperationTestUtilities {
         return uniform;
     }
 
-    public static WeightedAutomaton getUniformUnboundedWeightedAutomaton(Alphabet alphabet) {
+    private static WeightedAutomaton getUniformUnboundedWeightedAutomaton(Alphabet
+                                                                          alphabet) {
         WeightedAutomaton uniform = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()) .repeat();
         uniform.minimize();
         return uniform;
     }
 
-    public static WeightedAutomaton getUnbalancedUniformBoundedWeightedAutomaton(Alphabet alphabet, int boundLength) {
-        WeightedAutomaton uniform = getUniformBoundedWeightedAutomaton(alphabet, boundLength - 1);
-        uniform.setInitialFactor(alphabet.size());
-        return uniform;
+    public static WeightedAutomaton getWeightedAutomaton(Type type,
+                                                         Bounding bounding,
+                                                         Balance balance,
+                                                         int length,
+                                                         int index) {
+        return null;
     }
 
-    public static WeightedAutomaton getUnbalancedUniformBoundedWeightedAutomaton(Alphabet alphabet, int boundLength, int index) {
-        WeightedAutomaton uniform = getUniformBoundedWeightedAutomaton(alphabet, boundLength - 1);
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unbalanced_NonUniform_WeightedAutomaton_0() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
 
-        // walk to index
-        Set<WeightedState> states = walkToIndex(index, uniform);
+        // set accept state
+        q3.setAccept(true);
 
-        // unbalance transitions from states
-        for (WeightedState s: states) {
-            for (WeightedTransition t : s.getTransitions()) {
-                t.setWeight(alphabet.size());
-            }
-        }
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', q1, 1));
+        q0.addTransition(new WeightedTransition('B', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q3, 1));
+        q2.addTransition(new WeightedTransition('A', q3, 1));
 
-        return uniform;
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+        automaton.setInitialFactor(4);
+
+        // return automaton
+        return automaton;
     }
 
-    private static Set<WeightedState> walkToIndex(int index, WeightedAutomaton automaton) {
-        Set<WeightedState> states = new HashSet<>();
-        states.add(automaton.getInitialState());
-        for (int i = 0; i < index; i++) {
-            Set<WeightedState> nextStates = new HashSet<>();
-            for (WeightedState s : states) {
-                for (WeightedTransition t : s.getTransitions()) {
-                    nextStates.add(t.getDest());
-                }
-            }
-            states = nextStates;
-        }
-        return states;
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unbalanced_NonUniform_WeightedAutomaton_1() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+
+        // set accept state
+        q3.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', q1, 4));
+        q0.addTransition(new WeightedTransition('B', 'D', q2, 4));
+        q1.addTransition(new WeightedTransition('A', 'D', q3, 1));
+        q2.addTransition(new WeightedTransition('A', q3, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
     }
 
-    public static WeightedAutomaton getUnbalancedUniformUnboundedWeightedAutomaton(Alphabet alphabet) {
-        WeightedAutomaton uniform = getUniformUnboundedWeightedAutomaton(alphabet);
-        uniform.setInitialFactor(alphabet.size());
-        return uniform;
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unbalanced_NonUniform_WeightedAutomaton_2() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+
+        // set accept state
+        q3.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', q1, 1));
+        q0.addTransition(new WeightedTransition('B', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q3, 4));
+        q2.addTransition(new WeightedTransition('A', q3, 4));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
     }
 
-    public static WeightedAutomaton getUnbalancedUniformUnboundedWeightedAutomaton(Alphabet alphabet, int index) {
-        if (index == 0) {
-            return getUnbalancedUniformUnboundedWeightedAutomaton(alphabet);
-        }
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unbalanced_Uniform_WeightedAutomaton_0() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
 
-        WeightedAutomaton uniform = getUniformUnboundedWeightedAutomaton(alphabet);
+        // set accept state
+        q2.setAccept(true);
 
-        // walk to index
-        WeightedState initial = new WeightedState();
-        Set<WeightedState> states = new HashSet<>();
-        states.add(initial);
-        Map<WeightedState, WeightedState> stateMap = new HashMap<>();
-        stateMap.put(initial, uniform.getInitialState());
-        states = walkCloneAndUnbalance(alphabet.size(), index, states, stateMap);
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q2, 1));
 
-        // connect new states
-        Set<WeightedStatePair> epsilons = new HashSet<>();
-        for (WeightedState s : states) {
-            epsilons.add(new WeightedStatePair(s, stateMap.get(s)));
-        }
-        uniform.setInitialState(initial);
-        uniform.addEpsilons(epsilons);
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+        automaton.setInitialFactor(4);
 
-        return uniform;
+        // return automaton
+        return automaton;
     }
 
-    private static Set<WeightedState> walkCloneAndUnbalance(int factor, int index, Set<WeightedState> states, Map<WeightedState, WeightedState> stateMap) {
-        for (int i = 0; i < index; i++) {
-            Set<WeightedState> nextStates = new HashSet<>();
-            for (WeightedState s : states) {
-                WeightedState originalState = stateMap.get(s);
-                for (WeightedTransition t : originalState.getTransitions()) {
-                    WeightedState dest = new WeightedState();
-                    stateMap.put(dest, t.getDest());
-                    nextStates.add(dest);
-                    int weight = t.getWeight();
-                    if (i == (index - 1)) {
-                        weight = weight * factor;
-                    }
-                    s.addTransition(new WeightedTransition(t.getMin(),
-                                                           t.getMax(),
-                                                           dest,
-                                                           weight));
-                }
-            }
-            states = nextStates;
-        }
-        return states;
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unbalanced_Uniform_WeightedAutomaton_1() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+
+        // set accept state
+        q2.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 4));
+        q1.addTransition(new WeightedTransition('A', 'D', q2, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
     }
 
-    public static WeightedAutomaton getUnbalancedNonUniformBoundedWeightedAutomaton(Alphabet alphabet, int boundLength) {
-        WeightedAutomaton nonUniform = getNonUniformBoundedWeightedAutomaton(alphabet, boundLength - 1);
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unbalanced_Uniform_WeightedAutomaton_2() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
 
-        WeightedState initial = new WeightedState();
-        Set<WeightedStatePair> epsilons = new HashSet<>();
-        for (WeightedTransition t : nonUniform.getInitialState().getTransitions()) {
-            epsilons.add(new WeightedStatePair(initial, t.getDest()));
-        }
-        nonUniform.setInitialState(initial);
-        nonUniform.addEpsilons(epsilons);
-        nonUniform.setInitialFactor(alphabet.size());
-        return nonUniform;
+        // set accept state
+        q2.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q2, 4));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
     }
 
-    public static WeightedAutomaton getUnbalancedNonUniformBoundedWeightedAutomaton(Alphabet alphabet, int boundLength, int index) {
-        WeightedAutomaton nonUniform = getNonUniformBoundedWeightedAutomaton(alphabet, boundLength - 1);
+    public enum Balance {
+        BALANCED,
+        UNBALANCED
+    }
 
-        Set<WeightedState> states = walkToIndex(index - 1, nonUniform);
-        Set<WeightedState> nextStates = new HashSet<>();
-        for (WeightedState s : states) {
-            for (WeightedTransition t : s.getTransitions()) {
-                t.setWeight(t.getWeight() * alphabet.size());
-                nextStates.add(t.getDest());
-            }
-        }
-        Set<WeightedStatePair> epsilons = new HashSet<>();
-        for (WeightedState s : nextStates) {
-            for (WeightedTransition t : s.getTransitions()) {
-                epsilons.add(new WeightedStatePair(s, t.getDest()));
-            }
-        }
-        nonUniform.addEpsilons(epsilons);
+    public enum Bounding {
+        BOUNDED,
+        UNBOUNDED
+    }
 
-        return nonUniform;
+    public enum Type {
+        EMPTY,
+        EMPTY_STRING,
+        CONCRETE,
+        UNIFORM,
+        NON_UNIFORM
     }
 }

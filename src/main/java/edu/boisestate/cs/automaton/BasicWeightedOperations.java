@@ -378,19 +378,17 @@ final public class BasicWeightedOperations {
         if (a1 == a2) {
             return a1.cloneIfRequired();
         }
-        WeightedTransition[][] transitions1 =
-                WeightedAutomaton.getSortedTransitions(a1.getStates());
-        WeightedTransition[][] transitions2 =
-                WeightedAutomaton.getSortedTransitions(a2.getStates());
+        WeightedTransition[][] transitions1 = WeightedAutomaton.getSortedTransitions(a1.getStates());
+        WeightedTransition[][] transitions2 = WeightedAutomaton.getSortedTransitions(a2.getStates());
         WeightedAutomaton c = new WeightedAutomaton();
-        LinkedList<WeightedStatePair> worklist = new LinkedList<WeightedStatePair>();
-        HashMap<WeightedStatePair, WeightedStatePair> newstates =
-                new HashMap<WeightedStatePair, WeightedStatePair>();
+        c.setInitialFactor(a1.getInitialFactor());
+        LinkedList<WeightedStatePair> workList = new LinkedList<>();
+        HashMap<WeightedStatePair, WeightedStatePair> newStates = new HashMap<>();
         WeightedStatePair p = new WeightedStatePair(c.initial, a1.initial, a2.initial);
-        worklist.add(p);
-        newstates.put(p, p);
-        while (worklist.size() > 0) {
-            p = worklist.removeFirst();
+        workList.add(p);
+        newStates.put(p, p);
+        while (workList.size() > 0) {
+            p = workList.removeFirst();
             p.s.setAccept(p.s1.isAccept() && p.s2.isAccept());
             WeightedTransition[] t1 = transitions1[p.s1.getNumber()];
             WeightedTransition[] t2 = transitions2[p.s2.getNumber()];
@@ -398,27 +396,20 @@ final public class BasicWeightedOperations {
                 while (b2 < t2.length && t2[b2].getMax() < t1[n1].getMin()) {
                     b2++;
                 }
-                for (int n2 = b2;
-                     n2 < t2.length && t1[n1].getMax() >= t2[n2].getMin();
-                     n2++) {
+                for (int n2 = b2; n2 < t2.length && t1[n1].getMax() >= t2[n2].getMin(); n2++) {
                     if (t2[n2].getMax() >= t1[n1].getMin()) {
-                        WeightedStatePair q = new WeightedStatePair(t1[n1].getDest(),
-                                                                    t2[n2].getDest());
-                        WeightedStatePair r = newstates.get(q);
+                        WeightedStatePair q = new WeightedStatePair(t1[n1].getDest(), t2[n2].getDest());
+                        WeightedStatePair r = newStates.get(q);
                         if (r == null) {
                             q.s = new WeightedState();
-                            worklist.add(q);
-                            newstates.put(q, q);
+                            workList.add(q);
+                            newStates.put(q, q);
                             r = q;
                         }
-                        char min = t1[n1].getMin() > t2[n2].getMin() ?
-                                   t1[n1].getMin() :
-                                   t2[n2].getMin();
-                        char max = t1[n1].getMax() < t2[n2].getMax() ?
-                                   t1[n1].getMax() :
-                                   t2[n2].getMax();
-                        p.s.getTransitions()
-                           .add(new WeightedTransition(min, max, r.s));
+                        char min = t1[n1].getMin() > t2[n2].getMin() ? t1[n1].getMin() : t2[n2].getMin();
+                        char max = t1[n1].getMax() < t2[n2].getMax() ? t1[n1].getMax() : t2[n2].getMax();
+                        int weight = t1[n1].getWeight();
+                        p.s.getTransitions().add(new WeightedTransition(min, max, r.s, weight));
                     }
                 }
             }

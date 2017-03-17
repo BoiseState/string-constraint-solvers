@@ -15,6 +15,11 @@ import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmpty;
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmptyString;
 import static edu.boisestate.cs.automatonModel.operations.weighted
         .WeightedAutomatonOperationTestUtilities.getConcreteWeightedAutomaton;
+import static edu.boisestate.cs.automatonModel.operations.weighted
+        .WeightedAutomatonOperationTestUtilities
+        .getNonUniformBoundedWeightedAutomaton;
+import static edu.boisestate.cs.automatonModel.operations.weighted
+        .WeightedAutomatonOperationTestUtilities.getUniformBoundedWeightedAutomaton;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -46,12 +51,19 @@ public class Given_WeightedAutomaton_When_Reducing {
         WeightedAutomaton empty = makeEmpty();
         WeightedAutomaton emptyString = makeEmptyString();
         WeightedAutomaton concrete = getConcreteWeightedAutomaton(alphabet, "ABC");
+        WeightedAutomaton uniform = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
+        WeightedAutomaton nonUniform = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
+
+        // create other automata
+
 
         // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty},
                 {"Empty String", 1, emptyString},
                 {"Concrete", 1, concrete},
+                {"Uniform", 85, uniform},
+                {"Non-Uniform", 45, nonUniform}
         });
     }
 

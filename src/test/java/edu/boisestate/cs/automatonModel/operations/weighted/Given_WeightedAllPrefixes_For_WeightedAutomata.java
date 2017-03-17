@@ -46,8 +46,6 @@ public class Given_WeightedAllPrefixes_For_WeightedAutomata {
         WeightedAutomaton concrete = getConcreteWeightedAutomaton(alphabet, "ABC");
         WeightedAutomaton uniformBounded = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
         WeightedAutomaton nonUniformBounded = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
-        WeightedAutomaton uniformUnbounded = getUniformUnboundedWeightedAutomaton(alphabet);
-        WeightedAutomaton nonUniformUnbounded = getNonUniformUnboundedWeightedAutomaton(alphabet);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty},

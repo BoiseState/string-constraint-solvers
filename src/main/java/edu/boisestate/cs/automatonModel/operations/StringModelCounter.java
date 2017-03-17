@@ -21,7 +21,7 @@ public class StringModelCounter {
 
         // account for empty string
         if (automaton.isEmptyString()) {
-            return BigInteger.valueOf(automaton.getNumEmptyStrings());
+            return BigInteger.valueOf(automaton.getInitialFactor());
         }
 
         // get model count
@@ -32,7 +32,7 @@ public class StringModelCounter {
 
         // account for empty string
         if (automaton.getInitialState().isAccept()) {
-            modelCount = modelCount.add(BigInteger.valueOf(automaton.getNumEmptyStrings()));
+            modelCount = modelCount.add(BigInteger.ONE);
         }
         return modelCount;
     }
@@ -42,7 +42,7 @@ public class StringModelCounter {
 
         // allow empty string
         if (initialCount == 0 && automaton.getInitialState().isAccept()) {
-            return BigInteger.valueOf(automaton.getNumEmptyStrings());
+            return BigInteger.valueOf(automaton.getInitialFactor());
         } else if (initialCount < 1) {
             return BigInteger.ZERO;
         }
@@ -58,7 +58,7 @@ public class StringModelCounter {
 
         // account for empty string
         if (automaton.getInitialState().isAccept()) {
-            modelCount = modelCount.add(BigInteger.valueOf(automaton.getNumEmptyStrings()));
+            modelCount = modelCount.add(BigInteger.ONE);
         }
 
         return modelCount;

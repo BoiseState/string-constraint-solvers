@@ -135,16 +135,6 @@ public class WeightedAutomaton
      */
     int initialFactor;
 
-    public int getNumEmptyStrings() {
-        return numEmptyStrings;
-    }
-
-    public void setNumEmptyStrings(int numEmptyStrings) {
-        this.numEmptyStrings = numEmptyStrings;
-    }
-
-    int numEmptyStrings;
-
     /**
      * Returns the set of reachable accept states.
      *
@@ -424,7 +414,6 @@ public class WeightedAutomaton
         deterministic = true;
         singleton = null;
         initialFactor = 1;
-        numEmptyStrings = 1;
     }
 
     /**
@@ -1133,9 +1122,9 @@ public class WeightedAutomaton
     public WeightedAutomaton clone() {
         try {
             WeightedAutomaton a = (WeightedAutomaton) super.clone();
+            a.setInitialFactor(this.initialFactor);
             if (!isSingleton()) {
-                HashMap<WeightedState, WeightedState> m =
-                        new HashMap<WeightedState, WeightedState>();
+                HashMap<WeightedState, WeightedState> m = new HashMap<WeightedState, WeightedState>();
                 Set<WeightedState> states = getStates();
                 for (WeightedState s : states) {
                     m.put(s, new WeightedState());
@@ -1147,10 +1136,7 @@ public class WeightedAutomaton
                         a.initial = p;
                     }
                     for (WeightedTransition t : s.getTransitions()) {
-                        p.getTransitions()
-                         .add(new WeightedTransition(t.getMin(),
-                                                     t.getMax(),
-                                                     m.get(t.getDest())));
+                        p.getTransitions().add(new WeightedTransition(t.getMin(), t.getMax(), m.get(t.getDest()), t.getWeight()));
                     }
                 }
             }

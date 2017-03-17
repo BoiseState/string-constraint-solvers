@@ -15,8 +15,6 @@ import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmpty;
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmptyString;
 import static edu.boisestate.cs.automatonModel.operations.weighted
         .WeightedAutomatonOperationTestUtilities.*;
-import static edu.boisestate.cs.automatonModel.operations.weighted
-        .WeightedAutomatonOperationTestUtilities.getNonUniformUnboundedWeightedAutomaton;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -54,6 +52,11 @@ public class Given_WeightedAutomaton_When_Intersecting {
         WeightedAutomaton concrete = getConcreteWeightedAutomaton(alphabet, "ABC");
         WeightedAutomaton uniform = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
         WeightedAutomaton nonUniform = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
+        WeightedAutomaton unbalancedUniform0 = unbalanced_Uniform_WeightedAutomaton_0();
+        WeightedAutomaton unbalancedUniform1 = unbalanced_Uniform_WeightedAutomaton_1();
+        WeightedAutomaton unbalancedUniform2 = unbalanced_Uniform_WeightedAutomaton_2();
+        WeightedAutomaton unbalancedNonUniform0 = unbalanced_NonUniform_WeightedAutomaton_0();
+        WeightedAutomaton unbalancedNonUniform1 = unbalanced_NonUniform_WeightedAutomaton_1();
 
         // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{
@@ -82,6 +85,31 @@ public class Given_WeightedAutomaton_When_Intersecting {
                 {"Non-Uniform", "Concrete", 1, nonUniform, concrete},
                 {"Non-Uniform", "Uniform", 45, nonUniform, uniform},
                 {"Non-Uniform", "Non-Uniform", 45, nonUniform, nonUniform},
+                {"Unbalanced Uniform 0", "Empty", 0, unbalancedUniform0, empty},
+                {"Unbalanced Uniform 0", "Empty String", 0, unbalancedUniform0, emptyString},
+                {"Unbalanced Uniform 0", "Concrete", 0, unbalancedUniform0, concrete},
+                {"Unbalanced Uniform 0", "Uniform", 64, unbalancedUniform0, uniform},
+                {"Unbalanced Uniform 0", "Non-Uniform", 28, unbalancedUniform0, nonUniform},
+                {"Unbalanced Uniform 1", "Empty", 0, unbalancedUniform1, empty},
+                {"Unbalanced Uniform 1", "Empty String", 0, unbalancedUniform1, emptyString},
+                {"Unbalanced Uniform 1", "Concrete", 0, unbalancedUniform1, concrete},
+                {"Unbalanced Uniform 1", "Uniform", 64, unbalancedUniform1, uniform},
+                {"Unbalanced Uniform 1", "Non-Uniform", 28, unbalancedUniform1, nonUniform},
+                {"Unbalanced Uniform 2", "Empty", 0, unbalancedUniform2, empty},
+                {"Unbalanced Uniform 2", "Empty String", 0, unbalancedUniform2, emptyString},
+                {"Unbalanced Uniform 2", "Concrete", 0, unbalancedUniform2, concrete},
+                {"Unbalanced Uniform 2", "Uniform", 64, unbalancedUniform2, uniform},
+                {"Unbalanced Uniform 2", "Non-Uniform", 28, unbalancedUniform2, nonUniform},
+                {"Unbalanced Non-Uniform 0", "Empty", 0, unbalancedNonUniform0, empty},
+                {"Unbalanced Non-Uniform 0", "Empty String", 0, unbalancedNonUniform0, emptyString},
+                {"Unbalanced Non-Uniform 0", "Concrete", 0, unbalancedNonUniform0, concrete},
+                {"Unbalanced Non-Uniform 0", "Uniform", 28, unbalancedNonUniform0, uniform},
+                {"Unbalanced Non-Uniform 0", "Non-Uniform", 28, unbalancedNonUniform0, nonUniform},
+                {"Unbalanced Non-Uniform 1", "Empty", 0, unbalancedNonUniform1, empty},
+                {"Unbalanced Non-Uniform 1", "Empty String", 0, unbalancedNonUniform1, emptyString},
+                {"Unbalanced Non-Uniform 1", "Concrete", 0, unbalancedNonUniform1, concrete},
+                {"Unbalanced Non-Uniform 1", "Uniform", 28, unbalancedNonUniform1, uniform},
+                {"Unbalanced Non-Uniform 1", "Non-Uniform", 28, unbalancedNonUniform1, nonUniform}
         });
     }
 
