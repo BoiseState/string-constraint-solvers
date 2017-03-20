@@ -1,12 +1,15 @@
 package edu.boisestate.cs.automatonModel;
 
 import edu.boisestate.cs.Alphabet;
+import edu.boisestate.cs.automaton.BasicWeightedAutomata;
 import edu.boisestate.cs.automaton.WeightedAutomaton;
 import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
 import edu.boisestate.cs.automatonModel.operations.weighted.*;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeCharSet;
@@ -26,9 +29,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         }
     }
 
-    WeightedAutomatonModel(WeightedAutomaton[] automata,
-                           Alphabet alphabet,
-                           int initialBoundLength) {
+    WeightedAutomatonModel(WeightedAutomaton[] automata, Alphabet alphabet, int initialBoundLength) {
         super(alphabet, initialBoundLength);
 
         this.automata = new WeightedAutomaton[automata.length];
@@ -51,7 +52,6 @@ public class WeightedAutomatonModel extends AutomatonModel {
         String charSet = alphabet.getCharSet();
         WeightedAutomaton anyChar = makeCharSet(charSet).repeat();
         result = result.intersection(anyChar);
-        minimizeBrzozowski(result);
 
         // return resulting automaton
         return result;
@@ -162,6 +162,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] results = new WeightedAutomaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = this.automata[i].intersection(substrings);
+            minimizeBrzozowski(results[i]);
         }
 
         // return new model from resulting automata
@@ -198,6 +199,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] results = new WeightedAutomaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = this.automata[i].intersection(makeEmptyString());
+            minimizeBrzozowski(results[i]);
         }
 
         // return new model from resulting automata
@@ -226,6 +228,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] results = new WeightedAutomaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = this.automata[i].intersection(suffixes);
+            minimizeBrzozowski(results[i]);
         }
 
         // return new model from resulting automata
@@ -339,6 +342,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] results = new WeightedAutomaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = this.automata[i].minus(substrings);
+            minimizeBrzozowski(results[i]);
         }
 
         // return new model from resulting automata
@@ -375,6 +379,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] results = new WeightedAutomaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = this.automata[i].minus(makeEmptyString());
+            minimizeBrzozowski(results[i]);
         }
 
         // return new model from resulting automata
@@ -403,6 +408,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] results = new WeightedAutomaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = this.automata[i].minus(suffixes);
+            minimizeBrzozowski(results[i]);
         }
 
         // return new model from resulting automata
@@ -494,6 +500,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] results = new WeightedAutomaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = this.automata[i].minus(prefixes);
+            minimizeBrzozowski(results[i]);
         }
 
         // return new model from resulting automata
@@ -546,6 +553,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] results = new WeightedAutomaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = this.automata[i].intersection(prefixes);
+            minimizeBrzozowski(results[i]);
         }
 
         // return new model from resulting automata
@@ -934,10 +942,29 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] clones = new WeightedAutomaton[this.automata.length];
         for (int i = 0; i < clones.length; i++) {
             clones[i] = this.automata[i].clone();
-            minimizeBrzozowski(clones[i]);
         }
 
         return new WeightedAutomatonModel(clones, alphabet, boundLength);
+    }
+
+    static WeightedAutomaton[] splitAutomatonByLength(WeightedAutomaton automaton, int maxLength, Alphabet alphabet) {
+        WeightedAutomaton[] returnAutomata = new WeightedAutomaton[maxLength+1];
+        WeightedAutomaton anyChar = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet());
+        for (int i = 0; i < returnAutomata.length; i++) {
+            WeightedAutomaton bounding = anyChar.repeat(i, i);
+            returnAutomata[i] = automaton.intersection(bounding);
+        }
+        return returnAutomata;
+    }
+
+    static WeightedAutomaton[] mergeAutomataArrays(List<WeightedAutomaton[]> automataArrays) {
+        WeightedAutomaton[] returnAutomata = automataArrays.remove(0);
+        for (WeightedAutomaton[] automata : automataArrays) {
+            for (int i = 0; i < returnAutomata.length; i++) {
+                returnAutomata[i] = returnAutomata[i].union(automata[i]);
+            }
+        }
+        return returnAutomata;
     }
 
     private void ensureWeightedModel(AutomatonModel arg) {
@@ -955,7 +982,6 @@ public class WeightedAutomatonModel extends AutomatonModel {
         for (WeightedAutomaton automaton : automata) {
             result = result.union(automaton);
         }
-        minimizeBrzozowski(result);
         return result;
     }
 }

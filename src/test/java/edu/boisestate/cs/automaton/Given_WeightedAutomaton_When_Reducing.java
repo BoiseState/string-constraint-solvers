@@ -33,14 +33,13 @@ public class Given_WeightedAutomaton_When_Reducing {
     @Parameter(value = 1)
     public int expectedModelCount;
     @Parameter(value = 0) // first data value (0) is default
-    public String baseDescription;
+    public String description;
 
     private static int initialBoundLength;
 
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.reduce() ->" +
-                       " Expected MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton>.reduce() -> Expected MC = {1}")
     public static Iterable<Object[]> data() {
 
         // initialize alphabet and initial bound length
@@ -94,6 +93,7 @@ public class Given_WeightedAutomaton_When_Reducing {
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String message = String.format("<%s Automaton>.reduce()", description);
+        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

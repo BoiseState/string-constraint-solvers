@@ -212,15 +212,10 @@ final public class WeightedMinimizationOperations {
 		if (a.isSingleton()) {
 			return;
 		}
-		Set<StateWeight> initial = new HashSet<>();
-		for (WeightedState s : SpecialWeightedOperations.reverse(a)) {
-			initial.add(new StateWeight(s, 1));
-		}
-		BasicWeightedOperations.determinize(a, initial);
-		for (WeightedState s : SpecialWeightedOperations.reverse(a)) {
-			initial.add(new StateWeight(s, 1));
-		}
-		BasicWeightedOperations.determinize(a, initial);
+		SpecialWeightedOperations.reverse(a);
+		BasicWeightedOperations.determinize(a);
+		SpecialWeightedOperations.reverse(a);
+		BasicWeightedOperations.determinize(a);
 	}
 	
 	/** 

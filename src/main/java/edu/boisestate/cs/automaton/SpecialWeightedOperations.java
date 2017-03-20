@@ -335,8 +335,7 @@ final public class SpecialWeightedOperations {
      */
     public static Set<WeightedState> reverse(WeightedAutomaton a) {
         // reverse all edges
-        HashMap<WeightedState, HashSet<WeightedTransition>> m =
-                new HashMap<WeightedState, HashSet<WeightedTransition>>();
+        HashMap<WeightedState, HashSet<WeightedTransition>> m = new HashMap<>();
         Set<WeightedState> states = a.getStates();
         Set<WeightedState> accept = a.getAcceptStates();
         for (WeightedState r : states) {
@@ -345,8 +344,7 @@ final public class SpecialWeightedOperations {
         }
         for (WeightedState r : states) {
             for (WeightedTransition t : r.getTransitions()) {
-                m.get(t.getDest())
-                 .add(new WeightedTransition(t.getMin(), t.getMax(), r));
+                m.get(t.getDest()).add(new WeightedTransition(t.getMin(), t.getMax(), r, t.getWeight()));
             }
         }
         for (WeightedState r : states) {
