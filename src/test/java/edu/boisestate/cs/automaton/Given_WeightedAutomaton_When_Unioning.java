@@ -38,8 +38,7 @@ public class Given_WeightedAutomaton_When_Unioning {
 
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.intersect(<{1} Automaton>) ->" +
-                       " Expected MC = {2}")
+    @Parameters(name = "{index}: <{0} Automaton>.union(<{1} Automaton>) -> Expected MC = {2}")
     public static Iterable<Object[]> data() {
 
         // initialize alphabet and initial bound length
@@ -445,6 +444,7 @@ public class Given_WeightedAutomaton_When_Unioning {
                                            .intValue();
 
         // *** assert ***
+        String message = String.format("<%s Automaton>.union(<%s Automaton>)", baseDescription, argDescription);
         assertThat(modelCount, is(equalTo(this.expectedModelCount)));
     }
 }
