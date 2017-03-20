@@ -266,6 +266,13 @@ final public class BasicWeightedOperations {
         Map<Set<StateWeight>, WeightedState> newState = new HashMap<>();
         a.initial = new WeightedState();
         newState.put(initialSet, a.initial);
+        for (StateWeight sw : initialSet) {
+            if (sw.getState().isAccept()) {
+                a.initial.setAccept(true);
+                break;
+            }
+        }
+
         while (workList.size() > 0) {
             Set<StateWeight> s = workList.removeFirst();
             WeightedState r = newState.get(s);
@@ -769,8 +776,7 @@ final public class BasicWeightedOperations {
      * <p>
      * Complexity: linear in number of states.
      */
-    public static WeightedAutomaton union(WeightedAutomaton a1,
-                                          WeightedAutomaton a2) {
+    public static WeightedAutomaton union(WeightedAutomaton a1, WeightedAutomaton a2) {
         if ((a1.isSingleton() &&
              a2.isSingleton() &&
              a1.singleton.equals(a2.singleton)) || a1 == a2) {

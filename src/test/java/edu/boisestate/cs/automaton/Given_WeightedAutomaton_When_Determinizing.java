@@ -64,7 +64,6 @@ public class Given_WeightedAutomaton_When_Determinizing {
         WeightedAutomaton replaceUnbalancedNonUniform1 = replaceUnbalancedNonUniform1();
         WeightedAutomaton replaceUnbalancedNonUniform2 = replaceUnbalancedNonUniform2();
 
-
         // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty},

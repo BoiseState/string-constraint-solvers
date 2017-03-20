@@ -127,7 +127,7 @@ public class Given_WeightedAutomaton_When_Concatenating {
     @Test
     public void it_should_return_the_correct_model_count() {
         // *** act ***
-        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton, 3)
+        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton, 6)
                                            .intValue();
 
         // *** assert ***

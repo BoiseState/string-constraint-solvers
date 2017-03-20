@@ -12,7 +12,7 @@ public class WeightedAutomatonOperationTestUtilities {
 
     public static WeightedAutomaton getConcreteWeightedAutomaton(Alphabet alphabet, String string) {
         WeightedAutomaton concrete = BasicWeightedAutomata.makeString(string);
-        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()) .repeat(0, string.length());
+        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat(0, string.length());
         concrete = concrete.intersection(bounding);
         concrete.minimize();
         return concrete;
@@ -20,7 +20,7 @@ public class WeightedAutomatonOperationTestUtilities {
 
     public static WeightedAutomaton getNonUniformBoundedWeightedAutomaton(Alphabet alphabet, int boundLength) {
         WeightedAutomaton nonUniform = getNonUniformUnboundedWeightedAutomaton(alphabet);
-        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()) .repeat(0, boundLength);
+        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat(0, boundLength);
         nonUniform = nonUniform.intersection(bounding);
         nonUniform.minimize();
         return nonUniform;
@@ -29,7 +29,7 @@ public class WeightedAutomatonOperationTestUtilities {
     private static WeightedAutomaton getNonUniformUnboundedWeightedAutomaton(Alphabet alphabet) {
         WeightedAutomaton uniform = getUniformUnboundedWeightedAutomaton(alphabet);
         char c = alphabet.getCharSet().charAt(0);
-        WeightedAutomaton intersect = uniform.concatenate(BasicWeightedAutomata.makeChar(c)) .concatenate(uniform);
+        WeightedAutomaton intersect = uniform.concatenate(BasicWeightedAutomata.makeChar(c)).concatenate(uniform);
         WeightedAutomaton nonUniform = uniform.intersection(intersect);
         nonUniform.minimize();
         return nonUniform;
@@ -37,15 +37,14 @@ public class WeightedAutomatonOperationTestUtilities {
 
     public static WeightedAutomaton getUniformBoundedWeightedAutomaton(Alphabet alphabet, int boundLength) {
         WeightedAutomaton uniform = getUniformUnboundedWeightedAutomaton(alphabet);
-        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()) .repeat(0, boundLength);
+        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat(0, boundLength);
         uniform = uniform.intersection(bounding);
         uniform.minimize();
         return uniform;
     }
 
-    private static WeightedAutomaton getUniformUnboundedWeightedAutomaton(Alphabet
-                                                                          alphabet) {
-        WeightedAutomaton uniform = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()) .repeat();
+    private static WeightedAutomaton getUniformUnboundedWeightedAutomaton(Alphabet alphabet) {
+        WeightedAutomaton uniform = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat();
         uniform.minimize();
         return uniform;
     }

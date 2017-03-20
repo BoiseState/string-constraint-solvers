@@ -14,6 +14,23 @@ import java.util.Set;
 public class StringModelCounter {
 
     // default model counter for bounded automata
+    static public BigInteger ModelCount(WeightedState state) {
+
+        // get model count
+        BigInteger modelCount = ModelCount(state,
+                                           -1,
+                                           BigInteger.ONE,
+                                           0);
+
+        // account for empty string
+        if (state.isAccept() && !state.getTransitions().isEmpty()) {
+            modelCount = modelCount.add(BigInteger.ONE);
+        }
+
+        return modelCount;
+    }
+
+    // default model counter for bounded automata
     static public BigInteger ModelCount(WeightedAutomaton automaton) {
 
         // initialize big integer value

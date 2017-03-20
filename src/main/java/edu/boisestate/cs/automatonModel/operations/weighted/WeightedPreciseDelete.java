@@ -9,6 +9,8 @@ import java.math.BigInteger;
 import java.util.*;
 
 import static edu.boisestate.cs.automatonModel.operations.StringModelCounter
+        .ModelCount;
+import static edu.boisestate.cs.automatonModel.operations.StringModelCounter
         .pseudoModelCount;
 
 @SuppressWarnings("Duplicates")
@@ -101,20 +103,14 @@ public class WeightedPreciseDelete
 
         // initialize end states map
         Map<WeightedState, Set<WeightedState>> endStatesMap = new HashMap<>();
-        Map<WeightedState, BigInteger> stateWeights = new HashMap<>();
+        Map<WeightedState, Map<WeightedState, Integer>> stateWeightMap = new HashMap<>();
         for (WeightedState state : states) {
             Set<WeightedState> stateSet = new HashSet<>();
             stateSet.add(stateMap.get(state));
             endStatesMap.put(state, stateSet);
-
-            // get removed weights
-            if (end > start) {
-                BigInteger removedCount = pseudoModelCount(stateMap.get(state), end - start, BigInteger.ONE);
-                stateWeights.put(state, removedCount);
-            } else {
-                stateWeights.put(state, BigInteger.ONE);
-            }
-
+            Map<WeightedState, Integer> stateWeights = new HashMap<>();
+            stateWeights.put(stateMap.get(state), 1);
+            stateWeightMap.put(state, stateWeights);
         }
 
         // walk automaton from start index to end index
@@ -122,24 +118,30 @@ public class WeightedPreciseDelete
             for (WeightedState keyWeightedState : states) {
                 // get existing state set
                 Set<WeightedState> stateSet = endStatesMap.get(keyWeightedState);
+                Map<WeightedState, Integer> stateWeights = stateWeightMap.get(keyWeightedState);
 
                 // if automaton is long enough
                 if (!stateSet.isEmpty()) {
                     // initialize next state set
                     Set<WeightedState> nextWeightedStates = new HashSet<>();
+                    Map<WeightedState, Integer> nextStateWeights = new HashMap<>();
 
                     // get all transitions from each state
                     for (WeightedState state : stateSet) {
 
                         // add transitions to copied states
-                        for (WeightedTransition transition : state.getTransitions()) {
+                        for (WeightedTransition t : state.getTransitions()) {
                             // add destination state as next state
-                            nextWeightedStates.add(transition.getDest());
+                            nextWeightedStates.add(t.getDest());
+                            int size = t.getMax() - t.getMin() + 1;
+                            int nextWeight = stateWeights.get(state) * t.getWeight() * size;
+                            nextStateWeights.put(t.getDest(), nextWeight);
                         }
                     }
 
                     // update end states with new states
                     endStatesMap.put(keyWeightedState, nextWeightedStates);
+                    stateWeightMap.put(keyWeightedState, nextStateWeights);
                 }
             }
         }
@@ -158,34 +160,38 @@ public class WeightedPreciseDelete
 
                 // set end states map from set
                 endStatesMap.put(state, endWeightedStates);
+
+                // update weights
+                Map<WeightedState, Integer> stateWeights = new HashMap<>();
+                BigInteger mc = ModelCount(stateMap.get(state));
+                stateWeights.put(endWeightedState, mc.intValue());
+                stateWeightMap.put(state, stateWeights);
             }
         }
 
-        // update previous transitions with removed weights
-        if (start == 0) {
-            BigInteger removedCount = BigInteger.ZERO;
-            for (WeightedState state : states) {
-                BigInteger removedWeights = stateWeights.get(state);
-                removedCount = removedCount.add(removedWeights);
-            }
-            if (removedCount.compareTo(BigInteger.ZERO) > 0 ) {
-                int num = a.getInitialFactor() * removedCount.intValue();
-                returnAutomaton.setInitialFactor(num);
-            }
-        }
-        for (WeightedState state : states) {
-            for (WeightedTransition t : incomingTransitionMap.get(state)) {
-                int removedWeight = stateWeights.get(state).intValue();
-                int newWeight = t.getWeight() * removedWeight;
-                t.setWeight(newWeight);
-            }
-        }
-
-        // add epsilon transitions from state set and map
+        // add epsilon transitions from state set and map and update weights
         List<WeightedStatePair> epsilons = new ArrayList<>();
         for (WeightedState state : states) {
             for (WeightedState endWeightedState: endStatesMap.get(state)){
                 epsilons.add(new WeightedStatePair(state, endWeightedState));
+
+                // adjust weights
+                Map<WeightedState, Integer> stateWeights = stateWeightMap.get(state);
+                int removedWeight = stateWeights.get(endWeightedState);
+                if (endWeightedState.getTransitions().isEmpty() && start == 0) {
+                    int numEmptyStrings = returnAutomaton.getInitialFactor();
+                    returnAutomaton.setInitialFactor(removedWeight + numEmptyStrings);
+                } else if (endWeightedState.getTransitions().isEmpty()) {
+                    for (WeightedTransition t : incomingTransitionMap.get(state)) {
+                        int newWeight = t.getWeight() * removedWeight;
+                        t.setWeight(newWeight);
+                    }
+                } else {
+                    for (WeightedTransition t : endWeightedState.getTransitions()) {
+                        int newWeight = t.getWeight() * removedWeight;
+                        t.setWeight(newWeight);
+                    }
+                }
             }
         }
 
