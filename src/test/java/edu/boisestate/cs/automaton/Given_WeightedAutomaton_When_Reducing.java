@@ -14,12 +14,12 @@ import java.util.Arrays;
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmpty;
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmptyString;
 import static edu.boisestate.cs.automatonModel.operations.weighted
-        .WeightedAutomatonOperationTestUtilities.getConcreteWeightedAutomaton;
+        .WeightedAutomatonOperationTestUtilities.*;
 import static edu.boisestate.cs.automatonModel.operations.weighted
         .WeightedAutomatonOperationTestUtilities
-        .getNonUniformBoundedWeightedAutomaton;
+        .unbalanced_NonUniform_WeightedAutomaton_1;
 import static edu.boisestate.cs.automatonModel.operations.weighted
-        .WeightedAutomatonOperationTestUtilities.getUniformBoundedWeightedAutomaton;
+        .WeightedAutomatonOperationTestUtilities.unbalanced_NonUniform_WeightedAutomaton_2;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -53,8 +53,14 @@ public class Given_WeightedAutomaton_When_Reducing {
         WeightedAutomaton concrete = getConcreteWeightedAutomaton(alphabet, "ABC");
         WeightedAutomaton uniform = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
         WeightedAutomaton nonUniform = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
-
-        // create other automata
+        WeightedAutomaton unbalancedUniform0 = unbalanced_Uniform_WeightedAutomaton_0();
+        WeightedAutomaton unbalancedUniform1 = unbalanced_Uniform_WeightedAutomaton_1();
+        WeightedAutomaton unbalancedUniform2 = unbalanced_Uniform_WeightedAutomaton_2();
+        WeightedAutomaton unbalancedNonUniform0 = unbalanced_NonUniform_WeightedAutomaton_0();
+        WeightedAutomaton unbalancedNonUniform1 = unbalanced_NonUniform_WeightedAutomaton_1();
+        WeightedAutomaton unbalancedNonUniform2 = unbalanced_NonUniform_WeightedAutomaton_2();
+        WeightedAutomaton nonUniformDelete01 = nonUniform_delete_01();
+        WeightedAutomaton nonUniformDelete12 = nonUniform_delete_12();
 
 
         // index 1 is the bounding length (-1) for none
@@ -63,7 +69,15 @@ public class Given_WeightedAutomaton_When_Reducing {
                 {"Empty String", 1, emptyString},
                 {"Concrete", 1, concrete},
                 {"Uniform", 85, uniform},
-                {"Non-Uniform", 45, nonUniform}
+                {"Non-Uniform", 45, nonUniform},
+                {"Unbalanced Uniform 0", 64, unbalancedUniform0},
+                {"Unbalanced Uniform 1", 64, unbalancedUniform1},
+                {"Unbalanced Uniform 2", 64, unbalancedUniform2},
+                {"Unbalanced Non-Uniform 0", 37, unbalancedNonUniform0},
+                {"Unbalanced Non-Uniform 1", 37, unbalancedNonUniform1},
+                {"Unbalanced Non-Uniform 2", 37, unbalancedNonUniform2},
+                {"Non-Uniform delete(0,1)", 37, nonUniformDelete01},
+                {"Non-Uniform delete(1,2)", 37, nonUniformDelete12}
         });
     }
 

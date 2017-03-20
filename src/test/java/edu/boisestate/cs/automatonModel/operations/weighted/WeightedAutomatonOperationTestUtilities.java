@@ -50,12 +50,22 @@ public class WeightedAutomatonOperationTestUtilities {
         return uniform;
     }
 
-    public static WeightedAutomaton getWeightedAutomaton(Type type,
-                                                         Bounding bounding,
-                                                         Balance balance,
-                                                         int length,
-                                                         int index) {
-        return null;
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton balanced_NonUniform_WeightedAutomaton(Alphabet alphabet, int length) {
+        WeightedAutomaton nonUniform = getNonUniformUnboundedWeightedAutomaton(alphabet);
+        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat(length, length);
+        nonUniform = nonUniform.intersection(bounding);
+        nonUniform.minimize();
+        return nonUniform;
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton balanced_Uniform_WeightedAutomaton(Alphabet alphabet, int length) {
+        WeightedAutomaton uniform = getUniformUnboundedWeightedAutomaton(alphabet);
+        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat(length, length);
+        uniform = uniform.intersection(bounding);
+        uniform.minimize();
+        return uniform;
     }
 
     @SuppressWarnings("Duplicates")
@@ -70,15 +80,15 @@ public class WeightedAutomatonOperationTestUtilities {
         q3.setAccept(true);
 
         // add transitions
-        q0.addTransition(new WeightedTransition('A', q1, 1));
-        q0.addTransition(new WeightedTransition('B', 'D', q2, 1));
+        q0.addTransition(new WeightedTransition('A', q1, 4));
+        q0.addTransition(new WeightedTransition('B', 'D', q1, 1));
+        q0.addTransition(new WeightedTransition('B', 'D', q2, 3));
         q1.addTransition(new WeightedTransition('A', 'D', q3, 1));
         q2.addTransition(new WeightedTransition('A', q3, 1));
 
         // create automaton
         WeightedAutomaton automaton = new WeightedAutomaton();
         automaton.setInitialState(q0);
-        automaton.setInitialFactor(4);
 
         // return automaton
         return automaton;
@@ -96,10 +106,11 @@ public class WeightedAutomatonOperationTestUtilities {
         q3.setAccept(true);
 
         // add transitions
-        q0.addTransition(new WeightedTransition('A', q1, 4));
-        q0.addTransition(new WeightedTransition('B', 'D', q2, 4));
-        q1.addTransition(new WeightedTransition('A', 'D', q3, 1));
-        q2.addTransition(new WeightedTransition('A', q3, 1));
+        q0.addTransition(new WeightedTransition('A', q1, 1));
+        q0.addTransition(new WeightedTransition('B', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q3, 4));
+        q2.addTransition(new WeightedTransition('A', q3, 4));
+        q2.addTransition(new WeightedTransition('B', 'D', q3, 1));
 
         // create automaton
         WeightedAutomaton automaton = new WeightedAutomaton();
@@ -116,15 +127,18 @@ public class WeightedAutomatonOperationTestUtilities {
         WeightedState q1 = new WeightedState();
         WeightedState q2 = new WeightedState();
         WeightedState q3 = new WeightedState();
+        WeightedState q4 = new WeightedState();
 
         // set accept state
         q3.setAccept(true);
+        q4.setAccept(true);
 
         // add transitions
         q0.addTransition(new WeightedTransition('A', q1, 1));
         q0.addTransition(new WeightedTransition('B', 'D', q2, 1));
         q1.addTransition(new WeightedTransition('A', 'D', q3, 4));
         q2.addTransition(new WeightedTransition('A', q3, 4));
+        q2.addTransition(new WeightedTransition('B', 'D', q4, 1));
 
         // create automaton
         WeightedAutomaton automaton = new WeightedAutomaton();
@@ -136,29 +150,6 @@ public class WeightedAutomatonOperationTestUtilities {
 
     @SuppressWarnings("Duplicates")
     public static WeightedAutomaton unbalanced_Uniform_WeightedAutomaton_0() {
-        // crete states
-        WeightedState q0 = new WeightedState();
-        WeightedState q1 = new WeightedState();
-        WeightedState q2 = new WeightedState();
-
-        // set accept state
-        q2.setAccept(true);
-
-        // add transitions
-        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
-        q1.addTransition(new WeightedTransition('A', 'D', q2, 1));
-
-        // create automaton
-        WeightedAutomaton automaton = new WeightedAutomaton();
-        automaton.setInitialState(q0);
-        automaton.setInitialFactor(4);
-
-        // return automaton
-        return automaton;
-    }
-
-    @SuppressWarnings("Duplicates")
-    public static WeightedAutomaton unbalanced_Uniform_WeightedAutomaton_1() {
         // crete states
         WeightedState q0 = new WeightedState();
         WeightedState q1 = new WeightedState();
@@ -180,7 +171,7 @@ public class WeightedAutomatonOperationTestUtilities {
     }
 
     @SuppressWarnings("Duplicates")
-    public static WeightedAutomaton unbalanced_Uniform_WeightedAutomaton_2() {
+    public static WeightedAutomaton unbalanced_Uniform_WeightedAutomaton_1() {
         // crete states
         WeightedState q0 = new WeightedState();
         WeightedState q1 = new WeightedState();
@@ -201,21 +192,152 @@ public class WeightedAutomatonOperationTestUtilities {
         return automaton;
     }
 
-    public enum Balance {
-        BALANCED,
-        UNBALANCED
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unbalanced_Uniform_WeightedAutomaton_2() {
+        return unbalanced_Uniform_WeightedAutomaton_1();
     }
 
-    public enum Bounding {
-        BOUNDED,
-        UNBOUNDED
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton nonUniform_delete_01() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+
+        // set accept state
+        q3.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', q1, 3));
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
+        q0.addTransition(new WeightedTransition('B', 'D', q2, 3));
+        q1.addTransition(new WeightedTransition('A', 'D', q3, 1));
+        q2.addTransition(new WeightedTransition('A', q3, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
     }
 
-    public enum Type {
-        EMPTY,
-        EMPTY_STRING,
-        CONCRETE,
-        UNIFORM,
-        NON_UNIFORM
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton nonUniform_delete_12() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+
+        // set accept state
+        q3.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', q1, 1));
+        q0.addTransition(new WeightedTransition('B', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q3, 4));
+        q2.addTransition(new WeightedTransition('A', q3, 3));
+        q2.addTransition(new WeightedTransition('A', 'D', q3, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton replaceUnbalancedNonUniform0() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+
+        // set accept state
+        q3.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', q1, 4));
+        q0.addTransition(new WeightedTransition('A', q1, 1));
+        q0.addTransition(new WeightedTransition('C', 'D', q1, 1));
+        q0.addTransition(new WeightedTransition('A', q2, 3));
+        q0.addTransition(new WeightedTransition('C', 'D', q2, 3));
+        q1.addTransition(new WeightedTransition('A', q3, 1));
+        q1.addTransition(new WeightedTransition('A', q3, 1));
+        q1.addTransition(new WeightedTransition('C', 'D', q3, 1));
+        q2.addTransition(new WeightedTransition('A', q3, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton replaceUnbalancedNonUniform1() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+
+        // set accept state
+        q3.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', q1, 1));
+        q0.addTransition(new WeightedTransition('A', q2, 1));
+        q0.addTransition(new WeightedTransition('C', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('A', q3, 4));
+        q1.addTransition(new WeightedTransition('A', q3, 4));
+        q1.addTransition(new WeightedTransition('C', 'D', q3, 4));
+        q2.addTransition(new WeightedTransition('A', q3, 4));
+        q2.addTransition(new WeightedTransition('A', q3, 1));
+        q2.addTransition(new WeightedTransition('C', 'D', q3, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton replaceUnbalancedNonUniform2() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+        WeightedState q4 = new WeightedState();
+
+        // set accept state
+        q3.setAccept(true);
+        q4.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', q1, 1));
+        q0.addTransition(new WeightedTransition('A', q2, 1));
+        q0.addTransition(new WeightedTransition('C', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('A', q3, 4));
+        q1.addTransition(new WeightedTransition('A', q3, 4));
+        q1.addTransition(new WeightedTransition('C', 'D', q3, 4));
+        q2.addTransition(new WeightedTransition('A', q3, 4));
+        q2.addTransition(new WeightedTransition('A', q4, 1));
+        q2.addTransition(new WeightedTransition('C', 'D', q4, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
     }
 }

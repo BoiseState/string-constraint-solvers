@@ -90,6 +90,13 @@ public class WeightedState
 	 * @param t transition
 	 */
 	public void addTransition(WeightedTransition t)	{
+		// if transition for characters with equal weight already exists
+		while(transitions.contains(t)){
+			// remove existing duplicate transition
+			transitions.remove(t);
+			// double weight
+			t.setWeight(t.getWeight() * 2);
+		}
 		transitions.add(t);
 	}
 	

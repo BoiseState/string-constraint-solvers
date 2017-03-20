@@ -45,15 +45,17 @@ final public class BasicWeightedOperations {
      * epsilon transitions.
      *
      * @param pairs
-     *         collection of {@link WeightedStatePair} objects representing pairs of
-     *         source/destination states where epsilon transitions should be
-     *         added
+     *         collection of {@link WeightedStatePair} objects representing
+     *         pairs of source/destination states where epsilon transitions
+     *         should be added
      */
     public static void addEpsilons(WeightedAutomaton a,
                                    Collection<WeightedStatePair> pairs) {
         a.expandSingleton();
-        HashMap<WeightedState, HashSet<WeightedState>> forward = new HashMap <WeightedState, HashSet<WeightedState>>();
-        HashMap<WeightedState, HashSet<WeightedState>> back = new HashMap<WeightedState, HashSet<WeightedState>>();
+        HashMap<WeightedState, HashSet<WeightedState>> forward =
+                new HashMap<WeightedState, HashSet<WeightedState>>();
+        HashMap<WeightedState, HashSet<WeightedState>> back =
+                new HashMap<WeightedState, HashSet<WeightedState>>();
         for (WeightedStatePair p : pairs) {
             HashSet<WeightedState> to = forward.get(p.s1);
             if (to == null) {
@@ -69,8 +71,10 @@ final public class BasicWeightedOperations {
             from.add(p.s1);
         }
         // calculate epsilon closure
-        LinkedList<WeightedStatePair> worklist = new LinkedList<WeightedStatePair>(pairs);
-        HashSet<WeightedStatePair> workset = new HashSet<WeightedStatePair>(pairs);
+        LinkedList<WeightedStatePair> worklist =
+                new LinkedList<WeightedStatePair>(pairs);
+        HashSet<WeightedStatePair> workset =
+                new HashSet<WeightedStatePair>(pairs);
         while (!worklist.isEmpty()) {
             WeightedStatePair p = worklist.removeFirst();
             workset.remove(p);
@@ -134,7 +138,8 @@ final public class BasicWeightedOperations {
     static public WeightedAutomaton concatenate(WeightedAutomaton a1,
                                                 WeightedAutomaton a2) {
         if (a1.isSingleton() && a2.isSingleton()) {
-            return BasicWeightedAutomata.makeString(a1.singleton + a2.singleton);
+            return BasicWeightedAutomata.makeString(a1.singleton +
+                                                    a2.singleton);
         }
         if (isEmpty(a1) || isEmpty(a2)) {
             return BasicWeightedAutomata.makeEmpty();
@@ -155,305 +160,6 @@ final public class BasicWeightedOperations {
         a1.clearHashCode();
         a1.checkMinimizeAlways();
         return a1;
-    }
-
-    /**
-     * Returns true if the given automaton accepts no strings.
-     */
-    public static boolean isEmpty(WeightedAutomaton a) {
-        if (a.isSingleton()) {
-            return false;
-        }
-        return !a.initial.isAccept() && a.initial.getTransitions().isEmpty();
-    }
-
-    /**
-     * Determinizes the given automaton.
-     * <p>
-     * Complexity: exponential in number of states.
-     */
-    public static void determinize(WeightedAutomaton a) {
-        if (a.deterministic || a.isSingleton()) {
-            return;
-        }
-        Set<WeightedState> initialset = new HashSet<WeightedState>();
-        initialset.add(a.initial);
-        determinize(a, initialset);
-    }
-
-    /**
-     * Determinizes the given automaton using the given set of initial states.
-     */
-    static void determinize(WeightedAutomaton a,
-                            Set<WeightedState> initialSet) {
-        char[] points = a.getStartPoints();
-        // subset construction
-        Map<Set<WeightedState>, Set<WeightedState>> sets =
-                new HashMap<Set<WeightedState>, Set<WeightedState>>();
-        LinkedList<Set<WeightedState>> workList =
-                new LinkedList<Set<WeightedState>>();
-        Map<Set<WeightedState>, WeightedState> newState =
-                new HashMap<Set<WeightedState>, WeightedState>();
-        sets.put(initialSet, initialSet);
-        workList.add(initialSet);
-        a.initial = new WeightedState();
-        newState.put(initialSet, a.initial);
-        while (workList.size() > 0) {
-            Set<WeightedState> s = workList.removeFirst();
-            WeightedState r = newState.get(s);
-            for (WeightedState q : s) {
-                if (q.isAccept()) {
-                    r.setAccept(true);
-                    break;
-                }
-            }
-            for (int n = 0; n < points.length; n++) {
-                Set<WeightedState> p = new HashSet<WeightedState>();
-                for (WeightedState q : s) {
-                    for (WeightedTransition t : q.getTransitions()) {
-                        if (t.getMin() <= points[n] &&
-                            points[n] <= t.getMax()) {
-                            p.add(t.getDest());
-                        }
-                    }
-                }
-                if (!sets.containsKey(p)) {
-                    sets.put(p, p);
-                    workList.add(p);
-                    newState.put(p, new WeightedState());
-                }
-                WeightedState q = newState.get(p);
-                char min = points[n];
-                char max;
-                if (n + 1 < points.length) {
-                    max = (char) (points[n + 1] - 1);
-                } else {
-                    max = Character.MAX_VALUE;
-                }
-                r.getTransitions().add(new WeightedTransition(min, max, q));
-            }
-        }
-        a.deterministic = true;
-        a.removeDeadTransitions();
-    }
-
-    /**
-     * Returns a shortest accepted/rejected string. If more than one shortest
-     * string is found, the lexicographically first of the shortest strings is
-     * returned.
-     *
-     * @param accepted
-     *         if true, look for accepted strings; otherwise, look for rejected
-     *         strings
-     *
-     * @return the string, null if none found
-     */
-    public static String getShortestExample(WeightedAutomaton a, boolean
-            accepted) {
-        if (a.isSingleton()) {
-            if (accepted) {
-                return a.singleton;
-            } else if (a.singleton.length() > 0) {
-                return "";
-            } else {
-                return "\u0000";
-            }
-
-        }
-        return getShortestExample(a.getInitialState(), accepted);
-    }
-
-    static String getShortestExample(WeightedState s, boolean accepted) {
-        Map<WeightedState, String> path = new HashMap<WeightedState, String>();
-        LinkedList<WeightedState> queue = new LinkedList<WeightedState>();
-        path.put(s, "");
-        queue.add(s);
-        String best = null;
-        while (!queue.isEmpty()) {
-            WeightedState q = queue.removeFirst();
-            String p = path.get(q);
-            if (q.isAccept() == accepted) {
-                if (best == null ||
-                    p.length() < best.length() ||
-                    (p.length() == best.length() && p.compareTo(best) < 0)) {
-                    best = p;
-                }
-            } else {
-                for (WeightedTransition t : q.getTransitions()) {
-                    String tp = path.get(t.getDest());
-                    String np = p + t.getMin();
-                    if (tp == null ||
-                        (tp.length() == np.length() && np.compareTo(tp) < 0)) {
-                        if (tp == null) {
-                            queue.addLast(t.getDest());
-                        }
-                        path.put(t.getDest(), np);
-                    }
-                }
-            }
-        }
-        return best;
-    }
-
-    /**
-     * Returns true if the given automaton accepts the empty string and nothing
-     * else.
-     */
-    public static boolean isEmptyString(WeightedAutomaton a) {
-        if (a.isSingleton()) {
-            return a.singleton.length() == 0;
-        } else {
-            return a.initial.isAccept() && a.initial.getTransitions().isEmpty();
-        }
-    }
-
-    /**
-     * Returns true if the given automaton accepts all strings.
-     */
-    public static boolean isTotal(WeightedAutomaton a) {
-        if (a.isSingleton()) {
-            return false;
-        }
-        if (a.initial.isAccept() && a.initial.getTransitions().size() == 1) {
-            WeightedTransition t = a.initial.getTransitions().iterator().next();
-            return t.getDest() == a.initial &&
-                   t.getMin() == Character.MIN_VALUE &&
-                   t.getMax() == Character.MAX_VALUE;
-        }
-        return false;
-    }
-
-    /**
-     * Returns a (deterministic) automaton that accepts the intersection of the
-     * language of <code>a1</code> and the complement of the language of
-     * <code>a2</code>. As a side-effect, the automata may be determinized, if
-     * not already deterministic.
-     * <p>
-     * Complexity: quadratic in number of states (if already deterministic).
-     */
-    static public WeightedAutomaton minus(WeightedAutomaton a1,
-                                          WeightedAutomaton a2) {
-        if (a1.isEmpty() || a1 == a2) {
-            return BasicWeightedAutomata.makeEmpty();
-        }
-        if (a2.isEmpty()) {
-            return a1.cloneIfRequired();
-        }
-        if (a1.isSingleton()) {
-            if (a2.run(a1.singleton)) {
-                return BasicWeightedAutomata.makeEmpty();
-            } else {
-                return a1.cloneIfRequired();
-            }
-        }
-        return intersection(a1, a2.complement());
-    }
-
-    /**
-     * Returns an automaton that accepts the intersection of
-     * the languages of the given automata.
-     * Never modifies the input automata languages.
-     * <p>
-     * Complexity: quadratic in number of states.
-     */
-    static public WeightedAutomaton intersection(WeightedAutomaton a1,
-                                                 WeightedAutomaton a2) {
-        if (a1.isEmpty() || a2.isEmpty()) {
-            return BasicWeightedAutomata.makeEmpty();
-        }
-        if (a1.isSingleton()) {
-            if (a2.run(a1.singleton)) {
-                return a1.cloneIfRequired();
-            } else {
-                return BasicWeightedAutomata.makeEmpty();
-            }
-        }
-        if (a2.isSingleton()) {
-            if (a1.run(a2.singleton)) {
-                return a2.cloneIfRequired();
-            } else {
-                return BasicWeightedAutomata.makeEmpty();
-            }
-        }
-        if (a1 == a2) {
-            return a1.cloneIfRequired();
-        }
-        WeightedTransition[][] transitions1 = WeightedAutomaton.getSortedTransitions(a1.getStates());
-        WeightedTransition[][] transitions2 = WeightedAutomaton.getSortedTransitions(a2.getStates());
-        WeightedAutomaton c = new WeightedAutomaton();
-        c.setInitialFactor(a1.getInitialFactor());
-        LinkedList<WeightedStatePair> workList = new LinkedList<>();
-        HashMap<WeightedStatePair, WeightedStatePair> newStates = new HashMap<>();
-        WeightedStatePair p = new WeightedStatePair(c.initial, a1.initial, a2.initial);
-        workList.add(p);
-        newStates.put(p, p);
-        while (workList.size() > 0) {
-            p = workList.removeFirst();
-            p.s.setAccept(p.s1.isAccept() && p.s2.isAccept());
-            WeightedTransition[] t1 = transitions1[p.s1.getNumber()];
-            WeightedTransition[] t2 = transitions2[p.s2.getNumber()];
-            for (int n1 = 0, b2 = 0; n1 < t1.length; n1++) {
-                while (b2 < t2.length && t2[b2].getMax() < t1[n1].getMin()) {
-                    b2++;
-                }
-                for (int n2 = b2; n2 < t2.length && t1[n1].getMax() >= t2[n2].getMin(); n2++) {
-                    if (t2[n2].getMax() >= t1[n1].getMin()) {
-                        WeightedStatePair q = new WeightedStatePair(t1[n1].getDest(), t2[n2].getDest());
-                        WeightedStatePair r = newStates.get(q);
-                        if (r == null) {
-                            q.s = new WeightedState();
-                            workList.add(q);
-                            newStates.put(q, q);
-                            r = q;
-                        }
-                        char min = t1[n1].getMin() > t2[n2].getMin() ? t1[n1].getMin() : t2[n2].getMin();
-                        char max = t1[n1].getMax() < t2[n2].getMax() ? t1[n1].getMax() : t2[n2].getMax();
-                        int weight = t1[n1].getWeight();
-                        p.s.getTransitions().add(new WeightedTransition(min, max, r.s, weight));
-                    }
-                }
-            }
-        }
-        c.deterministic = a1.deterministic && a2.deterministic;
-        c.removeDeadTransitions();
-        c.checkMinimizeAlways();
-        return c;
-    }
-
-    /**
-     * Returns an automaton that accepts the union of the empty string and the
-     * language of the given automaton.
-     * <p>
-     * Complexity: linear in number of states.
-     */
-    static public WeightedAutomaton optional(WeightedAutomaton a) {
-        a = a.cloneExpandedIfRequired();
-        WeightedState s = new WeightedState();
-        s.addEpsilon(a.initial);
-        s.setAccept(true);
-        a.initial = s;
-        a.deterministic = false;
-        a.clearHashCode();
-        a.checkMinimizeAlways();
-        return a;
-    }
-
-    /**
-     * Returns an automaton that accepts <code>min</code> or more
-     * concatenated repetitions of the language of the given automaton.
-     * <p>
-     * Complexity: linear in number of states and in <code>min</code>.
-     */
-    static public WeightedAutomaton repeat(WeightedAutomaton a, int min) {
-        if (min == 0) {
-            return repeat(a);
-        }
-        List<WeightedAutomaton> as = new ArrayList<WeightedAutomaton>();
-        while (min-- > 0) {
-            as.add(a);
-        }
-        as.add(repeat(a));
-        return concatenate(as);
     }
 
     /**
@@ -527,6 +233,336 @@ final public class BasicWeightedOperations {
             b.checkMinimizeAlways();
             return b;
         }
+    }
+
+    /**
+     * Determinizes the given automaton.
+     * <p>
+     * Complexity: exponential in number of states.
+     */
+    public static void determinize(WeightedAutomaton a) {
+        if (a.deterministic || a.isSingleton()) {
+            return;
+        }
+        Set<StateWeight> initialSet = new HashSet<>();
+        StateWeight sw =
+                new StateWeight(a.getInitialState(), a.getInitialFactor());
+        initialSet.add(sw);
+        determinize(a, initialSet);
+    }
+
+    /**
+     * Determinizes the given automaton using the given set of initial states.
+     */
+    static void determinize(WeightedAutomaton a, Set<StateWeight> initialSet) {
+        char[] points = a.getStartPoints();
+
+        LinkedList<Set<StateWeight>> workList = new LinkedList<>();
+        workList.add(initialSet);
+
+        Map<Set<StateWeight>, Set<StateWeight>> sets = new HashMap<>();
+        sets.put(initialSet, initialSet);
+
+        Map<Set<StateWeight>, WeightedState> newState = new HashMap<>();
+        a.initial = new WeightedState();
+        newState.put(initialSet, a.initial);
+        while (workList.size() > 0) {
+            Set<StateWeight> s = workList.removeFirst();
+            WeightedState r = newState.get(s);
+            for (int n = 0; n < points.length; n++) {
+                Set<StateWeight> p = new HashSet<>();
+                for (StateWeight q : s) {
+                    Map<WeightedState, Integer> weightMap = new HashMap<>();
+                    for (WeightedTransition t : q.getState().getTransitions()) {
+                        if (t.getMin() <= points[n] &&
+                            points[n] <= t.getMax()) {
+                            WeightedState dest = t.getDest();
+                            int weight = t.getWeight();
+                            if (weightMap.containsKey(dest)) {
+                                weight += weightMap.get(dest);
+                            }
+                            weightMap.put(dest, weight);
+                        }
+                    }
+                    for (WeightedState dest : weightMap.keySet()) {
+                        int newWeight = weightMap.get(dest) * q.getWeight();
+                        p.add(new StateWeight(dest, newWeight));
+                    }
+                }
+                if (!sets.containsKey(p)) {
+                    sets.put(p, p);
+                    workList.add(p);
+                    newState.put(p, new WeightedState());
+                }
+                WeightedState q = newState.get(p);
+                for (StateWeight sw : p) {
+                    if (sw.getState().isAccept()) {
+                        q.setAccept(true);
+                        break;
+                    }
+                }
+                char min = points[n];
+                char max;
+                if (n + 1 < points.length) {
+                    max = (char) (points[n + 1] - 1);
+                } else {
+                    max = Character.MAX_VALUE;
+                }
+                if (q.isAccept()) {
+                    int weight = 0;
+                    for (StateWeight sw : p) {
+                        weight += sw.getWeight();
+                    }
+                    r.getTransitions().add(new WeightedTransition(min, max, q, weight));
+                } else {
+                    r.getTransitions().add(new WeightedTransition(min, max, q));
+                }
+            }
+        }
+        a.deterministic = true;
+        a.removeDeadTransitions();
+    }
+
+    /**
+     * Returns a shortest accepted/rejected string. If more than one shortest
+     * string is found, the lexicographically first of the shortest strings is
+     * returned.
+     *
+     * @param accepted
+     *         if true, look for accepted strings; otherwise, look for rejected
+     *         strings
+     *
+     * @return the string, null if none found
+     */
+    public static String getShortestExample(WeightedAutomaton a, boolean
+            accepted) {
+        if (a.isSingleton()) {
+            if (accepted) {
+                return a.singleton;
+            } else if (a.singleton.length() > 0) {
+                return "";
+            } else {
+                return "\u0000";
+            }
+
+        }
+        return getShortestExample(a.getInitialState(), accepted);
+    }
+
+    static String getShortestExample(WeightedState s, boolean accepted) {
+        Map<WeightedState, String> path = new HashMap<WeightedState, String>();
+        LinkedList<WeightedState> queue = new LinkedList<WeightedState>();
+        path.put(s, "");
+        queue.add(s);
+        String best = null;
+        while (!queue.isEmpty()) {
+            WeightedState q = queue.removeFirst();
+            String p = path.get(q);
+            if (q.isAccept() == accepted) {
+                if (best == null ||
+                    p.length() < best.length() ||
+                    (p.length() == best.length() && p.compareTo(best) < 0)) {
+                    best = p;
+                }
+            } else {
+                for (WeightedTransition t : q.getTransitions()) {
+                    String tp = path.get(t.getDest());
+                    String np = p + t.getMin();
+                    if (tp == null ||
+                        (tp.length() == np.length() && np.compareTo(tp) < 0)) {
+                        if (tp == null) {
+                            queue.addLast(t.getDest());
+                        }
+                        path.put(t.getDest(), np);
+                    }
+                }
+            }
+        }
+        return best;
+    }
+
+    /**
+     * Returns an automaton that accepts the intersection of
+     * the languages of the given automata.
+     * Never modifies the input automata languages.
+     * <p>
+     * Complexity: quadratic in number of states.
+     */
+    static public WeightedAutomaton intersection(WeightedAutomaton a1,
+                                                 WeightedAutomaton a2) {
+        if (a1.isEmpty() || a2.isEmpty()) {
+            return BasicWeightedAutomata.makeEmpty();
+        }
+        if (a1.isSingleton()) {
+            if (a2.run(a1.singleton)) {
+                return a1.cloneIfRequired();
+            } else {
+                return BasicWeightedAutomata.makeEmpty();
+            }
+        }
+        if (a2.isSingleton()) {
+            if (a1.run(a2.singleton)) {
+                return a2.cloneIfRequired();
+            } else {
+                return BasicWeightedAutomata.makeEmpty();
+            }
+        }
+        if (a1 == a2) {
+            return a1.cloneIfRequired();
+        }
+        WeightedTransition[][] transitions1 =
+                WeightedAutomaton.getSortedTransitions(a1.getStates());
+        WeightedTransition[][] transitions2 =
+                WeightedAutomaton.getSortedTransitions(a2.getStates());
+        WeightedAutomaton c = new WeightedAutomaton();
+        c.setInitialFactor(a1.getInitialFactor());
+        LinkedList<WeightedStatePair> workList = new LinkedList<>();
+        HashMap<WeightedStatePair, WeightedStatePair> newStates =
+                new HashMap<>();
+        WeightedStatePair p =
+                new WeightedStatePair(c.initial, a1.initial, a2.initial);
+        workList.add(p);
+        newStates.put(p, p);
+        while (workList.size() > 0) {
+            p = workList.removeFirst();
+            p.s.setAccept(p.s1.isAccept() && p.s2.isAccept());
+            WeightedTransition[] t1 = transitions1[p.s1.getNumber()];
+            WeightedTransition[] t2 = transitions2[p.s2.getNumber()];
+            for (int n1 = 0, b2 = 0; n1 < t1.length; n1++) {
+                while (b2 < t2.length && t2[b2].getMax() < t1[n1].getMin()) {
+                    b2++;
+                }
+                for (int n2 = b2;
+                     n2 < t2.length && t1[n1].getMax() >= t2[n2].getMin();
+                     n2++) {
+                    if (t2[n2].getMax() >= t1[n1].getMin()) {
+                        WeightedStatePair q =
+                                new WeightedStatePair(t1[n1].getDest(),
+                                                      t2[n2].getDest());
+                        WeightedStatePair r = newStates.get(q);
+                        if (r == null) {
+                            q.s = new WeightedState();
+                            workList.add(q);
+                            newStates.put(q, q);
+                            r = q;
+                        }
+                        char min = t1[n1].getMin() > t2[n2].getMin() ?
+                                   t1[n1].getMin() :
+                                   t2[n2].getMin();
+                        char max = t1[n1].getMax() < t2[n2].getMax() ?
+                                   t1[n1].getMax() :
+                                   t2[n2].getMax();
+                        int weight = t1[n1].getWeight();
+                        p.s.getTransitions()
+                           .add(new WeightedTransition(min, max, r.s, weight));
+                    }
+                }
+            }
+        }
+        c.deterministic = a1.deterministic && a2.deterministic;
+        c.removeDeadTransitions();
+        c.checkMinimizeAlways();
+        return c;
+    }
+
+    /**
+     * Returns true if the given automaton accepts no strings.
+     */
+    public static boolean isEmpty(WeightedAutomaton a) {
+        if (a.isSingleton()) {
+            return false;
+        }
+        return !a.initial.isAccept() && a.initial.getTransitions().isEmpty();
+    }
+
+    /**
+     * Returns true if the given automaton accepts the empty string and nothing
+     * else.
+     */
+    public static boolean isEmptyString(WeightedAutomaton a) {
+        if (a.isSingleton()) {
+            return a.singleton.length() == 0;
+        } else {
+            return a.initial.isAccept() && a.initial.getTransitions().isEmpty();
+        }
+    }
+
+    /**
+     * Returns true if the given automaton accepts all strings.
+     */
+    public static boolean isTotal(WeightedAutomaton a) {
+        if (a.isSingleton()) {
+            return false;
+        }
+        if (a.initial.isAccept() && a.initial.getTransitions().size() == 1) {
+            WeightedTransition t = a.initial.getTransitions().iterator().next();
+            return t.getDest() == a.initial &&
+                   t.getMin() == Character.MIN_VALUE &&
+                   t.getMax() == Character.MAX_VALUE;
+        }
+        return false;
+    }
+
+    /**
+     * Returns a (deterministic) automaton that accepts the intersection of the
+     * language of <code>a1</code> and the complement of the language of
+     * <code>a2</code>. As a side-effect, the automata may be determinized, if
+     * not already deterministic.
+     * <p>
+     * Complexity: quadratic in number of states (if already deterministic).
+     */
+    static public WeightedAutomaton minus(WeightedAutomaton a1,
+                                          WeightedAutomaton a2) {
+        if (a1.isEmpty() || a1 == a2) {
+            return BasicWeightedAutomata.makeEmpty();
+        }
+        if (a2.isEmpty()) {
+            return a1.cloneIfRequired();
+        }
+        if (a1.isSingleton()) {
+            if (a2.run(a1.singleton)) {
+                return BasicWeightedAutomata.makeEmpty();
+            } else {
+                return a1.cloneIfRequired();
+            }
+        }
+        return intersection(a1, a2.complement());
+    }
+
+    /**
+     * Returns an automaton that accepts the union of the empty string and the
+     * language of the given automaton.
+     * <p>
+     * Complexity: linear in number of states.
+     */
+    static public WeightedAutomaton optional(WeightedAutomaton a) {
+        a = a.cloneExpandedIfRequired();
+        WeightedState s = new WeightedState();
+        s.addEpsilon(a.initial);
+        s.setAccept(true);
+        a.initial = s;
+        a.deterministic = false;
+        a.clearHashCode();
+        a.checkMinimizeAlways();
+        return a;
+    }
+
+    /**
+     * Returns an automaton that accepts <code>min</code> or more
+     * concatenated repetitions of the language of the given automaton.
+     * <p>
+     * Complexity: linear in number of states and in <code>min</code>.
+     */
+    static public WeightedAutomaton repeat(WeightedAutomaton a, int min) {
+        if (min == 0) {
+            return repeat(a);
+        }
+        List<WeightedAutomaton> as = new ArrayList<WeightedAutomaton>();
+        while (min-- > 0) {
+            as.add(a);
+        }
+        as.add(repeat(a));
+        return concatenate(as);
     }
 
     /**
@@ -681,7 +717,8 @@ final public class BasicWeightedOperations {
                 WeightedAutomaton.getSortedTransitions(a1.getStates());
         WeightedTransition[][] transitions2 =
                 WeightedAutomaton.getSortedTransitions(a2.getStates());
-        LinkedList<WeightedStatePair> worklist = new LinkedList<WeightedStatePair>();
+        LinkedList<WeightedStatePair> worklist =
+                new LinkedList<WeightedStatePair>();
         HashSet<WeightedStatePair> visited = new HashSet<WeightedStatePair>();
         WeightedStatePair p = new WeightedStatePair(a1.initial, a2.initial);
         worklist.add(p);
@@ -711,7 +748,8 @@ final public class BasicWeightedOperations {
                         max1 = Character.MIN_VALUE;
                     }
                     WeightedStatePair q =
-                            new WeightedStatePair(t1[n1].getDest(), t2[n2].getDest());
+                            new WeightedStatePair(t1[n1].getDest(),
+                                                  t2[n2].getDest());
                     if (!visited.contains(q)) {
                         worklist.add(q);
                         visited.add(q);

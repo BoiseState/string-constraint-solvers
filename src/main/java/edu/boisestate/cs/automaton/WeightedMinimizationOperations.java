@@ -209,10 +209,18 @@ final public class WeightedMinimizationOperations {
 	 * Minimizes the given automaton using Brzozowski's algorithm. 
 	 */
 	public static void minimizeBrzozowski(WeightedAutomaton a) {
-		if (a.isSingleton())
+		if (a.isSingleton()) {
 			return;
-		BasicWeightedOperations.determinize(a, SpecialWeightedOperations.reverse(a));
-		BasicWeightedOperations.determinize(a, SpecialWeightedOperations.reverse(a));
+		}
+		Set<StateWeight> initial = new HashSet<>();
+		for (WeightedState s : SpecialWeightedOperations.reverse(a)) {
+			initial.add(new StateWeight(s, 1));
+		}
+		BasicWeightedOperations.determinize(a, initial);
+		for (WeightedState s : SpecialWeightedOperations.reverse(a)) {
+			initial.add(new StateWeight(s, 1));
+		}
+		BasicWeightedOperations.determinize(a, initial);
 	}
 	
 	/** 

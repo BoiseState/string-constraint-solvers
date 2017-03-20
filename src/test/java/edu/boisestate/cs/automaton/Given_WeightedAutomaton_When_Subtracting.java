@@ -57,6 +57,7 @@ public class Given_WeightedAutomaton_When_Subtracting {
         WeightedAutomaton unbalancedUniform2 = unbalanced_Uniform_WeightedAutomaton_2();
         WeightedAutomaton unbalancedNonUniform0 = unbalanced_NonUniform_WeightedAutomaton_0();
         WeightedAutomaton unbalancedNonUniform1 = unbalanced_NonUniform_WeightedAutomaton_1();
+        WeightedAutomaton unbalancedNonUniform2 = unbalanced_NonUniform_WeightedAutomaton_2();
 
         return Arrays.asList(new Object[][]{
                 {"Empty", "Empty", 0, empty, empty},
@@ -99,16 +100,21 @@ public class Given_WeightedAutomaton_When_Subtracting {
                 {"Unbalanced Uniform 2", "Concrete", 64, unbalancedUniform2, concrete},
                 {"Unbalanced Uniform 2", "Uniform", 0, unbalancedUniform2, uniform},
                 {"Unbalanced Uniform 2", "Non-Uniform", 36, unbalancedUniform2, nonUniform},
-                {"Unbalanced Non-Uniform 0", "Empty", 28, unbalancedNonUniform0, empty},
-                {"Unbalanced Non-Uniform 0", "Empty String", 28, unbalancedNonUniform0, emptyString},
-                {"Unbalanced Non-Uniform 0", "Concrete", 28, unbalancedNonUniform0, concrete},
+                {"Unbalanced Non-Uniform 0", "Empty", 37, unbalancedNonUniform0, empty},
+                {"Unbalanced Non-Uniform 0", "Empty String", 37, unbalancedNonUniform0, emptyString},
+                {"Unbalanced Non-Uniform 0", "Concrete", 37, unbalancedNonUniform0, concrete},
                 {"Unbalanced Non-Uniform 0", "Uniform", 0, unbalancedNonUniform0, uniform},
-                {"Unbalanced Non-Uniform 0", "Non-Uniform", 0, unbalancedNonUniform0, nonUniform},
-                {"Unbalanced Non-Uniform 1", "Empty", 28, unbalancedNonUniform1, empty},
-                {"Unbalanced Non-Uniform 1", "Empty String", 28, unbalancedNonUniform1, emptyString},
-                {"Unbalanced Non-Uniform 1", "Concrete", 28, unbalancedNonUniform1, concrete},
+                {"Unbalanced Non-Uniform 0", "Non-Uniform", 9, unbalancedNonUniform0, nonUniform},
+                {"Unbalanced Non-Uniform 1", "Empty", 37, unbalancedNonUniform1, empty},
+                {"Unbalanced Non-Uniform 1", "Empty String", 37, unbalancedNonUniform1, emptyString},
+                {"Unbalanced Non-Uniform 1", "Concrete", 37, unbalancedNonUniform1, concrete},
                 {"Unbalanced Non-Uniform 1", "Uniform", 0, unbalancedNonUniform1, uniform},
-                {"Unbalanced Non-Uniform 1", "Non-Uniform", 0, unbalancedNonUniform1, nonUniform}
+                {"Unbalanced Non-Uniform 1", "Non-Uniform", 9, unbalancedNonUniform1, nonUniform},
+                {"Unbalanced Non-Uniform 2", "Empty", 37, unbalancedNonUniform2, empty},
+                {"Unbalanced Non-Uniform 2", "Empty String", 37, unbalancedNonUniform2, emptyString},
+                {"Unbalanced Non-Uniform 2", "Concrete", 37, unbalancedNonUniform2, concrete},
+                {"Unbalanced Non-Uniform 2", "Uniform", 0, unbalancedNonUniform2, uniform},
+                {"Unbalanced Non-Uniform 2", "Non-Uniform", 9, unbalancedNonUniform2, nonUniform}
         });
     }
 

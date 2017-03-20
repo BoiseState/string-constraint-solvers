@@ -57,6 +57,7 @@ public class Given_WeightedAutomaton_When_Intersecting {
         WeightedAutomaton unbalancedUniform2 = unbalanced_Uniform_WeightedAutomaton_2();
         WeightedAutomaton unbalancedNonUniform0 = unbalanced_NonUniform_WeightedAutomaton_0();
         WeightedAutomaton unbalancedNonUniform1 = unbalanced_NonUniform_WeightedAutomaton_1();
+        WeightedAutomaton unbalancedNonUniform2 = unbalanced_NonUniform_WeightedAutomaton_2();
 
         // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{
@@ -103,13 +104,18 @@ public class Given_WeightedAutomaton_When_Intersecting {
                 {"Unbalanced Non-Uniform 0", "Empty", 0, unbalancedNonUniform0, empty},
                 {"Unbalanced Non-Uniform 0", "Empty String", 0, unbalancedNonUniform0, emptyString},
                 {"Unbalanced Non-Uniform 0", "Concrete", 0, unbalancedNonUniform0, concrete},
-                {"Unbalanced Non-Uniform 0", "Uniform", 28, unbalancedNonUniform0, uniform},
+                {"Unbalanced Non-Uniform 0", "Uniform", 37, unbalancedNonUniform0, uniform},
                 {"Unbalanced Non-Uniform 0", "Non-Uniform", 28, unbalancedNonUniform0, nonUniform},
                 {"Unbalanced Non-Uniform 1", "Empty", 0, unbalancedNonUniform1, empty},
                 {"Unbalanced Non-Uniform 1", "Empty String", 0, unbalancedNonUniform1, emptyString},
                 {"Unbalanced Non-Uniform 1", "Concrete", 0, unbalancedNonUniform1, concrete},
-                {"Unbalanced Non-Uniform 1", "Uniform", 28, unbalancedNonUniform1, uniform},
-                {"Unbalanced Non-Uniform 1", "Non-Uniform", 28, unbalancedNonUniform1, nonUniform}
+                {"Unbalanced Non-Uniform 1", "Uniform", 37, unbalancedNonUniform1, uniform},
+                {"Unbalanced Non-Uniform 1", "Non-Uniform", 28, unbalancedNonUniform1, nonUniform},
+                {"Unbalanced Non-Uniform 2", "Empty", 0, unbalancedNonUniform2, empty},
+                {"Unbalanced Non-Uniform 2", "Empty String", 0, unbalancedNonUniform2, emptyString},
+                {"Unbalanced Non-Uniform 2", "Concrete", 0, unbalancedNonUniform2, concrete},
+                {"Unbalanced Non-Uniform 2", "Uniform", 37, unbalancedNonUniform2, uniform},
+                {"Unbalanced Non-Uniform 2", "Non-Uniform", 28, unbalancedNonUniform2, nonUniform}
         });
     }
 
@@ -126,6 +132,7 @@ public class Given_WeightedAutomaton_When_Intersecting {
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String message = String.format("<%s Automaton>.intersection(<%s Automaton>)", baseDescription, argDescription);
+        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

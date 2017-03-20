@@ -29,4 +29,20 @@ public class StateWeight implements Comparable<StateWeight> {
 
         return weight - o.getWeight();
     }
+
+    @Override
+    public int hashCode() {
+        return state.hashCode() + weight;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof StateWeight) {
+            StateWeight sw = (StateWeight)obj;
+            if (state.equals(sw.state)) {
+                return weight == sw.weight;
+            }
+        }
+        return false;
+    }
 }
