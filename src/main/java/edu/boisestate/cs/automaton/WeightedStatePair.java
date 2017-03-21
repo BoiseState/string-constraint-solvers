@@ -37,11 +37,17 @@ public class WeightedStatePair {
 	WeightedState s;
 	WeightedState s1;
 	WeightedState s2;
-	
+	private int weight;
+
+	int getWeight() {
+		return weight;
+	}
+
 	WeightedStatePair(WeightedState s, WeightedState s1, WeightedState s2) {
 		this.s = s;
 		this.s1 = s1;
 		this.s2 = s2;
+		this.weight = 1;
 	}
 	
 	/**
@@ -52,6 +58,18 @@ public class WeightedStatePair {
 	public WeightedStatePair(WeightedState s1, WeightedState s2) {
 		this.s1 = s1;
 		this.s2 = s2;
+		this.weight = 1;
+	}
+
+	/**
+	 * Constructs a new state pair.
+	 * @param s1 first state
+	 * @param s2 second state
+	 */
+	public WeightedStatePair(WeightedState s1, WeightedState s2, int weight) {
+		this.s1 = s1;
+		this.s2 = s2;
+		this.weight = weight;
 	}
 	
 	/**
@@ -79,7 +97,7 @@ public class WeightedStatePair {
 	public boolean equals(Object obj) {
 		if (obj instanceof WeightedStatePair) {
 			WeightedStatePair p = (WeightedStatePair)obj;
-			return p.s1 == s1 && p.s2 == s2;
+			return p.s1 == s1 && p.s2 == s2 && p.weight == weight;
 		}
 		else
 			return false;
@@ -91,6 +109,6 @@ public class WeightedStatePair {
 	 */
 	@Override
 	public int hashCode() {
-		return s1.hashCode() + s2.hashCode();
+		return s1.hashCode() + s2.hashCode() + weight;
 	}
 }

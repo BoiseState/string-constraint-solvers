@@ -132,10 +132,14 @@ public class WeightedPreciseDelete
                         // add transitions to copied states
                         for (WeightedTransition t : state.getTransitions()) {
                             // add destination state as next state
-                            nextWeightedStates.add(t.getDest());
+                            WeightedState dest = t.getDest();
+                            nextWeightedStates.add(dest);
                             int size = t.getMax() - t.getMin() + 1;
                             int nextWeight = stateWeights.get(state) * t.getWeight() * size;
-                            nextStateWeights.put(t.getDest(), nextWeight);
+                            if (nextStateWeights.containsKey(dest)) {
+                                nextWeight += nextStateWeights.get(dest);
+                            }
+                            nextStateWeights.put(dest, nextWeight);
                         }
                     }
 
@@ -173,25 +177,19 @@ public class WeightedPreciseDelete
         List<WeightedStatePair> epsilons = new ArrayList<>();
         for (WeightedState state : states) {
             for (WeightedState endWeightedState: endStatesMap.get(state)){
-                epsilons.add(new WeightedStatePair(state, endWeightedState));
 
                 // adjust weights
                 Map<WeightedState, Integer> stateWeights = stateWeightMap.get(state);
                 int removedWeight = stateWeights.get(endWeightedState);
                 if (endWeightedState.getTransitions().isEmpty() && start == 0) {
-                    int numEmptyStrings = returnAutomaton.getInitialFactor();
-                    returnAutomaton.setInitialFactor(removedWeight + numEmptyStrings);
+                    returnAutomaton.setNumEmptyStrings(removedWeight);
                 } else if (endWeightedState.getTransitions().isEmpty()) {
                     for (WeightedTransition t : incomingTransitionMap.get(state)) {
                         int newWeight = t.getWeight() * removedWeight;
                         t.setWeight(newWeight);
                     }
-                } else {
-                    for (WeightedTransition t : endWeightedState.getTransitions()) {
-                        int newWeight = t.getWeight() * removedWeight;
-                        t.setWeight(newWeight);
-                    }
                 }
+                epsilons.add(new WeightedStatePair(state, endWeightedState, removedWeight));
             }
         }
 

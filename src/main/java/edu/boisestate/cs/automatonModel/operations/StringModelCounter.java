@@ -23,7 +23,7 @@ public class StringModelCounter {
                                            0);
 
         // account for empty string
-        if (state.isAccept() && !state.getTransitions().isEmpty()) {
+        if (state.isAccept()) {
             modelCount = modelCount.add(BigInteger.ONE);
         }
 

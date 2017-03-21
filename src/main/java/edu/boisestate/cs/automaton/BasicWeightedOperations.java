@@ -49,35 +49,30 @@ final public class BasicWeightedOperations {
      *         pairs of source/destination states where epsilon transitions
      *         should be added
      */
-    public static void addEpsilons(WeightedAutomaton a,
-                                   Collection<WeightedStatePair> pairs) {
+    public static void addEpsilons(WeightedAutomaton a, Collection<WeightedStatePair> pairs) {
         a.expandSingleton();
-        HashMap<WeightedState, HashSet<WeightedState>> forward =
-                new HashMap<WeightedState, HashSet<WeightedState>>();
-        HashMap<WeightedState, HashSet<WeightedState>> back =
-                new HashMap<WeightedState, HashSet<WeightedState>>();
+        HashMap<WeightedState, HashSet<WeightedState>> forward = new HashMap<>();
+        HashMap<WeightedState, HashSet<WeightedState>> back = new HashMap<>();
         for (WeightedStatePair p : pairs) {
             HashSet<WeightedState> to = forward.get(p.s1);
             if (to == null) {
-                to = new HashSet<WeightedState>();
+                to = new HashSet<>();
                 forward.put(p.s1, to);
             }
             to.add(p.s2);
             HashSet<WeightedState> from = back.get(p.s2);
             if (from == null) {
-                from = new HashSet<WeightedState>();
+                from = new HashSet<>();
                 back.put(p.s2, from);
             }
             from.add(p.s1);
         }
         // calculate epsilon closure
-        LinkedList<WeightedStatePair> worklist =
-                new LinkedList<WeightedStatePair>(pairs);
-        HashSet<WeightedStatePair> workset =
-                new HashSet<WeightedStatePair>(pairs);
-        while (!worklist.isEmpty()) {
-            WeightedStatePair p = worklist.removeFirst();
-            workset.remove(p);
+        LinkedList<WeightedStatePair> workList = new LinkedList<>(pairs);
+        HashSet<WeightedStatePair> workSet = new HashSet<>(pairs);
+        while (!workList.isEmpty()) {
+            WeightedStatePair p = workList.removeFirst();
+            workSet.remove(p);
             HashSet<WeightedState> to = forward.get(p.s2);
             HashSet<WeightedState> from = back.get(p.s1);
             if (to != null) {
@@ -87,15 +82,14 @@ final public class BasicWeightedOperations {
                         pairs.add(pp);
                         forward.get(p.s1).add(s);
                         back.get(s).add(p.s1);
-                        worklist.add(pp);
-                        workset.add(pp);
+                        workList.add(pp);
+                        workSet.add(pp);
                         if (from != null) {
                             for (WeightedState q : from) {
-                                WeightedStatePair
-                                        qq = new WeightedStatePair(q, p.s1);
-                                if (!workset.contains(qq)) {
-                                    worklist.add(qq);
-                                    workset.add(qq);
+                                WeightedStatePair qq = new WeightedStatePair(q, p.s1);
+                                if (!workSet.contains(qq)) {
+                                    workList.add(qq);
+                                    workSet.add(qq);
                                 }
                             }
                         }
@@ -105,7 +99,7 @@ final public class BasicWeightedOperations {
         }
         // add transitions
         for (WeightedStatePair p : pairs) {
-            p.s1.addEpsilon(p.s2);
+            p.s1.addEpsilon(p.s2, p.getWeight());
         }
         a.deterministic = false;
         a.clearHashCode();

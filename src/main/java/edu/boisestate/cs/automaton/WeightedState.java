@@ -147,6 +147,15 @@ public class WeightedState
 		for (WeightedTransition t : to.transitions)
 			transitions.add(t);
 	}
+
+	void addEpsilon(WeightedState to, int weight) {
+		if (to.accept)
+			accept = true;
+		for (WeightedTransition t : to.transitions) {
+			int newWeight = t.getWeight() * weight;
+			transitions.add(new WeightedTransition(t.getMin(), t.getMax(), t.getDest(), newWeight));
+		}
+	}
 	
 	/** Returns transitions sorted by (min, reverse max, to, weight) or
 	 *  (to, min, reverse max, weight) */
