@@ -9,7 +9,9 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmpty;
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmptyString;
@@ -21,7 +23,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_WeightedAutomaton_When_Unioning {
+public class Given_WeightedAutomaton_When_UnioningACollection {
 
     @Parameter(value = 4)
     public WeightedAutomaton argAutomaton;
@@ -434,7 +436,10 @@ public class Given_WeightedAutomaton_When_Unioning {
     @Before
     public void setup() {
         // *** act ***
-        resultAutomaton = BasicWeightedOperations.union(baseAutomaton, argAutomaton);
+        Collection<WeightedAutomaton> automata = new ArrayList<>();
+        automata.add(baseAutomaton);
+        automata.add(argAutomaton);
+        resultAutomaton = BasicWeightedOperations.union(automata);
     }
 
     @Test

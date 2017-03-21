@@ -48,6 +48,13 @@ public class Given_StringModelCounter_When_ModelCounting_For_WeightedAutomata {
         // create automata
         WeightedAutomaton empty = makeEmpty();
         WeightedAutomaton emptyString = makeEmptyString();
+        WeightedAutomaton emptyString2 = makeEmptyString();
+        emptyString2.setInitialFactor(2);
+        WeightedAutomaton emptyString3 = makeEmptyString();
+        emptyString3.setNumEmptyStrings(3);
+        WeightedAutomaton emptyString4 = makeEmptyString();
+        emptyString4.setInitialFactor(2);
+        emptyString4.setNumEmptyStrings(2);
         WeightedAutomaton concrete = getConcreteWeightedAutomaton(alphabet, "ABC");
         WeightedAutomaton boundUniform = getUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
         WeightedAutomaton boundNonUniform = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
@@ -72,13 +79,13 @@ public class Given_StringModelCounter_When_ModelCounting_For_WeightedAutomata {
         WeightedAutomaton replaceUnbalancedNonUniform2 = replaceUnbalancedNonUniform2();
 
 
-        // create unbalanced automata
-
-
         // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty},
                 {"Empty String", 1, emptyString},
+                {"Empty String 2", 2, emptyString2},
+                {"Empty String 3", 3, emptyString3},
+                {"Empty String 4", 4, emptyString4},
                 {"Concrete", 1, concrete},
                 {"Uniform", 85, boundUniform},
                 {"Non-uniform", 45, boundNonUniform},

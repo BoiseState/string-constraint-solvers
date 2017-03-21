@@ -48,9 +48,7 @@ final public class BasicWeightedAutomata {
         if (x.length() == n) {
             s.setAccept(true);
         } else {
-            s.addTransition(new WeightedTransition('0',
-                                                   '9',
-                                                   anyOfRightLength(x, n + 1)));
+            s.addTransition(new WeightedTransition('0', '9', anyOfRightLength(x, n + 1)));
         }
         return s;
     }
@@ -59,10 +57,7 @@ final public class BasicWeightedAutomata {
      * Constructs sub-automaton corresponding to decimal numbers of value
      * at least x.substring(n) and length x.substring(n).length().
      */
-    private static WeightedState atLeast(String x,
-                                         int n,
-                                         Collection<WeightedState> initials,
-                                         boolean zeros) {
+    private static WeightedState atLeast(String x, int n, Collection<WeightedState> initials, boolean zeros) {
         WeightedState s = new WeightedState();
         if (x.length() == n) {
             s.setAccept(true);
@@ -71,17 +66,9 @@ final public class BasicWeightedAutomata {
                 initials.add(s);
             }
             char c = x.charAt(n);
-            s.addTransition(new WeightedTransition(c,
-                                                   atLeast(x,
-                                                           n + 1,
-                                                           initials,
-                                                           zeros && c == '0')));
+            s.addTransition(new WeightedTransition(c, atLeast(x, n + 1, initials, zeros && c == '0')));
             if (c < '9') {
-                s.addTransition(new WeightedTransition((char) (c + 1),
-                                                       '9',
-                                                       anyOfRightLength(x,
-                                                                        n +
-                                                                        1)));
+                s.addTransition(new WeightedTransition((char) (c + 1), '9', anyOfRightLength(x, n + 1)));
             }
         }
         return s;
@@ -99,11 +86,7 @@ final public class BasicWeightedAutomata {
             char c = x.charAt(n);
             s.addTransition(new WeightedTransition(c, atMost(x, (char) n + 1)));
             if (c > '0') {
-                s.addTransition(new WeightedTransition('0',
-                                                       (char) (c - 1),
-                                                       anyOfRightLength(x,
-                                                                        n +
-                                                                        1)));
+                s.addTransition(new WeightedTransition('0', (char) (c - 1), anyOfRightLength(x, n + 1)));
             }
         }
         return s;
@@ -115,11 +98,7 @@ final public class BasicWeightedAutomata {
      * x.substring(n).length() (which must be equal to y.substring(n).length
      * ()).
      */
-    private static WeightedState between(String x,
-                                         String y,
-                                         int n,
-                                         Collection<WeightedState> initials,
-                                         boolean zeros) {
+    private static WeightedState between(String x, String y, int n, Collection<WeightedState> initials, boolean zeros) {
         WeightedState s = new WeightedState();
         if (x.length() == n) {
             s.setAccept(true);
@@ -130,27 +109,12 @@ final public class BasicWeightedAutomata {
             char cx = x.charAt(n);
             char cy = y.charAt(n);
             if (cx == cy) {
-                s.addTransition(new WeightedTransition(cx,
-                                                       between(x,
-                                                               y,
-                                                               n + 1,
-                                                               initials,
-                                                               zeros &&
-                                                               cx == '0')));
+                s.addTransition(new WeightedTransition(cx, between(x, y, n + 1, initials, zeros && cx == '0')));
             } else { // cx<cy
-                s.addTransition(new WeightedTransition(cx,
-                                                       atLeast(x,
-                                                               n + 1,
-                                                               initials,
-                                                               zeros &&
-                                                               cx == '0')));
+                s.addTransition(new WeightedTransition(cx, atLeast(x, n + 1, initials, zeros && cx == '0')));
                 s.addTransition(new WeightedTransition(cy, atMost(y, n + 1)));
                 if (cx + 1 < cy) {
-                    s.addTransition(new WeightedTransition((char) (cx + 1),
-                                                           (char) (cy - 1),
-                                                           anyOfRightLength(x,
-                                                                            n +
-                                                                            1)));
+                    s.addTransition(new WeightedTransition((char) (cx + 1), (char) (cy - 1), anyOfRightLength(x, n + 1)));
                 }
             }
         }
@@ -205,9 +169,7 @@ final public class BasicWeightedAutomata {
         a.initial = s;
         s.setAccept(true);
         s.getTransitions()
-         .add(new WeightedTransition(Character.MIN_VALUE,
-                                     Character.MAX_VALUE,
-                                     s));
+         .add(new WeightedTransition(Character.MIN_VALUE, Character.MAX_VALUE, s));
         a.deterministic = true;
         return a;
     }
@@ -319,11 +281,9 @@ final public class BasicWeightedAutomata {
      *         max number of necessary fraction digits
      */
     public static WeightedAutomaton makeFractionDigits(int i) {
-        return WeightedAutomaton.minimize((new RegExp("[ \t\n\r]*[-+]?[0-9]+" +
-                                                      "(\\.[0-9]{0," +
-                                                      i +
-                                                      "}0*)?[ \t\n\r]*"))
-												  .toAutomaton());
+        return WeightedAutomaton.minimize(
+                (new RegExp("[ \t\n\r]*[-+]?[0-9]+(\\.[0-9]{0," + i + "}0*)?[ \t\n\r]*"))
+                        .toAutomaton());
     }
 
     /**

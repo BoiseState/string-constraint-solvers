@@ -34,22 +34,25 @@ public class StringModelCounter {
     static public BigInteger ModelCount(WeightedAutomaton automaton) {
 
         // initialize big integer value
-        BigInteger initialModelCount = BigInteger.valueOf(automaton.getInitialFactor());
+        BigInteger factor = BigInteger.valueOf(automaton.getInitialFactor());
 
         // account for empty string
         if (automaton.isEmptyString()) {
-            return BigInteger.valueOf(automaton.getInitialFactor());
+            BigInteger emptyStrings = BigInteger.valueOf(automaton.getNumEmptyStrings());
+            return factor.multiply(emptyStrings);
         }
 
         // get model count
         BigInteger modelCount = ModelCount(automaton.getInitialState(),
                                            -1,
-                                           initialModelCount,
+                                           factor,
                                            0);
 
         // account for empty string
         if (automaton.getInitialState().isAccept()) {
-            modelCount = modelCount.add(BigInteger.ONE);
+            BigInteger emptyStrings = BigInteger.valueOf(automaton.getNumEmptyStrings());
+            emptyStrings = factor.multiply(emptyStrings);
+            modelCount = modelCount.add(emptyStrings);
         }
         return modelCount;
     }
@@ -57,25 +60,28 @@ public class StringModelCounter {
     // default model counter for unbounded automata, count is specified
     static public BigInteger ModelCount(WeightedAutomaton automaton, int initialCount) {
 
+        // initialize big integer value
+        BigInteger factor = BigInteger.valueOf(automaton.getInitialFactor());
+
         // allow empty string
         if (initialCount == 0 && automaton.getInitialState().isAccept()) {
-            return BigInteger.valueOf(automaton.getInitialFactor());
+            BigInteger emptyStrings = BigInteger.valueOf(automaton.getNumEmptyStrings());
+            return factor.multiply(emptyStrings);
         } else if (initialCount < 1) {
             return BigInteger.ZERO;
         }
 
-        // initialize big integer value
-        BigInteger initialModelCount = BigInteger.valueOf(automaton.getInitialFactor());
-
         // get model count
         BigInteger modelCount = ModelCount(automaton.getInitialState(),
                                            initialCount,
-                                           initialModelCount,
+                                           factor,
                                            0);
 
         // account for empty string
         if (automaton.getInitialState().isAccept()) {
-            modelCount = modelCount.add(BigInteger.ONE);
+            BigInteger emptyStrings = BigInteger.valueOf(automaton.getNumEmptyStrings());
+            emptyStrings = factor.multiply(emptyStrings);
+            modelCount = modelCount.add(emptyStrings);
         }
 
         return modelCount;

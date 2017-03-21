@@ -121,19 +121,14 @@ public class WeightedAutomaton
      * Singleton string. Null if not applicable.
      */
     String singleton;
-
-    public int getInitialFactor() {
-        return initialFactor;
-    }
-
-    public void setInitialFactor(int initialFactor) {
-        this.initialFactor = initialFactor;
-    }
-
+    /**
+     * Initial multiplicative factor for model counting automaton
+     */
+    private int initialFactor;
     /**
      * Number of empty strings modeled by automaton
      */
-    int initialFactor;
+    private int numEmptyStrings;
 
     /**
      * Returns the set of reachable accept states.
@@ -199,6 +194,10 @@ public class WeightedAutomaton
         return info;
     }
 
+    public int getInitialFactor() {
+        return initialFactor;
+    }
+
     /**
      * Gets initial state.
      *
@@ -207,32 +206,6 @@ public class WeightedAutomaton
     public WeightedState getInitialState() {
         expandSingleton();
         return initial;
-    }
-
-
-
-    /**
-     * Expands singleton representation to normal representation.
-     * Does nothing if not in singleton representation.
-     */
-    public void expandSingleton() {
-        if (isSingleton()) {
-            WeightedState p = new WeightedState();
-            initial = p;
-            for (int i = 0; i < singleton.length(); i++) {
-                WeightedState q = new WeightedState();
-                p.getTransitions()
-                 .add(new WeightedTransition(singleton.charAt(i), q));
-                p = q;
-            }
-            p.setAccept(true);
-            deterministic = true;
-            singleton = null;
-        }
-    }
-
-    boolean isSingleton() {
-        return singleton != null;
     }
 
     /**
@@ -244,6 +217,10 @@ public class WeightedAutomaton
     public Set<WeightedState> getLiveStates() {
         expandSingleton();
         return getLiveStates(getStates());
+    }
+
+    public int getNumEmptyStrings() {
+        return numEmptyStrings;
     }
 
     /**
@@ -307,6 +284,48 @@ public class WeightedAutomaton
     }
 
     /**
+     * Returns the set of states that are reachable from the initial state.
+     *
+     * @return set of {@link WeightedState} objects
+     */
+    public Set<WeightedState> getStates() {
+        expandSingleton();
+        Set<WeightedState> visited;
+        if (isDebug()) {
+            visited = new LinkedHashSet<WeightedState>();
+        } else {
+            visited = new HashSet<WeightedState>();
+        }
+        LinkedList<WeightedState> worklist = new LinkedList<WeightedState>();
+        worklist.add(initial);
+        visited.add(initial);
+        while (worklist.size() > 0) {
+            WeightedState s = worklist.removeFirst();
+            Collection<WeightedTransition> tr;
+            if (isDebug()) {
+                tr = s.getSortedTransitions(false);
+            } else {
+                tr = s.getTransitions();
+            }
+            for (WeightedTransition t : tr) {
+                if (!visited.contains(t.getDest())) {
+                    visited.add(t.getDest());
+                    worklist.add(t.getDest());
+                }
+            }
+        }
+        return visited;
+    }
+
+    boolean isDebug() {
+        if (is_debug == null) {
+            is_debug = Boolean.valueOf(System.getProperty(
+                    "dk.brics.automaton.debug") != null);
+        }
+        return is_debug.booleanValue();
+    }
+
+    /**
      * Returns deterministic flag for this automaton.
      *
      * @return true if the automaton is definitely deterministic, false if the
@@ -337,6 +356,10 @@ public class WeightedAutomaton
         return SpecialWeightedOperations.isFinite(this);
     }
 
+    boolean isSingleton() {
+        return singleton != null;
+    }
+
     /**
      * See {@link BasicWeightedOperations#isTotal(WeightedAutomaton)}.
      */
@@ -364,6 +387,10 @@ public class WeightedAutomaton
      */
     public void setInfo(Object info) {
         this.info = info;
+    }
+
+    public void setInitialFactor(int initialFactor) {
+        this.initialFactor = initialFactor;
     }
 
     /**
@@ -400,6 +427,20 @@ public class WeightedAutomaton
         minimize_always = flag;
     }
 
+    public void setNumEmptyStrings(int numEmptyStrings) {
+        this.numEmptyStrings = numEmptyStrings;
+    }
+
+    /**
+     * Assigns consecutive numbers to the given states.
+     */
+    static void setStateNumbers(Set<WeightedState> states) {
+        int number = 0;
+        for (WeightedState s : states) {
+            s.setNumber(number++);
+        }
+    }
+
     /**
      * Constructs a new automaton that accepts the empty language.
      * Using this constructor, automata can be constructed manually from
@@ -414,6 +455,7 @@ public class WeightedAutomaton
         deterministic = true;
         singleton = null;
         initialFactor = 1;
+        numEmptyStrings = 1;
     }
 
     /**
@@ -436,16 +478,6 @@ public class WeightedAutomaton
             transitions[s.getNumber()] = s.getSortedTransitionArray(false);
         }
         return transitions;
-    }
-
-    /**
-     * Assigns consecutive numbers to the given states.
-     */
-    static void setStateNumbers(Set<WeightedState> states) {
-        int number = 0;
-        for (WeightedState s : states) {
-            s.setNumber(number++);
-        }
     }
 
     /**
@@ -683,6 +715,38 @@ public class WeightedAutomaton
     }
 
     /**
+     * Returns a clone of this automaton.
+     */
+    @Override
+    public WeightedAutomaton clone() {
+        try {
+            WeightedAutomaton a = (WeightedAutomaton) super.clone();
+            a.setInitialFactor(initialFactor);
+            a.setNumEmptyStrings(numEmptyStrings);
+            if (!isSingleton()) {
+                HashMap<WeightedState, WeightedState> m = new HashMap<WeightedState, WeightedState>();
+                Set<WeightedState> states = getStates();
+                for (WeightedState s : states) {
+                    m.put(s, new WeightedState());
+                }
+                for (WeightedState s : states) {
+                    WeightedState p = m.get(s);
+                    p.setAccept(s.isAccept());
+                    if (s == initial) {
+                        a.initial = p;
+                    }
+                    for (WeightedTransition t : s.getTransitions()) {
+                        p.getTransitions().add(new WeightedTransition(t.getMin(), t.getMax(), m.get(t.getDest()), t.getWeight()));
+                    }
+                }
+            }
+            return a;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Returns true if the language of this automaton is equal to the language
      * of the given automaton. Implemented using <code>hashCode</code> and
      * <code>subsetOf</code>.
@@ -713,14 +777,6 @@ public class WeightedAutomaton
             minimize();
         }
         return hash_code;
-    }
-
-    /**
-     * See {@link BasicWeightedOperations#subsetOf(WeightedAutomaton,
-     * WeightedAutomaton)}.
-     */
-    public boolean subsetOf(WeightedAutomaton a) {
-        return BasicWeightedOperations.subsetOf(this, a);
     }
 
     /**
@@ -785,6 +841,26 @@ public class WeightedAutomaton
     }
 
     /**
+     * Expands singleton representation to normal representation.
+     * Does nothing if not in singleton representation.
+     */
+    public void expandSingleton() {
+        if (isSingleton()) {
+            WeightedState p = new WeightedState();
+            initial = p;
+            for (int i = 0; i < singleton.length(); i++) {
+                WeightedState q = new WeightedState();
+                p.getTransitions()
+                 .add(new WeightedTransition(singleton.charAt(i), q));
+                p = q;
+            }
+            p.setAccept(true);
+            deterministic = true;
+            singleton = null;
+        }
+    }
+
+    /**
      * See {@link SpecialWeightedOperations#getFiniteStrings(WeightedAutomaton, int)}.
      */
     public Set<String> getFiniteStrings(int limit) {
@@ -820,6 +896,13 @@ public class WeightedAutomaton
      */
     public WeightedAutomaton intersection(WeightedAutomaton a) {
         return BasicWeightedOperations.intersection(this, a);
+    }
+
+    /**
+     * See {@link WeightedMinimizationOperations#minimize(WeightedAutomaton)}.
+     */
+    public void minimize() {
+        WeightedMinimizationOperations.minimize(this);
     }
 
     /**
@@ -1001,6 +1084,14 @@ public class WeightedAutomaton
     }
 
     /**
+     * See {@link BasicWeightedOperations#subsetOf(WeightedAutomaton,
+     * WeightedAutomaton)}.
+     */
+    public boolean subsetOf(WeightedAutomaton a) {
+        return BasicWeightedOperations.subsetOf(this, a);
+    }
+
+    /**
      * See {@link SpecialWeightedOperations#subst(WeightedAutomaton, Map)}.
      */
     public WeightedAutomaton subst(Map<Character, Set<Character>> map) {
@@ -1021,6 +1112,11 @@ public class WeightedAutomaton
     public String toDot() {
         StringBuilder b = new StringBuilder("digraph Automaton {\n");
         b.append("  rankdir = LR;\n");
+        if (numEmptyStrings > 1) {
+            b.append("  info [shape=point,label=\"Empty Strings: ")
+             .append(numEmptyStrings)
+             .append("\"];\n");
+        }
         Set<WeightedState> states = getStates();
         setStateNumbers(states);
         for (WeightedState s : states) {
@@ -1068,13 +1164,6 @@ public class WeightedAutomaton
     }
 
     /**
-     * See {@link WeightedMinimizationOperations#minimize(WeightedAutomaton)}.
-     */
-    public void minimize() {
-        WeightedMinimizationOperations.minimize(this);
-    }
-
-    /**
      * Must be invoked when the stored hash code may no longer be valid.
      */
     void clearHashCode() {
@@ -1112,37 +1201,6 @@ public class WeightedAutomaton
             return this;
         } else {
             return clone();
-        }
-    }
-
-    /**
-     * Returns a clone of this automaton.
-     */
-    @Override
-    public WeightedAutomaton clone() {
-        try {
-            WeightedAutomaton a = (WeightedAutomaton) super.clone();
-            a.setInitialFactor(this.initialFactor);
-            if (!isSingleton()) {
-                HashMap<WeightedState, WeightedState> m = new HashMap<WeightedState, WeightedState>();
-                Set<WeightedState> states = getStates();
-                for (WeightedState s : states) {
-                    m.put(s, new WeightedState());
-                }
-                for (WeightedState s : states) {
-                    WeightedState p = m.get(s);
-                    p.setAccept(s.isAccept());
-                    if (s == initial) {
-                        a.initial = p;
-                    }
-                    for (WeightedTransition t : s.getTransitions()) {
-                        p.getTransitions().add(new WeightedTransition(t.getMin(), t.getMax(), m.get(t.getDest()), t.getWeight()));
-                    }
-                }
-            }
-            return a;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -1187,48 +1245,6 @@ public class WeightedAutomaton
                                              s));
             }
         }
-    }
-
-    /**
-     * Returns the set of states that are reachable from the initial state.
-     *
-     * @return set of {@link WeightedState} objects
-     */
-    public Set<WeightedState> getStates() {
-        expandSingleton();
-        Set<WeightedState> visited;
-        if (isDebug()) {
-            visited = new LinkedHashSet<WeightedState>();
-        } else {
-            visited = new HashSet<WeightedState>();
-        }
-        LinkedList<WeightedState> worklist = new LinkedList<WeightedState>();
-        worklist.add(initial);
-        visited.add(initial);
-        while (worklist.size() > 0) {
-            WeightedState s = worklist.removeFirst();
-            Collection<WeightedTransition> tr;
-            if (isDebug()) {
-                tr = s.getSortedTransitions(false);
-            } else {
-                tr = s.getTransitions();
-            }
-            for (WeightedTransition t : tr) {
-                if (!visited.contains(t.getDest())) {
-                    visited.add(t.getDest());
-                    worklist.add(t.getDest());
-                }
-            }
-        }
-        return visited;
-    }
-
-    boolean isDebug() {
-        if (is_debug == null) {
-            is_debug = Boolean.valueOf(System.getProperty(
-                    "dk.brics.automaton.debug") != null);
-        }
-        return is_debug.booleanValue();
     }
 
     private Set<WeightedState> getLiveStates(Set<WeightedState> states) {

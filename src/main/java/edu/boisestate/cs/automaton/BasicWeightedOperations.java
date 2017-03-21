@@ -779,11 +779,6 @@ final public class BasicWeightedOperations {
      * Complexity: linear in number of states.
      */
     public static WeightedAutomaton union(WeightedAutomaton a1, WeightedAutomaton a2) {
-//        if ((a1.isSingleton() &&
-//             a2.isSingleton() &&
-//             a1.singleton.equals(a2.singleton)) || a1 == a2) {
-//            return a1.cloneIfRequired();
-//        }
         if (a1 == a2) {
             a1 = a1.cloneExpanded();
             a2 = a2.cloneExpanded();
@@ -791,15 +786,22 @@ final public class BasicWeightedOperations {
             a1 = a1.cloneExpandedIfRequired();
             a2 = a2.cloneExpandedIfRequired();
         }
+
+        int numEmptyStrings = 0;
+        if (a1.initial.isAccept()) {
+            numEmptyStrings += (a1.getInitialFactor() * a1.getNumEmptyStrings());
+        }
+        if (a2.initial.isAccept()) {
+            numEmptyStrings += (a2.getInitialFactor() * a2.getNumEmptyStrings());
+        }
+
         WeightedState s = new WeightedState();
         s.addEpsilon(a1.initial);
         s.addEpsilon(a2.initial);
-        boolean updateFactor = a1.initial.isAccept() && a2.initial.isAccept();
+
         a1.initial = s;
-        if (updateFactor) {
-            int a1Factor = a1.getInitialFactor();
-            int a2Factor = a2.getInitialFactor();
-            a1.setInitialFactor(a1Factor + a2Factor);
+        if (numEmptyStrings > 0) {
+            a1.setNumEmptyStrings(numEmptyStrings);
         }
         a1.deterministic = false;
         a1.clearHashCode();
@@ -814,12 +816,13 @@ final public class BasicWeightedOperations {
      * Complexity: linear in number of states.
      */
     public static WeightedAutomaton union(Collection<WeightedAutomaton> l) {
-        Set<Integer> ids = new HashSet<Integer>();
+        Set<Integer> ids = new HashSet<>();
         for (WeightedAutomaton a : l) {
             ids.add(System.identityHashCode(a));
         }
         boolean has_aliases = ids.size() != l.size();
         WeightedState s = new WeightedState();
+        int numEmptyStrings = 0;
         for (WeightedAutomaton b : l) {
             if (b.isEmpty()) {
                 continue;
@@ -830,10 +833,16 @@ final public class BasicWeightedOperations {
             } else {
                 bb = bb.cloneExpandedIfRequired();
             }
+            if (bb.initial.isAccept()) {
+                numEmptyStrings += (bb.getInitialFactor() * bb.getNumEmptyStrings());
+            }
             s.addEpsilon(bb.initial);
         }
         WeightedAutomaton a = new WeightedAutomaton();
         a.initial = s;
+        if (numEmptyStrings > 0) {
+            a.setNumEmptyStrings(numEmptyStrings);
+        }
         a.deterministic = false;
         a.clearHashCode();
         a.checkMinimizeAlways();
