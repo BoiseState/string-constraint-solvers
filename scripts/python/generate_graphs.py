@@ -222,10 +222,7 @@ def add_insert_substring_operations(ops):
 
             # add insert substring for char sequence
             ops.append(OperationValue('insert!!ILjava/lang/CharSequence;II',
-                                      [str(i),
-                                       symbol_string,
-                                       str(j),
-                                       str(j + 1)]))
+                                      [str(i), symbol_string, str(j), str(j + 1)]))
 
 
 def add_replace_char_operations(ops):
@@ -317,6 +314,81 @@ def add_trim_operations(ops):
     ops.append(OperationValue('trim!!'))
 
 
+# boolean constraints array
+def add_contains_predicates(constraints):
+    # s.contains(substr)
+    for c in settings.alphabet:
+        constraints.append(BooleanConstraintValue('contains!!Ljava/lang/CharSequence;', [c]))
+
+
+def add_ends_with_predicates(constraints):
+    # s.endsWith(suffix)
+    for c in settings.alphabet:
+        constraints.append(
+            BooleanConstraintValue('endsWith!!Ljava/lang/String;', [c]))
+
+
+def add_equals_predicates(constraints):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+    # get string from first 2 symbols
+    string = symbol_string[0:2]
+
+    # s.contentEquals(str)
+    # s.equals(str)
+    constraints.append(BooleanConstraintValue('contentEquals!!Ljava/lang/CharSequence;', [string]))
+    constraints.append(BooleanConstraintValue('contentEquals!!Ljava/lang/StringBuffer;', [string]))
+    constraints.append(BooleanConstraintValue('equals!!Ljava/lang/Object;', [string]))
+
+
+def add_equals_ignore_case_predicates(constraints):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+    # get string from first 2 symbols
+    string = symbol_string[0:2]
+
+    # s.equalsIgnoreCase(str)
+    constraints.append(BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;', [string]))
+
+
+def add_is_empty_predicates(constraints):
+    # s.isEmpty()
+    constraints.append(BooleanConstraintValue('isEmpty!!'))
+
+
+def add_matches_predicates(constraints):
+    # s.matches(regex known)
+    for c in settings.alphabet:
+        constraints.append(BooleanConstraintValue('matches!!Ljava/lang/String;'), [c])
+
+
+def add_region_matches_predicates(constraints):
+    # join all symbols from alphabet
+    symbol_string = ''.join(settings.alphabet)
+
+    # s.regionMatches(toffset, other, ooffset, length)
+    for i in range(0, settings.max_initial_length):
+        for j in range(0, len(symbol_string)):
+            for k in range(1, min(settings.max_initial_length - i, len(symbol_string) - j)):
+                constraints.append(BooleanConstraintValue('regionMatches!!ILjava/lang/String;II'), [str(i), symbol_string, str(j), str(k)])
+
+
+def add_starts_with_predicates(constraints):
+    # s.startsWith(prefix)
+    for c in settings.alphabet:
+        constraints.append(
+            BooleanConstraintValue('startsWith!!Ljava/lang/String;', [c]))
+
+
+def add_starts_with_offset_predicates(constraints):
+    # s.startsWith(prefix, offset)
+    for c in settings.alphabet:
+        for i in range(0, settings.max_initial_length):
+            constraints.append(
+                BooleanConstraintValue('startsWith!!Ljava/lang/String;I',
+                                       [c, str(i)]))
+
+
 def get_operations():
     # check for existing operations value
     if operations is not None:
@@ -334,16 +406,25 @@ def get_operations():
     # add_insert_char_operations(ops_list)
     # add_insert_string_operations(ops_list)
     # add_insert_substring_operations(ops_list)
-    add_replace_char_operations(ops_list)
+    # add_replace_char_operations(ops_list)
     # add_replace_string_operations(ops_list)
     # add_replace_regex_string_operations(ops_list)
     # add_replace_substring_operations(ops_list)
-    # add_reverse_operations(ops_list)
+    add_reverse_operations(ops_list)
     # add_substring_operations(ops_list)
     # add_to_lower_case_operations(ops_list)
-    # add_to_string_operations(ops_list)
+    add_to_string_operations(ops_list)
     # add_to_upper_case_operations(ops_list)
     # add_trim_operations(ops_list)
+    add_contains_predicates(ops_list)
+    add_ends_with_predicates(ops_list)
+    add_equals_predicates(ops_list)
+    # add_equals_ignore_case_predicates(ops_list)
+    add_is_empty_predicates(ops_list)
+    # add_matches_predicates(ops_list)
+    # add_region_matches_predicates(ops_list)
+    add_starts_with_predicates(ops_list)
+    # add_starts_with_offset_predicates(ops_list)
 
     # set global operations from ops_list
     global operations
@@ -351,94 +432,6 @@ def get_operations():
 
     # return operations array
     return operations
-
-
-# boolean constraints array
-def add_contains_bool_constraints(constraints):
-    # s.contains(substr)
-    for c in settings.alphabet:
-        constraints.append(
-            BooleanConstraintValue('contains!!Ljava/lang/CharSequence;', [c]))
-
-
-def add_ends_with_bool_constraints(constraints):
-    # s.endsWith(suffix)
-    for c in settings.alphabet:
-        constraints.append(
-            BooleanConstraintValue('endsWith!!Ljava/lang/String;', [c]))
-
-
-def add_equals_bool_constraints(constraints):
-    # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
-    # get string from first 2 symbols
-    string = symbol_string[0:2]
-
-    # s.contentEquals(str)
-    # s.equals(str)
-    constraints.append(
-        BooleanConstraintValue('contentEquals!!Ljava/lang/CharSequence;',
-                               [string]))
-    constraints.append(
-        BooleanConstraintValue('contentEquals!!Ljava/lang/StringBuffer;',
-                               [string]))
-    constraints.append(
-        BooleanConstraintValue('equals!!Ljava/lang/Object;', [string]))
-
-
-def add_equals_ignore_case_bool_constraints(constraints):
-    # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
-    # get string from first 2 symbols
-    string = symbol_string[0:2]
-
-    # s.equalsIgnoreCase(str)
-    constraints.append(
-        BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;',
-                               [string]))
-
-
-def add_is_empty_bool_constraints(constraints):
-    # s.isEmpty()
-    constraints.append(BooleanConstraintValue('isEmpty!!'))
-
-
-def add_matches_bool_constraints(constraints):
-    # s.matches(regex known)
-    for c in settings.alphabet:
-        constraints.append(
-            BooleanConstraintValue('matches!!Ljava/lang/String;'), [c])
-
-
-def add_region_matches_bool_constraints(constraints):
-    # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
-
-    # s.regionMatches(toffset, other, ooffset, length)
-    for i in range(0, settings.max_initial_length):
-        for j in range(0, len(symbol_string)):
-            for k in range(1, min(settings.max_initial_length - i,
-                                  len(symbol_string) - j)):
-                constraints.append(
-                    BooleanConstraintValue(
-                        'regionMatches!!ILjava/lang/String;II'),
-                    [str(i), symbol_string, str(j), str(k)])
-
-
-def add_starts_with_bool_constraints(constraints):
-    # s.startsWith(prefix)
-    for c in settings.alphabet:
-        constraints.append(
-            BooleanConstraintValue('startsWith!!Ljava/lang/String;', [c]))
-
-
-def add_starts_with_offset_bool_constraints(constraints):
-    # s.startsWith(prefix, offset)
-    for c in settings.alphabet:
-        for i in range(0, settings.max_initial_length):
-            constraints.append(
-                BooleanConstraintValue('startsWith!!Ljava/lang/String;I',
-                                       [c, str(i)]))
 
 
 def get_boolean_constraints():
@@ -450,15 +443,15 @@ def get_boolean_constraints():
     constraints_list = list()
 
     # add boolean constraint instances
-    add_contains_bool_constraints(constraints_list)
-    # add_ends_with_bool_constraints(constraints_list)
-    # add_equals_bool_constraints(constraints_list)
-    # add_equals_ignore_case_bool_constraints(constraints_list)
-    # add_is_empty_bool_constraints(constraints_list)
-    # add_matches_bool_constraints(constraints_list)
-    # add_region_matches_bool_constraints(constraints_list)
-    # add_starts_with_bool_constraints(constraints_list)
-    # add_starts_with_offset_bool_constraints(constraints_list)
+    add_contains_predicates(constraints_list)
+    add_ends_with_predicates(constraints_list)
+    add_equals_predicates(constraints_list)
+    # add_equals_ignore_case_predicates(constraints_list)
+    add_is_empty_predicates(constraints_list)
+    # add_matches_predicates(constraints_list)
+    # add_region_matches_predicates(constraints_list)
+    add_starts_with_predicates(constraints_list)
+    # add_starts_with_offset_predicates(constraints_list)
 
     # set global operations from ops_list
     global boolean_constraints
@@ -779,47 +772,6 @@ def perform_trim(string):
     return string.strip()
 
 
-def perform_op(original_value, op):
-    # determine operation
-    if op.op in ['append!!Ljava/lang/String;', 'concat!!Ljava/lang/String;']:
-        return perform_concat(original_value, op)
-    elif op.op in ['append!![CII', 'append!!Ljava/lang/CharSequence;II']:
-        return perform_append_substring(original_value, op)
-    elif op.op == 'deleteCharAt!!I':
-        return perform_delete_char_at(original_value, op)
-    elif op.op == 'delete!!II':
-        return perform_delete(original_value, op)
-    elif op.op == 'insert!!IC':
-        return perform_insert_char(original_value, op)
-    elif op.op in ['insert!!I[C', 'insert!!ILjava/lang/CharSequence;']:
-        return perform_insert_string(original_value, op)
-    elif op.op in ['insert!!I[CII', 'insert!!ILjava/lang/CharSequence;II']:
-        return perform_insert_substring(original_value, op)
-    elif op.op == 'replace!!CC':
-        return perform_replace_char(original_value, op)
-    elif op.op == 'replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;':
-        return perform_replace_string(original_value, op)
-    elif op.op in ['replaceAll!!Ljava/lang/String;Ljava/lang/String;',
-                   'replaceFirst!!Ljava/lang/String;Ljava/lang/String;']:
-        return perform_replace_regex(original_value, op)
-    elif op.op == 'replace!!IILjava/lang/String;':
-        return perform_replace_substring(original_value, op)
-    elif op.op == 'reverse!!':
-        return perform_reverse(original_value)
-    elif op.op == 'substring!!I':
-        return perform_suffix(original_value, op)
-    elif op.op == 'substring!!II':
-        return perform_substring(original_value, op)
-    elif op.op == 'toLowerCase!!':
-        return perform_to_lower_case(original_value)
-    elif op.op == 'toString!!':
-        return perform_to_string(original_value)
-    elif op.op == 'toUpperCase!!':
-        return perform_to_upper_case(original_value)
-    elif op.op == 'trim!!':
-        return perform_trim(original_value)
-
-
 def perform_contains(string, const):
     # randomize arg if unknown
     if len(const.op_args[0]) == 1 and ord(const.op_args[0]) == 0:
@@ -903,7 +855,63 @@ def perform_starts_with_offset(string, const):
         return 'false'
 
 
-def perform_const(value, const):
+def perform_op(original_value, op):
+    # operations
+    if op.op in ['append!!Ljava/lang/String;', 'concat!!Ljava/lang/String;']:
+        return perform_concat(original_value, op)
+    elif op.op in ['append!![CII', 'append!!Ljava/lang/CharSequence;II']:
+        return perform_append_substring(original_value, op)
+    elif op.op == 'deleteCharAt!!I':
+        return perform_delete_char_at(original_value, op)
+    elif op.op == 'delete!!II':
+        return perform_delete(original_value, op)
+    elif op.op == 'insert!!IC':
+        return perform_insert_char(original_value, op)
+    elif op.op in ['insert!!I[C', 'insert!!ILjava/lang/CharSequence;']:
+        return perform_insert_string(original_value, op)
+    elif op.op in ['insert!!I[CII', 'insert!!ILjava/lang/CharSequence;II']:
+        return perform_insert_substring(original_value, op)
+    elif op.op == 'replace!!CC':
+        return perform_replace_char(original_value, op)
+    elif op.op == 'replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;':
+        return perform_replace_string(original_value, op)
+    elif op.op in ['replaceAll!!Ljava/lang/String;Ljava/lang/String;', 'replaceFirst!!Ljava/lang/String;Ljava/lang/String;']:
+        return perform_replace_regex(original_value, op)
+    elif op.op == 'replace!!IILjava/lang/String;':
+        return perform_replace_substring(original_value, op)
+    elif op.op == 'reverse!!':
+        return perform_reverse(original_value)
+    elif op.op == 'substring!!I':
+        return perform_suffix(original_value, op)
+    elif op.op == 'substring!!II':
+        return perform_substring(original_value, op)
+    elif op.op == 'toLowerCase!!':
+        return perform_to_lower_case(original_value)
+    elif op.op == 'toString!!':
+        return perform_to_string(original_value)
+    elif op.op == 'toUpperCase!!':
+        return perform_to_upper_case(original_value)
+    elif op.op == 'trim!!':
+        return perform_trim(original_value)
+
+    # predicates
+    if op.op == 'contains!!Ljava/lang/CharSequence;':
+        return perform_contains(original_value, op)
+    elif op.op == 'endsWith!!Ljava/lang/String;':
+        return perform_ends_with(original_value, op)
+    elif op.op in ['contentEquals!!Ljava/lang/CharSequence;', 'contentEquals!!Ljava/lang/StringBuffer;', 'equals!!Ljava/lang/Object;']:
+        return perform_equals(original_value, op)
+    elif op.op == 'equalsIgnoreCase!!Ljava/lang/String;':
+        return perform_equals_ignore_case(original_value, op)
+    elif op.op == 'isEmpty!!':
+        return perform_is_empty(original_value)
+    elif op.op == 'startsWith!!Ljava/lang/String;':
+        return perform_starts_with(original_value, op)
+    elif op.op == 'startsWith!!Ljava/lang/String;':
+        return perform_starts_with_offset(original_value, op)
+
+
+def perform_predicate(value, const):
     # determine boolean constraint to perform
     if const.op == 'contains!!Ljava/lang/CharSequence;':
         return perform_contains(value, const)
@@ -992,7 +1000,7 @@ def add_bool_constraint(t, v_list):
             v_list.append(t)
 
         # get actual value resulting from op
-        actual_val = perform_const(t.actual_value, const)
+        actual_val = perform_predicate(t.actual_value, const)
 
         # create vertex for operation
         value = const.get_value()
@@ -1268,10 +1276,18 @@ def main(arguments):
         if re.search('gen.*\.json', f):
             os.remove(os.path.join(dir_path, f))
 
-    root_verticies = get_root_verticies(settings)
-
     # for each input value
-    for root_vertex in root_verticies:
+    for value in settings.inputs:
+
+        # create root node value
+        if len(value) == 1 and ord(value) == 0:
+            root_value = RootValue(False, method="getStringValue!!")
+        else:
+            root_value = RootValue(True, value, "init")
+
+        # create vertex from root node
+        val = root_value.get_value()
+        root_vertex = Vertex(val, root_value.string, generate_id(val))
 
         # add operations to the vertex
         add_operation(root_vertex, settings.depth)
