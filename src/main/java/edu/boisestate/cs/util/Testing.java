@@ -13,39 +13,166 @@ public class Testing {
 
     public static void main(String[] args) {
 
-        Alphabet alphabet = new Alphabet("A-D");
-        int initialBoundLength = 3;
+        Alphabet alphabet = new Alphabet("A-D,a-d");
+
+        List<String> empty = new ArrayList<>();
+        List<String> emptyString = new ArrayList<>();
+        emptyString.add("");
+        List<String> concrete = new ArrayList<>();
+        concrete.add("ABC");
+        List<String> concreteStringLower = new ArrayList<>();
+        concreteStringLower.add("abc");
+        List<String> concreteStringUpper = new ArrayList<>();
+        concreteStringUpper.add("ABC");
+        List<String> concreteStringNonWhitespace = new ArrayList<>();
+        concreteStringNonWhitespace.add("ABC");
+        List<String> concreteStringWhitespace = new ArrayList<>();
+        concreteStringWhitespace.add(" B ");
+
+        List<String> uniformStrings = alphabet.allStrings(0, 3);
+
+        List<String> nonUniformStrings = new ArrayList<>();
+        for (String str : uniformStrings) {
+            if (str.contains("A")) {
+                nonUniformStrings.add(str);
+            }
+        }
+
+        Map<String, List<String>> stringList = new HashMap<>();
+        stringList.put("Empty", empty);
+        stringList.put("Empty String", emptyString);
+//        stringList.put("Concrete", concrete);
+        stringList.put("Concrete Lower", concreteStringLower);
+        stringList.put("Concrete Upper", concreteStringUpper);
+//        stringList.put("Concrete Whitespace", concreteStringWhitespace);
+//        stringList.put("Concrete Non-Whitespace", concreteStringNonWhitespace);
+        stringList.put("Uniform", uniformStrings);
+        stringList.put("Non-Uniform", nonUniformStrings);
+
+        // perform operation
+        Map<Object[], List<String>> resultMap = new HashMap<>();
+        for (String baseKey : stringList.keySet()) {
+            for (String argKey : stringList.keySet()) {
+                List<String> baseStrings = stringList.get(baseKey);
+                List<String> argStrings = stringList.get(argKey);
+                Object[] resultKey = new Object[]{baseKey, argKey};
+                List<String> resultStrings = resultMap.get(resultKey);
+                if (resultStrings == null) {
+                    resultStrings = new ArrayList<>();
+                    resultMap.put(resultKey, resultStrings);
+                }
+                // perform binary operation
+                for (String baseString : baseStrings) {
+                    boolean flag = false;
+                    for (String argString : argStrings) {
+                        if (baseString.equalsIgnoreCase(argString)) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (!flag) {
+                        resultStrings.add(baseString);
+                    }
+                }
+            }
+        }
 
 
-        WeightedAutomaton uniform = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat();
-        WeightedAutomaton intersect = uniform.concatenate(BasicWeightedAutomata.makeChar('A')).concatenate(uniform);
-        WeightedAutomaton nonUniform = uniform.intersection(intersect);
-        WeightedAutomaton bounding = BasicWeightedAutomata.makeCharSet(alphabet.getCharSet()).repeat(initialBoundLength, initialBoundLength);
-        uniform = uniform.intersection(bounding);
-        nonUniform = nonUniform.intersection(bounding);
-        uniform.minimize();
-        nonUniform.minimize();
+        // output expected result
+        List<Object[]> keys = new ArrayList<>(resultMap.keySet());
+        Collections.sort(keys, new sortByStringName());
+        for (Object[] resultKey : keys) {
+            List<String> resultStrings = resultMap.get(resultKey);
+            for (int i = 0; i < resultKey.length; i++) {
+                if (resultKey[i] instanceof String) {
+                    System.out.print("\"" + resultKey[i] + "\"");
+                } else if (resultKey[i] instanceof Character) {
+                    System.out.print("\'" + resultKey[i] + "\'");
+                } else {
+                    System.out.print(resultKey[i]);
+                }
+                System.out.print(", ");
+            }
+            System.out.print(resultStrings.size() + "\n");
+        }
+    }
 
-        WeightedPreciseDelete operation = new WeightedPreciseDelete(0, 1);
+    private static class sortByStringName
+            implements Comparator<Object[]> {
 
-        BigInteger mc = StringModelCounter.ModelCount(uniform);
-        System.out.printf("Uniform MC Before: %d\n", mc.intValue());
-        DotToGraph.outputDotFileAndPng(uniform.toDot(), "uniform-before");
+        @Override
+        public int compare(Object[] o1, Object[] o2) {
+            if (o1.length < o2.length) {
+                return -1;
+            } else if (o1.length > o2.length) {
+                return 1;
+            }
 
-        uniform = operation.op(uniform);
+            for (int i = 0; i < o1.length; i++) {
+                if (o1[i] instanceof String && o2[i] instanceof String) {
+                    String s1 = (String) o1[i];
+                    String s2 = (String) o2[i];
+                    if (!s1.equals(s2)) {
+                        if (s1.equals("Empty")) {
+                            return -1;
+                        } else if (s1.equals("Empty String")) {
+                            if (s2.equals("Empty")) {
+                                return 1;
+                            } else {
+                                return -1;
+                            }
+                        } else if (s1.equals("Concrete")) {
+                            if (s2.contains("Empty")) {
+                                return 1;
+                            } else {
+                                return -1;
+                            }
+                        } else if (s1.equals("Concrete Whitespace")) {
+                            if (s2.contains("Uniform")) {
+                                return -1;
+                            } else {
+                                return 1;
+                            }
+                        } else if (s1.equals("Concrete Lower")) {
+                            if (s2.contains("Empty")) {
+                                return 1;
+                            } else {
+                                return -1;
+                            }
+                        } else if (s1.equals("Concrete Upper")) {
+                            if (s2.contains("Uniform")) {
+                                return -1;
+                            } else {
+                                return 1;
+                            }
+                        } else if (s1.equals("Uniform")) {
+                            if (s2.equals("Non-Uniform")) {
+                                return -1;
+                            } else {
+                                return 1;
+                            }
+                        } else {
+                            return 1;
+                        }
+                    }
+                } else if (o1[i] instanceof Character &&
+                           o2[i] instanceof Character) {
+                    char s1 = (Character) o1[i];
+                    char s2 = (Character) o2[i];
+                    if (s1 != s2) {
+                        return s1 - s2;
+                    }
+                } else if (o1[i] instanceof Number &&
+                           o2[i] instanceof Number) {
+                    int s1 = (Integer) o1[i];
+                    int s2 = (Integer) o2[i];
+                    if (s1 != s2) {
+                        return s1 - s2;
+                    }
+                }
+            }
 
-        mc = StringModelCounter.ModelCount(uniform);
-        System.out.printf("Uniform MC After: %d\n", mc.intValue());
-        DotToGraph.outputDotFileAndPng(uniform.toDot(), "uniform-after");
-
-        mc = StringModelCounter.ModelCount(nonUniform);
-        System.out.printf("Non-Uniform MC Before: %d\n", mc.intValue());
-        DotToGraph.outputDotFileAndPng(nonUniform.toDot(), "nonUniform-before");
-
-        nonUniform = operation.op(nonUniform);
-
-        mc = StringModelCounter.ModelCount(nonUniform);
-        System.out.printf("Non-Uniform MC After: %d\n", mc.intValue());
-        DotToGraph.outputDotFileAndPng(nonUniform.toDot(), "nonUniform-after");
+            return 0;
+        }
     }
 }

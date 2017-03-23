@@ -56,8 +56,8 @@ public class Given_WeightedAutomatonModel_When_AssertingStartsOther {
                 {"Empty String", "Empty", 0, emptyStringModel, emptyModel},
                 {"Empty String", "Empty String", 1, emptyStringModel, emptyStringModel},
                 {"Empty String", "Concrete", 1, emptyStringModel, concreteModel},
-                {"Empty String", "Uniform", 85, emptyStringModel, uniformModel},
-                {"Empty String", "Non-uniform", 45, emptyStringModel, nonUniformModel},
+                {"Empty String", "Uniform", 1, emptyStringModel, uniformModel},
+                {"Empty String", "Non-uniform", 1, emptyStringModel, nonUniformModel},
                 {"Concrete", "Empty", 0, concreteModel, emptyModel},
                 {"Concrete", "Empty String", 0, concreteModel, emptyStringModel},
                 {"Concrete", "Concrete", 1, concreteModel, concreteModel},
@@ -66,13 +66,13 @@ public class Given_WeightedAutomatonModel_When_AssertingStartsOther {
                 {"Uniform", "Empty", 0, uniformModel, emptyModel},
                 {"Uniform", "Empty String", 1, uniformModel, emptyStringModel},
                 {"Uniform", "Concrete", 4, uniformModel, concreteModel},
-                {"Uniform", "Uniform", 313, uniformModel, uniformModel},
-                {"Uniform", "Non-uniform", 171, uniformModel, nonUniformModel},
+                {"Uniform", "Uniform", 85, uniformModel, uniformModel},
+                {"Uniform", "Non-uniform", 58, uniformModel, nonUniformModel},
                 {"Non-uniform", "Empty", 0, nonUniformModel, emptyModel},
                 {"Non-uniform", "Empty String", 0, nonUniformModel, emptyStringModel},
                 {"Non-uniform", "Concrete", 3, nonUniformModel, concreteModel},
-                {"Non-uniform", "Uniform", 93, nonUniformModel, uniformModel},
-                {"Non-uniform", "Non-uniform", 93, nonUniformModel, nonUniformModel}
+                {"Non-uniform", "Uniform", 45, nonUniformModel, uniformModel},
+                {"Non-uniform", "Non-uniform", 45, nonUniformModel, nonUniformModel}
         });
     }
 

@@ -395,12 +395,6 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] notContainingArray = getAutomataFromWeightedModel(notContainingModel);
         WeightedAutomaton notContaining = mergeAutomata(notContainingArray);
 
-        // if either automata is  empty
-        if (notContaining.isEmpty()) {
-            WeightedAutomaton[] a = new WeightedAutomaton[] {makeEmpty()};
-            return new WeightedAutomatonModel(a, alphabet, 0);
-        }
-
         // get all suffixes
         WeightedAutomaton suffixes = performUnaryOperation(notContaining, new WeightedAllSuffixes(), this.alphabet);
 
@@ -486,12 +480,6 @@ public class WeightedAutomatonModel extends AutomatonModel {
         // get containing automaton
         WeightedAutomaton[] notContainingArray = getAutomataFromWeightedModel(notStartingModel);
         WeightedAutomaton notContaining = mergeAutomata(notContainingArray);
-
-        // if either automata is  empty
-        if (notContaining.isEmpty()) {
-            WeightedAutomaton[] a = new WeightedAutomaton[] {makeEmpty()};
-            return new WeightedAutomatonModel(a, alphabet, 0);
-        }
 
         // get all prefixes
         WeightedAutomaton prefixes = performUnaryOperation(notContaining, new WeightedAllPrefixes(), this.alphabet);
