@@ -74,7 +74,7 @@ public class Given_WeightedPreciseTrim_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.trim()", description);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.trim()", description);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

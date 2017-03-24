@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_PreciseInsertion_For_UnboundedAutomata {
+public class Given_PreciseInsert_For_UnboundedAutomata {
 
     @Parameter(value = 3)
     public Automaton baseAutomaton;
@@ -178,6 +178,7 @@ public class Given_PreciseInsertion_For_UnboundedAutomata {
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.insert(%d, <%s Automaton>)", baseDescription, offset, argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

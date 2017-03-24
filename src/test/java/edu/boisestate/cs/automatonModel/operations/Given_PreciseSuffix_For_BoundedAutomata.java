@@ -60,13 +60,13 @@ public class Given_PreciseSuffix_For_BoundedAutomata {
                 {"Concrete", 1, concrete, 1},
                 {"Concrete", 1, concrete, 2},
                 {"Concrete", 1, concrete, 3},
-                {"Uniform", 64, uniform, 0},
-                {"Uniform", 16, uniform, 1},
-                {"Uniform", 4, uniform, 2},
+                {"Uniform", 85, uniform, 0},
+                {"Uniform", 21, uniform, 1},
+                {"Uniform", 5, uniform, 2},
                 {"Uniform", 1, uniform, 3},
-                {"Non-uniform", 37, nonUniform, 0},
-                {"Non-uniform", 16, nonUniform, 1},
-                {"Non-uniform", 4, nonUniform, 2},
+                {"Non-uniform", 45, nonUniform, 0},
+                {"Non-uniform", 21, nonUniform, 1},
+                {"Non-uniform", 5, nonUniform, 2},
                 {"Non-uniform", 1, nonUniform, 3}
         });
     }
@@ -90,6 +90,7 @@ public class Given_PreciseSuffix_For_BoundedAutomata {
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.suffix(%d)", description, start);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

@@ -74,8 +74,7 @@ public class Given_WeightedAllSuffixes_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.allSuffixes()", description);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.allSuffixes()", description);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

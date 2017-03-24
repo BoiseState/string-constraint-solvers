@@ -91,7 +91,7 @@ public class Given_WeightedPreciseSuffix_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.suffix(%d)", description, start);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.suffix(%d)", description, start);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

@@ -172,6 +172,7 @@ public class Given_PreciseSetCharAt_For_BoundedAutomata {
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.setCharAt(%d, <%s Automaton>)", baseDescription, offset, argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

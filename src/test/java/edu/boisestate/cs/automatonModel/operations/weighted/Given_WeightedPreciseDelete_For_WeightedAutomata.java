@@ -191,7 +191,7 @@ public class Given_WeightedPreciseDelete_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.delete(%d, %d)", description, start, end);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.delete(%d, %d)", description, start, end);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

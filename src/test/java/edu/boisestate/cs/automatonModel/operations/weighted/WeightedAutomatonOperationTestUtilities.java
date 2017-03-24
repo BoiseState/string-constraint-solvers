@@ -193,7 +193,24 @@ public class WeightedAutomatonOperationTestUtilities {
 
     @SuppressWarnings("Duplicates")
     public static WeightedAutomaton unbalanced_Uniform_WeightedAutomaton_2() {
-        return unbalanced_Uniform_WeightedAutomaton_1();
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+
+        // set accept state
+        q2.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q2, 4));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
     }
 
     @SuppressWarnings("Duplicates")

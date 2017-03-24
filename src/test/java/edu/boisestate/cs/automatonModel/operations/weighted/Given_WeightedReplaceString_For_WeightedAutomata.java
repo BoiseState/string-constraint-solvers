@@ -154,7 +154,7 @@ public class Given_WeightedReplaceString_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.replace(\"%s\", \"%s\")", description, find, replace);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.replace(\"%s\", \"%s\")", description, find, replace);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

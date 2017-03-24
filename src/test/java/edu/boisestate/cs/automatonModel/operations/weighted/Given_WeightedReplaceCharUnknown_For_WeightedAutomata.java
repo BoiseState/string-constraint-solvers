@@ -75,7 +75,7 @@ public class Given_WeightedReplaceCharUnknown_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.replace(?, ?)", description);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.replace(?, ?)", description);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

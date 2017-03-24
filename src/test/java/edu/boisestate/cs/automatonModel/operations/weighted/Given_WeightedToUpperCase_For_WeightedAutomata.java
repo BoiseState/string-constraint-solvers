@@ -74,7 +74,7 @@ public class Given_WeightedToUpperCase_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.toUpperCase()", description);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.toUpperCase()", description);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

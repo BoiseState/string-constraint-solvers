@@ -98,7 +98,7 @@ public class Given_WeightedAutomaton_When_Determinizing {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.determinize()", description);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.determinize()", description);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

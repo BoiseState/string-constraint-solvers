@@ -74,7 +74,7 @@ public class Given_WeightedToLowerCase_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.toLowerCase()", description);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.toLowerCase()", description);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

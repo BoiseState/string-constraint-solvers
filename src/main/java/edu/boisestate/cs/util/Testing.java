@@ -1,5 +1,7 @@
 package edu.boisestate.cs.util;
 
+import dk.brics.automaton.Automaton;
+import dk.brics.automaton.BasicAutomata;
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automaton.*;
 import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
@@ -13,7 +15,7 @@ public class Testing {
 
     public static void main(String[] args) {
 
-        Alphabet alphabet = new Alphabet("A-D,a-d");
+        Alphabet alphabet = new Alphabet("A-D");
 
         List<String> empty = new ArrayList<>();
         List<String> emptyString = new ArrayList<>();
@@ -41,9 +43,9 @@ public class Testing {
         Map<String, List<String>> stringList = new HashMap<>();
         stringList.put("Empty", empty);
         stringList.put("Empty String", emptyString);
-//        stringList.put("Concrete", concrete);
-        stringList.put("Concrete Lower", concreteStringLower);
-        stringList.put("Concrete Upper", concreteStringUpper);
+        stringList.put("Concrete", concrete);
+//        stringList.put("Concrete Lower", concreteStringLower);
+//        stringList.put("Concrete Upper", concreteStringUpper);
 //        stringList.put("Concrete Whitespace", concreteStringWhitespace);
 //        stringList.put("Concrete Non-Whitespace", concreteStringNonWhitespace);
         stringList.put("Uniform", uniformStrings);
@@ -65,13 +67,8 @@ public class Testing {
                 for (String baseString : baseStrings) {
                     boolean flag = false;
                     for (String argString : argStrings) {
-                        if (baseString.equalsIgnoreCase(argString)) {
-                            flag = true;
-                            break;
-                        }
-                    }
-                    if (!flag) {
-                        resultStrings.add(baseString);
+                        String result = baseString + argString;
+                        resultStrings.add(result);
                     }
                 }
             }
@@ -95,6 +92,7 @@ public class Testing {
             }
             System.out.print(resultStrings.size() + "\n");
         }
+
     }
 
     private static class sortByStringName

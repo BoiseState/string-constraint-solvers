@@ -131,6 +131,7 @@ public class Given_WeightedAutomaton_When_Subtracting {
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.minus(<%s Automaton>)", baseDescription, argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

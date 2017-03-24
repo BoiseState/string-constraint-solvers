@@ -90,6 +90,7 @@ public class Given_PrecisePrefix_For_BoundedAutomata {
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.prefix(%d)", description, end);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

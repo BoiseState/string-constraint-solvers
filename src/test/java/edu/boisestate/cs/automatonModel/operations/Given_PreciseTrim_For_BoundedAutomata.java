@@ -31,8 +31,7 @@ public class Given_PreciseTrim_For_BoundedAutomata {
     private Automaton resultAutomaton;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.ignoreCase() - Expected" +
-                       " MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton>.trim() - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
@@ -75,6 +74,7 @@ public class Given_PreciseTrim_For_BoundedAutomata {
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.trim()", description);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

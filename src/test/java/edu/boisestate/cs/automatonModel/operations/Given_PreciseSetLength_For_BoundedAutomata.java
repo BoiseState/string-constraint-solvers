@@ -29,12 +29,11 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
     @Parameter(value = 1)
     public int expectedModelCount;
     @Parameter(value = 3)
-    public int start;
+    public int length;
     private Automaton resultAutomaton;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.setLength({3}) - Expected" +
-                       " MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton>.setLength({3}) - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
@@ -77,7 +76,7 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
     public void setup() {
 
         // *** arrange ***
-        PreciseSetLength operation = new PreciseSetLength(this.start);
+        PreciseSetLength operation = new PreciseSetLength(length);
 
         // *** act ***
         this.resultAutomaton = operation.op(this.automaton);
@@ -92,6 +91,7 @@ public class Given_PreciseSetLength_For_BoundedAutomata {
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.setLength(%d)", description, length);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

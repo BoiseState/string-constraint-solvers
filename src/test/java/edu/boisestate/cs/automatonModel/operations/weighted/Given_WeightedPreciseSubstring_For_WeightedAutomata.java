@@ -124,7 +124,7 @@ public class Given_WeightedPreciseSubstring_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.substring(%d, %d)", description, start, end);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.substring(%d, %d)", description, start, end);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

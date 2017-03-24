@@ -132,7 +132,7 @@ public class Given_WeightedAutomaton_When_Intersecting {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.intersection(<%s Automaton>)", baseDescription, argDescription);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.intersection(<%s Automaton>)", baseDescription, argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

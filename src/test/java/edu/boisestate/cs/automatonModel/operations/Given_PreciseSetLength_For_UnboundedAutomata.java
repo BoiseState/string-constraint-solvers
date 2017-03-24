@@ -29,7 +29,7 @@ public class Given_PreciseSetLength_For_UnboundedAutomata {
     @Parameter(value = 1)
     public int expectedModelCount;
     @Parameter(value = 3)
-    public int start;
+    public int length;
     private Automaton resultAutomaton;
     private int initialBoundLength = 3;
 
@@ -74,7 +74,7 @@ public class Given_PreciseSetLength_For_UnboundedAutomata {
     @Before
     public void setup() {
         // *** arrange ***
-        PreciseSetLength operation = new PreciseSetLength(this.start);
+        PreciseSetLength operation = new PreciseSetLength(length);
 
         // *** act ***
         this.resultAutomaton = operation.op(this.automaton);
@@ -85,11 +85,11 @@ public class Given_PreciseSetLength_For_UnboundedAutomata {
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = StringModelCounter.ModelCount(resultAutomaton,
-                                                       initialBoundLength)
+        int modelCount = StringModelCounter.ModelCount(resultAutomaton, length)
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.setLength(%d)", description, length);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

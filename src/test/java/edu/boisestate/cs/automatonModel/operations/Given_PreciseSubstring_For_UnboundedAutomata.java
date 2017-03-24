@@ -118,12 +118,11 @@ public class Given_PreciseSubstring_For_UnboundedAutomata {
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
         int difference = end - start;
-        int boundLength = 3;
-        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton,
-                                                       boundLength - difference)
+        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton, difference)
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.substring(%d, %d)", description, start, end);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

@@ -17,8 +17,7 @@ import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmpty;
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmptyString;
 import static edu.boisestate.cs.automatonModel.operations.weighted.WeightedAutomatonOperationTestUtilities.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
@@ -27,7 +26,7 @@ public class Given_WeightedAutomatonModel_When_SplittingAutomatonByLength {
     @Parameter(value = 3)
     public WeightedAutomaton automaton;
     @Parameter(value = 2)
-    public int expectedAutomataCount;
+    public int[] expectedAutomataCounts;
     @Parameter(value = 1)
     public int expectedModelCount;
     @Parameter(value = 0) // first data value (0) is default
@@ -72,30 +71,30 @@ public class Given_WeightedAutomatonModel_When_SplittingAutomatonByLength {
         WeightedAutomaton replaceUnbalancedNonUniform2 = replaceUnbalancedNonUniform2();
 
         return Arrays.asList(new Object[][]{
-                {"Empty", 0, 1, empty},
-                {"Empty String", 1, 1, emptyString},
-                {"Concrete", 1, 4, concrete},
-                {"Uniform", 85, 4, uniform},
-                {"Non-Uniform", 45, 4, nonUniform},
-                {"Balanced Uniform 0", 1, 0, balancedUniform0},
-                {"Balanced Uniform 1", 4, 1, balancedUniform1},
-                {"Balanced Uniform 2", 16, 2, balancedUniform2},
-                {"Balanced Uniform 3", 64, 3, balancedUniform3},
-                {"Balanced Non-Uniform 0", 0, 0, balancedNonUniform0},
-                {"Balanced Non-Uniform 1", 1, 1, balancedNonUniform1},
-                {"Balanced Non-Uniform 2", 7, 2, balancedNonUniform2},
-                {"Balanced Non-Uniform 3", 37, 3, balancedNonUniform3},
-                {"Unbalanced Uniform 0", 64, 2, unbalancedUniform0},
-                {"Unbalanced Uniform 1", 64, 2, unbalancedUniform1},
-                {"Unbalanced Uniform 2", 64, 2, unbalancedUniform2},
-                {"Unbalanced Non-Uniform 0", 37, 2, unbalancedNonUniform0},
-                {"Unbalanced Non-Uniform 1", 37, 2, unbalancedNonUniform1},
-                {"Unbalanced Non-Uniform 2", 37, 2, unbalancedNonUniform2},
-                {"Non-Uniform delete(0,1)", 37, 2, nonUniformDelete01},
-                {"Non-Uniform delete(1,2)", 37, 2, nonUniformDelete12},
-                {"Unbalanced Non-Uniform 0 replace('B', 'A')", 37, 2, replaceUnbalancedNonUniform0},
-                {"Unbalanced Non-Uniform 1 replace('B', 'A')", 37, 2, replaceUnbalancedNonUniform1},
-                {"Unbalanced Non-Uniform 2 replace('B', 'A')", 37, 2, replaceUnbalancedNonUniform2},
+                {"Empty", 0, new int[]{0,0,0,0}, empty},
+                {"Empty String", 1, new int[]{1,0,0,0}, emptyString},
+                {"Concrete", 1, new int[]{0,0,0,1}, concrete},
+                {"Uniform", 85, new int[]{1,4,16,64}, uniform},
+                {"Non-Uniform", 45, new int[]{0,1,7,37}, nonUniform},
+                {"Balanced Uniform 0", 1, new int[]{1,0,0,0}, balancedUniform0},
+                {"Balanced Uniform 1", 4, new int[]{0,4,0,0}, balancedUniform1},
+                {"Balanced Uniform 2", 16, new int[]{0,0,16,0}, balancedUniform2},
+                {"Balanced Uniform 3", 64, new int[]{0,0,0,64}, balancedUniform3},
+                {"Balanced Non-Uniform 0", 0, new int[]{0,0,0,0}, balancedNonUniform0},
+                {"Balanced Non-Uniform 1", 1, new int[]{0,1,0,0}, balancedNonUniform1},
+                {"Balanced Non-Uniform 2", 7, new int[]{0,0,7,0}, balancedNonUniform2},
+                {"Balanced Non-Uniform 3", 37, new int[]{0,0,0,37}, balancedNonUniform3},
+                {"Unbalanced Uniform 0", 64, new int[]{0,0,0,0}, unbalancedUniform0},
+                {"Unbalanced Uniform 1", 64, new int[]{0,0,0,0}, unbalancedUniform1},
+                {"Unbalanced Uniform 2", 64, new int[]{0,0,0,0}, unbalancedUniform2},
+                {"Unbalanced Non-Uniform 0", 37, new int[]{0,0,0,0}, unbalancedNonUniform0},
+                {"Unbalanced Non-Uniform 1", 37, new int[]{0,0,0,0}, unbalancedNonUniform1},
+                {"Unbalanced Non-Uniform 2", 37, new int[]{0,0,0,0}, unbalancedNonUniform2},
+                {"Non-Uniform delete(0,1)", 37, new int[]{0,0,0,0}, nonUniformDelete01},
+                {"Non-Uniform delete(1,2)", 37, new int[]{0,0,0,0}, nonUniformDelete12},
+                {"Unbalanced Non-Uniform 0 replace('B', 'A')", 37, new int[]{0,0,0,0}, replaceUnbalancedNonUniform0},
+                {"Unbalanced Non-Uniform 1 replace('B', 'A')", 37, new int[]{0,0,0,0}, replaceUnbalancedNonUniform1},
+                {"Unbalanced Non-Uniform 2 replace('B', 'A')", 37, new int[]{0,0,0,0}, replaceUnbalancedNonUniform2}
         });
     }
 
@@ -120,12 +119,16 @@ public class Given_WeightedAutomatonModel_When_SplittingAutomatonByLength {
     }
 
     @Test
-    public void it_should_have_the_correct_number_of_automata() {
+    public void it_should_have_the_correct_automata() {
         // *** act ***
-        int automatonCount = resultAutomata.length;
+        int[] automataCounts = new int[resultAutomata.length];
+        for (int i = 0; i < automataCounts.length; i++) {
+            BigInteger count = StringModelCounter.ModelCount(resultAutomata[i]);
+            automataCounts[i] = count.intValue();
+        }
 
         // *** assert ***
         String reason = String.format( "Expected Automaton Count Invalid for <%s Automaton Model>.splitAutomatonByLength()", description);
-        assertThat(reason, automatonCount, is(equalTo(expectedAutomataCount)));
+        assertThat(reason, Arrays.asList(automataCounts), contains(expectedAutomataCounts));
     }
 }

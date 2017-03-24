@@ -173,11 +173,11 @@ public class Given_PreciseSetCharAt_For_UnboundedAutomata {
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
         int boundLength = baseLength + argLength;
-        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton,
-                                                       boundLength)
+        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton, boundLength)
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.setCharAt(%d, <%s Automaton>)", baseDescription, offset, argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

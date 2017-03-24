@@ -15,16 +15,16 @@ import java.util.Arrays;
 import static edu.boisestate.cs.automatonModel.operations
         .AutomatonOperationTestUtilities.getConcreteAutomaton;
 import static edu.boisestate.cs.automatonModel.operations
-        .AutomatonOperationTestUtilities.getNonUniformBoundAutomaton;
+        .AutomatonOperationTestUtilities.getNonUniformUnboundedAutomaton;
 import static edu.boisestate.cs.automatonModel.operations
-        .AutomatonOperationTestUtilities.getUniformBoundedAutomaton;
+        .AutomatonOperationTestUtilities.getUniformUnboundedAutomaton;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @SuppressWarnings("WeakerAccess")
 @RunWith(Parameterized.class)
-public class Given_PreciseDeletion_For_BoundedAutomata {
+public class Given_PreciseDelete_For_UnboundedAutomata {
 
     @Parameter(value = 2)
     public Automaton automaton;
@@ -44,16 +44,13 @@ public class Given_PreciseDeletion_For_BoundedAutomata {
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
-        int initialBoundLength = 3;
 
-        // get Automata
+        // get automata
         Automaton empty = BasicAutomata.makeEmpty();
         Automaton emptyString = BasicAutomata.makeEmptyString();
         Automaton concrete = getConcreteAutomaton(alphabet, "ABC");
-        Automaton uniform = getUniformBoundedAutomaton(alphabet,
-                                                       initialBoundLength);
-        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet,
-                                                           initialBoundLength);
+        Automaton uniform = getUniformUnboundedAutomaton(alphabet);
+        Automaton nonUniform = getNonUniformUnboundedAutomaton(alphabet);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty, 0, 0},
@@ -124,10 +121,14 @@ public class Given_PreciseDeletion_For_BoundedAutomata {
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton)
+        int difference = end - start;
+        int boundLength = 3;
+        int modelCount = StringModelCounter.ModelCount(this.resultAutomaton,
+                                                       boundLength - difference)
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.(%d, %d)", description, start, end);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

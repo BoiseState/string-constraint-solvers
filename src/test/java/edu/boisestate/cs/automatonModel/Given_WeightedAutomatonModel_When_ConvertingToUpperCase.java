@@ -49,8 +49,8 @@ public class Given_WeightedAutomatonModel_When_ConvertingToUpperCase {
                 {"Empty String", 1, emptyStringModel},
                 {"Concrete", 1, concreteLowerModel},
                 {"Concrete", 1, concreteUpperModel},
-                {"Uniform", 585, uniformModel},
-                {"Non-uniform", 185, nonUniformModel}
+                {"Uniform", 85, uniformModel},
+                {"Non-uniform", 45, nonUniformModel}
         });
     }
 

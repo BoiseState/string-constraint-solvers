@@ -142,7 +142,7 @@ public class Given_WeightedPreciseSetCharAt_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.setCharAt(%d, <%s Automaton>)", baseDescription, offset, argDescription);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.setCharAt(%d, <%s Automaton>)", baseDescription, offset, argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

@@ -92,7 +92,7 @@ public class Given_WeightedPreciseSetLength_For_WeightedAutomata {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.setLength(%d)", description, length);
-        assertThat(message, modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.setLength(%d)", description, length);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

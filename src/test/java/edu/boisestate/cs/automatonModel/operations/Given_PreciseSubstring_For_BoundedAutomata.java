@@ -122,6 +122,7 @@ public class Given_PreciseSubstring_For_BoundedAutomata {
                                            .intValue();
 
         // *** assert ***
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.substring(%d, %d)", description, start, end);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

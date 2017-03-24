@@ -444,7 +444,7 @@ public class Given_WeightedAutomaton_When_Unioning {
                                            .intValue();
 
         // *** assert ***
-        String message = String.format("<%s Automaton>.union(<%s Automaton>)", baseDescription, argDescription);
-        assertThat(modelCount, is(equalTo(this.expectedModelCount)));
+        String reason = String.format("<%s Automaton>.union(<%s Automaton>)", baseDescription, argDescription);
+        assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }
