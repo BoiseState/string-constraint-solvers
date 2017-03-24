@@ -130,10 +130,7 @@ public class Given_BoundedAutomatonModel_When_SettingCharAt {
         int modelCount = this.charSetModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.setCharAt(%d, <%s Automaton Model>)",
-                                       baseDescription,
-                                       offset,
-                                       argDescription);
+        String reason = String.format( "<%s Automaton Model>.setCharAt(%d, <%s Automaton Model>)", baseDescription, offset, argDescription);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

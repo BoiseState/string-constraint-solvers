@@ -66,8 +66,7 @@ public class Given_WeightedAutomatonModel_When_AssertingNotEmpty {
         int modelCount = this.notEmptyModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.assertNotEmpty()",
-                                       description);
+        String reason = String.format( "<%s Automaton Model>.assertNotEmpty()", description);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

@@ -128,7 +128,7 @@ public class Given_WeightedAutomatonModel_When_SplittingAutomatonByLength {
         }
 
         // *** assert ***
-        String reason = String.format( "Expected Automaton Count Invalid for <%s Automaton Model>.splitAutomatonByLength()", description);
+        String reason = String.format( "Expected Automata Counts Invalid for <%s Automaton Model>.splitAutomatonByLength()", description);
         assertThat(reason, Arrays.asList(automataCounts), contains(expectedAutomataCounts));
     }
 }

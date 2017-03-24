@@ -165,10 +165,7 @@ public class Given_WeightedAutomatonModel_When_Inserting {
         int modelCount = this.insertedModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.insert(%d, <%s Automaton Model>)",
-                                       baseDescription,
-                                       offset,
-                                       argDescription);
+        String reason = String.format( "<%s Automaton Model>.insert(%d, <%s Automaton Model>)", baseDescription, offset, argDescription);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

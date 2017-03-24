@@ -83,9 +83,7 @@ public class Given_WeightedAutomatonModel_When_GettingSuffix {
         int modelCount = this.deleteModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.suffix(%d)",
-                                       description,
-                                       start);
+        String reason = String.format( "<%s Automaton Model>.suffix(%d)", description, start);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

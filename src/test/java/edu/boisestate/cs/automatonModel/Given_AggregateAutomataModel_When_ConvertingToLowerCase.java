@@ -65,8 +65,7 @@ public class Given_AggregateAutomataModel_When_ConvertingToLowerCase {
         int modelCount = this.lowerCaseModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.toLowerCase()",
-                                       description);
+        String reason = String.format( "<%s Automaton Model>.toLowerCase()", description);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

@@ -143,10 +143,7 @@ public class Given_UnboundedAutomatonModel_When_ReplacingKnownStrings {
         int modelCount = this.replacedModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.(\"%s\", \"%s\")",
-                                       description,
-                                       find,
-                                       replace);
+        String reason = String.format( "<%s Automaton Model>.(\"%s\", \"%s\")", description, find, replace);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

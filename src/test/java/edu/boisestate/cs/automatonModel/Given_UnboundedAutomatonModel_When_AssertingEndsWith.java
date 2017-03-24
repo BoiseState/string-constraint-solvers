@@ -87,9 +87,7 @@ public class Given_UnboundedAutomatonModel_When_AssertingEndsWith {
         int modelCount = this.endsWithModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.assertEndsWith(<%s Automaton Model>)",
-                                       baseDescription,
-                                       argDescription);
+        String reason = String.format( "<%s Automaton Model>.assertEndsWith(<%s Automaton Model>)", baseDescription, argDescription);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

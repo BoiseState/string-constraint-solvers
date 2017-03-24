@@ -67,8 +67,7 @@ public class Given_WeightedAutomatonModel_When_ConvertingToUpperCase {
         int modelCount = this.upperCaseModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.toUpperCase()",
-                                       description);
+        String reason = String.format( "<%s Automaton Model>.toUpperCase()", description);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

@@ -112,7 +112,7 @@ public class Given_AggregateAutomataModel_When_AssertingHasLength {
         int modelCount = this.hasLengthModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.assertHasLength(%d, %d)",
+        String reason = String.format( "<%s Automaton Model>.assertHasLength(%d, %d)",
                                        description,
                                        min,
                                        max);

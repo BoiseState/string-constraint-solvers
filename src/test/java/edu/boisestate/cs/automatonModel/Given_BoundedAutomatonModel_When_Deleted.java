@@ -117,10 +117,7 @@ public class Given_BoundedAutomatonModel_When_Deleted {
         int modelCount = this.deleteModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.delete(%d, %d)",
-                                       description,
-                                       start,
-                                       end);
+        String reason = String.format( "<%s Automaton Model>.delete(%d, %d)", description, start, end);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

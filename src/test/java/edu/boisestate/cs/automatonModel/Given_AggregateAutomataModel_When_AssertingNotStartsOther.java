@@ -87,9 +87,7 @@ public class Given_AggregateAutomataModel_When_AssertingNotStartsOther {
         int modelCount = this.notStartModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.assertNotStartsOther(<%s Automaton Model>)",
-                                       baseDescription,
-                                       argDescription);
+        String reason = String.format( "<%s Automaton Model>.assertNotStartsOther(<%s Automaton Model>)", baseDescription, argDescription);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

@@ -91,9 +91,7 @@ public class Given_BoundedAutomatonModel_When_AssertingStartsOther {
         int modelCount = this.startModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.assertStartsOther(<%s Automaton Model>)",
-                                       baseDescription,
-                                       argDescription);
+        String reason = String.format( "<%s Automaton Model>.assertStartsOther(<%s Automaton Model>)", baseDescription, argDescription);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

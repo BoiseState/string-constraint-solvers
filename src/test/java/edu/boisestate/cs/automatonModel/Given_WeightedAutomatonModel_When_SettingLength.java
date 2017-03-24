@@ -82,9 +82,7 @@ public class Given_WeightedAutomatonModel_When_SettingLength {
         int modelCount = this.lengthModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.setLength(%d)",
-                                       description,
-                                       length);
+        String reason = String.format( "<%s Automaton Model>.setLength(%d)", description, length);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

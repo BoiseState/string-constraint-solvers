@@ -114,10 +114,7 @@ public class Given_WeightedAutomatonModel_When_GettingASubstring {
         int modelCount = this.deleteModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.substring(%d, %d)",
-                                       description,
-                                       start,
-                                       end);
+        String reason = String.format( "<%s Automaton Model>.substring(%d, %d)", description, start, end);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

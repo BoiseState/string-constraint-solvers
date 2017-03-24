@@ -64,8 +64,7 @@ public class Given_UnboundedAutomatonModel_When_AssertingEmpty {
         int modelCount = this.emptyModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.isEmpty()",
-                                       description);
+        String reason = String.format( "<%s Automaton Model>.isEmpty()", description);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

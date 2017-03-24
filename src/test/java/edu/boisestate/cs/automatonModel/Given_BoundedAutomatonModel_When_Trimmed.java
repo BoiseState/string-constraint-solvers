@@ -68,8 +68,7 @@ public class Given_BoundedAutomatonModel_When_Trimmed {
         int modelCount = this.trimModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.trim()",
-                                       description);
+        String reason = String.format( "<%s Automaton Model>.trim()", description);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }

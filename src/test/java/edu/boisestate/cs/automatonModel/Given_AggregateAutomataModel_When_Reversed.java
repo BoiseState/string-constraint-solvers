@@ -63,8 +63,7 @@ public class Given_AggregateAutomataModel_When_Reversed {
         int modelCount = this.reversedModel.modelCount().intValue();
 
         // *** assert ***
-        String reason = String.format( "Expected Model Count Invalid for <%s Automaton Model>.reverse()",
-                                       description);
+        String reason = String.format( "<%s Automaton Model>.reverse()", description);
         assertThat(reason, modelCount, is(equalTo(this.expectedModelCount)));
     }
 }
