@@ -29,7 +29,7 @@ public class Given_AggregateAutomataModel_When_GettingASubstring {
     public AggregateAutomataModel model;
     @Parameter(value = 3)
     public int start;
-    private AutomatonModel deleteModel;
+    private AutomatonModel resultModel;
 
     @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.substring({3}, {4}) - Expected MC = {1}")
@@ -76,24 +76,24 @@ public class Given_AggregateAutomataModel_When_GettingASubstring {
                 {"Concrete", 1, concreteModel, 2, 2},
                 {"Concrete", 1, concreteModel, 2, 3},
                 {"Concrete", 1, concreteModel, 3, 3},
-                {"Uniform", 4, uniformModel, 0, 0},
+                {"Uniform", 1, uniformModel, 0, 0},
                 {"Uniform", 12, uniformModel, 0, 1},
                 {"Uniform", 32, uniformModel, 0, 2},
                 {"Uniform", 64, uniformModel, 0, 3},
-                {"Uniform", 3, uniformModel, 1, 1},
+                {"Uniform", 1, uniformModel, 1, 1},
                 {"Uniform", 8, uniformModel, 1, 2},
                 {"Uniform", 16, uniformModel, 1, 3},
-                {"Uniform", 2, uniformModel, 2, 2},
+                {"Uniform", 1, uniformModel, 2, 2},
                 {"Uniform", 4, uniformModel, 2, 3},
                 {"Uniform", 1, uniformModel, 3, 3},
-                {"Non-uniform", 3, nonUniformModel, 0, 0},
+                {"Non-uniform", 1, nonUniformModel, 0, 0},
                 {"Non-uniform", 9, nonUniformModel, 0, 1},
                 {"Non-uniform", 23, nonUniformModel, 0, 2},
                 {"Non-uniform", 37, nonUniformModel, 0, 3},
-                {"Non-uniform", 3, nonUniformModel, 1, 1},
+                {"Non-uniform", 1, nonUniformModel, 1, 1},
                 {"Non-uniform", 8, nonUniformModel, 1, 2},
                 {"Non-uniform", 16, nonUniformModel, 1, 3},
-                {"Non-uniform", 2, nonUniformModel, 2, 2},
+                {"Non-uniform", 1, nonUniformModel, 2, 2},
                 {"Non-uniform", 4, nonUniformModel, 2, 3},
                 {"Non-uniform", 1, nonUniformModel, 3, 3}
         });
@@ -102,13 +102,13 @@ public class Given_AggregateAutomataModel_When_GettingASubstring {
     @Before
     public void setup() {
         // *** act ***
-        this.deleteModel = this.model.substring(this.start, this.end);
+        this.resultModel = this.model.substring(this.start, this.end);
     }
 
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = this.deleteModel.modelCount().intValue();
+        int modelCount = this.resultModel.modelCount().intValue();
 
         // *** assert ***
         String reason = String.format( "<%s Automaton Model>.substring(%d, %d)", description, start, end);

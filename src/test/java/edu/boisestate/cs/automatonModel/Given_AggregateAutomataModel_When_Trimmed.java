@@ -47,7 +47,7 @@ public class Given_AggregateAutomataModel_When_Trimmed {
                 {"Empty String", 1, emptyStringModel},
                 {"Concrete Whitespace", 1, whiteSpaceConcreteModel},
                 {"Concrete No Whitespace", 1, noWhiteSpaceConcreteModel},
-                {"Uniform", 128, uniformModel},
+                {"Uniform", 125, uniformModel},
                 {"Non-uniform", 61, nonUniformModel}
         });
     }

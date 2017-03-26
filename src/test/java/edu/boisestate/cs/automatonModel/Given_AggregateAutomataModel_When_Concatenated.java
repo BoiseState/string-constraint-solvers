@@ -38,12 +38,12 @@ public class Given_AggregateAutomataModel_When_Concatenated {
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
-        int initialBoundLength = 2;
+        int initialBoundLength = 3;
 
         // create automaton models
         AggregateAutomataModel emptyModel = getEmptyAggregateModel(alphabet);
         AggregateAutomataModel emptyStringModel = getEmptyStringAggregateModel(alphabet);
-        AggregateAutomataModel concreteModel = getConcreteAggregateModel(alphabet, "AB");
+        AggregateAutomataModel concreteModel = getConcreteAggregateModel(alphabet, "ABC");
         AggregateAutomataModel uniformModel = getUniformAggregateModel(alphabet, initialBoundLength);
         AggregateAutomataModel nonUniformModel = getNonUniformAggregateModel(alphabet, initialBoundLength);
 
@@ -56,23 +56,23 @@ public class Given_AggregateAutomataModel_When_Concatenated {
                 {"Empty String", "Empty", 0, emptyStringModel, emptyModel},
                 {"Empty String", "Empty String", 1, emptyStringModel, emptyStringModel},
                 {"Empty String", "Concrete", 1, emptyStringModel, concreteModel},
-                {"Empty String", "Uniform", 21, emptyStringModel, uniformModel},
-                {"Empty String", "Non-uniform", 8, emptyStringModel, nonUniformModel},
+                {"Empty String", "Uniform", 85, emptyStringModel, uniformModel},
+                {"Empty String", "Non-uniform", 45, emptyStringModel, nonUniformModel},
                 {"Concrete", "Empty", 0, concreteModel, emptyModel},
                 {"Concrete", "Empty String", 1, concreteModel, emptyStringModel},
                 {"Concrete", "Concrete", 1, concreteModel, concreteModel},
-                {"Concrete", "Uniform", 21, concreteModel, uniformModel},
-                {"Concrete", "Non-uniform", 8, concreteModel, nonUniformModel},
+                {"Concrete", "Uniform", 85, concreteModel, uniformModel},
+                {"Concrete", "Non-uniform", 45, concreteModel, nonUniformModel},
                 {"Uniform", "Empty", 0, uniformModel, emptyModel},
-                {"Uniform", "Empty String", 21, uniformModel, emptyStringModel},
-                {"Uniform", "Concrete", 21, uniformModel, concreteModel},
-                {"Uniform", "Uniform", 441, uniformModel, uniformModel},
-                {"Uniform", "Non-uniform", 168, uniformModel, nonUniformModel},
+                {"Uniform", "Empty String", 85, uniformModel, emptyStringModel},
+                {"Uniform", "Concrete", 85, uniformModel, concreteModel},
+                {"Uniform", "Uniform", 5461, uniformModel, uniformModel},
+                {"Uniform", "Non-uniform", 3153, uniformModel, nonUniformModel},
                 {"Non-uniform", "Empty", 0, nonUniformModel, emptyModel},
-                {"Non-uniform", "Empty String", 8, nonUniformModel, emptyStringModel},
-                {"Non-uniform", "Concrete", 8, nonUniformModel, concreteModel},
-                {"Non-uniform", "Uniform", 168, nonUniformModel, uniformModel},
-                {"Non-uniform", "Non-uniform", 64, nonUniformModel, nonUniformModel}
+                {"Non-uniform", "Empty String", 45, nonUniformModel, emptyStringModel},
+                {"Non-uniform", "Concrete", 45, nonUniformModel, concreteModel},
+                {"Non-uniform", "Uniform", 3153, nonUniformModel, uniformModel},
+                {"Non-uniform", "Non-uniform", 1769, nonUniformModel, nonUniformModel}
         });
     }
 
@@ -80,7 +80,6 @@ public class Given_AggregateAutomataModel_When_Concatenated {
     public void setup() {
         // *** act ***
         this.concatModel = this.baseModel.concatenate(this.argModel);
-
     }
 
     @Test
