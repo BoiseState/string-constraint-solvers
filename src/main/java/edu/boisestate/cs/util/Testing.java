@@ -5,6 +5,7 @@ import dk.brics.automaton.BasicAutomata;
 import dk.brics.string.stringoperations.Trim;
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automaton.*;
+import edu.boisestate.cs.automatonModel.operations.PreciseDelete;
 import edu.boisestate.cs.automatonModel.operations.PreciseTrim;
 import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
 import edu.boisestate.cs.automatonModel.operations.weighted
@@ -95,10 +96,26 @@ public class Testing {
 //            System.out.print(resultStrings.size() + "\n");
 //        }
 
-        Automaton a = BasicAutomata.makeCharSet(" ABCD");
-        PreciseTrim trim = new PreciseTrim();
-        Automaton result = trim.op(a);
-        DotToGraph.outputDotFileAndPng(result.toDot(), "temp");
+        int boundingLength = 3;
+        Automaton anyChar = BasicAutomata.makeCharSet(" ABCD");
+        Automaton uniform = anyChar.repeat(0,boundingLength);
+        Automaton x = anyChar.repeat().concatenate(BasicAutomata.makeChar('A'))
+                             .concatenate(anyChar.repeat());
+        Automaton nonUniform = uniform.intersection(x);
+
+        Automaton[] automata = new Automaton[boundingLength+1];
+        for (int i = 0; i < automata.length; i++) {
+            automata[i] = nonUniform.intersection(anyChar.repeat(i,i));
+            automata[i].minimize();
+            DotToGraph.outputDotFileAndPng(automata[i].toDot(), "temp-before" + i);
+        }
+
+        PreciseTrim operation = new PreciseTrim();
+        for (int i = 0; i < automata.length; i ++) {
+            Automaton result = operation.op(automata[i]);
+            result.minimize();
+            DotToGraph.outputDotFileAndPng(result.toDot(), "temp-after" + i);
+        }
 
     }
 

@@ -43,7 +43,7 @@ public class Given_PreciseTrim_For_BoundedAutomata {
         Automaton concreteNonWhitespace = getConcreteAutomaton(alphabet, "ABC");
         Automaton concreteWhitespace = getConcreteAutomaton(alphabet, " B ");
         Automaton uniform = getUniformBoundedAutomaton(alphabet, initialBoundLength);
-        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet, initialBoundLength);
+        Automaton nonUniform = getNonUniformBoundedAutomaton(alphabet, initialBoundLength);
         Automaton anyChar = BasicAutomata.makeCharSet(alphabet.getCharSet());
 
         return Arrays.asList(new Object[][]{

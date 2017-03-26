@@ -10,6 +10,7 @@ import edu.boisestate.cs.automatonModel.operations.*;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class AggregateAutomataModel
@@ -641,6 +642,7 @@ public class AggregateAutomataModel
         Automaton[] results = new Automaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = operation.op(this.automata[i]);
+            results[i].minimize();
         }
 
         // determine new bound length
@@ -876,6 +878,7 @@ public class AggregateAutomataModel
         Automaton[] results = new Automaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = operation.op(this.automata[i], arg);
+            results[i].minimize();
         }
 
         // calculate new bound length
@@ -1026,11 +1029,34 @@ public class AggregateAutomataModel
             // bound result
             result = result.intersection(alphabet);
 
+            // minimize result
+            result.minimize();
+
             // set appropriate index in results array
             results[i] = result;
         }
 
         // return results array
         return results;
+    }
+
+    static Automaton[] splitAutomatonByLength(Automaton automaton, int maxLength, Alphabet alphabet) {
+        Automaton[] returnAutomata = new Automaton[maxLength+1];
+        Automaton anyChar = BasicAutomata.makeCharSet(alphabet.getCharSet());
+        for (int i = 0; i < returnAutomata.length; i++) {
+            Automaton bounding = anyChar.repeat(i, i);
+            returnAutomata[i] = automaton.intersection(bounding);
+        }
+        return returnAutomata;
+    }
+
+    static Automaton[] mergeAutomataArrays(List<Automaton[]> automataArrays) {
+        Automaton[] returnAutomata = automataArrays.remove(0);
+        for (Automaton[] automata : automataArrays) {
+            for (int i = 0; i < returnAutomata.length; i++) {
+                returnAutomata[i] = returnAutomata[i].union(automata[i]);
+            }
+        }
+        return returnAutomata;
     }
 }

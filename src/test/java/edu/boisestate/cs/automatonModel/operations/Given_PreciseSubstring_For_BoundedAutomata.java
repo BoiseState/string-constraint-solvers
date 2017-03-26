@@ -47,7 +47,7 @@ public class Given_PreciseSubstring_For_BoundedAutomata {
         Automaton emptyString = BasicAutomata.makeEmptyString();
         Automaton concrete = getConcreteAutomaton(alphabet, "ABC");
         Automaton uniform = getUniformBoundedAutomaton(alphabet, initialBoundLength);
-        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet, initialBoundLength);
+        Automaton nonUniform = getNonUniformBoundedAutomaton(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty, 0, 0},

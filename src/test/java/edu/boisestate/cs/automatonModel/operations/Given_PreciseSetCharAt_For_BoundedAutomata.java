@@ -49,7 +49,7 @@ public class Given_PreciseSetCharAt_For_BoundedAutomata {
         Automaton emptyString = BasicAutomata.makeEmptyString();
         Automaton concrete = getConcreteAutomaton(alphabet, "ABC");
         Automaton uniform = getUniformBoundedAutomaton(alphabet, initialBoundLength);
-        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet, initialBoundLength);
+        Automaton nonUniform = getNonUniformBoundedAutomaton(alphabet, initialBoundLength);
 
         // character automata
         Automaton a = BasicAutomata.makeChar('A');

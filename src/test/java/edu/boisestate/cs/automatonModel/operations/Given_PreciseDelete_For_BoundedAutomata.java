@@ -15,7 +15,7 @@ import java.util.Arrays;
 import static edu.boisestate.cs.automatonModel.operations
         .AutomatonOperationTestUtilities.getConcreteAutomaton;
 import static edu.boisestate.cs.automatonModel.operations
-        .AutomatonOperationTestUtilities.getNonUniformBoundAutomaton;
+        .AutomatonOperationTestUtilities.getNonUniformBoundedAutomaton;
 import static edu.boisestate.cs.automatonModel.operations
         .AutomatonOperationTestUtilities.getUniformBoundedAutomaton;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -52,8 +52,8 @@ public class Given_PreciseDelete_For_BoundedAutomata {
         Automaton concrete = getConcreteAutomaton(alphabet, "ABC");
         Automaton uniform = getUniformBoundedAutomaton(alphabet,
                                                        initialBoundLength);
-        Automaton nonUniform = getNonUniformBoundAutomaton(alphabet,
-                                                           initialBoundLength);
+        Automaton nonUniform = getNonUniformBoundedAutomaton(alphabet,
+                                                             initialBoundLength);
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty, 0, 0},

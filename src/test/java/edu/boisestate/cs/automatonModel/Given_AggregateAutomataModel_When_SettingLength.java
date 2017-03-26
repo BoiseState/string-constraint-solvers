@@ -56,13 +56,13 @@ public class Given_AggregateAutomataModel_When_SettingLength {
                 {"Concrete", 1, concreteModel, 1},
                 {"Concrete", 1, concreteModel, 2},
                 {"Concrete", 1, concreteModel, 3},
-                {"Uniform", 1, uniformModel, 0},
-                {"Uniform", 5, uniformModel, 1},
-                {"Uniform", 21, uniformModel, 2},
+                {"Uniform", 4, uniformModel, 0},
+                {"Uniform", 13, uniformModel, 1},
+                {"Uniform", 37, uniformModel, 2},
                 {"Uniform", 85, uniformModel, 3},
-                {"Non-uniform", 0, nonUniformModel, 0},
-                {"Non-uniform", 1, nonUniformModel, 1},
-                {"Non-uniform", 8, nonUniformModel, 2},
+                {"Non-uniform", 3, nonUniformModel, 0},
+                {"Non-uniform", 9, nonUniformModel, 1},
+                {"Non-uniform", 24, nonUniformModel, 2},
                 {"Non-uniform", 45, nonUniformModel, 3}
         });
     }
