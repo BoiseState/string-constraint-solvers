@@ -34,7 +34,7 @@ public class Given_PreciseTrim_For_BoundedAutomata {
     @Parameters(name = "{index}: <{0} Automaton>.trim() - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
-        Alphabet alphabet = new Alphabet("A-D");
+        Alphabet alphabet = new Alphabet(" ,A-D");
         int initialBoundLength = 3;
 
         // get Automata
@@ -44,14 +44,16 @@ public class Given_PreciseTrim_For_BoundedAutomata {
         Automaton concreteWhitespace = getConcreteAutomaton(alphabet, " B ");
         Automaton uniform = getUniformBoundedAutomaton(alphabet, initialBoundLength);
         Automaton nonUniform = getNonUniformBoundAutomaton(alphabet, initialBoundLength);
+        Automaton anyChar = BasicAutomata.makeCharSet(alphabet.getCharSet());
 
         return Arrays.asList(new Object[][]{
                 {"Empty", 0, empty},
                 {"Empty String", 1, emptyString},
                 {"Concrete Non-Whitespace", 1, concreteNonWhitespace},
                 {"Concrete Whitespace", 1, concreteWhitespace},
-                {"Uniform", 109, uniform},
-                {"Non-uniform", 52, nonUniform}
+                {"Uniform", 101, uniform},
+                {"Non-uniform", 52, nonUniform},
+                {"Any Character", 5, anyChar}
         });
     }
 

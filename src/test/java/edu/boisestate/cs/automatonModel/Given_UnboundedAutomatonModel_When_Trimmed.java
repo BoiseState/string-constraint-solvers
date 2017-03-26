@@ -47,7 +47,7 @@ public class Given_UnboundedAutomatonModel_When_Trimmed {
                 {"Empty String", 1, emptyStringModel},
                 {"Concrete Whitespace", 1, whiteSpaceConcreteModel},
                 {"Concrete No Whitespace", 1, noWhiteSpaceConcreteModel},
-                {"Uniform", 109, uniformModel},
+                {"Uniform", 101, uniformModel},
                 {"Non-uniform", 52, nonUniformModel}
         });
     }

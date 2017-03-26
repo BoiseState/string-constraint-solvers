@@ -633,6 +633,7 @@ public class AggregateAutomataModel
         return false;
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public AutomatonModel delete(int start, int end) {
         // get resulting automata
@@ -886,6 +887,11 @@ public class AggregateAutomataModel
 
     @Override
     public AutomatonModel setLength(int length) {
+        // add null to new alphabet
+        Set<Character> symbolSet = alphabet.getSymbolSet();
+        symbolSet.add('\u0000');
+        Alphabet newAlphabet = new Alphabet(symbolSet);
+
         // get resulting automata
         PreciseSetLength operation = new PreciseSetLength(length);
         Automaton[] results = new Automaton[this.automata.length];
@@ -894,7 +900,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, length, this.factors);
+        return new AggregateAutomataModel(results, newAlphabet, length, this.factors);
     }
 
     @Override
@@ -951,7 +957,7 @@ public class AggregateAutomataModel
     @Override
     public AutomatonModel trim() {
         // get resulting automata
-        Trim operation = new Trim();
+        PreciseTrim operation = new PreciseTrim();
         Automaton[] results = new Automaton[this.automata.length];
         for (int i = 0; i < results.length; i++) {
             results[i] = operation.op(this.automata[i]);

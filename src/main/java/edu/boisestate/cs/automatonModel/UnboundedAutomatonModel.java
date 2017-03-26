@@ -607,6 +607,7 @@ public class UnboundedAutomatonModel
         // get resulting automaton
         PreciseSetCharAt operation = new PreciseSetCharAt(offset);
         Automaton result = operation.op(automaton, arg);
+        result.minimize();
 
         // return unbounded model from automaton
         return new UnboundedAutomatonModel(result, this.alphabet, boundLength);
@@ -615,10 +616,15 @@ public class UnboundedAutomatonModel
     @Override
     public AutomatonModel setLength(int length) {
 
+        // add null to new alphabet
+        Set<Character> symbolSet = alphabet.getSymbolSet();
+        symbolSet.add('\u0000');
+        Alphabet newAlphabet = new Alphabet(symbolSet);
+
         // get resulting automaton
         Automaton result = performUnaryOperation(automaton,
                                                  new PreciseSetLength(length),
-                                                 alphabet);
+                                                 newAlphabet);
 
         // return unbounded model from automaton
         return new UnboundedAutomatonModel(result, this.alphabet, length);
@@ -678,43 +684,8 @@ public class UnboundedAutomatonModel
     @Override
     public AutomatonModel trim() {
 
-//        // workaround for trim bug
-//        AutomatonModel hasLength = this.assertHasLength(1, 1);
-//        AutomatonModel temp = this.intersect(hasLength);
-//
-//        if (temp.equals(this)) {
-//
-//            // return union of temp and empty string
-//            return temp.union(this.modelManager.createEmptyString());
-//
-//        }
-//
-//        // return automaton model from trim operation
-//        Automaton result = performUnaryOperation(automaton, new Trim(), this.alphabet);
-
-        // initialize result automaton as current automaton clone
-        Automaton result = this.automaton.clone();
-
-        // get whitespace chars from alphabet
-        String whitespaceChars = this.alphabet.getWhitespaceCharSet();
-
-        // if whitespace characters are in the alphabet
-        if (whitespaceChars.length() > 0) {
-
-            // create automata for operation
-            Automaton whitespace =
-                    BasicAutomata.makeCharSet(whitespaceChars).repeat();
-            Automaton anyString =
-                    BasicAutomata.makeCharSet(this.alphabet.getCharSet())
-                                 .repeat();
-            Automaton x =
-                    whitespace.concatenate(anyString).concatenate(whitespace);
-
-
-            // get resulting automaton
-            result = this.automaton.minus(x);
-            result.minimize();
-        }
+        // perform operation
+        Automaton result = performUnaryOperation(automaton, new PreciseTrim(), this.alphabet);
 
         // return new model from resulting automaton
         return new UnboundedAutomatonModel(result,

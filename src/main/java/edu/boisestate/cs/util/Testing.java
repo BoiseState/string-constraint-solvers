@@ -2,8 +2,10 @@ package edu.boisestate.cs.util;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
+import dk.brics.string.stringoperations.Trim;
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automaton.*;
+import edu.boisestate.cs.automatonModel.operations.PreciseTrim;
 import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
 import edu.boisestate.cs.automatonModel.operations.weighted
         .WeightedPreciseDelete;
@@ -15,83 +17,88 @@ public class Testing {
 
     public static void main(String[] args) {
 
-        Alphabet alphabet = new Alphabet("A-D");
+//        Alphabet alphabet = new Alphabet("A-D");
+//
+//        List<String> empty = new ArrayList<>();
+//        List<String> emptyString = new ArrayList<>();
+//        emptyString.add("");
+//        List<String> concrete = new ArrayList<>();
+//        concrete.add("ABC");
+//        List<String> concreteStringLower = new ArrayList<>();
+//        concreteStringLower.add("abc");
+//        List<String> concreteStringUpper = new ArrayList<>();
+//        concreteStringUpper.add("ABC");
+//        List<String> concreteStringNonWhitespace = new ArrayList<>();
+//        concreteStringNonWhitespace.add("ABC");
+//        List<String> concreteStringWhitespace = new ArrayList<>();
+//        concreteStringWhitespace.add(" B ");
+//
+//        List<String> uniformStrings = alphabet.allStrings(0, 3);
+//
+//        List<String> nonUniformStrings = new ArrayList<>();
+//        for (String str : uniformStrings) {
+//            if (str.contains("A")) {
+//                nonUniformStrings.add(str);
+//            }
+//        }
+//
+//        Map<String, List<String>> stringList = new HashMap<>();
+//        stringList.put("Empty", empty);
+//        stringList.put("Empty String", emptyString);
+//        stringList.put("Concrete", concrete);
+////        stringList.put("Concrete Lower", concreteStringLower);
+////        stringList.put("Concrete Upper", concreteStringUpper);
+////        stringList.put("Concrete Whitespace", concreteStringWhitespace);
+////        stringList.put("Concrete Non-Whitespace", concreteStringNonWhitespace);
+//        stringList.put("Uniform", uniformStrings);
+//        stringList.put("Non-Uniform", nonUniformStrings);
+//
+//        // perform operation
+//        Map<Object[], List<String>> resultMap = new HashMap<>();
+//        for (String baseKey : stringList.keySet()) {
+//            for (String argKey : stringList.keySet()) {
+//                List<String> baseStrings = stringList.get(baseKey);
+//                List<String> argStrings = stringList.get(argKey);
+//                Object[] resultKey = new Object[]{baseKey, argKey};
+//                List<String> resultStrings = resultMap.get(resultKey);
+//                if (resultStrings == null) {
+//                    resultStrings = new ArrayList<>();
+//                    resultMap.put(resultKey, resultStrings);
+//                }
+//                // perform binary operation
+//                for (String baseString : baseStrings) {
+//                    boolean flag = false;
+//                    for (String argString : argStrings) {
+//                        String result = baseString + argString;
+//                        resultStrings.add(result);
+//                    }
+//                }
+//            }
+//        }
+//
+//
+//        // output expected result
+//        List<Object[]> keys = new ArrayList<>(resultMap.keySet());
+//        Collections.sort(keys, new sortByStringName());
+//        for (Object[] resultKey : keys) {
+//            List<String> resultStrings = resultMap.get(resultKey);
+//            for (int i = 0; i < resultKey.length; i++) {
+//                if (resultKey[i] instanceof String) {
+//                    System.out.print("\"" + resultKey[i] + "\"");
+//                } else if (resultKey[i] instanceof Character) {
+//                    System.out.print("\'" + resultKey[i] + "\'");
+//                } else {
+//                    System.out.print(resultKey[i]);
+//                }
+//                System.out.print(", ");
+//            }
+//            System.out.print(resultStrings.size() + "\n");
+//        }
 
-        List<String> empty = new ArrayList<>();
-        List<String> emptyString = new ArrayList<>();
-        emptyString.add("");
-        List<String> concrete = new ArrayList<>();
-        concrete.add("ABC");
-        List<String> concreteStringLower = new ArrayList<>();
-        concreteStringLower.add("abc");
-        List<String> concreteStringUpper = new ArrayList<>();
-        concreteStringUpper.add("ABC");
-        List<String> concreteStringNonWhitespace = new ArrayList<>();
-        concreteStringNonWhitespace.add("ABC");
-        List<String> concreteStringWhitespace = new ArrayList<>();
-        concreteStringWhitespace.add(" B ");
-
-        List<String> uniformStrings = alphabet.allStrings(0, 3);
-
-        List<String> nonUniformStrings = new ArrayList<>();
-        for (String str : uniformStrings) {
-            if (str.contains("A")) {
-                nonUniformStrings.add(str);
-            }
-        }
-
-        Map<String, List<String>> stringList = new HashMap<>();
-        stringList.put("Empty", empty);
-        stringList.put("Empty String", emptyString);
-        stringList.put("Concrete", concrete);
-//        stringList.put("Concrete Lower", concreteStringLower);
-//        stringList.put("Concrete Upper", concreteStringUpper);
-//        stringList.put("Concrete Whitespace", concreteStringWhitespace);
-//        stringList.put("Concrete Non-Whitespace", concreteStringNonWhitespace);
-        stringList.put("Uniform", uniformStrings);
-        stringList.put("Non-Uniform", nonUniformStrings);
-
-        // perform operation
-        Map<Object[], List<String>> resultMap = new HashMap<>();
-        for (String baseKey : stringList.keySet()) {
-            for (String argKey : stringList.keySet()) {
-                List<String> baseStrings = stringList.get(baseKey);
-                List<String> argStrings = stringList.get(argKey);
-                Object[] resultKey = new Object[]{baseKey, argKey};
-                List<String> resultStrings = resultMap.get(resultKey);
-                if (resultStrings == null) {
-                    resultStrings = new ArrayList<>();
-                    resultMap.put(resultKey, resultStrings);
-                }
-                // perform binary operation
-                for (String baseString : baseStrings) {
-                    boolean flag = false;
-                    for (String argString : argStrings) {
-                        String result = baseString + argString;
-                        resultStrings.add(result);
-                    }
-                }
-            }
-        }
-
-
-        // output expected result
-        List<Object[]> keys = new ArrayList<>(resultMap.keySet());
-        Collections.sort(keys, new sortByStringName());
-        for (Object[] resultKey : keys) {
-            List<String> resultStrings = resultMap.get(resultKey);
-            for (int i = 0; i < resultKey.length; i++) {
-                if (resultKey[i] instanceof String) {
-                    System.out.print("\"" + resultKey[i] + "\"");
-                } else if (resultKey[i] instanceof Character) {
-                    System.out.print("\'" + resultKey[i] + "\'");
-                } else {
-                    System.out.print(resultKey[i]);
-                }
-                System.out.print(", ");
-            }
-            System.out.print(resultStrings.size() + "\n");
-        }
+        Automaton a = BasicAutomata.makeCharSet(" ABCD");
+        PreciseTrim trim = new PreciseTrim();
+        Automaton result = trim.op(a);
+        DotToGraph.outputDotFileAndPng(result.toDot(), "temp");
 
     }
 

@@ -215,12 +215,10 @@ public class Alphabet {
         }
     }
 
-    Alphabet(Set<Character> symbolSet, Set<MinMaxPair> charRanges) {
-        this.symbolSet = symbolSet;
-        this.charRanges = charRanges;
-
-        // initialize random
-        random = new Random(System.nanoTime());
+    public Alphabet(Set<Character> symbolSet) {
+        this();
+        this.symbolSet.addAll(symbolSet);
+        createCharRanges();
     }
 
     public boolean isSuperset(String minAlphabetDeclaration) {

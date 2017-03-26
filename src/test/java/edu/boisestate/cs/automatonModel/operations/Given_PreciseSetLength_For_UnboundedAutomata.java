@@ -34,8 +34,7 @@ public class Given_PreciseSetLength_For_UnboundedAutomata {
     private int initialBoundLength = 3;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.setLength({3}) - Expected" +
-                       " MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton>.setLength({3}) - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
@@ -52,22 +51,22 @@ public class Given_PreciseSetLength_For_UnboundedAutomata {
                 {"Empty", 0, empty, 1},
                 {"Empty", 0, empty, 2},
                 {"Empty", 0, empty, 3},
-                {"Empty String", 0, emptyString, 0},
-                {"Empty String", 0, emptyString, 1},
-                {"Empty String", 0, emptyString, 2},
-                {"Empty String", 0, emptyString, 3},
+                {"Empty String", 1, emptyString, 0},
+                {"Empty String", 1, emptyString, 1},
+                {"Empty String", 1, emptyString, 2},
+                {"Empty String", 1, emptyString, 3},
                 {"Concrete", 1, concrete, 0},
                 {"Concrete", 1, concrete, 1},
                 {"Concrete", 1, concrete, 2},
                 {"Concrete", 1, concrete, 3},
-                {"Uniform", 21, uniform, 0},
-                {"Uniform", 20, uniform, 1},
-                {"Uniform", 16, uniform, 2},
-                {"Uniform", 0, uniform, 3},
-                {"Non-uniform", 21, nonUniform, 0},
-                {"Non-uniform", 20, nonUniform, 1},
-                {"Non-uniform", 16, nonUniform, 2},
-                {"Non-uniform", 0, nonUniform, 3}
+                {"Uniform", 1, uniform, 0},
+                {"Uniform", 5, uniform, 1},
+                {"Uniform", 21, uniform, 2},
+                {"Uniform", 85, uniform, 3},
+                {"Non-uniform", 1, nonUniform, 0},
+                {"Non-uniform", 4, nonUniform, 1},
+                {"Non-uniform", 17, nonUniform, 2},
+                {"Non-uniform", 72, nonUniform, 3}
         });
     }
 

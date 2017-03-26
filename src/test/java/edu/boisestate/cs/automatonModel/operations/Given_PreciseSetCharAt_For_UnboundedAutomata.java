@@ -26,10 +26,6 @@ public class Given_PreciseSetCharAt_For_UnboundedAutomata {
     public Automaton baseAutomaton;
     @Parameter(value = 5)
     public Automaton argAutomaton;
-    @Parameter(value = 6)
-    public int baseLength;
-    @Parameter(value = 7)
-    public int argLength;
     @Parameter // first data value (0) is default
     public String baseDescription;
     @Parameter(value = 1)
@@ -39,6 +35,7 @@ public class Given_PreciseSetCharAt_For_UnboundedAutomata {
     @Parameter(value = 4)
     public int offset;
     private Automaton resultAutomaton;
+    private static int boundLength = 3;
 
     @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton>.insert({4}, <{1} Automaton>) - Expected" +
@@ -54,107 +51,73 @@ public class Given_PreciseSetCharAt_For_UnboundedAutomata {
         Automaton uniform = getUniformUnboundedAutomaton(alphabet);
         Automaton nonUniform = getNonUniformUnboundedAutomaton(alphabet);
 
+        // character automata
+        Automaton a = BasicAutomata.makeChar('A');
+        Automaton b = BasicAutomata.makeChar('B');
+        Automaton c = BasicAutomata.makeChar('C');
+        Automaton d = BasicAutomata.makeChar('D');
+
         return Arrays.asList(new Object[][]{
-                {"Empty", "Empty", 0, empty, 0, empty},
-                {"Empty", "Empty", 0, empty, 1, empty},
-                {"Empty", "Empty", 0, empty, 2, empty},
-                {"Empty", "Empty", 0, empty, 3, empty},
-                {"Empty", "Empty String", 0, empty, 0, emptyString},
-                {"Empty", "Empty String", 0, empty, 1, emptyString},
-                {"Empty", "Empty String", 0, empty, 2, emptyString},
-                {"Empty", "Empty String", 0, empty, 3, emptyString},
-                {"Empty", "Concrete", 0, empty, 0, concrete},
-                {"Empty", "Concrete", 0, empty, 1, concrete},
-                {"Empty", "Concrete", 0, empty, 2, concrete},
-                {"Empty", "Concrete", 0, empty, 3, concrete},
-                {"Empty", "Uniform", 0, empty, 0, uniform},
-                {"Empty", "Uniform", 0, empty, 1, uniform},
-                {"Empty", "Uniform", 0, empty, 2, uniform},
-                {"Empty", "Uniform", 0, empty, 3, uniform},
-                {"Empty", "Non-Uniform", 0, empty, 1, nonUniform},
-                {"Empty", "Non-Uniform", 0, empty, 2, nonUniform},
-                {"Empty", "Non-Uniform", 0, empty, 0, nonUniform},
-                {"Empty", "Non-Uniform", 0, empty, 3, nonUniform},
-                {"Empty String", "Empty", 0, emptyString, 0, empty},
-                {"Empty String", "Empty", 0, emptyString, 1, empty},
-                {"Empty String", "Empty", 0, emptyString, 2, empty},
-                {"Empty String", "Empty", 0, emptyString, 3, empty},
-                {"Empty String", "Empty String", -1, emptyString, 0, emptyString},
-                {"Empty String", "Empty String", -1, emptyString, 1, emptyString},
-                {"Empty String", "Empty String", -1, emptyString, 2, emptyString},
-                {"Empty String", "Empty String", -1, emptyString, 3, emptyString},
-                {"Empty String", "Concrete", -1, emptyString, 0, concrete},
-                {"Empty String", "Concrete", -1, emptyString, 1, concrete},
-                {"Empty String", "Concrete", -1, emptyString, 2, concrete},
-                {"Empty String", "Concrete", -1, emptyString, 3, concrete},
-                {"Empty String", "Uniform", -1, emptyString, 0, uniform},
-                {"Empty String", "Uniform", -1, emptyString, 1, uniform},
-                {"Empty String", "Uniform", -1, emptyString, 2, uniform},
-                {"Empty String", "Uniform", -1, emptyString, 3, uniform},
-                {"Empty String", "Non-Uniform", -1, emptyString, 0, nonUniform},
-                {"Empty String", "Non-Uniform", -1, emptyString, 1, nonUniform},
-                {"Empty String", "Non-Uniform", -1, emptyString, 2, nonUniform},
-                {"Empty String", "Non-Uniform", -1, emptyString, 3, nonUniform},
-                {"Concrete", "Empty", 0, concrete, 0, empty},
-                {"Concrete", "Empty", 0, concrete, 1, empty},
-                {"Concrete", "Empty", 0, concrete, 2, empty},
-                {"Concrete", "Empty", 0, concrete, 3, empty},
-                {"Concrete", "Empty String", -1, concrete, 0, emptyString},
-                {"Concrete", "Empty String", -1, concrete, 1, emptyString},
-                {"Concrete", "Empty String", -1, concrete, 2, emptyString},
-                {"Concrete", "Empty String", -1, concrete, 3, emptyString},
-                {"Concrete", "Concrete", -1, concrete, 0, concrete},
-                {"Concrete", "Concrete", -1, concrete, 1, concrete},
-                {"Concrete", "Concrete", -1, concrete, 2, concrete},
-                {"Concrete", "Concrete", -1, concrete, 3, concrete},
-                {"Concrete", "Uniform", -1, concrete, 0, uniform},
-                {"Concrete", "Uniform", -1, concrete, 1, uniform},
-                {"Concrete", "Uniform", -1, concrete, 2, uniform},
-                {"Concrete", "Uniform", -1, concrete, 3, uniform},
-                {"Concrete", "Non-Uniform", -1, concrete, 0, nonUniform},
-                {"Concrete", "Non-Uniform", -1, concrete, 1, nonUniform},
-                {"Concrete", "Non-Uniform", -1, concrete, 2, nonUniform},
-                {"Concrete", "Non-Uniform", -1, concrete, 3, nonUniform},
-                {"Uniform", "Empty", 0, uniform, 0, empty},
-                {"Uniform", "Empty", 0, uniform, 1, empty},
-                {"Uniform", "Empty", 0, uniform, 2, empty},
-                {"Uniform", "Empty", 0, uniform, 3, empty},
-                {"Uniform", "Empty String", -1, uniform, 0, emptyString},
-                {"Uniform", "Empty String", -1, uniform, 1, emptyString},
-                {"Uniform", "Empty String", -1, uniform, 2, emptyString},
-                {"Uniform", "Empty String", -1, uniform, 3, emptyString},
-                {"Uniform", "Concrete", -1, uniform, 0, concrete},
-                {"Uniform", "Concrete", -1, uniform, 1, concrete},
-                {"Uniform", "Concrete", -1, uniform, 2, concrete},
-                {"Uniform", "Concrete", -1, uniform, 3, concrete},
-                {"Uniform", "Uniform", -1, uniform, 0, uniform},
-                {"Uniform", "Uniform", -1, uniform, 1, uniform},
-                {"Uniform", "Uniform", -1, uniform, 2, uniform},
-                {"Uniform", "Uniform", -1, uniform, 3, uniform},
-                {"Uniform", "Non-Uniform", -1, uniform, 0, nonUniform},
-                {"Uniform", "Non-Uniform", -1, uniform, 1, nonUniform},
-                {"Uniform", "Non-Uniform", -1, uniform, 2, nonUniform},
-                {"Uniform", "Non-Uniform", -1, uniform, 3, nonUniform},
-                {"Non-Uniform", "Empty", 0, nonUniform, 0, empty},
-                {"Non-Uniform", "Empty", 0, nonUniform, 1, empty},
-                {"Non-Uniform", "Empty", 0, nonUniform, 2, empty},
-                {"Non-Uniform", "Empty", 0, nonUniform, 3, empty},
-                {"Non-Uniform", "Empty String", -1, nonUniform, 0, emptyString},
-                {"Non-Uniform", "Empty String", -1, nonUniform, 1, emptyString},
-                {"Non-Uniform", "Empty String", -1, nonUniform, 2, emptyString},
-                {"Non-Uniform", "Empty String", -1, nonUniform, 3, emptyString},
-                {"Non-Uniform", "Concrete", -1, nonUniform, 0, concrete},
-                {"Non-Uniform", "Concrete", -1, nonUniform, 1, concrete},
-                {"Non-Uniform", "Concrete", -1, nonUniform, 2, concrete},
-                {"Non-Uniform", "Concrete", -1, nonUniform, 3, concrete},
-                {"Non-Uniform", "Uniform", -1, nonUniform, 0, uniform},
-                {"Non-Uniform", "Uniform", -1, nonUniform, 1, uniform},
-                {"Non-Uniform", "Uniform", -1, nonUniform, 2, uniform},
-                {"Non-Uniform", "Uniform", -1, nonUniform, 3, uniform},
-                {"Non-Uniform", "Non-Uniform", -1, nonUniform, 0, nonUniform},
-                {"Non-Uniform", "Non-Uniform", -1, nonUniform, 1, nonUniform},
-                {"Non-Uniform", "Non-Uniform", -1, nonUniform, 2, nonUniform},
-                {"Non-Uniform", "Non-Uniform", -1, nonUniform, 3, nonUniform}
+                {"Empty", "A", 0, empty, 0, a},
+                {"Empty", "B", 0, empty, 0, b},
+                {"Empty", "C", 0, empty, 0, c},
+                {"Empty", "D", 0, empty, 0, d},
+                {"Empty", "A", 0, empty, 1, a},
+                {"Empty", "B", 0, empty, 1, b},
+                {"Empty", "C", 0, empty, 1, c},
+                {"Empty", "D", 0, empty, 1, d},
+                {"Empty", "A", 0, empty, 2, a},
+                {"Empty", "B", 0, empty, 2, b},
+                {"Empty", "C", 0, empty, 2, c},
+                {"Empty", "D", 0, empty, 2, d},
+                {"Empty String", "A", 0, emptyString, 0, a},
+                {"Empty String", "B", 0, emptyString, 0, b},
+                {"Empty String", "C", 0, emptyString, 0, c},
+                {"Empty String", "D", 0, emptyString, 0, d},
+                {"Empty String", "A", 0, emptyString, 1, a},
+                {"Empty String", "B", 0, emptyString, 1, b},
+                {"Empty String", "C", 0, emptyString, 1, c},
+                {"Empty String", "D", 0, emptyString, 1, d},
+                {"Empty String", "A", 0, emptyString, 2, a},
+                {"Empty String", "B", 0, emptyString, 2, b},
+                {"Empty String", "C", 0, emptyString, 2, c},
+                {"Empty String", "D", 0, emptyString, 2, d},
+                {"Concrete", "A", 1, concrete, 0, a},
+                {"Concrete", "B", 1, concrete, 0, b},
+                {"Concrete", "C", 1, concrete, 0, c},
+                {"Concrete", "D", 1, concrete, 0, d},
+                {"Concrete", "A", 1, concrete, 1, a},
+                {"Concrete", "B", 1, concrete, 1, b},
+                {"Concrete", "C", 1, concrete, 1, c},
+                {"Concrete", "D", 1, concrete, 1, d},
+                {"Concrete", "A", 1, concrete, 2, a},
+                {"Concrete", "B", 1, concrete, 2, b},
+                {"Concrete", "C", 1, concrete, 2, c},
+                {"Concrete", "D", 1, concrete, 2, d},
+                {"Uniform", "A", 21, uniform, 0, a},
+                {"Uniform", "B", 21, uniform, 0, b},
+                {"Uniform", "C", 21, uniform, 0, c},
+                {"Uniform", "D", 21, uniform, 0, d},
+                {"Uniform", "A", 20, uniform, 1, a},
+                {"Uniform", "B", 20, uniform, 1, b},
+                {"Uniform", "C", 20, uniform, 1, c},
+                {"Uniform", "D", 20, uniform, 1, d},
+                {"Uniform", "A", 16, uniform, 2, a},
+                {"Uniform", "B", 16, uniform, 2, b},
+                {"Uniform", "C", 16, uniform, 2, c},
+                {"Uniform", "D", 16, uniform, 2, d},
+                {"Non-Uniform", "A", 21, nonUniform, 0, a},
+                {"Non-Uniform", "B", 21, nonUniform, 0, b},
+                {"Non-Uniform", "C", 21, nonUniform, 0, c},
+                {"Non-Uniform", "D", 21, nonUniform, 0, d},
+                {"Non-Uniform", "A", 20, nonUniform, 1, a},
+                {"Non-Uniform", "B", 20, nonUniform, 1, b},
+                {"Non-Uniform", "C", 20, nonUniform, 1, c},
+                {"Non-Uniform", "D", 20, nonUniform, 1, d},
+                {"Non-Uniform", "A", 16, nonUniform, 2, a},
+                {"Non-Uniform", "B", 16, nonUniform, 2, b},
+                {"Non-Uniform", "C", 16, nonUniform, 2, c},
+                {"Non-Uniform", "D", 16, nonUniform, 2, d}
         });
     }
 
@@ -172,7 +135,6 @@ public class Given_PreciseSetCharAt_For_UnboundedAutomata {
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int boundLength = baseLength + argLength;
         int modelCount = StringModelCounter.ModelCount(this.resultAutomaton, boundLength)
                                            .intValue();
 

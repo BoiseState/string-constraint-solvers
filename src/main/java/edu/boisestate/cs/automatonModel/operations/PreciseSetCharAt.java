@@ -30,23 +30,15 @@ public class PreciseSetCharAt
 
     @Override
     public Automaton op(Automaton baseAutomaton, Automaton argAutomaton) {
-        //eas per documentation:
-        //StringIndexOutOfBoundsException - if start is negative, greater
-        // than length(), or greater than end.
 
         // if start is greater than end or automaton is empty
-        if (this.offset < 0 || baseAutomaton.isEmpty()) {
+        if (this.offset < 0 || baseAutomaton.isEmpty() || baseAutomaton.isEmptyString()) {
             // return empty automaton (exception)
             return BasicAutomata.makeEmpty();
         }
 
         // clone base automaton
         Automaton clone1 = baseAutomaton.clone();
-
-        //eas: even though start = end and per documentation the 
-        //string will not be changes, the shorter strings that
-        //the automaton represents will throw an exception, thus
-        //we have to remove those string from this DFA.
 
         // create new initial state
         State initial = new State();
@@ -57,6 +49,7 @@ public class PreciseSetCharAt
 
         // create return automaton from initial state
         Automaton returnAutomaton = new Automaton();
+        returnAutomaton.setDeterministic(false);
         returnAutomaton.setInitialState(initial);
 
         // initialize state map
@@ -65,11 +58,6 @@ public class PreciseSetCharAt
 
         // create copy of automaton before start
         for (int i = 0; i < this.offset; i++) {
-            // if automaton not long enough
-            if (states.isEmpty()) {
-                return BasicAutomata.makeEmpty();
-            }
-
             // initialize next state set
             Set<State> nextStates = new HashSet<>();
 
@@ -94,23 +82,25 @@ public class PreciseSetCharAt
                 }
             }
 
+            // if automaton not long enough
+            if (nextStates.isEmpty()) {
+                return BasicAutomata.makeEmpty();
+            }
+
             // update states with new states
             states = nextStates;
         }
 
-        // add epsilon transitions
-        List<StatePair> epsilons = new ArrayList<>();
         for (State state : states) {
-            Automaton argClone = argAutomaton.clone();
-            epsilons.add(new StatePair(state, argClone.getInitialState()));
-            for (State argAccept : argClone.getAcceptStates()) {
-                argAccept.setAccept(false);
-                epsilons.add(new StatePair(argAccept, stateMap.get(state)));
+            State originalState = stateMap.get(state);
+            for (Transition charT : argAutomaton.getInitialState().getTransitions()) {
+                for (Transition t : originalState.getTransitions()) {
+                    state.addTransition(new Transition(charT.getMin(),
+                                                       charT.getMax(),
+                                                       t.getDest()));
+                }
             }
         }
-
-        // add epsilons to automaton
-        returnAutomaton.addEpsilons(epsilons);
 
         // return the deleted automaton
         return returnAutomaton;

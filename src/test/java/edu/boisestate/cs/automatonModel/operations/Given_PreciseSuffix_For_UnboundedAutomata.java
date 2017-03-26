@@ -51,7 +51,7 @@ public class Given_PreciseSuffix_For_UnboundedAutomata {
                 {"Empty", 0, empty, 1},
                 {"Empty", 0, empty, 2},
                 {"Empty", 0, empty, 3},
-                {"Empty String", 0, emptyString, 0},
+                {"Empty String", 1, emptyString, 0},
                 {"Empty String", 0, emptyString, 1},
                 {"Empty String", 0, emptyString, 2},
                 {"Empty String", 0, emptyString, 3},
