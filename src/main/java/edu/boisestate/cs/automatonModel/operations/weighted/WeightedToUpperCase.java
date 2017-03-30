@@ -29,7 +29,14 @@ public class WeightedToUpperCase
                     for (int c = min; c <= max; c++) {
                         String up = String.valueOf((char)c).toUpperCase();
                         if (up.length() == 1) {
-                            transitions.add(new WeightedTransition(Character.toUpperCase((char) c), dest, weight));
+                            WeightedTransition newT = new WeightedTransition(Character.toUpperCase((char) c), dest, weight);
+                            if (transitions.contains(newT)) {
+                                transitions.remove(newT);
+                                int newWeight = weight * 2;
+                                transitions.add(new WeightedTransition(newT.getMin(), dest, newWeight));
+                            } else {
+                                transitions.add(newT);
+                            }
                         } else {
                             // YES some characters translate to more than one character when turned upper case
                             // for example the German character "�" becomes "SS"

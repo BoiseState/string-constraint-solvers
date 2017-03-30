@@ -3,13 +3,12 @@
 import argparse
 import csv
 import fnmatch
-import json
 import logging
-import os
-import sys
-
 # set relevent path and file variables
 import re
+import sys
+
+import os
 
 file_name = os.path.basename(__file__).replace('.py', '')
 project_dir = '{0}/../..'.format(os.path.dirname(__file__))
@@ -28,8 +27,9 @@ ch.setFormatter(formatter)
 
 log.addHandler(ch)
 
-# initialize settings variable
+# initialize settings and matricies variables
 SETTINGS = None
+VERIFICATION_MATRICIES = None
 
 
 class Settings:
@@ -51,6 +51,67 @@ class Settings:
             self.reporter = 'sat'
 
 
+# initialize verification matricies
+def get_verification_matricies():
+    if VERIFICATION_MATRICIES is not None:
+        return VERIFICATION_MATRICIES
+
+    verification = dict()
+    # add concat matrix
+    verification['concat'] = [['-', '-', '>', '>', '='],
+                              ['-', '-', '>', '>', '-'],
+                              ['<', '<', '-', '=', '<'],
+                              ['<', '<', '=', '-', '<'],
+                              ['=', '-', '>', '>', '-']]
+    verification['delete'] = [['-', '>', '>', '>', '='],
+                              ['<', '-', '=', '<', '<'],
+                              ['<', '=', '-', '>', '<'],
+                              ['<', '>', '<', '-', '<'],
+                              ['=', '>', '>', '>', '-']]
+    verification['insert'] = [['-', '', '', '', '='],
+                              ['', '-', '', '', ''],
+                              ['', '', '-', '', ''],
+                              ['', '', '', '-', ''],
+                              ['=', '', '', '', '-']]
+    verification['non-injective'] = [['-', '=', '=', '=', '='],
+                                     ['=', '-', '=', '=', '='],
+                                     ['=', '=', '-', '=', '='],
+                                     ['=', '=', '=', '-', '='],
+                                     ['=', '=', '=', '=', '-']]
+    verification['replace'] = [['-', '', '', '', '='],
+                               ['', '-', '', '', ''],
+                               ['', '', '-', '', ''],
+                               ['', '', '', '-', ''],
+                               ['=', '', '', '', '-']]
+    verification['setCharAt'] = [['-', '', '', '', '='],
+                                 ['', '-', '', '', ''],
+                                 ['', '', '-', '', ''],
+                                 ['', '', '', '-', ''],
+                                 ['=', '', '', '', '-']]
+    verification['setLength'] = [['-', '', '', '', '='],
+                                 ['', '-', '', '', ''],
+                                 ['', '', '-', '', ''],
+                                 ['', '', '', '-', ''],
+                                 ['=', '', '', '', '-']]
+    verification['substring'] = [['-', '', '', '', '='],
+                                 ['', '-', '', '', ''],
+                                 ['', '', '-', '', ''],
+                                 ['', '', '', '-', ''],
+                                 ['=', '', '', '', '-']]
+    verification['trim'] = [['-', '', '', '', '='],
+                            ['', '-', '', '', ''],
+                            ['', '', '-', '', ''],
+                            ['', '', '', '-', ''],
+                            ['=', '', '', '', '-']]
+
+    # save matricies for future use
+    global VERIFICATION_MATRICIES
+    VERIFICATION_MATRICIES = verification
+
+    # return matricies
+    return verification
+
+
 def compare_solvers(x, y):
     if x == y:
         return 0
@@ -69,6 +130,10 @@ def compare_solvers(x, y):
     elif x == 'aggregate':
         return -1
     elif y == 'aggregate':
+        return 1
+    elif x == 'weighted':
+        return -1
+    elif y == 'weighted':
         return 1
     else:
         return 0
@@ -108,24 +173,17 @@ def compare_rows(x, y):
     return cmp(op_x, op_y)
 
 
-def get_operations(x):
-    ops_list = list()
+def get_last_operation(x):
 
     # extract operations using regular expression
-    regex_pattern = '<S:\d+> = (?:<init>|\".*?\")' \
-                    '(?: -> <S:\d+>.(\w+)\(.*?\))?' \
-                    '(?: -> <S:\d+>.(\w+)\(.*?\))?' \
-                    '(?: -> <S:\d+>.(\w+)\(.*?\))?' \
-                    '(?: -> <S:\d+>.(\w+)\(.*?\))?' \
-                    '(?: -> <S:\d+>.(\w+)\(.*?\))?'
-    x_match = re.match(regex_pattern, x)
+    regex_init = '^<S:\d+> = <init>$'
+    regex_op = '^<S:\d+>.(?P<op>\w+)\(.*\)$'
 
-    if x_match:
-        for i in range(1, len(x_match.groups()) - 1):
-            ops_list.append(x_match.group(i))
-
-    # return comparision of operation strings
-    return ops_list
+    op_str = x.split('->')
+    if re.match(regex_init, op_str.strip()):
+        return 'init'
+    op_match = re.match(regex_op, op_str.strip())
+    return op_match.group['op']
 
 
 def set_options(arguments):
@@ -251,82 +309,44 @@ def get_data_map_from_csv_files(f_name, file_set):
     return data_map
 
 
-def verify_data(data_map, solvers, f_name):
+def verify_matrix(op, data_map, solvers, op_id):
+    pass
+
+
+def verify_data(data_map, solvers):
     other_solvers = list(solvers)
     other_solvers.remove('concrete')
 
     # for each operation id
     for op_id in data_map.get('concrete').keys():
         # get operations
-        ops = get_operations(data_map.get('concrete')
-                             .get(op_id)
-                             .get('PREV OPS'))
+        op = get_last_operation(data_map.get('concrete')
+                                .get(op_id)
+                                .get('PREV OPS'))
 
-        delete = ['delete',
-                  'deleteCharAt']
-        non_injective = ['replace',
-                         'setCharAt',
-                         'subSequence',
-                         'substring',
-                         'toLowerCase',
-                         'toUpperCase',
-                         'trim']
-        if set(ops).intersection(delete):
-            # get base values
-            in_count = data_map.get('bounded').get(op_id).get('IN COUNT')
-            t_count = data_map.get('bounded').get(op_id).get('T COUNT')
-            f_count = data_map.get('bounded').get(op_id).get('F COUNT')
-            for solver in set(other_solvers).intersection(
-                    ['aggregate, weighted']):
-                data_row = data_map.get(solver).get(op_id)
-                if in_count != data_row.get('IN COUNT'):
-                    log.error('Incoming MC from %s solver for constraint '
-                              '%s is not equal to bounded MC', solver, op_id)
+        concat = ['append', 'concat']
+        delete = ['delete', 'deleteCharAt']
+        non_injective = ['reverse', 'toLowerCase', 'toUpperCase']
+        substring = ['substring', 'subsequence']
 
-                if t_count != data_row.get('T COUNT'):
-                    log.error('True branch MC from %s solver for constraint '
-                              '%s is not equal to bounded MC', solver, op_id)
-
-                if f_count != data_row.get('F COUNT'):
-                    log.error('False branch MC from %s solver for constraint '
-                              '%s is not equal to bounded MC', solver, op_id)
-        elif set(ops).intersection(non_injective):
-            # get base values
-            in_count = data_map.get('unbounded').get(op_id).get('IN COUNT')
-            t_count = data_map.get('unbounded').get(op_id).get('T COUNT')
-            f_count = data_map.get('unbounded').get(op_id).get('F COUNT')
-            for solver in set(other_solvers).intersection(
-                    ['bounded, aggregate, weighted']):
-                data_row = data_map.get(solver).get(op_id)
-                if in_count != data_row.get('IN COUNT'):
-                    log.error('Incoming MC from %s solver for constraint '
-                              '%s is not equal to unbounded MC', solver, op_id)
-
-                if t_count != data_row.get('T COUNT'):
-                    log.error('True branch MC from %s solver for constraint '
-                              '%s is not equal to unbounded MC', solver, op_id)
-
-                if f_count != data_row.get('F COUNT'):
-                    log.error('False branch MC from %s solver for constraint '
-                              '%s is not equal to unbounded MC', solver, op_id)
-        else:
-            # get base values
-            in_count = data_map.get('concrete').get(op_id).get('IN COUNT')
-            t_count = data_map.get('concrete').get(op_id).get('T COUNT')
-            f_count = data_map.get('concrete').get(op_id).get('F COUNT')
-            for solver in other_solvers:
-                data_row = data_map.get(solver).get(op_id)
-                if in_count != data_row.get('IN COUNT'):
-                    log.error('Incoming MC from %s solver for constraint '
-                              '%s is not equal to concrete MC', solver, op_id)
-
-                if t_count != data_row.get('T COUNT'):
-                    log.error('True branch MC from %s solver for constraint '
-                              '%s is not equal to concrete MC', solver, op_id)
-
-                if f_count != data_row.get('F COUNT'):
-                    log.error('False branch MC from %s solver for constraint '
-                              '%s is not equal to concrete MC', solver, op_id)
+        if op in concat:
+            verify_matrix('concat', data_map, solvers, op_id)
+        elif op in delete:
+            verify_matrix('delete', data_map, solvers, op_id)
+        elif op == 'insert':
+            verify_matrix('insert', data_map, solvers, op_id)
+        elif op in non_injective:
+            verify_matrix('non-injective', data_map, solvers, op_id)
+        elif op == 'replace':
+            verify_matrix('replace', data_map, solvers, op_id)
+        elif op == 'setCharAt':
+            verify_matrix('setCharAt', data_map, solvers, op_id)
+        elif op == 'setLength':
+            verify_matrix('setLength', data_map, solvers, op_id)
+        elif op in substring:
+            verify_matrix('substring', data_map, solvers, op_id)
+        elif op == 'trim':
+            verify_matrix('trim', data_map, solvers, op_id)
 
 
 def produce_output_data(data_map, solvers, f_name):

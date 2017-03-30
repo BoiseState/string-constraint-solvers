@@ -142,10 +142,18 @@ public class WeightedState
 	}
 
 	void addEpsilon(WeightedState to) {
-		if (to.accept)
+		if (to.accept) {
 			accept = true;
-		for (WeightedTransition t : to.transitions)
-			transitions.add(t);
+		}
+		for (WeightedTransition t : to.transitions) {
+			if (transitions.contains(t)) {
+				transitions.remove(t);
+				int newWeight = t.getWeight() * 2;
+				transitions.add(new WeightedTransition(t.getMin(), t.getMax(), t.getDest(), newWeight));
+			} else {
+				transitions.add(t);
+			}
+		}
 	}
 
 	void addEpsilon(WeightedState to, int weight) {

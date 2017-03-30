@@ -51,7 +51,7 @@ public class WeightedPreciseDelete
         Map<WeightedState, WeightedState> stateMap = new HashMap<>();
         stateMap.put(initial, clone.getInitialState());
 
-        // initialize state map
+        // initialize incoming transition map
         Map<WeightedState, Set<WeightedTransition>> incomingTransitionMap = new HashMap<>();
         incomingTransitionMap.put(initial, new HashSet<WeightedTransition>());
 

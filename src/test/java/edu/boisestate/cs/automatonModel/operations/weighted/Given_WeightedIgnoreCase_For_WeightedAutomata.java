@@ -52,7 +52,7 @@ public class Given_WeightedIgnoreCase_For_WeightedAutomata {
                 {"Empty String", 1, emptyString},
                 {"Concrete", 8, concrete},
                 {"Uniform Unbounded", 585, uniform},
-                {"Non-uniform Unbounded", 326, nonUniform}
+                {"Non-uniform Unbounded", 418, nonUniform}
         });
     }
 

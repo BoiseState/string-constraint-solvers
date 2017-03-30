@@ -356,4 +356,155 @@ public class WeightedAutomatonOperationTestUtilities {
         // return automaton
         return automaton;
     }
+
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unionedUniform1() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+
+        // set accept state
+        q1.setAccept(true);
+        q2.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
+        q0.addTransition(new WeightedTransition('A', 'D', q2, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unionedUniform2() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+        WeightedState q4 = new WeightedState();
+
+        // set accept state
+        q3.setAccept(true);
+        q4.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
+        q0.addTransition(new WeightedTransition('A', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q3, 1));
+        q2.addTransition(new WeightedTransition('A', 'D', q4, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unionedUniform3() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+        WeightedState q4 = new WeightedState();
+        WeightedState q5 = new WeightedState();
+
+        // set accept state
+        q5.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
+        q0.addTransition(new WeightedTransition('A', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q3, 1));
+        q2.addTransition(new WeightedTransition('A', 'D', q4, 1));
+        q3.addTransition(new WeightedTransition('A', 'D', q5, 1));
+        q4.addTransition(new WeightedTransition('A', 'D', q5, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unionedUniform4() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+        WeightedState q4 = new WeightedState();
+        WeightedState q5 = new WeightedState();
+        WeightedState q6 = new WeightedState();
+        WeightedState q7 = new WeightedState();
+        WeightedState q8 = new WeightedState();
+
+        // set accept state
+        q7.setAccept(true);
+        q8.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
+        q0.addTransition(new WeightedTransition('A', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q3, 1));
+        q2.addTransition(new WeightedTransition('A', 'D', q4, 1));
+        q3.addTransition(new WeightedTransition('A', 'D', q5, 1));
+        q4.addTransition(new WeightedTransition('A', 'D', q6, 1));
+        q5.addTransition(new WeightedTransition('A', 'D', q7, 1));
+        q6.addTransition(new WeightedTransition('A', 'D', q8, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton unionedUniform5() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+        WeightedState q4 = new WeightedState();
+        WeightedState q5 = new WeightedState();
+        WeightedState q6 = new WeightedState();
+        WeightedState q7 = new WeightedState();
+        WeightedState q8 = new WeightedState();
+        WeightedState q9 = new WeightedState();
+
+        // set accept state
+        q9.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
+        q0.addTransition(new WeightedTransition('A', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q3, 1));
+        q2.addTransition(new WeightedTransition('A', 'D', q4, 1));
+        q3.addTransition(new WeightedTransition('A', 'D', q5, 1));
+        q4.addTransition(new WeightedTransition('A', 'D', q6, 1));
+        q5.addTransition(new WeightedTransition('A', 'D', q7, 1));
+        q6.addTransition(new WeightedTransition('A', 'D', q8, 1));
+        q7.addTransition(new WeightedTransition('A', 'D', q9, 1));
+        q8.addTransition(new WeightedTransition('A', 'D', q9, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
+    }
 }

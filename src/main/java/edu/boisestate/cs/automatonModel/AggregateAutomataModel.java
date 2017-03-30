@@ -266,6 +266,7 @@ public class AggregateAutomataModel
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public AutomatonModel assertEqualsIgnoreCase(AutomatonModel equalModel) {
         ensureAggregateModel(equalModel);
@@ -418,6 +419,7 @@ public class AggregateAutomataModel
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public AutomatonModel assertNotEqualsIgnoreCase(AutomatonModel notEqualModel) {
         ensureAggregateModel(notEqualModel);
@@ -428,10 +430,7 @@ public class AggregateAutomataModel
         Automaton notEqualIgnoreCase = performUnaryOperation(notEqual, new IgnoreCase(), this.alphabet);
 
         // get resulting automata
-        Automaton[] results = new Automaton[this.automata.length];
-        for (int i = 0; i < results.length; i++) {
-            results[i] = this.automata[i].minus(notEqualIgnoreCase);
-        }
+        Automaton[] results = performBinaryAutomatonOperation(automata, notEqualIgnoreCase, minusOp, boundLength);
 
         // return new model from resulting automaton
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);

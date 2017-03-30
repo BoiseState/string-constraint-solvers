@@ -53,8 +53,8 @@ public class Given_WeightedToUpperCase_For_WeightedAutomata {
                 {"Empty String", 1, emptyString},
                 {"Concrete Lower", 1, concreteLower},
                 {"Concrete Upper", 1, concreteUpper},
-                {"Uniform Unbounded", 85, uniform},
-                {"Non-uniform Unbounded", 57, nonUniform}
+                {"Uniform Unbounded", 585, uniform},
+                {"Non-uniform Unbounded", 185, nonUniform}
         });
     }
 

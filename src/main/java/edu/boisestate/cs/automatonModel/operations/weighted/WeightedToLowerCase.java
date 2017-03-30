@@ -18,7 +18,7 @@ public class WeightedToLowerCase extends UnaryWeightedOperation {
         WeightedAutomaton clone = automaton.clone();
         for (WeightedState s : clone.getStates()) {
             Set<WeightedTransition> transitions = s.getTransitions();
-            for (WeightedTransition t : new ArrayList<WeightedTransition>(transitions)) {
+            for (WeightedTransition t : new ArrayList<>(transitions)) {
                 char min = t.getMin();
                 char max = t.getMax();
                 WeightedState dest = t.getDest();
@@ -26,7 +26,14 @@ public class WeightedToLowerCase extends UnaryWeightedOperation {
                 if (min != Character.MIN_VALUE || max != Character.MAX_VALUE) {
                     transitions.remove(t);
                     for (int c = min; c <= max; c++) {
-                        transitions.add(new WeightedTransition(Character.toLowerCase((char) c), dest, weight));
+                        WeightedTransition newT = new WeightedTransition(Character.toLowerCase((char) c), dest, weight);
+                        if (transitions.contains(newT)) {
+                            transitions.remove(newT);
+                            int newWeight = weight * 2;
+                            transitions.add(new WeightedTransition(newT.getMin(), dest, newWeight));
+                        } else {
+                            transitions.add(newT);
+                        }
                     }
                 }
             }

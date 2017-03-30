@@ -76,7 +76,6 @@ public class PrecisePrefix
         Automaton any = Automaton.makeAnyString();
         AssertHasLength l = new AssertHasLength(end, end);
         clone = clone.intersection(l.op(any));
-        clone.minimize();
         return clone;
     }
 

@@ -183,3 +183,4 @@ results/
 traceFile
 /SolverInterface/
 scripts/python/*.pyc
+temp/

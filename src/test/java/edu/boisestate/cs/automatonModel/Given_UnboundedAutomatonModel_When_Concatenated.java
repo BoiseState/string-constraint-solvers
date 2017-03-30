@@ -41,7 +41,7 @@ public class Given_UnboundedAutomatonModel_When_Concatenated {
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
-        int initialBoundLength = 2;
+        int initialBoundLength = 3;
 
         // create automaton models
         UnboundedAutomatonModel emptyModel = getEmptyUnboundedModel(alphabet);
@@ -59,23 +59,23 @@ public class Given_UnboundedAutomatonModel_When_Concatenated {
                 {"Empty String", "Empty", 0, emptyStringModel, emptyModel},
                 {"Empty String", "Empty String", 1, emptyStringModel, emptyStringModel},
                 {"Empty String", "Concrete", 1, emptyStringModel, concreteModel},
-                {"Empty String", "Uniform", 21, emptyStringModel, uniformModel},
-                {"Empty String", "Non-uniform", 8, emptyStringModel, nonUniformModel},
+                {"Empty String", "Uniform", 85, emptyStringModel, uniformModel},
+                {"Empty String", "Non-uniform", 45, emptyStringModel, nonUniformModel},
                 {"Concrete", "Empty", 0, concreteModel, emptyModel},
                 {"Concrete", "Empty String", 1, concreteModel, emptyStringModel},
                 {"Concrete", "Concrete", 1, concreteModel, concreteModel},
-                {"Concrete", "Uniform", 21, concreteModel, uniformModel},
-                {"Concrete", "Non-uniform", 8, concreteModel, nonUniformModel},
+                {"Concrete", "Uniform", 85, concreteModel, uniformModel},
+                {"Concrete", "Non-uniform", 45, concreteModel, nonUniformModel},
                 {"Uniform", "Empty", 0, uniformModel, emptyModel},
-                {"Uniform", "Empty String", 21, uniformModel, emptyStringModel},
-                {"Uniform", "Concrete", 21, uniformModel, concreteModel},
-                {"Uniform", "Uniform", 341, uniformModel, uniformModel},
-                {"Uniform", "Non-uniform", 220, uniformModel, nonUniformModel},
+                {"Uniform", "Empty String", 85, uniformModel, emptyStringModel},
+                {"Uniform", "Concrete", 85, uniformModel, concreteModel},
+                {"Uniform", "Uniform", 5461, uniformModel, uniformModel},
+                {"Uniform", "Non-uniform", 4368, uniformModel, nonUniformModel},
                 {"Non-uniform", "Empty", 0, nonUniformModel, emptyModel},
-                {"Non-uniform", "Empty String", 8, nonUniformModel, emptyStringModel},
-                {"Non-uniform", "Concrete", 8, nonUniformModel, concreteModel},
-                {"Non-uniform", "Uniform", 220, nonUniformModel, uniformModel},
-                {"Non-uniform", "Non-uniform", 78, nonUniformModel, nonUniformModel}
+                {"Non-uniform", "Empty String", 45, nonUniformModel, emptyStringModel},
+                {"Non-uniform", "Concrete", 45, nonUniformModel, concreteModel},
+                {"Non-uniform", "Uniform", 4368, nonUniformModel, uniformModel},
+                {"Non-uniform", "Non-uniform", 2363, nonUniformModel, nonUniformModel}
         });
     }
 

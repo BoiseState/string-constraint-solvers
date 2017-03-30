@@ -317,11 +317,11 @@ class CommandLine {
                                     .longOpt("model-version")
                                     .desc("The version of the automaton model" +
                                           " used by the JSA string constraint" +
-                                          " solver:\n1 - Unbounded " +
-                                          "automaton model\n2 - Bounded " +
-                                          "automaton model\n3 - Aggregate " +
-                                          "bounded automata model\n4 - " +
-                                          "Proposed accurate automaton model")
+                                          " solver:\n1 - Unbounded Automaton" +
+                                          " Model\n2 - Bounded Automaton" +
+                                          " Model\n3 - Aggregate Bounded" +
+                                          " Automata Model\n4 - Weighted" +
+                                          " Aggregate Bounded Automaton Model")
                                     .hasArg()
                                     .numberOfArgs(1)
                                     .argName("version")

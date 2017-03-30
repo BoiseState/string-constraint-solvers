@@ -239,8 +239,7 @@ final public class BasicWeightedOperations {
             return;
         }
         Set<StateWeight> initialSet = new HashSet<>();
-        StateWeight sw =
-                new StateWeight(a.getInitialState(), a.getInitialFactor());
+        StateWeight sw = new StateWeight(a.getInitialState(), a.getInitialFactor());
         initialSet.add(sw);
         determinize(a, initialSet);
     }
@@ -289,7 +288,13 @@ final public class BasicWeightedOperations {
                     }
                     for (WeightedState dest : weightMap.keySet()) {
                         int newWeight = weightMap.get(dest) * q.getWeight();
-                        p.add(new StateWeight(dest, newWeight));
+                        StateWeight newSW = new StateWeight(dest, newWeight);
+                        if (p.contains(newSW)) {
+                            p.remove(newSW);
+                            p.add(new StateWeight(dest, newWeight * 2));
+                        } else {
+                            p.add(newSW);
+                        }
                     }
                 }
                 if (!sets.containsKey(p)) {

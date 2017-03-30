@@ -19,8 +19,30 @@ public class WeightedReplaceChar
     }
 
     @Override
-    public WeightedAutomaton op(WeightedAutomaton automaton) {
-        return null;
+    public WeightedAutomaton op(WeightedAutomaton a) {
+        WeightedAutomaton b = a.clone();
+        for (WeightedState s : b.getStates()) {
+            Set<WeightedTransition> transitions = s.getTransitions();
+            for (WeightedTransition t : new ArrayList<>(transitions)) {
+                char min = t.getMin();
+                char max = t.getMax();
+                WeightedState dest = t.getDest();
+                if (min <= find && find <= max) {
+                    transitions.remove(t);
+                    s.addTransition(new WeightedTransition(replace, dest, t.getWeight()));
+                    if (min < find) {
+                        s.addTransition(new WeightedTransition(min, (char) (find - 1), dest, t.getWeight()));
+                    }
+                    if (find < max) {
+                        s.addTransition(new WeightedTransition((char) (find + 1), max, dest, t.getWeight()));
+                    }
+                }
+            }
+        }
+        b.setDeterministic(false);
+        b.reduce();
+        b.minimize();
+        return b;
     }
 
     @Override

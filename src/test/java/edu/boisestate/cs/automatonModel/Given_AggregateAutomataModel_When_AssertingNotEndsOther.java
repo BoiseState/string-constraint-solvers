@@ -64,13 +64,13 @@ public class Given_AggregateAutomataModel_When_AssertingNotEndsOther {
                 {"Uniform", "Empty", 85, uniformModel, emptyModel},
                 {"Uniform", "Empty String", 84, uniformModel, emptyStringModel},
                 {"Uniform", "Concrete", 81, uniformModel, concreteModel},
-                {"Uniform", "Uniform", 0, uniformModel, uniformModel},
-                {"Uniform", "Non-uniform", 27, uniformModel, nonUniformModel},
+                {"Uniform", "Uniform", 85, uniformModel, uniformModel},
+                {"Uniform", "Non-uniform", 85, uniformModel, nonUniformModel},
                 {"Non-uniform", "Empty", 45, nonUniformModel, emptyModel},
                 {"Non-uniform", "Empty String", 45, nonUniformModel, emptyStringModel},
                 {"Non-uniform", "Concrete", 44, nonUniformModel, concreteModel},
-                {"Non-uniform", "Uniform", 0, nonUniformModel, uniformModel},
-                {"Non-uniform", "Non-uniform", 0, nonUniformModel, nonUniformModel}
+                {"Non-uniform", "Uniform", 45, nonUniformModel, uniformModel},
+                {"Non-uniform", "Non-uniform", 45, nonUniformModel, nonUniformModel}
         });
     }
 

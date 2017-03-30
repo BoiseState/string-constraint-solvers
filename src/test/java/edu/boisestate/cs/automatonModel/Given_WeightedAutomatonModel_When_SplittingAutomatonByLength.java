@@ -84,17 +84,17 @@ public class Given_WeightedAutomatonModel_When_SplittingAutomatonByLength {
                 {"Balanced Non-Uniform 1", 1, new int[]{0,1,0,0}, balancedNonUniform1},
                 {"Balanced Non-Uniform 2", 7, new int[]{0,0,7,0}, balancedNonUniform2},
                 {"Balanced Non-Uniform 3", 37, new int[]{0,0,0,37}, balancedNonUniform3},
-                {"Unbalanced Uniform 0", 64, new int[]{0,0,0,0}, unbalancedUniform0},
-                {"Unbalanced Uniform 1", 64, new int[]{0,0,0,0}, unbalancedUniform1},
-                {"Unbalanced Uniform 2", 64, new int[]{0,0,0,0}, unbalancedUniform2},
-                {"Unbalanced Non-Uniform 0", 37, new int[]{0,0,0,0}, unbalancedNonUniform0},
-                {"Unbalanced Non-Uniform 1", 37, new int[]{0,0,0,0}, unbalancedNonUniform1},
-                {"Unbalanced Non-Uniform 2", 37, new int[]{0,0,0,0}, unbalancedNonUniform2},
-                {"Non-Uniform delete(0,1)", 37, new int[]{0,0,0,0}, nonUniformDelete01},
-                {"Non-Uniform delete(1,2)", 37, new int[]{0,0,0,0}, nonUniformDelete12},
-                {"Unbalanced Non-Uniform 0 replace('B', 'A')", 37, new int[]{0,0,0,0}, replaceUnbalancedNonUniform0},
-                {"Unbalanced Non-Uniform 1 replace('B', 'A')", 37, new int[]{0,0,0,0}, replaceUnbalancedNonUniform1},
-                {"Unbalanced Non-Uniform 2 replace('B', 'A')", 37, new int[]{0,0,0,0}, replaceUnbalancedNonUniform2}
+                {"Unbalanced Uniform 0", 64, new int[]{0,0,64,0}, unbalancedUniform0},
+                {"Unbalanced Uniform 1", 64, new int[]{0,0,64,0}, unbalancedUniform1},
+                {"Unbalanced Uniform 2", 64, new int[]{0,0,64,0}, unbalancedUniform2},
+                {"Unbalanced Non-Uniform 0", 37, new int[]{0,0,37,0}, unbalancedNonUniform0},
+                {"Unbalanced Non-Uniform 1", 37, new int[]{0,0,37,0}, unbalancedNonUniform1},
+                {"Unbalanced Non-Uniform 2", 37, new int[]{0,0,37,0}, unbalancedNonUniform2},
+                {"Non-Uniform delete(0,1)", 37, new int[]{0,0,37,0}, nonUniformDelete01},
+                {"Non-Uniform delete(1,2)", 37, new int[]{0,0,37,0}, nonUniformDelete12},
+                {"Unbalanced Non-Uniform 0 replace('B', 'A')", 37, new int[]{0,0,37,0}, replaceUnbalancedNonUniform0},
+                {"Unbalanced Non-Uniform 1 replace('B', 'A')", 37, new int[]{0,0,37,0}, replaceUnbalancedNonUniform1},
+                {"Unbalanced Non-Uniform 2 replace('B', 'A')", 37, new int[]{0,0,37,0}, replaceUnbalancedNonUniform2}
         });
     }
 

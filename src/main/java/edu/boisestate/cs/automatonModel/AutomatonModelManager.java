@@ -30,6 +30,9 @@ public abstract class AutomatonModelManager {
         } else if (modelVersion == 3) {
             AggregateAutomatonModelManager.setInstance(alphabet,
                                                        initialBoundLength);
+        } else if (modelVersion == 4) {
+            WeightedAutomatonModelManager.setInstance(alphabet,
+                                                      initialBoundLength);
         }
 
         return instance;

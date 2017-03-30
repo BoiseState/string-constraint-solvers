@@ -48,7 +48,7 @@ public class Given_UnboundedAutomatonModel_When_Deleted {
         UnboundedAutomatonModel uniformModel = getUniformUnboundedModel(alphabet, initialBoundLength);
         UnboundedAutomatonModel nonUniformModel = getNonUniformUnboundedModel(alphabet, initialBoundLength);
 
-        return Arrays.asList(new Object[][]{
+        return Arrays.asList(new Object[][] {
                 {"Empty", 0, emptyModel, 0, 0},
                 {"Empty", 0, emptyModel, 0, 1},
                 {"Empty", 0, emptyModel, 0, 2},
@@ -98,8 +98,8 @@ public class Given_UnboundedAutomatonModel_When_Deleted {
                 {"Non-uniform", 4, nonUniformModel, 1, 3},
                 {"Non-uniform", 44, nonUniformModel, 2, 2},
                 {"Non-uniform", 16, nonUniformModel, 2, 3},
-                {"Non-uniform", 37, nonUniformModel, 3, 3},
-                });
+                {"Non-uniform", 37, nonUniformModel, 3, 3}
+            });
     }
 
     @Before

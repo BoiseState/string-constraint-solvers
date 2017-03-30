@@ -1,6 +1,11 @@
 package edu.boisestate.cs.automatonModel.operations.weighted;
 
 import edu.boisestate.cs.automaton.WeightedAutomaton;
+import edu.boisestate.cs.automaton.WeightedState;
+import edu.boisestate.cs.automaton.WeightedTransition;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 public class WeightedReplaceCharReplaceKnown
         extends UnaryWeightedOperation {
@@ -17,7 +22,18 @@ public class WeightedReplaceCharReplaceKnown
     }
 
     @Override
-    public WeightedAutomaton op(WeightedAutomaton automaton) {
-        return null;
+    public WeightedAutomaton op(WeightedAutomaton a) {
+        WeightedAutomaton b = a.clone();
+        for (WeightedState s : b.getStates()) {
+            Set<WeightedTransition> transitions = s.getTransitions();
+            for (WeightedTransition t : new ArrayList<>(transitions)) {
+                WeightedState dest = t.getDest();
+                s.addTransition(new WeightedTransition(replace, dest, t.getWeight()));
+            }
+        }
+        b.setDeterministic(false);
+        b.reduce();
+        b.minimize();
+        return b;
     }
 }
