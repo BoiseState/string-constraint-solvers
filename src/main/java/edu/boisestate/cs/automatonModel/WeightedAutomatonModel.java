@@ -1,8 +1,11 @@
 package edu.boisestate.cs.automatonModel;
 
 import edu.boisestate.cs.Alphabet;
+import edu.boisestate.cs.MinMaxPair;
 import edu.boisestate.cs.automaton.BasicWeightedAutomata;
 import edu.boisestate.cs.automaton.WeightedAutomaton;
+import edu.boisestate.cs.automaton.WeightedState;
+import edu.boisestate.cs.automaton.WeightedTransition;
 import edu.boisestate.cs.automatonModel.operations.BinaryWeightedAutomatonOp;
 import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
 import edu.boisestate.cs.automatonModel.operations.UnaryWeightedAutomatonOp;
@@ -10,10 +13,7 @@ import edu.boisestate.cs.automatonModel.operations.weighted.*;
 import edu.boisestate.cs.util.DotToGraph;
 
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeCharSet;
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmpty;
@@ -331,11 +331,21 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] notContainingArray = getAutomataFromWeightedModel(notContainingModel);
         WeightedAutomaton notContaining = mergeAutomata(notContainingArray);
 
-        // get all substrings
-        WeightedAutomaton substrings = performUnaryOperation(notContaining, new WeightedAllSubstrings(), this.alphabet);
+        // if not containing automaton is empty
+        if (notContaining.isEmpty()) {
+            return this.clone();
+        }
 
-        // get resulting automata
-        WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, substrings, minusOp, boundLength);
+        notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
+
+        WeightedAutomaton[] results = automata;
+        if(!notContaining.isEmpty()) {
+            // get all substrings
+            WeightedAutomaton substrings = performUnaryOperation(notContaining, new WeightedAllSubstrings(), this.alphabet);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, substrings, minusOp, boundLength);
+        }
 
         // return new model from resulting automata
         return new WeightedAutomatonModel(results, this.alphabet, this.boundLength);
@@ -346,17 +356,26 @@ public class WeightedAutomatonModel extends AutomatonModel {
     public AutomatonModel assertNotContainsOther(AutomatonModel notContainedModel) {
         ensureWeightedModel(notContainedModel);
 
-        // create any string automata
-        WeightedAutomaton anyString1 = makeCharSet(this.alphabet.getCharSet()).repeat();
-        WeightedAutomaton anyString2 = makeCharSet(this.alphabet.getCharSet()).repeat();
-
-        // concatenate with contained automaton
         WeightedAutomaton[] notContainedAutomata = getAutomataFromWeightedModel(notContainedModel);
         WeightedAutomaton notContained = mergeAutomata(notContainedAutomata);
-        WeightedAutomaton x = anyString1.concatenate(notContained).concatenate(anyString2);
 
-        // get resulting automata
-        WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        notContained = getRequiredCharAutomaton(notContained, alphabet, boundLength);
+
+        WeightedAutomaton[] results = automata;
+        if(!notContained.isEmpty()) {
+            // create any string automata
+            WeightedAutomaton anyString1 =
+                    makeCharSet(this.alphabet.getCharSet()).repeat();
+            WeightedAutomaton anyString2 =
+                    makeCharSet(this.alphabet.getCharSet()).repeat();
+
+            // concatenate with contained automaton
+            WeightedAutomaton x = anyString1.concatenate(notContained)
+                                            .concatenate(anyString2);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        }
 
         // return new model from resulting automata
         return new WeightedAutomatonModel(results, this.alphabet, this.boundLength);
@@ -380,11 +399,21 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] notContainingArray = getAutomataFromWeightedModel(notContainingModel);
         WeightedAutomaton notContaining = mergeAutomata(notContainingArray);
 
-        // get all suffixes
-        WeightedAutomaton suffixes = performUnaryOperation(notContaining, new WeightedAllSuffixes(), this.alphabet);
+        // if not containing automaton is empty
+        if (notContaining.isEmpty()) {
+            return this.clone();
+        }
 
-        // get resulting automata
-        WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, suffixes, minusOp, boundLength);
+        notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
+
+        WeightedAutomaton[] results = automata;
+        if(!notContaining.isEmpty()) {
+            // get all suffixes
+            WeightedAutomaton suffixes = performUnaryOperation(notContaining, new WeightedAllSuffixes(), this.alphabet);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, suffixes, minusOp, boundLength);
+        }
 
         // return new model from resulting automata
         return new WeightedAutomatonModel(results, this.alphabet, this.boundLength);
@@ -395,16 +424,23 @@ public class WeightedAutomatonModel extends AutomatonModel {
     public AutomatonModel assertNotEndsWith(AutomatonModel notEndingModel) {
         ensureWeightedModel(notEndingModel);
 
-        // create any string automata
-        WeightedAutomaton anyString = makeCharSet(this.alphabet.getCharSet()).repeat();
-
-        // concatenate with contained automaton
         WeightedAutomaton[] notEndingAutomata = getAutomataFromWeightedModel(notEndingModel);
         WeightedAutomaton notEnding = mergeAutomata(notEndingAutomata);
-        WeightedAutomaton x = anyString.concatenate(notEnding);
 
-        // get resulting automata
-        WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        notEnding = getRequiredCharAutomaton(notEnding, alphabet, boundLength);
+
+        WeightedAutomaton[] results = automata;
+        if(!notEnding.isEmpty()) {
+            // create any string automata
+            WeightedAutomaton anyString =
+                    makeCharSet(this.alphabet.getCharSet()).repeat();
+
+            // concatenate with contained automaton
+            WeightedAutomaton x = anyString.concatenate(notEnding);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        }
 
         // return new model from resulting automata
         return new WeightedAutomatonModel(results, this.alphabet, this.boundLength);
@@ -415,12 +451,16 @@ public class WeightedAutomatonModel extends AutomatonModel {
     public AutomatonModel assertNotEquals(AutomatonModel notEqualModel) {
         ensureWeightedModel(notEqualModel);
 
-        // get equal automaton
+        // get not equal automaton
         WeightedAutomaton[] notEqualAutomata = getAutomataFromWeightedModel(notEqualModel);
         WeightedAutomaton notEqual = mergeAutomata(notEqualAutomata);
 
-        // get resulting automata
-        WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, notEqual, minusOp, boundLength);
+        // if not equal automaton is a singleton
+        WeightedAutomaton[] results = automata;
+        if (notEqual.getFiniteStrings(1) != null) {
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, notEqual, minusOp, boundLength);
+        }
 
         // return new model from resulting automata
         return new WeightedAutomatonModel(results, this.alphabet, this.boundLength);
@@ -431,13 +471,18 @@ public class WeightedAutomatonModel extends AutomatonModel {
     public AutomatonModel assertNotEqualsIgnoreCase(AutomatonModel notEqualModel) {
         ensureWeightedModel(notEqualModel);
 
-        // get equal automaton
+        // get not equal automaton
         WeightedAutomaton[] notEqualAutomata = getAutomataFromWeightedModel(notEqualModel);
         WeightedAutomaton notEqual = mergeAutomata(notEqualAutomata);
-        WeightedAutomaton notEqualIgnoreCase = performUnaryOperation(notEqual, new WeightedIgnoreCase(), this.alphabet);
 
-        // get resulting automata
-        WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, notEqualIgnoreCase, minusOp, boundLength);
+        // if not equal automaton is a singleton
+        WeightedAutomaton[] results = automata;
+        if (notEqual.getFiniteStrings(1) != null) {
+            WeightedAutomaton notEqualIgnoreCase = performUnaryOperation( notEqual, new WeightedIgnoreCase(), this.alphabet);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation( automata, notEqualIgnoreCase, minusOp, boundLength);
+        }
 
         // return new model from resulting automata
         return new WeightedAutomatonModel(results, this.alphabet, this.boundLength);
@@ -452,11 +497,21 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] notContainingArray = getAutomataFromWeightedModel(notStartingModel);
         WeightedAutomaton notContaining = mergeAutomata(notContainingArray);
 
-        // get all prefixes
-        WeightedAutomaton prefixes = performUnaryOperation(notContaining, new WeightedAllPrefixes(), this.alphabet);
+        // if not containing automaton is empty
+        if (notContaining.isEmpty()) {
+            return this.clone();
+        }
 
-        // get resulting automata
-        WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, prefixes, minusOp, boundLength);
+        notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
+
+        WeightedAutomaton[] results = automata;
+        if(!notContaining.isEmpty()) {
+            // get all prefixes
+            WeightedAutomaton prefixes = performUnaryOperation(notContaining, new WeightedAllPrefixes(), this.alphabet);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, prefixes, minusOp, boundLength);
+        }
 
         // return new model from resulting automata
         return new WeightedAutomatonModel(results, this.alphabet, this.boundLength);
@@ -467,16 +522,23 @@ public class WeightedAutomatonModel extends AutomatonModel {
     public AutomatonModel assertNotStartsWith(AutomatonModel notStartsModel) {
         ensureWeightedModel(notStartsModel);
 
-        // create any string automata
-        WeightedAutomaton anyString = makeCharSet(this.alphabet.getCharSet()).repeat();
-
-        // concatenate with contained automaton
         WeightedAutomaton[] notStartingAutomata = getAutomataFromWeightedModel(notStartsModel);
         WeightedAutomaton notStarting = mergeAutomata(notStartingAutomata);
-        WeightedAutomaton x = notStarting.concatenate(anyString);
 
-        // get resulting automata
-        WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        notStarting = getRequiredCharAutomaton(notStarting, alphabet, boundLength);
+
+        WeightedAutomaton[] results = automata;
+        if(!notStarting.isEmpty()) {
+            // create any string automata
+            WeightedAutomaton anyString =
+                    makeCharSet(this.alphabet.getCharSet()).repeat();
+
+            // concatenate with contained automaton
+            WeightedAutomaton x = notStarting.concatenate(anyString);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        }
 
         // return new model from resulting automata
         return new WeightedAutomatonModel(results, this.alphabet, this.boundLength);
@@ -1002,5 +1064,92 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
         // return results array
         return returnAutomata;
+    }
+
+    protected static WeightedAutomaton getRequiredCharAutomaton(WeightedAutomaton a, Alphabet alphabet, int boundLength) {
+        // if initial state is accepting
+        if (a.getInitialState().isAccept()) {
+            return BasicWeightedAutomata.makeEmptyString();
+        }
+
+        // initialize required char map
+        Map<Integer, Character> requiredCharMap = new HashMap<>();
+
+        // initalize state set
+        Set<WeightedState> states = new TreeSet<>();
+        states.add(a.getInitialState());
+
+        // walk automaton up to bound length
+        boolean accept = false;
+        for (int i = 0; i < boundLength && !accept; i++) {
+            // initialize flag as true
+            boolean isSame = true;
+
+            // initialize current char to unused value
+            char c = Character.MAX_VALUE;
+            for (WeightedState s : states) {
+                // if no transitions
+                if (s.getTransitions().size() == 0) {
+                    isSame = false;
+                    break;
+                }
+                // check if transition destination is an accepting state
+                WeightedTransition t = s.getTransitions().iterator().next();
+                if (t.getDest().isAccept()) {
+                    accept = true;
+                }
+                // if transitions allow more than one character at length i
+                if (t.getMin() != t.getMax() ||
+                    (c != Character.MAX_VALUE && c != t.getMin())) {
+                    isSame = false;
+                    break;
+                }
+
+                // set current char to single char from transition
+                c = t.getMin();
+            }
+
+            // if single char for transition at lenght i
+            if (isSame) {
+                requiredCharMap.put(i, c);
+            }
+        }
+
+        // if no required single characters
+        if (requiredCharMap.isEmpty()) {
+            return BasicWeightedAutomata.makeEmpty();
+        }
+
+        // initialize initial state and current state variable
+        WeightedState initial = new WeightedState();
+        WeightedState s = initial;
+
+        // create required char automaton
+        for (int i = 0; i < boundLength; i ++) {
+            // create new destination state
+            WeightedState dest = new WeightedState();
+
+            // if single character at length i
+            if (requiredCharMap.containsKey(i)) {
+                // add single char transition
+                s.addTransition(new WeightedTransition(requiredCharMap.get(i), dest));
+            } else {
+                // add transition for all chars in alphabet
+                for (MinMaxPair pair : alphabet.getCharRanges()) {
+                    s.addTransition(new WeightedTransition(pair.getMin(), pair.getMax(), dest));
+                }
+            }
+
+            // update current state
+            s = dest;
+        }
+
+        // initalize return automaton and set initial and accepting states
+        WeightedAutomaton returnAutomaton = new WeightedAutomaton();
+        returnAutomaton.setInitialState(initial);
+        s.setAccept(true);
+
+        // return automaton
+        return returnAutomaton;
     }
 }

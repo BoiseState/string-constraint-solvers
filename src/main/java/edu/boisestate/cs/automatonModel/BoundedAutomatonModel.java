@@ -198,11 +198,20 @@ public class BoundedAutomatonModel
             return new BoundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
         }
 
-        // get all substrings
-        Automaton substrings = performUnaryOperation(notContaining, new Substring(), this.alphabet);
+        // get automaton of required chars from not containing automaton
+        notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
 
-        // get resulting automaton
-        Automaton result =  this.automaton.minus(substrings);
+        Automaton result = automaton;
+        if (!notContaining.isEmpty()) {
+
+            // get all substrings
+            Automaton substrings = performUnaryOperation(notContaining,
+                                                         new Substring(),
+                                                         this.alphabet);
+
+            // get resulting automaton
+            result = this.automaton.minus(substrings);
+        }
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
@@ -212,18 +221,27 @@ public class BoundedAutomatonModel
     public AutomatonModel assertNotContainsOther(AutomatonModel notContainedModel) {
         ensureBoundedModel(notContainedModel);
 
-        // create any string automata
-        Automaton anyString1 =
-                BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat();
-        Automaton anyString2 =
-                BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat();
+        // get not contained automaton
+        Automaton notContained = getAutomatonFromBoundedModel(notContainedModel);
+        notContained = getRequiredCharAutomaton(notContained, alphabet, boundLength);
 
-        // concatenate with not contained automaton
-        Automaton contained = getAutomatonFromBoundedModel(notContainedModel);
-        Automaton x = anyString1.concatenate(contained).concatenate(anyString2);
+        Automaton result = automaton;
+        if (!notContained.isEmpty()) {
+            // create any string automata
+            Automaton anyString1 =
+                    BasicAutomata.makeCharSet(this.alphabet.getCharSet())
+                                 .repeat();
+            Automaton anyString2 =
+                    BasicAutomata.makeCharSet(this.alphabet.getCharSet())
+                                 .repeat();
 
-        // get resulting automaton
-        Automaton result =  this.automaton.minus(x);
+            // concatenate with not contained automaton
+            Automaton x = anyString1.concatenate(notContained)
+                                    .concatenate(anyString2);
+
+            // get resulting automaton
+            result = this.automaton.minus(x);
+        }
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
@@ -250,11 +268,20 @@ public class BoundedAutomatonModel
             return new BoundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
         }
 
-        // get all suffixes
-        Automaton suffixes = performUnaryOperation(notContaining, new Postfix(), this.alphabet);
+        // get automaton of required chars from not containing automaton
+        notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
 
-        // get resulting automaton
-        Automaton result =  this.automaton.minus(suffixes);
+        Automaton result = automaton;
+        if (!notContaining.isEmpty()) {
+
+            // get all suffixes
+            Automaton suffixes = performUnaryOperation(notContaining,
+                                                       new Postfix(),
+                                                       this.alphabet);
+
+            // get resulting automaton
+            result = this.automaton.minus(suffixes);
+        }
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
@@ -265,16 +292,23 @@ public class BoundedAutomatonModel
     public AutomatonModel assertNotEndsWith(AutomatonModel notEndingModel) {
         ensureBoundedModel(notEndingModel);
 
-        // create any string automata
-        Automaton anyString =
-                BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat();
+        Automaton notEnding = getAutomatonFromBoundedModel(notEndingModel);
+        notEnding = getRequiredCharAutomaton(notEnding, alphabet, boundLength);
 
-        // concatenate with not ending automaton
-        Automaton ending = getAutomatonFromBoundedModel(notEndingModel);
-        Automaton x = anyString.concatenate(ending);
+        Automaton result = automaton;
+        if (!notEnding.isEmpty()) {
 
-        // get resulting automaton
-        Automaton result =  this.automaton.minus(x);
+            // create any string automata
+            Automaton anyString =
+                    BasicAutomata.makeCharSet(this.alphabet.getCharSet())
+                                 .repeat();
+
+            // concatenate with not ending automaton
+            Automaton x = anyString.concatenate(notEnding);
+
+            // get resulting automaton
+            result = this.automaton.minus(x);
+        }
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
@@ -284,11 +318,15 @@ public class BoundedAutomatonModel
     public AutomatonModel assertNotEquals(AutomatonModel notEqualModel) {
         ensureBoundedModel(notEqualModel);
 
-        // concatenate with contained automaton
-        Automaton equal = getAutomatonFromBoundedModel(notEqualModel);
+        // get not equal automaton
+        Automaton notEqual = getAutomatonFromBoundedModel(notEqualModel);
 
-        // get resulting automaton
-        Automaton result =  this.automaton.minus(equal);
+        // if not equal automaton is a singleton
+        Automaton result = automaton;
+        if (notEqual.getFiniteStrings(1) != null) {
+            // get resulting automaton
+            result = this.automaton.minus(notEqual);
+        }
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
@@ -298,12 +336,19 @@ public class BoundedAutomatonModel
     public AutomatonModel assertNotEqualsIgnoreCase(AutomatonModel notEqualModel) {
         ensureBoundedModel(notEqualModel);
 
-        // concatenate with contained automaton
-        Automaton equal = getAutomatonFromBoundedModel(notEqualModel);
-        Automaton equalIgnoreCase = performUnaryOperation(equal, new IgnoreCase(), this.alphabet);
+        // get not equal automaton
+        Automaton notEqual = getAutomatonFromBoundedModel(notEqualModel);
 
-        // get resulting automaton
-        Automaton result =  this.automaton.minus(equalIgnoreCase);
+        // if not equal automaton is a singleton
+        Automaton result = automaton;
+        if (notEqual.getFiniteStrings(1) != null) {
+            Automaton equalIgnoreCase = performUnaryOperation(notEqual,
+                                                              new IgnoreCase(),
+                                                              this.alphabet);
+
+            // get resulting automaton
+            result = this.automaton.minus(equalIgnoreCase);
+        }
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
@@ -321,11 +366,20 @@ public class BoundedAutomatonModel
             return new BoundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
         }
 
-        // get all prefixes
-        Automaton prefixes = performUnaryOperation(notContaining, new Prefix(), this.alphabet);
+        // get automaton of required chars from not containing automaton
+        notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
 
-        // get resulting automaton
-        Automaton result =  this.automaton.minus(prefixes);
+        Automaton result = automaton;
+        if (!notContaining.isEmpty()) {
+
+            // get all prefixes
+            Automaton prefixes = performUnaryOperation(notContaining,
+                                                       new Prefix(),
+                                                       this.alphabet);
+
+            // get resulting automaton
+            result = this.automaton.minus(prefixes);
+        }
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);
@@ -336,16 +390,22 @@ public class BoundedAutomatonModel
     public AutomatonModel assertNotStartsWith(AutomatonModel notStartsModel) {
         ensureBoundedModel(notStartsModel);
 
-        // create any string automata
-        Automaton anyString =
-                BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat();
+        Automaton notStarting = getAutomatonFromBoundedModel(notStartsModel);
+        notStarting = getRequiredCharAutomaton(notStarting, alphabet, boundLength);
 
-        // concatenate with not starts automaton
-        Automaton start = getAutomatonFromBoundedModel(notStartsModel);
-        Automaton x = start.concatenate(anyString);
+        Automaton result = automaton;
+        if (!notStarting.isEmpty()) {
+            // create any string automata
+            Automaton anyString =
+                    BasicAutomata.makeCharSet(this.alphabet.getCharSet())
+                                 .repeat();
 
-        // get resulting automaton
-        Automaton result =  this.automaton.minus(x);
+            // concatenate with not starts automaton
+            Automaton x = notStarting.concatenate(anyString);
+
+            // get resulting automaton
+            result = this.automaton.minus(x);
+        }
 
         // return new model from resulting automaton
         return new BoundedAutomatonModel(result, this.alphabet, this.boundLength);

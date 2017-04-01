@@ -17,8 +17,11 @@ import java.util.*;
 public class Testing {
 
     public static void main(String[] args) {
-        automatonTesting();
+//        automatonTesting();
 //        stringTesting();
+        String e1 = "";
+        String e2 = "";
+        System.out.printf("!contains: %b", !e1.contains(e2));
     }
 
     private static void stringTesting() {

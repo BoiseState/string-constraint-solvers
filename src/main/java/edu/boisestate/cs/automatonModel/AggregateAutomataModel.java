@@ -26,16 +26,6 @@ public class AggregateAutomataModel
             return a1.minus(a2);
         }
     };
-
-    private static UnaryAutomatonOp getUnaryOp(final UnaryOperation operation) {
-        return new UnaryAutomatonOp() {
-            @Override
-            public Automaton op(Automaton a1) {
-                return operation.op(a1);
-            }
-        };
-    }
-
     private Automaton[] automata;
 
     private void setAutomata(Automaton[] automatonArray) {
@@ -66,6 +56,25 @@ public class AggregateAutomataModel
         this.automata = new Automaton[]{automaton};
 
         this.modelManager = new AggregateAutomatonModelManager(alphabet, 0);
+    }
+
+    private static UnaryAutomatonOp getUnaryOp(final UnaryOperation operation) {
+        return new UnaryAutomatonOp() {
+            @Override
+            public Automaton op(Automaton a1) {
+                return operation.op(a1);
+            }
+        };
+    }
+
+    static Automaton[] splitAutomatonByLength(Automaton automaton, int maxLength, Alphabet alphabet) {
+        Automaton[] returnAutomata = new Automaton[maxLength+1];
+        Automaton anyChar = BasicAutomata.makeCharSet(alphabet.getCharSet());
+        for (int i = 0; i < returnAutomata.length; i++) {
+            Automaton bounding = anyChar.repeat(i, i);
+            returnAutomata[i] = automaton.intersection(bounding);
+        }
+        return returnAutomata;
     }
 
     @Override
@@ -320,11 +329,18 @@ public class AggregateAutomataModel
             return this.clone();
         }
 
-        // get all substrings
-        Automaton substrings = performUnaryOperation(notContaining, new Substring(), this.alphabet);
+        // get automaton of required chars from not containing automaton
+        notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
 
-        // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, substrings, minusOp, boundLength);
+        Automaton[] results = automata;
+        if (!notContaining.isEmpty()) {
+
+            // get all substrings
+            Automaton substrings = performUnaryOperation(notContaining, new Substring(), this.alphabet);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, substrings, minusOp, boundLength);
+        }
 
         // return new model from resulting automaton
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
@@ -335,17 +351,29 @@ public class AggregateAutomataModel
     public AutomatonModel assertNotContainsOther(AutomatonModel notContainedModel) {
         ensureAggregateModel(notContainedModel);
 
-        // create any string automata
-        Automaton anyString1 = BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat();
-        Automaton anyString2 = BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat();
-
-        // concatenate with contained automaton
         Automaton[] notContainedAutomata = getAutomataFromAggregateModel(notContainedModel);
         Automaton notContained = mergeAutomata(notContainedAutomata);
-        Automaton x = anyString1.concatenate(notContained).concatenate(anyString2);
 
-        // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        // get automaton of required chars from not containing automaton
+        notContained = getRequiredCharAutomaton(notContained, alphabet, boundLength);
+
+        Automaton[] results = automata;
+        if (!notContained.isEmpty()) {
+            // create any string automata
+            Automaton anyString1 =
+                    BasicAutomata.makeCharSet(this.alphabet.getCharSet())
+                                 .repeat();
+            Automaton anyString2 =
+                    BasicAutomata.makeCharSet(this.alphabet.getCharSet())
+                                 .repeat();
+
+            // concatenate with contained automaton
+            Automaton x = anyString1.concatenate(notContained)
+                                    .concatenate(anyString2);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        }
 
         // return new model from resulting automaton
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
@@ -373,11 +401,18 @@ public class AggregateAutomataModel
             return this.clone();
         }
 
-        // get all suffixes
-        Automaton suffixes = performUnaryOperation(notContaining, new Postfix(), this.alphabet);
+        // get automaton of required chars from not containing automaton
+        notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
 
-        // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, suffixes, minusOp, boundLength);
+        Automaton[] results = automata;
+        if (!notContaining.isEmpty()) {
+
+            // get all suffixes
+            Automaton suffixes = performUnaryOperation(notContaining, new Postfix(), this.alphabet);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, suffixes, minusOp, boundLength);
+        }
 
         // return new model from resulting automaton
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
@@ -388,16 +423,25 @@ public class AggregateAutomataModel
     public AutomatonModel assertNotEndsWith(AutomatonModel notEndingModel) {
         ensureAggregateModel(notEndingModel);
 
-        // create any string automata
-        Automaton anyString = BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat();
-
-        // concatenate with contained automaton
         Automaton[] notEndingAutomata = getAutomataFromAggregateModel(notEndingModel);
         Automaton notEnding = mergeAutomata(notEndingAutomata);
-        Automaton x = anyString.concatenate(notEnding);
 
-        // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        // get automaton of required chars from not containing automaton
+        notEnding = getRequiredCharAutomaton(notEnding, alphabet, boundLength);
+
+        Automaton[] results = automata;
+        if (!notEnding.isEmpty()) {
+            // create any string automata
+            Automaton anyString =
+                    BasicAutomata.makeCharSet(this.alphabet.getCharSet())
+                                 .repeat();
+
+            // concatenate with contained automaton
+            Automaton x = anyString.concatenate(notEnding);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        }
 
         // return new model from resulting automaton
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
@@ -408,12 +452,16 @@ public class AggregateAutomataModel
     public AutomatonModel assertNotEquals(AutomatonModel notEqualModel) {
         ensureAggregateModel(notEqualModel);
 
-        // concatenate with contained automaton
+        // get not equal automaton
         Automaton[] notEqualAutomata = getAutomataFromAggregateModel(notEqualModel);
         Automaton notEqual = mergeAutomata(notEqualAutomata);
 
-        // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, notEqual, minusOp, boundLength);
+        // if not equal automaton is a singleton
+        Automaton[] results = automata;
+        if (notEqual.getFiniteStrings(1) != null) {
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, notEqual, minusOp, boundLength);
+        }
 
         // return new model from resulting automaton
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
@@ -424,13 +472,18 @@ public class AggregateAutomataModel
     public AutomatonModel assertNotEqualsIgnoreCase(AutomatonModel notEqualModel) {
         ensureAggregateModel(notEqualModel);
 
-        // concatenate with contained automaton
+        // get not equal automaton
         Automaton[] notEqualAutomata = getAutomataFromAggregateModel(notEqualModel);
         Automaton notEqual = mergeAutomata(notEqualAutomata);
-        Automaton notEqualIgnoreCase = performUnaryOperation(notEqual, new IgnoreCase(), this.alphabet);
 
-        // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, notEqualIgnoreCase, minusOp, boundLength);
+        // if not equal automaton is a singleton
+        Automaton[] results = automata;
+        if (notEqual.getFiniteStrings(1) != null) {
+            Automaton notEqualIgnoreCase = performUnaryOperation(notEqual, new IgnoreCase(), this.alphabet);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, notEqualIgnoreCase, minusOp, boundLength);
+        }
 
         // return new model from resulting automaton
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
@@ -449,11 +502,18 @@ public class AggregateAutomataModel
             return this.clone();
         }
 
-        // get all prefixes
-        Automaton prefixes = performUnaryOperation(notContaining, new Prefix(), this.alphabet);
+        // get automaton of required chars from not containing automaton
+        notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
 
-        // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, prefixes, minusOp, boundLength);
+        Automaton[] results = automata;
+        if (!notContaining.isEmpty()) {
+
+            // get all prefixes
+            Automaton prefixes = performUnaryOperation(notContaining, new Prefix(), this.alphabet);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, prefixes, minusOp, boundLength);
+        }
 
         // return new model from resulting automaton
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
@@ -464,16 +524,25 @@ public class AggregateAutomataModel
     public AutomatonModel assertNotStartsWith(AutomatonModel notStartingModel) {
         ensureAggregateModel(notStartingModel);
 
-        // create any string automata
-        Automaton anyString = BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat();
-
-        // concatenate with contained automaton
         Automaton[] notStartingAutomata = getAutomataFromAggregateModel(notStartingModel);
         Automaton notStarting = mergeAutomata(notStartingAutomata);
-        Automaton x = notStarting.concatenate(anyString);
 
-        // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        // get automaton of required chars from not containing automaton
+        notStarting = getRequiredCharAutomaton(notStarting, alphabet, boundLength);
+
+        Automaton[] results = automata;
+        if (!notStarting.isEmpty()) {
+            // create any string automata
+            Automaton anyString =
+                    BasicAutomata.makeCharSet(this.alphabet.getCharSet())
+                                 .repeat();
+
+            // concatenate with contained automaton
+            Automaton x = notStarting.concatenate(anyString);
+
+            // get resulting automata
+            results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
+        }
 
         // return new model from resulting automaton
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
@@ -859,50 +928,6 @@ public class AggregateAutomataModel
         return result;
     }
 
-    private Automaton[] performUnaryAutomatonOperations(Automaton[] automata,
-                                               UnaryAutomatonOp op,
-                                               int maxLength) {
-
-        // create automata to bound results to alphabet
-        String charSet = this.alphabet.getCharSet();
-        Automaton bounding = BasicAutomata.makeCharSet(charSet).repeat();
-
-        // initialize results array
-        Automaton[][] results = new Automaton[automata.length][maxLength];
-
-        //  for each index in the automata array
-        for (int i = 0; i < automata.length; i++) {
-
-            // perform operation
-            Automaton result = op.op(automata[i]);
-
-            // bound result
-            result = result.intersection(bounding);
-
-            // minimize result
-            result.minimize();
-
-            // set appropriate index in results array
-            results[i] = splitAutomatonByLength(result, maxLength, this.alphabet);
-        }
-
-        // initialize return automaton array
-        Automaton[] returnAutomata = new Automaton[maxLength + 1];
-        for (int i = 0; i < returnAutomata.length; i++) {
-            returnAutomata[i] = BasicAutomata.makeEmpty();
-        }
-
-        // merge result automata into return array
-        for (Automaton[] result : results) {
-            for (int j = 0; j < returnAutomata.length; j++) {
-                returnAutomata[j] = returnAutomata[j].union(result[j]);
-            }
-        }
-
-        // return results array
-        return returnAutomata;
-    }
-
     private Automaton[] performBinaryAutomatonOperation(Automaton[] automata, Automaton arg, BinaryAutomatonOp op, int maxLength) {
 
         // create automata to bound results to alphabet
@@ -946,13 +971,47 @@ public class AggregateAutomataModel
         return returnAutomata;
     }
 
-    static Automaton[] splitAutomatonByLength(Automaton automaton, int maxLength, Alphabet alphabet) {
-        Automaton[] returnAutomata = new Automaton[maxLength+1];
-        Automaton anyChar = BasicAutomata.makeCharSet(alphabet.getCharSet());
-        for (int i = 0; i < returnAutomata.length; i++) {
-            Automaton bounding = anyChar.repeat(i, i);
-            returnAutomata[i] = automaton.intersection(bounding);
+    private Automaton[] performUnaryAutomatonOperations(Automaton[] automata,
+                                               UnaryAutomatonOp op,
+                                               int maxLength) {
+
+        // create automata to bound results to alphabet
+        String charSet = this.alphabet.getCharSet();
+        Automaton bounding = BasicAutomata.makeCharSet(charSet).repeat();
+
+        // initialize results array
+        Automaton[][] results = new Automaton[automata.length][maxLength];
+
+        //  for each index in the automata array
+        for (int i = 0; i < automata.length; i++) {
+
+            // perform operation
+            Automaton result = op.op(automata[i]);
+
+            // bound result
+            result = result.intersection(bounding);
+
+            // minimize result
+            result.minimize();
+
+            // set appropriate index in results array
+            results[i] = splitAutomatonByLength(result, maxLength, this.alphabet);
         }
+
+        // initialize return automaton array
+        Automaton[] returnAutomata = new Automaton[maxLength + 1];
+        for (int i = 0; i < returnAutomata.length; i++) {
+            returnAutomata[i] = BasicAutomata.makeEmpty();
+        }
+
+        // merge result automata into return array
+        for (Automaton[] result : results) {
+            for (int j = 0; j < returnAutomata.length; j++) {
+                returnAutomata[j] = returnAutomata[j].union(result[j]);
+            }
+        }
+
+        // return results array
         return returnAutomata;
     }
 }

@@ -2,11 +2,17 @@ package edu.boisestate.cs.automatonModel;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
+import dk.brics.automaton.State;
+import dk.brics.automaton.Transition;
 import dk.brics.string.stringoperations.UnaryOperation;
 import edu.boisestate.cs.Alphabet;
+import edu.boisestate.cs.MinMaxPair;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public abstract class AutomatonModel
         implements Cloneable {
@@ -139,4 +145,96 @@ public abstract class AutomatonModel
     public abstract AutomatonModel trim();
 
     public abstract AutomatonModel clone();
+
+    protected static Automaton getRequiredCharAutomaton(Automaton a, Alphabet alphabet, int boundLength) {
+        // if initial state is accepting
+        if (a.getInitialState().isAccept()) {
+            return BasicAutomata.makeEmptyString();
+        }
+
+        // initialize required char map
+        Map<Integer, Character> requiredCharMap = new HashMap<>();
+
+        // initalize state set
+        Set<State> states = new TreeSet<>();
+        states.add(a.getInitialState());
+
+        // walk automaton up to bound length
+        int accept = -1;
+        for (int i = 0; i < boundLength && accept < 0; i++) {
+            // initialize flag as true
+            boolean isSame = true;
+
+            // initialize current char to unused value
+            char c = Character.MAX_VALUE;
+            Set<State> newStates = new TreeSet<>();
+            for (State s : states) {
+                // if no transitions
+                if (s.getTransitions().size() != 1) {
+                    isSame = false;
+                    break;
+                }
+                // check if transition destination is an accepting state
+                Transition t = s.getTransitions().iterator().next();
+                newStates.add(t.getDest());
+                if (t.getDest().isAccept()) {
+                    accept = i;
+                }
+                // if transitions allow more than one character at length i
+                if (t.getMin() != t.getMax() ||
+                    (c != Character.MAX_VALUE && c != t.getMin())) {
+                    isSame = false;
+                    break;
+                }
+
+                // set current char to single char from transition
+                c = t.getMin();
+            }
+
+            // if single char for transition at lenght i
+            if (isSame) {
+                requiredCharMap.put(i, c);
+            }
+
+            // update state set
+            states = newStates;
+        }
+
+        // if no required single characters
+        if (requiredCharMap.isEmpty()) {
+            return BasicAutomata.makeEmpty();
+        }
+
+        // initialize initial state and current state variable
+        State initial = new State();
+        State s = initial;
+
+        // create required char automaton
+        for (int i = 0; i < boundLength; i ++) {
+            // create new destination state
+            State dest = new State();
+
+            // if single character at length i
+            if (requiredCharMap.containsKey(i)) {
+                // add single char transition
+                s.addTransition(new Transition(requiredCharMap.get(i), dest));
+            } else {
+                // add transition for all chars in alphabet
+                for (MinMaxPair pair : alphabet.getCharRanges()) {
+                    s.addTransition(new Transition(pair.getMin(), pair.getMax(), dest));
+                }
+            }
+
+            // update current state
+            s = dest;
+        }
+
+        // initalize return automaton and set initial and accepting states
+        Automaton returnAutomaton = new Automaton();
+        returnAutomaton.setInitialState(initial);
+        s.setAccept(true);
+
+        // return automaton
+        return returnAutomaton;
+    }
 }

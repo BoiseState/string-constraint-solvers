@@ -65,44 +65,44 @@ def get_verification_matricies():
                               ['=', '-', '>', '>', '-']]
     verification['delete'] = [['-', '>', '>', '>', '='],
                               ['<', '-', '=', '<', '<'],
-                              ['<', '=', '-', '>', '<'],
-                              ['<', '>', '<', '-', '<'],
+                              ['<', '=', '-', '<', '<'],
+                              ['<', '>', '>', '-', '<'],
                               ['=', '>', '>', '>', '-']]
-    verification['insert'] = [['-', '', '', '', '='],
-                              ['', '-', '', '', ''],
-                              ['', '', '-', '', ''],
-                              ['', '', '', '-', ''],
-                              ['=', '', '', '', '-']]
-    verification['non-injective'] = [['-', '=', '=', '=', '='],
-                                     ['=', '-', '=', '=', '='],
-                                     ['=', '=', '-', '=', '='],
-                                     ['=', '=', '=', '-', '='],
-                                     ['=', '=', '=', '=', '-']]
-    verification['replace'] = [['-', '', '', '', '='],
-                               ['', '-', '', '', ''],
-                               ['', '', '-', '', ''],
-                               ['', '', '', '-', ''],
-                               ['=', '', '', '', '-']]
-    verification['setCharAt'] = [['-', '', '', '', '='],
-                                 ['', '-', '', '', ''],
-                                 ['', '', '-', '', ''],
-                                 ['', '', '', '-', ''],
-                                 ['=', '', '', '', '-']]
-    verification['setLength'] = [['-', '', '', '', '='],
-                                 ['', '-', '', '', ''],
-                                 ['', '', '-', '', ''],
-                                 ['', '', '', '-', ''],
-                                 ['=', '', '', '', '-']]
-    verification['substring'] = [['-', '', '', '', '='],
-                                 ['', '-', '', '', ''],
-                                 ['', '', '-', '', ''],
-                                 ['', '', '', '-', ''],
-                                 ['=', '', '', '', '-']]
-    verification['trim'] = [['-', '', '', '', '='],
-                            ['', '-', '', '', ''],
-                            ['', '', '-', '', ''],
-                            ['', '', '', '-', ''],
-                            ['=', '', '', '', '-']]
+    verification['insert'] = [['-', '-', '>', '>', '='],
+                              ['-', '-', '>', '>', '-'],
+                              ['<', '<', '-', '=', '<'],
+                              ['<', '<', '=', '-', '<'],
+                              ['=', '-', '>', '>', '-']]
+    verification['injective'] = [['-', '=', '=', '=', '='],
+                                 ['=', '-', '=', '=', '='],
+                                 ['=', '=', '-', '=', '='],
+                                 ['=', '=', '=', '-', '='],
+                                 ['=', '=', '=', '=', '-']]
+    verification['replace'] = [['-', '>', '>', '>', '='],
+                               ['<', '-', '=', '=', '<'],
+                               ['<', '=', '-', '=', '<'],
+                               ['<', '=', '=', '-', '<'],
+                               ['=', '>', '>', '>', '-']]
+    verification['setCharAt'] = [['-', '>', '>', '>', '='],
+                                 ['<', '-', '=', '=', '<'],
+                                 ['<', '=', '-', '=', '<'],
+                                 ['<', '=', '=', '-', '<'],
+                                 ['=', '>', '>', '>', '-']]
+    verification['setLength'] = [['-', '>', '>', '>', '='],
+                                 ['<', '-', '=', '=', '<'],
+                                 ['<', '=', '-', '<', '<'],
+                                 ['<', '=', '>', '-', '<'],
+                                 ['=', '>', '>', '>', '-']]
+    verification['substring'] = [['-', '-', '>', '>', '='],
+                                 ['-', '-', '>', '-', '-'],
+                                 ['<', '<', '-', '<', '<'],
+                                 ['<', '-', '>', '-', '<'],
+                                 ['=', '-', '>', '>', '-']]
+    verification['trim'] = [['-', '>', '>', '>', '='],
+                            ['<', '-', '=', '<', '<'],
+                            ['<', '=', '-', '<', '<'],
+                            ['<', '>', '>', '-', '<'],
+                            ['=', '>', '>', '>', '-']]
 
     # save matricies for future use
     global VERIFICATION_MATRICIES
@@ -326,7 +326,7 @@ def verify_data(data_map, solvers):
 
         concat = ['append', 'concat']
         delete = ['delete', 'deleteCharAt']
-        non_injective = ['reverse', 'toLowerCase', 'toUpperCase']
+        injective = ['reverse', 'toLowerCase', 'toUpperCase']
         substring = ['substring', 'subsequence']
 
         if op in concat:
@@ -335,8 +335,8 @@ def verify_data(data_map, solvers):
             verify_matrix('delete', data_map, solvers, op_id)
         elif op == 'insert':
             verify_matrix('insert', data_map, solvers, op_id)
-        elif op in non_injective:
-            verify_matrix('non-injective', data_map, solvers, op_id)
+        elif op in injective:
+            verify_matrix('injective', data_map, solvers, op_id)
         elif op == 'replace':
             verify_matrix('replace', data_map, solvers, op_id)
         elif op == 'setCharAt':
