@@ -18,11 +18,11 @@ public class WeightedPreciseTrim extends UnaryWeightedOperation {
 
         WeightedAutomaton b = a.clone();
         b.setDeterministic(false);
-        Map<WeightedState, Set<WeightedState>> normal_prevs = new HashMap<>();
-        Map<WeightedState, Set<WeightedState>> special_prevs = new HashMap<>();
-        findPrevs(b, normal_prevs, special_prevs);
+        Map<WeightedState, Set<WeightedState>> normalPrevs = new HashMap<>();
+        Map<WeightedState, Set<WeightedState>> specialPrevs = new HashMap<>();
+        findPrevious(b, normalPrevs, specialPrevs);
         Set<WeightedState> pre = findPreSet(b);
-        Set<WeightedState> post = findPostSet(b, special_prevs);
+        Set<WeightedState> post = findPostSet(b, specialPrevs);
         boolean initial_accept = post.contains(b.getInitialState());
         WeightedState initial = new WeightedState();
         b.setInitialState(initial);
@@ -34,13 +34,13 @@ public class WeightedPreciseTrim extends UnaryWeightedOperation {
                     min = '\u0021';
                 }
                 if (min <= max) {
-                    initial.addTransition(new WeightedTransition(min, max, t.getDest()));
-                    Set<WeightedState> prevset = normal_prevs.get(t.getDest());
-                    if (prevset == null) {
-                        prevset = new HashSet<>();
-                        normal_prevs.put(t.getDest(), prevset);
+                    initial.addTransition(new WeightedTransition(min, max, t.getDest(), t.getWeight()));
+                    Set<WeightedState> prevSet = normalPrevs.get(t.getDest());
+                    if (prevSet == null) {
+                        prevSet = new HashSet<>();
+                        normalPrevs.put(t.getDest(), prevSet);
                     }
-                    prevset.add(initial);
+                    prevSet.add(initial);
                 }
             }
         }
@@ -53,7 +53,7 @@ public class WeightedPreciseTrim extends UnaryWeightedOperation {
             initial.setAccept(true);
         }
         for (WeightedState s : post) {
-            Set<WeightedState> prevset = normal_prevs.get(s);
+            Set<WeightedState> prevset = normalPrevs.get(s);
             if (prevset != null) {
                 for (WeightedState p : prevset) {
                     for (WeightedTransition t : new ArrayList<>(p.getTransitions())) {
@@ -64,7 +64,7 @@ public class WeightedPreciseTrim extends UnaryWeightedOperation {
                                 min = '\u0021';
                             }
                             if (min <= max) {
-                                p.addTransition(new WeightedTransition(min, max, accept));
+                                p.addTransition(new WeightedTransition(min, max, accept, t.getWeight()));
                             }
                         }
                     }
@@ -83,9 +83,9 @@ public class WeightedPreciseTrim extends UnaryWeightedOperation {
             WeightedState p = pending.first();
             pending.remove(p);
             post.add(p);
-            Set<WeightedState> prevset = s_prev.get(p);
-            if (prevset != null) {
-                for (WeightedState q : prevset) {
+            Set<WeightedState> prevSet = s_prev.get(p);
+            if (prevSet != null) {
+                for (WeightedState q : prevSet) {
                     if (!post.contains(q)) {
                         pending.add(q);
                     }
@@ -115,29 +115,29 @@ public class WeightedPreciseTrim extends UnaryWeightedOperation {
         return pre;
     }
 
-    private void findPrevs(WeightedAutomaton b,
-                           Map<WeightedState, Set<WeightedState>> n_prev,
-                           Map<WeightedState, Set<WeightedState>> s_prev) {
+    private void findPrevious(WeightedAutomaton b,
+                              Map<WeightedState, Set<WeightedState>> n_prev,
+                              Map<WeightedState, Set<WeightedState>> s_prev) {
         for (WeightedState s : b.getStates()) {
             for (WeightedTransition t : s.getTransitions()) {
                 char min = t.getMin();
                 char max = t.getMax();
                 WeightedState dest = t.getDest();
                 if (min <= '\u0020') {
-                    Set<WeightedState> prevset = s_prev.get(dest);
-                    if (prevset == null) {
-                        prevset = new HashSet<>();
-                        s_prev.put(dest, prevset);
+                    Set<WeightedState> prevSet = s_prev.get(dest);
+                    if (prevSet == null) {
+                        prevSet = new HashSet<>();
+                        s_prev.put(dest, prevSet);
                     }
-                    prevset.add(s);
+                    prevSet.add(s);
                 }
                 if (max > '\u0020') {
-                    Set<WeightedState> prevset = n_prev.get(dest);
-                    if (prevset == null) {
-                        prevset = new HashSet<>();
-                        n_prev.put(dest, prevset);
+                    Set<WeightedState> prevSet = n_prev.get(dest);
+                    if (prevSet == null) {
+                        prevSet = new HashSet<>();
+                        n_prev.put(dest, prevSet);
                     }
-                    prevset.add(s);
+                    prevSet.add(s);
                 }
             }
         }

@@ -6,8 +6,11 @@ import logging
 import os
 import sys
 
-# configure logging
 file_name = os.path.basename(__file__).replace('.py', '')
+project_dir = '{0}/../..'.format(os.path.dirname(__file__))
+project_dir = os.path.normpath(project_dir)
+
+# configure logging
 log = logging.getLogger(file_name)
 log.setLevel(logging.ERROR)
 
@@ -22,6 +25,8 @@ log.addHandler(ch)
 
 # initialize special character list
 SPECIAL_CHARS = [u'\b', u'\f', u'\n', u'\r', u'\t', u'\'', u'\"', u'\\\\']
+
+MAX_LENGTH = 0
 
 
 def display_special_char(character):
@@ -97,6 +102,11 @@ def analyze_graph(vertices):
                 # ensure lower case letter in alphabet also
                 if 'a' <= c <= 'z':
                     alphabet.add(ord(c.upper()))
+
+            # check max length
+            if len(value) > MAX_LENGTH:
+                global MAX_LENGTH
+                MAX_LENGTH = len(value)
 
     # log alphabet information
     for sym in alphabet:
@@ -176,7 +186,8 @@ def main(arguments):
         log.debug('Args: {0}'.format(args))
 
     # process graph file
-    with open(args.graph_file, 'r') as graph_file:
+    graph_path = os.path.join(project_dir, 'graphs', args.graph_file)
+    with open(graph_path, 'r') as graph_file:
 
         # load graph file data
         data = json.load(graph_file)
@@ -198,12 +209,13 @@ def main(arguments):
         'vertices': vertices,
         'alphabet': {
             'declaration': declaration,
-            'size': len(alphabet)
+            'size': len(alphabet),
+            'max': MAX_LENGTH
         }
     }
 
     # write out update graph file
-    with open(args.graph_file, 'w') as graph_file:
+    with open(graph_path, 'w') as graph_file:
         json.dump(graph, graph_file)
 
 
