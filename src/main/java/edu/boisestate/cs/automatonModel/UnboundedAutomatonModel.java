@@ -176,8 +176,10 @@ public class UnboundedAutomatonModel
         Automaton notContaining = getAutomatonFromUnboundedModel(notContainingModel);
 
         // if not containing automaton is  empty
-        if (notContaining.isEmpty()) {
+        if (notContaining.isEmpty() || automaton.isEmpty()) {
             return new UnboundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
+        } else if (automaton.isEmptyString()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), alphabet, boundLength);
         }
 
         // get automaton of required chars from not containing automaton
@@ -247,8 +249,10 @@ public class UnboundedAutomatonModel
         Automaton notContaining = getAutomatonFromUnboundedModel(notContainingModel);
 
         // if not containing automaton is  empty
-        if (notContaining.isEmpty()) {
+        if (notContaining.isEmpty() || automaton.isEmpty()) {
             return new UnboundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
+        } else if (automaton.isEmptyString()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), alphabet, boundLength);
         }
 
         // get automaton of required chars from not containing automaton
@@ -347,8 +351,10 @@ public class UnboundedAutomatonModel
         Automaton notContaining = getAutomatonFromUnboundedModel(notContainingModel);
 
         // if not containing automaton is  empty
-        if (notContaining.isEmpty()) {
+        if (notContaining.isEmpty() || automaton.isEmpty()) {
             return new UnboundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
+        } else if (automaton.isEmptyString()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), alphabet, boundLength);
         }
 
         // get automaton of required chars from not containing automaton

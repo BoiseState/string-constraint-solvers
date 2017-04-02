@@ -65,7 +65,7 @@ public class Given_AggregateAutomataModel_When_AssertingNotStartsWith {
                 {"Uniform", "Empty String", 0, uniformModel, emptyStringModel},
                 {"Uniform", "Concrete", 84, uniformModel, concreteModel},
                 {"Uniform", "Uniform", 85, uniformModel, uniformModel},
-                {"Uniform", "Non-uniform", 45, uniformModel, nonUniformModel},
+                {"Uniform", "Non-uniform", 85, uniformModel, nonUniformModel},
                 {"Non-uniform", "Empty", 45, nonUniformModel, emptyModel},
                 {"Non-uniform", "Empty String", 0, nonUniformModel, emptyStringModel},
                 {"Non-uniform", "Concrete", 44, nonUniformModel, concreteModel},

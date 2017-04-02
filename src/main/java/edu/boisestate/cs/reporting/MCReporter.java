@@ -1,5 +1,6 @@
 package edu.boisestate.cs.reporting;
 
+import edu.boisestate.cs.BasicTimer;
 import edu.boisestate.cs.Parser;
 import edu.boisestate.cs.graph.PrintConstraint;
 import edu.boisestate.cs.graph.SymbolicEdge;
@@ -34,6 +35,7 @@ public class MCReporter
         StringBuilder stats = new StringBuilder();
         String actualVal = constraint.getActualVal();
         int base = sourceMap.get("t");
+        long tTime, fTime, inMCTime, tMCTime, fMCTime = 0;
 
         // get id of second symbolic string if it exists
         int arg = -1;
@@ -54,17 +56,20 @@ public class MCReporter
         }
 
         int initialCount = this.modelCountSolver.getModelCount(base);
+        inMCTime = BasicTimer.getRunTime();
 
         // store symbolic string values
         solver.setLast(base, arg);
 
         // test if true branch is SAT
         parser.assertBooleanConstraint(true, constraint);
+        tTime = BasicTimer.getRunTime();
         if (solver.isSatisfiable(base)) {
             trueSat = true;
         }
 
         int trueModelCount = this.modelCountSolver.getModelCount(base);
+        tMCTime = BasicTimer.getRunTime();
 
         // revert symbolic string values
         solver.revertLastPredicate();
@@ -74,11 +79,13 @@ public class MCReporter
 
         // test if false branch is SAT
         parser.assertBooleanConstraint(false, constraint);
+        fTime = BasicTimer.getRunTime();
         if (solver.isSatisfiable(base)) {
             falseSat = true;
         }
 
         int falseModelCount = this.modelCountSolver.getModelCount(base);
+        fMCTime = BasicTimer.getRunTime();
 
         // revert symbolic string values
         solver.revertLastPredicate();
@@ -118,9 +125,11 @@ public class MCReporter
         solver.revertLastPredicate();
 
         // get percentages
-        float truePercent = 100 * (float) trueModelCount / (float) initialCount;
-        float falsePercent =
-                100 * (float) falseModelCount / (float) initialCount;
+//        float truePercent = 100 * (float) trueModelCount / (float) initialCount;
+//        float falsePercent = 100 * (float) falseModelCount / (float) initialCount;
+
+        // get accumulated time
+        long accTime = timerMap.get(base);
 
         // get constraint function name
         String constName = constraint.getSplitValue().split("!!")[0];
@@ -146,18 +155,22 @@ public class MCReporter
         columns.add(String.valueOf(falseSat));
         // disjoint?
         columns.add(String.format("%8s", disjoint));
+        // accumulated time
+        columns.add(String.valueOf(accTime));
         // id of initial model
         columns.add(String.valueOf(base));
         // initial model count
         columns.add(String.valueOf(initialCount));
+        // initial model count time
+        columns.add(String.valueOf(inMCTime));
         // true model count
         columns.add(String.valueOf(trueModelCount));
-        // true model count percent
-        columns.add(String.format("%.1f", truePercent));
+        // true model count time
+        columns.add(String.valueOf(tMCTime));
         // false model count
         columns.add(String.valueOf(falseModelCount));
-        // false model count percent
-        columns.add(String.format("%.1f", falsePercent));
+        // false model count time
+        columns.add(String.valueOf(fMCTime));
         // overlap count
         columns.add(String.valueOf(overlap));
         // previous operations
@@ -181,12 +194,14 @@ public class MCReporter
         headers.add("TSAT");
         headers.add("FSAT");
         headers.add("DISJOINT");
+        headers.add("ACC TIME");
         headers.add("IN ID");
         headers.add("IN COUNT");
+        headers.add("IN TIME");
         headers.add("T COUNT");
-        headers.add("T PER");
+        headers.add("T TIME");
         headers.add("F COUNT");
-        headers.add("F PER");
+        headers.add("F TIME");
         headers.add("OVERLAP");
         headers.add("PREV OPS");
 

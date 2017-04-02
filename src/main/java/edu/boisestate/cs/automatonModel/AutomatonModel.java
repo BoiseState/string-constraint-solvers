@@ -148,16 +148,17 @@ public abstract class AutomatonModel
 
     protected static Automaton getRequiredCharAutomaton(Automaton a, Alphabet alphabet, int boundLength) {
         // if initial state is accepting
-        if (a.getInitialState().isAccept()) {
+        State initialState = a.getInitialState();
+        if (initialState.isAccept() && initialState.getTransitions().isEmpty()) {
             return BasicAutomata.makeEmptyString();
         }
 
         // initialize required char map
         Map<Integer, Character> requiredCharMap = new HashMap<>();
 
-        // initalize state set
+        // initialize state set
         Set<State> states = new TreeSet<>();
-        states.add(a.getInitialState());
+        states.add(initialState);
 
         // walk automaton up to bound length
         int accept = -1;
@@ -172,27 +173,28 @@ public abstract class AutomatonModel
                 // if no transitions
                 if (s.getTransitions().size() != 1) {
                     isSame = false;
-                    break;
+                    continue;
                 }
                 // check if transition destination is an accepting state
-                Transition t = s.getTransitions().iterator().next();
-                newStates.add(t.getDest());
-                if (t.getDest().isAccept()) {
-                    accept = i;
-                }
-                // if transitions allow more than one character at length i
-                if (t.getMin() != t.getMax() ||
-                    (c != Character.MAX_VALUE && c != t.getMin())) {
-                    isSame = false;
-                    break;
-                }
+                for (Transition t : s.getTransitions()) {
+                    newStates.add(t.getDest());
+                    if (t.getDest().isAccept()) {
+                        accept = i;
+                    }
+                    // if transitions allow more than one character at length i
+                    if (t.getMin() != t.getMax() ||
+                        (c != Character.MAX_VALUE && c != t.getMin())) {
+                        isSame = false;
+                        continue;
+                    }
 
-                // set current char to single char from transition
-                c = t.getMin();
+                    // set current char to single char from transition
+                    c = t.getMin();
+                }
             }
 
             // if single char for transition at lenght i
-            if (isSame) {
+            if (isSame && c != Character.MAX_VALUE) {
                 requiredCharMap.put(i, c);
             }
 
@@ -229,7 +231,7 @@ public abstract class AutomatonModel
             s = dest;
         }
 
-        // initalize return automaton and set initial and accepting states
+        // initialize return automaton and set initial and accepting states
         Automaton returnAutomaton = new Automaton();
         returnAutomaton.setInitialState(initial);
         s.setAccept(true);

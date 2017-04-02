@@ -334,6 +334,9 @@ public class WeightedAutomatonModel extends AutomatonModel {
         // if not containing automaton is empty
         if (notContaining.isEmpty()) {
             return this.clone();
+        } else if (this.isEmpty()) {
+            WeightedAutomaton[] a = new WeightedAutomaton[] {BasicWeightedAutomata.makeEmpty()};
+            return new WeightedAutomatonModel(a, this.alphabet, 0);
         }
 
         notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
@@ -402,6 +405,9 @@ public class WeightedAutomatonModel extends AutomatonModel {
         // if not containing automaton is empty
         if (notContaining.isEmpty()) {
             return this.clone();
+        } else if (this.isEmpty()) {
+            WeightedAutomaton[] a = new WeightedAutomaton[] {BasicWeightedAutomata.makeEmpty()};
+            return new WeightedAutomatonModel(a, this.alphabet, 0);
         }
 
         notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
@@ -500,6 +506,9 @@ public class WeightedAutomatonModel extends AutomatonModel {
         // if not containing automaton is empty
         if (notContaining.isEmpty()) {
             return this.clone();
+        } else if (this.isEmpty()) {
+            WeightedAutomaton[] a = new WeightedAutomaton[] {BasicWeightedAutomata.makeEmpty()};
+            return new WeightedAutomatonModel(a, this.alphabet, 0);
         }
 
         notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
@@ -1068,51 +1077,58 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
     protected static WeightedAutomaton getRequiredCharAutomaton(WeightedAutomaton a, Alphabet alphabet, int boundLength) {
         // if initial state is accepting
-        if (a.getInitialState().isAccept()) {
+        WeightedState initialState = a.getInitialState();
+        if (initialState.isAccept() && initialState.getTransitions().isEmpty()) {
             return BasicWeightedAutomata.makeEmptyString();
         }
 
         // initialize required char map
         Map<Integer, Character> requiredCharMap = new HashMap<>();
 
-        // initalize state set
+        // initialize state set
         Set<WeightedState> states = new TreeSet<>();
-        states.add(a.getInitialState());
+        states.add(initialState);
 
         // walk automaton up to bound length
-        boolean accept = false;
-        for (int i = 0; i < boundLength && !accept; i++) {
+        int accept = -1;
+        for (int i = 0; i < boundLength && accept < 0; i++) {
             // initialize flag as true
             boolean isSame = true;
 
             // initialize current char to unused value
             char c = Character.MAX_VALUE;
+            Set<WeightedState> newStates = new TreeSet<>();
             for (WeightedState s : states) {
                 // if no transitions
                 if (s.getTransitions().size() == 0) {
                     isSame = false;
-                    break;
+                    continue;
                 }
                 // check if transition destination is an accepting state
-                WeightedTransition t = s.getTransitions().iterator().next();
-                if (t.getDest().isAccept()) {
-                    accept = true;
-                }
-                // if transitions allow more than one character at length i
-                if (t.getMin() != t.getMax() ||
-                    (c != Character.MAX_VALUE && c != t.getMin())) {
-                    isSame = false;
-                    break;
-                }
+                for (WeightedTransition t : s.getTransitions()) {
+                    newStates.add(t.getDest());
+                    if (t.getDest().isAccept()) {
+                        accept = i;
+                    }
+                    // if transitions allow more than one character at length i
+                    if (t.getMin() != t.getMax() ||
+                        (c != Character.MAX_VALUE && c != t.getMin())) {
+                        isSame = false;
+                        continue;
+                    }
 
-                // set current char to single char from transition
-                c = t.getMin();
+                    // set current char to single char from transition
+                    c = t.getMin();
+                }
             }
 
-            // if single char for transition at lenght i
-            if (isSame) {
+            // if single char for transition at length i
+            if (isSame && c != Character.MAX_VALUE) {
                 requiredCharMap.put(i, c);
             }
+
+            // update state set
+            states = newStates;
         }
 
         // if no required single characters
@@ -1144,7 +1160,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
             s = dest;
         }
 
-        // initalize return automaton and set initial and accepting states
+        // initialize return automaton and set initial and accepting states
         WeightedAutomaton returnAutomaton = new WeightedAutomaton();
         returnAutomaton.setInitialState(initial);
         s.setAccept(true);

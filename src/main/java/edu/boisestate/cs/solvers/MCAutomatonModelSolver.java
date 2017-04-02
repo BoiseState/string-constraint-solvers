@@ -1,5 +1,6 @@
 package edu.boisestate.cs.solvers;
 
+import edu.boisestate.cs.BasicTimer;
 import edu.boisestate.cs.automatonModel.AutomatonModel;
 import edu.boisestate.cs.automatonModel.AutomatonModelManager;
 
@@ -52,8 +53,14 @@ public class MCAutomatonModelSolver
         // get model from id
         AutomatonModel model = this.symbolicStringMap.get(id);
 
+        // start timer
+        BasicTimer.start();
+
         // get model count as big integer
         BigInteger count = model.modelCount();
+
+        // stop timer
+        BasicTimer.stop();
 
         // return model count as integer
         return count.intValue();

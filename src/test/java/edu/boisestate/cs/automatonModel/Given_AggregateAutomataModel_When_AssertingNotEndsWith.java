@@ -54,23 +54,23 @@ public class Given_AggregateAutomataModel_When_AssertingNotEndsWith {
                 {"Empty String", "Empty", 1, emptyStringModel, emptyModel},
                 {"Empty String", "Empty String", 0, emptyStringModel, emptyStringModel},
                 {"Empty String", "Concrete", 1, emptyStringModel, concreteModel},
-                {"Empty String", "Uniform", 0, emptyStringModel, uniformModel},
+                {"Empty String", "Uniform", 1, emptyStringModel, uniformModel},
                 {"Empty String", "Non-uniform", 1, emptyStringModel, nonUniformModel},
                 {"Concrete", "Empty", 1, concreteModel, emptyModel},
                 {"Concrete", "Empty String", 0, concreteModel, emptyStringModel},
                 {"Concrete", "Concrete", 0, concreteModel, concreteModel},
-                {"Concrete", "Uniform", 0, concreteModel, uniformModel},
-                {"Concrete", "Non-uniform", 0, concreteModel, nonUniformModel},
+                {"Concrete", "Uniform", 1, concreteModel, uniformModel},
+                {"Concrete", "Non-uniform", 1, concreteModel, nonUniformModel},
                 {"Uniform", "Empty", 85, uniformModel, emptyModel},
                 {"Uniform", "Empty String", 0, uniformModel, emptyStringModel},
                 {"Uniform", "Concrete", 84, uniformModel, concreteModel},
-                {"Uniform", "Uniform", 0, uniformModel, uniformModel},
-                {"Uniform", "Non-uniform", 40, uniformModel, nonUniformModel},
+                {"Uniform", "Uniform", 85, uniformModel, uniformModel},
+                {"Uniform", "Non-uniform", 85, uniformModel, nonUniformModel},
                 {"Non-uniform", "Empty", 45, nonUniformModel, emptyModel},
                 {"Non-uniform", "Empty String", 0, nonUniformModel, emptyStringModel},
                 {"Non-uniform", "Concrete", 44, nonUniformModel, concreteModel},
-                {"Non-uniform", "Uniform", 0, nonUniformModel, uniformModel},
-                {"Non-uniform", "Non-uniform", 0, nonUniformModel, nonUniformModel}
+                {"Non-uniform", "Uniform", 45, nonUniformModel, uniformModel},
+                {"Non-uniform", "Non-uniform", 45, nonUniformModel, nonUniformModel}
         });
     }
 

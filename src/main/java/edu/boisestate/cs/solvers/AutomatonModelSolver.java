@@ -1,6 +1,7 @@
 package edu.boisestate.cs.solvers;
 
 import edu.boisestate.cs.Alphabet;
+import edu.boisestate.cs.BasicTimer;
 import edu.boisestate.cs.automatonModel.AutomatonModel;
 import edu.boisestate.cs.automatonModel.AutomatonModelManager;
 import edu.boisestate.cs.util.Tuple;
@@ -32,11 +33,17 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
+        // start timer
+        BasicTimer.start();
+
         // get substring model
         AutomatonModel substrModel = argModel.substring(start, end);
 
         // append substring model to base model
         baseModel = baseModel.concatenate(substrModel);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -49,8 +56,14 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
+        // start timer
+        BasicTimer.start();
+
         // perform operation
         baseModel = baseModel.concatenate(argModel);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -66,15 +79,22 @@ public class AutomatonModelSolver
         // true branch
         if (result) {
 
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base model
             baseModel = baseModel.assertContainsOther(argModel);
 
             // get satisfying arg model
             argModel = argModel.assertContainedInOther(baseModel);
 
-        } else { // false branch
+            // stop timer
+            BasicTimer.stop();
 
-            // TODO: False branch with appropriate bound tracking operations
+        } else {
+
+            // start timer
+            BasicTimer.start();
 
             // get satisfying base model as temp
            AutomatonModel tempModel = baseModel.assertNotContainsOther(argModel);
@@ -84,6 +104,9 @@ public class AutomatonModelSolver
 
             // set base model from temp
             baseModel = tempModel;
+
+            // stop timer
+            BasicTimer.stop();
         }
 
         // store result models
@@ -104,8 +127,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform delete
         baseModel = baseModel.delete(start, end);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -120,14 +149,21 @@ public class AutomatonModelSolver
 
         if (result) {
 
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base model
             baseModel = baseModel.assertEndsWith(argModel);
 
             // get satisfying arg model
             argModel = argModel.assertEndsOther(baseModel);
+
+            // stop timer
+            BasicTimer.stop();
         } else {
 
-            // TODO: False branch with appropriate bound tracking operations
+            // start timer
+            BasicTimer.start();
 
             // get satisfying base model as temp
             AutomatonModel tempModel = baseModel.assertNotEndsWith(argModel);
@@ -137,6 +173,9 @@ public class AutomatonModelSolver
 
             // set base model from temp
             baseModel = tempModel;
+
+            // stop timer
+            BasicTimer.stop();
         }
 
         // store result models
@@ -154,14 +193,21 @@ public class AutomatonModelSolver
         // perform equals
         if (result) {
 
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base model
             baseModel = baseModel.assertEquals(argModel);
 
             // get satisfying arg model
             argModel = argModel.assertEquals(baseModel);
+
+            // stop timer
+            BasicTimer.stop();
         } else {
 
-            // TODO: False branch with appropriate bound tracking operations
+            // start timer
+            BasicTimer.start();
 
             // get satisfying base model as temp
             AutomatonModel tempModel = baseModel.assertNotEquals(argModel);
@@ -171,6 +217,9 @@ public class AutomatonModelSolver
 
             // set base model from temp
             baseModel = tempModel;
+
+            // stop timer
+            BasicTimer.stop();
         }
 
         // store result models
@@ -188,14 +237,21 @@ public class AutomatonModelSolver
         // perform equals
         if (result) {
 
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base model
             baseModel = baseModel.assertEqualsIgnoreCase(argModel);
 
             // get satisfying arg model
             argModel = argModel.assertEqualsIgnoreCase(baseModel);
+
+            // stop timer
+            BasicTimer.stop();
         } else {
 
-            // TODO: False branch with appropriate bound tracking operations
+            // start timer
+            BasicTimer.start();
 
             // get satisfying base model as temp
             AutomatonModel tempModel = baseModel.assertNotEqualsIgnoreCase(argModel);
@@ -205,6 +261,9 @@ public class AutomatonModelSolver
 
             // set base model from temp
             baseModel = tempModel;
+
+            // stop timer
+            BasicTimer.stop();
         }
 
         // store result models
@@ -227,8 +286,14 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
+        // start timer
+        BasicTimer.start();
+
         // perform insert
         baseModel = baseModel.insert(offset, argModel);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -246,11 +311,17 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
+        // start timer
+        BasicTimer.start();
+
         // get substring from arg model
         AutomatonModel substrModel = argModel.substring(start, end);
 
         // perform insert
         baseModel = baseModel.insert(offset, substrModel);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -264,13 +335,25 @@ public class AutomatonModelSolver
 
         if (result) {
 
+            // start timer
+            BasicTimer.start();
+
             // get satisfying automaton
             baseModel = baseModel.assertEmpty();
 
+            // stop timer
+            BasicTimer.stop();
+
         } else {
+
+            // start timer
+            BasicTimer.start();
 
             // get satisfying automaton
             baseModel = baseModel.assertNotEmpty();
+
+            // stop timer
+            BasicTimer.stop();
 
         }
 
@@ -355,6 +438,9 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel model = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // clone model
         AutomatonModel clone = model.clone();
 
@@ -368,8 +454,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform replace string operation
         baseModel = baseModel.replaceFindKnown(find);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -382,8 +474,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform replace string operation
         baseModel = baseModel.replace(find, replace);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -396,8 +494,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform replace string operation
         baseModel = baseModel.replaceReplaceKnown(replace);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -409,8 +513,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform replace string operation
         baseModel = baseModel.replaceChar();
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -432,8 +542,14 @@ public class AutomatonModelSolver
         String arg1String = this.concreteStringMap.get(argOne);
         String arg2String = this.concreteStringMap.get(argTwo);
 
+        // start timer
+        BasicTimer.start();
+
         // perform replace string operation
         baseModel = baseModel.replace(arg1String, arg2String);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -445,8 +561,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform operation
         baseModel = baseModel.reverse();
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -459,8 +581,14 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
+        // start timer
+        BasicTimer.start();
+
         // perform set char
         baseModel = baseModel.setCharAt(offset, argModel);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -472,8 +600,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform set length
         baseModel = baseModel.setLength(length);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -493,13 +627,22 @@ public class AutomatonModelSolver
 
         if (result) {
 
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base model
             baseModel = baseModel.assertStartsWith(argModel);
 
             // get satisfying arg model
             argModel = argModel.assertStartsOther(baseModel);
 
+            // stop timer
+            BasicTimer.stop();
+
         } else {
+
+            // start timer
+            BasicTimer.start();
 
             // get satisfying base model as temp
             AutomatonModel tempModel = baseModel.assertNotStartsWith(argModel);
@@ -509,6 +652,9 @@ public class AutomatonModelSolver
 
             // set base model from temp
             baseModel = tempModel;
+
+            // stop timer
+            BasicTimer.stop();
         }
 
         // store result models
@@ -522,8 +668,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform operation
         baseModel = baseModel.suffix(start);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -535,8 +687,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform operation
         baseModel = baseModel.substring(start, end);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -548,8 +706,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform operation
         baseModel = baseModel.toLowercase();
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -561,8 +725,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform operation
         baseModel = baseModel.toUppercase();
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);
@@ -574,8 +744,14 @@ public class AutomatonModelSolver
         // get model
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform operation
         baseModel = baseModel.trim();
+
+        // stop timer
+        BasicTimer.stop();
 
         // store result model
         this.symbolicStringMap.put(id, baseModel);

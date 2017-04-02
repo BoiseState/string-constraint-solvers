@@ -327,6 +327,9 @@ public class AggregateAutomataModel
         // if either automata is  empty
         if (notContaining.isEmpty()) {
             return this.clone();
+        } else if (this.isEmpty()) {
+            Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
+            return new AggregateAutomataModel(a, this.alphabet, 0);
         }
 
         // get automaton of required chars from not containing automaton
@@ -399,6 +402,9 @@ public class AggregateAutomataModel
         // if either automata is  empty
         if (notContaining.isEmpty()) {
             return this.clone();
+        } else if (this.isEmpty()) {
+            Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
+            return new AggregateAutomataModel(a, this.alphabet, 0);
         }
 
         // get automaton of required chars from not containing automaton
@@ -500,6 +506,9 @@ public class AggregateAutomataModel
         // if either automata is  empty
         if (notContaining.isEmpty()) {
             return this.clone();
+        } else if (this.isEmpty()) {
+            Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
+            return new AggregateAutomataModel(a, this.alphabet, 0);
         }
 
         // get automaton of required chars from not containing automaton

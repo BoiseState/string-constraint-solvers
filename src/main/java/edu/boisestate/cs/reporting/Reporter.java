@@ -1,5 +1,6 @@
 package edu.boisestate.cs.reporting;
 
+import edu.boisestate.cs.BasicTimer;
 import edu.boisestate.cs.Parser;
 import edu.boisestate.cs.graph.PrintConstraint;
 import edu.boisestate.cs.graph.PrintConstraintComparator;
@@ -18,6 +19,7 @@ abstract public class Reporter {
     protected final boolean debug;
     protected final ExtendedSolver solver;
     protected final Map<Integer, String[]> operationsMap;
+    protected final Map<Integer, Long> timerMap;
 
     protected Reporter(DirectedGraph<PrintConstraint, SymbolicEdge> graph,
                        Parser parser,
@@ -29,6 +31,7 @@ abstract public class Reporter {
         this.debug = debug;
         this.solver = solver;
         operationsMap = new HashMap<>();
+        timerMap = new HashMap<>();
     }
 
     public void run() {
@@ -137,12 +140,21 @@ abstract public class Reporter {
                 // get previous operations
                 String[] prevOps = this.operationsMap.get(targetId);
 
+                long lastTime = BasicTimer.getRunTime();
+
                 // create ops array for current operation
                 String[] currentOps = Arrays.copyOf(prevOps, prevOps.length + 1);
-                currentOps[currentOps.length - 1] = operation;
+                currentOps[currentOps.length - 1] = operation + "{" + lastTime + "}";
 
                 // add operations to map
                 this.operationsMap.put(constraintId, currentOps);
+
+                // get previous time
+                long prevTime = timerMap.get(targetId);
+
+                // add operation time to map
+                long currTime =  + prevTime;
+                timerMap.put(constraintId, currTime);
             }
         }
 
