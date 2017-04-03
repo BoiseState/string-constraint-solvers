@@ -304,7 +304,8 @@ final public class ShuffleOperations {
         }
         WeightedTransition[][] a_transitions =
                 WeightedAutomaton.getSortedTransitions(a.getStates());
-        WeightedTransitionComparator tc = new WeightedTransitionComparator(false);
+        WeightedTransitionComparator
+                tc = new WeightedTransitionComparator(false);
         ShuffleConfiguration init = new ShuffleConfiguration(ca, a);
         LinkedList<ShuffleConfiguration> pending =
                 new LinkedList<ShuffleConfiguration>();

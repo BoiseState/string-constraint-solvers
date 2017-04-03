@@ -2,26 +2,76 @@ package edu.boisestate.cs.util;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
-import dk.brics.string.stringoperations.Trim;
 import edu.boisestate.cs.Alphabet;
-import edu.boisestate.cs.automaton.*;
-import edu.boisestate.cs.automatonModel.operations.PreciseDelete;
+import edu.boisestate.cs.automaton.WeightedAutomaton;
+import edu.boisestate.cs.automaton.WeightedState;
+import edu.boisestate.cs.automaton.WeightedTransition;
 import edu.boisestate.cs.automatonModel.operations.PreciseTrim;
-import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
-import edu.boisestate.cs.automatonModel.operations.weighted
-        .WeightedPreciseDelete;
 
-import java.math.BigInteger;
 import java.util.*;
 
 public class Testing {
 
     public static void main(String[] args) {
-//        automatonTesting();
+        automatonTesting();
+//        automatonOperationTesting();
 //        stringTesting();
-        String e1 = "";
-        String e2 = "";
-        System.out.printf("!contains: %b", !e1.contains(e2));
+    }
+
+    private static void automatonTesting() {
+
+        Alphabet alphabet = new Alphabet("A-D");
+
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+
+        // set accept state
+        q0.setAccept(true);
+        q1.setAccept(true);
+        q2.setAccept(true);
+        q3.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', q1, 1));
+        q0.addTransition(new WeightedTransition('A', 'B', q1, 1));
+        q0.addTransition(new WeightedTransition('A', 'C', q1, 1));
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
+        q0.addTransition(new WeightedTransition('B', q1, 1));
+        q0.addTransition(new WeightedTransition('C', q1, 1));
+        q0.addTransition(new WeightedTransition('D', q1, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('C', q2, 1));
+        q2.addTransition(new WeightedTransition('A', 'D', q3, 1));
+        q2.addTransition(new WeightedTransition('A', q3, 1));
+        q2.addTransition(new WeightedTransition('D', q3, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        for (WeightedTransition t : q0.getSortedTransitions(true)) {
+            if (t.getMin() == t.getMax()) {
+                System.out.printf("('%c', %d) -> %d\n",
+                                  t.getMin(),
+                                  t.getWeight(),
+                                  t.getDest().getNumber());
+            } else {
+                System.out.printf("('%c'-'%c', %d) -> %d\n",
+                                  t.getMin(),
+                                  t.getMax(),
+                                  t.getWeight(),
+                                  t.getDest().getNumber());
+            }
+        }
+
+        DotToGraph.outputDotFileAndPng(automaton.toDot(), "before");
+
+        automaton.reduce();
+
+        DotToGraph.outputDotFileAndPng(automaton.toDot(), "after");
     }
 
     private static void stringTesting() {
@@ -105,7 +155,7 @@ public class Testing {
         }
     }
 
-    private static void automatonTesting() {
+    private static void automatonOperationTesting() {
 
         int boundingLength = 3;
         Automaton anyChar = BasicAutomata.makeCharSet(" ABCD");

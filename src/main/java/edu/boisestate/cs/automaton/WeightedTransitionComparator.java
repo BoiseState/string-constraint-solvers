@@ -38,14 +38,14 @@ class WeightedTransitionComparator
 	static final long serialVersionUID = 10001;
 
 	private boolean to_first;
-	
+
 	WeightedTransitionComparator(boolean to_first) {
 		this.to_first = to_first;
 	}
-	
-	/** 
+
+	/**
 	 * Compares by (min, reverse max, to, weight) or
-	 * (to, min, reverse max, weight).
+	 * (to, min, max, weight).
 	 */
 	public int compare(WeightedTransition t1, WeightedTransition t2) {
 		if (to_first) {
@@ -57,19 +57,15 @@ class WeightedTransitionComparator
 
 		if (t1.getMin() < t2.getMin()) {
 			return -1;
-		}
-
-		if (t1.getMin() > t2.getMin()) {
+		} else if (t1.getMin() > t2.getMin()) {
 			return 1;
 		}
 
-		if (t1.getMax() > t2.getMax()) {
-			return -1;
-		}
-
-		if (t1.getMax() < t2.getMax()) {
-			return 1;
-		}
+        if (t1.getMax() < t2.getMax()) {
+		    return 1;
+        } else if (t1.getMax() < t2.getMax()) {
+            return -1;
+        }
 
 		if (!to_first) {
 			int diff = compareTo(t1, t2);
@@ -80,9 +76,7 @@ class WeightedTransitionComparator
 
 		if (t1.getWeight() < t2.getWeight()) {
 			return -1;
-		}
-
-		if (t1.getWeight() > t2.getWeight()) {
+		} else if (t1.getWeight() > t2.getWeight()) {
 			return 1;
 		}
 

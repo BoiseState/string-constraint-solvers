@@ -941,6 +941,77 @@ public class WeightedAutomaton
         return SpecialWeightedOperations.projectChars(this, chars);
     }
 
+//    /**
+//     * Reduces this automaton. An automaton is "reduced" by combining
+//     * overlapping and adjacent edge intervals with same destination.
+//     */
+//    public void reduce() {
+//        if (isSingleton()) {
+//            return;
+//        }
+//        Set<WeightedState> states = getStates();
+//        setStateNumbers(states);
+//        for (WeightedState s : states) {
+//            List<WeightedTransition> st = s.getSortedTransitions(true);
+//            SortedMap<Character, Integer> rangeWeights = new TreeMap<>();
+//            s.resetTransitions();
+//            WeightedState p = null;
+//            int min = -1, max = -1, weight = -1;
+//            for (WeightedTransition t : st) {
+//                if (p == t.getDest()) {
+//                    if (min == t.getMin()) {
+//                        rangeWeights.put(t.getMax(), weight);
+//                        weight += t.getWeight();
+//                    }
+//                    // range does not overlap
+//                    else if (max < t.getMin()) {
+//                        for (Map.Entry<Character, Integer> entry : rangeWeights.entrySet()) {
+//                            s.addTransition(new WeightedTransition((char) min, entry.getKey(), p, entry.getValue()));
+//                        }
+//                        rangeWeights.clear();
+//                        min = t.getMin();
+//                        max = t.getMax();
+//                        weight = t.getWeight();
+//                    }
+//                    // range does overlap
+//                    else {
+//                        LinkedList<Character> keys = new LinkedList<>(rangeWeights.keySet());
+//                        char c = keys.removeFirst();
+//                        while (!keys.isEmpty() && c < t.getMin()) {
+//                            s.addTransition(new WeightedTransition((char) min, c, p, rangeWeights.get(c)));
+//                            rangeWeights.remove(c);
+//                            c = keys.removeFirst();
+//                        }
+//                        min = t.getMin();
+//                        weight = rangeWeights.get(c);
+//                        for (int i = min; i <= t.getMax(); i++) {
+//                            int tempWeight = rangeWeights.get((char)i);
+//                            rangeWeights.put((char)i, tempWeight + t.getWeight());
+//                        }
+//                    }
+//                } else {
+//                    if (p != null) {
+//                        for (Map.Entry<Character, Integer> entry : rangeWeights.entrySet()) {
+//                            s.addTransition(new WeightedTransition((char) min, entry.getKey(), p, entry.getValue()));
+//                        }
+//                        rangeWeights.clear();
+//                    }
+//                    p = t.getDest();
+//                    min = t.getMin();
+//                    max = t.getMax();
+//                    weight = t.getWeight();
+//                    rangeWeights.put(t.getMax(), weight);
+//                }
+//            }
+//            if (p != null) {
+//                for (Map.Entry<Character, Integer> entry : rangeWeights.entrySet()) {
+//                    s.addTransition(new WeightedTransition((char) min, entry.getKey(), p, entry.getValue()));
+//                }
+//            }
+//        }
+//        clearHashCode();
+//    }
+
     /**
      * Reduces this automaton. An automaton is "reduced" by combining
      * overlapping and adjacent edge intervals with same destination.
@@ -954,39 +1025,55 @@ public class WeightedAutomaton
         for (WeightedState s : states) {
             List<WeightedTransition> st = s.getSortedTransitions(true);
             s.resetTransitions();
+            SortedMap<Character, Integer> charMap = new TreeMap<>();
             WeightedState p = null;
-            int min = -1, max = -1, weight = -1;
             for (WeightedTransition t : st) {
-                if (p == t.getDest() && weight == t.getWeight()) {
-                    if (t.getMin() <= max + 1) {
-                        if (t.getMax() > max) {
-                            max = t.getMax();
-                        }
-                    } else {
-                        if (p != null) {
-                            s.getTransitions()
-                             .add(new WeightedTransition((char) min, (char) max, p, weight));
-                        }
-                        min = t.getMin();
-                        max = t.getMax();
-                    }
-                } else {
+                if (p != t.getDest()) {
                     if (p != null) {
-                        s.getTransitions()
-                         .add(new WeightedTransition((char) min, (char) max, p, weight));
+                        addReducedTransitions(s, charMap, p);
+                        charMap.clear();
                     }
                     p = t.getDest();
-                    min = t.getMin();
-                    max = t.getMax();
-                    weight = t.getWeight();
+                }
+                // store char weights in map
+                for (int i = t.getMin(); i <= t.getMax(); i++) {
+                    int charWeight = t.getWeight();
+                    char c = (char)i;
+                    if (charMap.containsKey(c)) {
+                        charWeight += charMap.get(c);
+                    }
+                    charMap.put(c, charWeight);
                 }
             }
             if (p != null) {
-                s.getTransitions()
-                 .add(new WeightedTransition((char) min, (char) max, p, weight));
+                addReducedTransitions(s, charMap, p);
             }
         }
         clearHashCode();
+    }
+
+    private static void addReducedTransitions(WeightedState s,
+                                              SortedMap<Character, Integer> charMap,
+                                              WeightedState p) {
+        int min = -1;
+        int max = -1;
+        int weight = 0;
+        for (Map.Entry<Character, Integer> entry: charMap.entrySet()) {
+            if (min == -1) {
+                min = entry.getKey();
+                max = entry.getKey();
+                weight = entry.getValue();
+            } else if ((max + 1) == entry.getKey() &&
+                       weight == entry.getValue()) {
+                max = entry.getKey();
+            } else {
+                s.addTransition(new WeightedTransition((char)min, (char)max, p, weight));
+                min = entry.getKey();
+                max = entry.getKey();
+                weight = entry.getValue();
+            }
+        }
+        s.addTransition(new WeightedTransition((char)min, (char)max, p, weight));
     }
 
     /**

@@ -37,7 +37,7 @@ public class Given_WeightedReplaceCharReplaceKnown_For_WeightedAutomata {
 
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.replace(?, '{3}') -> Expected MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton>.replace(?, {3}) -> Expected MC = {1}")
     public static Iterable<Object[]> data() {
 
         // initialize alphabet and initial bound length

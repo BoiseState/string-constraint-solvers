@@ -33,7 +33,6 @@ public class WeightedReplaceCharReplaceKnown
         }
         b.setDeterministic(false);
         b.reduce();
-        b.minimize();
         return b;
     }
 }

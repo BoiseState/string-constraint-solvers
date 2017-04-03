@@ -39,7 +39,7 @@ public class Given_WeightedReplaceChar_For_WeightedAutomata {
 
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton>.replace('{3}', '{4}') -> Expected MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton>.replace({3}, {4}) -> Expected MC = {1}")
     public static Iterable<Object[]> data() {
 
         // initialize alphabet and initial bound length
@@ -119,22 +119,22 @@ public class Given_WeightedReplaceChar_For_WeightedAutomata {
                 {"Uniform", 85, uniform, 'D', 'B'},
                 {"Uniform", 85, uniform, 'D', 'C'},
                 {"Uniform", 85, uniform, 'D', 'D'},
-                {"Non-uniform", 45, nonUniform, 'A', 'A'},
-                {"Non-uniform", 45, nonUniform, 'A', 'B'},
-                {"Non-uniform", 45, nonUniform, 'A', 'C'},
-                {"Non-uniform", 45, nonUniform, 'A', 'D'},
-                {"Non-uniform", 45, nonUniform, 'B', 'A'},
-                {"Non-uniform", 45, nonUniform, 'B', 'B'},
-                {"Non-uniform", 45, nonUniform, 'B', 'C'},
-                {"Non-uniform", 45, nonUniform, 'B', 'D'},
-                {"Non-uniform", 45, nonUniform, 'C', 'A'},
-                {"Non-uniform", 45, nonUniform, 'C', 'B'},
-                {"Non-uniform", 45, nonUniform, 'C', 'C'},
-                {"Non-uniform", 45, nonUniform, 'C', 'D'},
-                {"Non-uniform", 45, nonUniform, 'D', 'A'},
-                {"Non-uniform", 45, nonUniform, 'D', 'B'},
-                {"Non-uniform", 45, nonUniform, 'D', 'C'},
-                {"Non-uniform", 45, nonUniform, 'D', 'D'}
+                {"Non-Uniform", 45, nonUniform, 'A', 'A'},
+                {"Non-Uniform", 45, nonUniform, 'A', 'B'},
+                {"Non-Uniform", 45, nonUniform, 'A', 'C'},
+                {"Non-Uniform", 45, nonUniform, 'A', 'D'},
+                {"Non-Uniform", 45, nonUniform, 'B', 'A'},
+                {"Non-Uniform", 45, nonUniform, 'B', 'B'},
+                {"Non-Uniform", 45, nonUniform, 'B', 'C'},
+                {"Non-Uniform", 45, nonUniform, 'B', 'D'},
+                {"Non-Uniform", 45, nonUniform, 'C', 'A'},
+                {"Non-Uniform", 45, nonUniform, 'C', 'B'},
+                {"Non-Uniform", 45, nonUniform, 'C', 'C'},
+                {"Non-Uniform", 45, nonUniform, 'C', 'D'},
+                {"Non-Uniform", 45, nonUniform, 'D', 'A'},
+                {"Non-Uniform", 45, nonUniform, 'D', 'B'},
+                {"Non-Uniform", 45, nonUniform, 'D', 'C'},
+                {"Non-Uniform", 45, nonUniform, 'D', 'D'}
         });
     }
 

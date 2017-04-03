@@ -358,6 +358,39 @@ public class WeightedAutomatonOperationTestUtilities {
     }
 
     @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton reduceTestAutomaton() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+        WeightedState q1 = new WeightedState();
+        WeightedState q2 = new WeightedState();
+        WeightedState q3 = new WeightedState();
+
+        // set accept state
+        q0.setAccept(true);
+        q1.setAccept(true);
+        q2.setAccept(true);
+        q3.setAccept(true);
+
+        // add transitions
+        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
+        q0.addTransition(new WeightedTransition('A', q1, 1));
+        q0.addTransition(new WeightedTransition('B', q1, 1));
+        q1.addTransition(new WeightedTransition('A', 'D', q2, 1));
+        q1.addTransition(new WeightedTransition('A', q2, 1));
+        q1.addTransition(new WeightedTransition('C', q2, 1));
+        q2.addTransition(new WeightedTransition('A', 'D', q3, 1));
+        q2.addTransition(new WeightedTransition('A', q3, 1));
+        q2.addTransition(new WeightedTransition('D', q3, 1));
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+
+        // return automaton
+        return automaton;
+    }
+
+    @SuppressWarnings("Duplicates")
     public static WeightedAutomaton unionedUniform1() {
         // crete states
         WeightedState q0 = new WeightedState();

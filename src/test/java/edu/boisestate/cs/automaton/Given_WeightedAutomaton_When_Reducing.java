@@ -60,6 +60,7 @@ public class Given_WeightedAutomaton_When_Reducing {
         WeightedAutomaton unbalancedNonUniform2 = unbalanced_NonUniform_WeightedAutomaton_2();
         WeightedAutomaton nonUniformDelete01 = nonUniform_delete_01();
         WeightedAutomaton nonUniformDelete12 = nonUniform_delete_12();
+        WeightedAutomaton reduceTestAutomaton = reduceTestAutomaton();
 
 
         // index 1 is the bounding length (-1) for none
@@ -76,7 +77,8 @@ public class Given_WeightedAutomaton_When_Reducing {
                 {"Unbalanced Non-Uniform 1", 37, unbalancedNonUniform1},
                 {"Unbalanced Non-Uniform 2", 37, unbalancedNonUniform2},
                 {"Non-Uniform delete(0,1)", 37, nonUniformDelete01},
-                {"Non-Uniform delete(1,2)", 37, nonUniformDelete12}
+                {"Non-Uniform delete(1,2)", 37, nonUniformDelete12},
+                {"Uniform reduce test", 259, reduceTestAutomaton}
         });
     }
 

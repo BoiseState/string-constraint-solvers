@@ -1,6 +1,7 @@
 package edu.boisestate.cs.automatonModel.operations.weighted;
 
 import edu.boisestate.cs.automaton.WeightedAutomaton;
+import edu.boisestate.cs.automaton.WeightedMinimizationOperations;
 import edu.boisestate.cs.automaton.WeightedState;
 import edu.boisestate.cs.automaton.WeightedTransition;
 
@@ -41,7 +42,7 @@ public class WeightedReplaceChar
         }
         b.setDeterministic(false);
         b.reduce();
-        b.minimize();
+//        WeightedMinimizationOperations.minimizeBrzozowski(b);
         return b;
     }
 

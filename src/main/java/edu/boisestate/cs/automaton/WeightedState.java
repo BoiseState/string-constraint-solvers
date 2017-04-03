@@ -166,7 +166,7 @@ public class WeightedState
 	}
 	
 	/** Returns transitions sorted by (min, reverse max, to, weight) or
-	 *  (to, min, reverse max, weight) */
+	 *  (to, min, max, weight) */
 	WeightedTransition[] getSortedTransitionArray(boolean to_first) {
 		WeightedTransition[] e = transitions.toArray(new WeightedTransition[transitions.size()]);
 		Arrays.sort(e, new WeightedTransitionComparator(to_first));
@@ -175,7 +175,7 @@ public class WeightedState
 	
 	/**
 	 * Returns sorted list of outgoing transitions.
-	 * @param to_first if true, order by (to, min, reverse max); otherwise (min, reverse max, to)
+	 * @param to_first if true, order by (to, min, max, weight); otherwise (min, reverse max, to, weight)
 	 * @return transition list
 	 */
 	public List<WeightedTransition> getSortedTransitions(boolean to_first)	{
