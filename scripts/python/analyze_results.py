@@ -374,7 +374,7 @@ def produce_output_data(data_map, solvers, f_name):
         # initialize row
         row = dict()
         # add operation
-        row['Operation'] = data_map.get('concrete').get(op_id).get('PREV OPS')
+        row['Operation'] = data_map.get('unbounded').get(op_id).get('PREV OPS')
         row['Id'] = op_id
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)

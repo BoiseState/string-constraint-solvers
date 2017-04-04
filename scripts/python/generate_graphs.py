@@ -125,6 +125,7 @@ class Settings:
         self.max_initial_length = int(options.length)
         self.op_counter = 0
         self.op_total = 1
+        self.operations = options.operations
 
         # set debug
         self.debug = options.debug
@@ -149,6 +150,7 @@ class Settings:
         self.single_graph = False
         if options.single_graph:
             self.single_graph = True
+
 
     def get_ops_total(self):
         for i in range(0, self.depth + 2):
@@ -177,14 +179,16 @@ def add_append_substring_operations(ops):
 
 def add_append_operations(ops):
     # sb.append(string)
-    for c in settings.alphabet:
+    # args = settings.alphabet
+    args = sorted(settings.alphabet)[:2]
+    for c in args:
         ops.append(OperationValue('append!!Ljava/lang/String;', [c]))
 
 
 def add_concat_operations(ops):
     # sb.concat(string)
     # args = settings.alphabet
-    args = sorted(settings.alphabet)[:1]
+    args = sorted(settings.alphabet)[:2]
     for c in args:
         ops.append(OperationValue('concat!!Ljava/lang/String;', [c]))
 
@@ -246,9 +250,11 @@ def add_insert_substring_operations(ops):
 
 def add_replace_char_operations(ops):
     # s.replace(old, new)
-    for c1 in settings.alphabet:
-        for c2 in settings.alphabet:
-            if c1 != c2:
+    # args = settings.alphabet
+    args = sorted(settings.alphabet)[:2]
+    for c1 in args:
+        for c2 in args:
+            # if c1 != c2:
                 ops.append(OperationValue('replace!!CC', [c1, c2]))
 
 
@@ -418,25 +424,44 @@ def get_operations():
     # initialize operations list
     ops_list = list()
 
-    # Operations
-    # add_append_substring_operations(ops_list)
-    # add_append_operations(ops_list)
-    add_concat_operations(ops_list)
-    # add_delete_char_at_operations(ops_list)
-    # add_delete_operations(ops_list)
-    # add_insert_char_operations(ops_list)
-    # add_insert_string_operations(ops_list)
-    # add_insert_substring_operations(ops_list)
-    # add_replace_char_operations(ops_list)
-    # add_replace_string_operations(ops_list)
-    # add_replace_regex_string_operations(ops_list)
-    # add_replace_substring_operations(ops_list)
-    # add_reverse_operations(ops_list)
-    # add_substring_operations(ops_list)
-    # add_to_lower_case_operations(ops_list)
-    # add_to_string_operations(ops_list)
-    # add_to_upper_case_operations(ops_list)
-    # add_trim_operations(ops_list)
+    # === Operations ===
+    # appendSubstring
+    if 'append-substring' in settings.operations:
+        add_append_substring_operations(ops_list)
+    if 'append' in settings.operations:
+        add_append_operations(ops_list)
+    if 'concat' in settings.operations:
+        add_concat_operations(ops_list)
+    if 'delete-char-at' in settings.operations:
+        add_delete_char_at_operations(ops_list)
+    if 'delete' in settings.operations:
+        add_delete_operations(ops_list)
+    if 'insert-char' in settings.operations:
+        add_insert_char_operations(ops_list)
+    if 'insert-string' in settings.operations:
+        add_insert_string_operations(ops_list)
+    if 'insert-substring' in settings.operations:
+        add_insert_substring_operations(ops_list)
+    if 'replace-char' in settings.operations:
+        add_replace_char_operations(ops_list)
+    if 'replace-string' in settings.operations:
+        add_replace_string_operations(ops_list)
+    if 'replace-regex-string' in settings.operations:
+        add_replace_regex_string_operations(ops_list)
+    if 'replace-substring' in settings.operations:
+        add_replace_substring_operations(ops_list)
+    if 'reverse' in settings.operations:
+        add_reverse_operations(ops_list)
+    if 'substring' in settings.operations:
+        add_substring_operations(ops_list)
+    if 'to-lower-case' in settings.operations:
+        add_to_lower_case_operations(ops_list)
+    if 'to-string' in settings.operations:
+        add_to_string_operations(ops_list)
+    if 'to-upper-case' in settings.operations:
+        add_to_upper_case_operations(ops_list)
+    if 'trim' in settings.operations:
+        add_trim_operations(ops_list)
 
     # set global operations from ops_list
     global operations
@@ -455,15 +480,24 @@ def get_boolean_constraints():
     constraints_list = list()
 
     # add boolean constraint instances
-    add_contains_predicates(constraints_list)
-    # add_ends_with_predicates(constraints_list)
-    add_equals_predicates(constraints_list)
-    # add_equals_ignore_case_predicates(constraints_list)
-    # add_is_empty_predicates(constraints_list)
-    # add_matches_predicates(constraints_list)
-    # add_region_matches_predicates(constraints_list)
-    # add_starts_with_predicates(constraints_list)
-    # add_starts_with_offset_predicates(constraints_list)
+    if 'contains' in settings.operations:
+        add_contains_predicates(constraints_list)
+    if 'ends-with' in settings.operations:
+        add_ends_with_predicates(constraints_list)
+    if 'equals' in settings.operations:
+        add_equals_predicates(constraints_list)
+    if 'equals-ignore-case' in settings.operations:
+        add_equals_ignore_case_predicates(constraints_list)
+    if 'is-empty' in settings.operations:
+        add_is_empty_predicates(constraints_list)
+    if 'matches' in settings.operations:
+        add_matches_predicates(constraints_list)
+    if 'region-matches' in settings.operations:
+        add_region_matches_predicates(constraints_list)
+    if 'starts-with' in settings.operations:
+        add_starts_with_predicates(constraints_list)
+    if 'starts-with-offset' in settings.operations:
+        add_starts_with_offset_predicates(constraints_list)
 
     # set global operations from ops_list
     global boolean_constraints
@@ -1103,7 +1137,7 @@ def get_options(arguments):
 
     generate_parser.add_argument('-i',
                                  '--inputs',
-                                 nargs='*',
+                                 nargs='+',
                                  default=list(),
                                  help='List of input strings to use to '
                                       'generate '
@@ -1126,6 +1160,43 @@ def get_options(arguments):
                                  action='store_true')
 
     generate_parser.add_argument('-o',
+                                 '--operations',
+                                 nargs='+',
+                                 default=list(),
+                                 help='List of operations and predicates to '
+                                      'use in the generation of the graph. The'
+                                      ' available string operations are:\n'
+                                      '\t- append-substring\n'
+                                      '\t- append\n'
+                                      '\t- concat\n'
+                                      '\t- delete-char-at\n'
+                                      '\t- delete\n'
+                                      '\t- insert-char\n'
+                                      '\t- insert-string\n'
+                                      '\t- insert-substring\n'
+                                      '\t- replace-char\n'
+                                      '\t- replace-string\n'
+                                      '\t- replace-regex-string\n'
+                                      '\t- replace-substring\n'
+                                      '\t- reverse\n'
+                                      '\t- substring\n'
+                                      '\t- to-lower-case\n'
+                                      '\t- to-string\n'
+                                      '\t- to-upper-case\n'
+                                      '\t- trim\n'
+                                      'The available string predicates are:\n'
+                                      '\t- contains\n'
+                                      '\t- ends-with\n'
+                                      '\t- equals\n'
+                                      '\t- equals-ignore-case\n'
+                                      '\t- is-empty\n'
+                                      '\t- matches\n'
+                                      '\t- region-matches\n'
+                                      '\t- starts-with\n'
+                                      '\t- starts-with-offset'
+                                 )
+
+    generate_parser.add_argument('-p',
                                  '--ops-depth',
                                  default=1,
                                  help='The maximum number of operations that '

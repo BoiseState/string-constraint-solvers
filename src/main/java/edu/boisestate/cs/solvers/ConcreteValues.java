@@ -295,6 +295,7 @@ public class ConcreteValues {
                                   results);
     }
 
+    @SuppressWarnings("Duplicates")
     public ConcreteValues assertNotContainedInEnding(ConcreteValues
                                                              containing) {
         // initialize result list
@@ -302,17 +303,22 @@ public class ConcreteValues {
 
         // for each suffix in values
         for (String suffix : this.values) {
-
+            // initialize flag
+            boolean flag = true;
             // for each possible string
             for (String string : containing.values) {
-                // if the string does not end with the suffix
-                if (!string.endsWith(suffix)) {
-                    // add suffix to result list
-                    results.add(suffix);
+                // if the string does end with the suffix
+                if (string.endsWith(suffix)) {
+                    // unset flag
+                    flag = false;
 
                     // no need to keep iterating, break the loop
                     break;
                 }
+            }
+            // if all containing values do not have the suffix
+            if (flag) {
+                results.add(suffix);
             }
         }
 
@@ -328,17 +334,22 @@ public class ConcreteValues {
 
         // for each substring in values
         for (String substr : this.values) {
-
+            // initialize flag
+            boolean flag = true;
             // for each possible string
             for (String string : containing.values) {
-                // if the string does not contain the substring
+                // if the string does contain the substring
                 if (!string.contains(substr)) {
-                    // add substring to result list
-                    results.add(substr);
+                    // unset flag
+                    flag = false;
 
                     // no need to keep iterating, break the loop
                     break;
                 }
+            }
+            // if all containing values do not contain the substring
+            if (flag) {
+                results.add(substr);
             }
         }
 
@@ -348,23 +359,29 @@ public class ConcreteValues {
                                   results);
     }
 
+    @SuppressWarnings("Duplicates")
     public ConcreteValues assertNotContainedInStart(ConcreteValues containing) {
         // initialize result list
         List<String> results = new ArrayList<>();
 
         // for each prefix in values
         for (String prefix : this.values) {
-
+            // initialize flag
+            boolean flag = true;
             // for each possible string
             for (String string : containing.values) {
-                // if the string does not start with the prefix
-                if (!string.startsWith(prefix)) {
-                    // add prefix to result list
-                    results.add(prefix);
+                // if the string does start with the prefix
+                if (string.startsWith(prefix)) {
+                    // unset flag
+                    flag = false;
 
                     // no need to keep iterating, break the loop
                     break;
                 }
+            }
+            // if all containing values do not have the prefix
+            if (flag) {
+                results.add(prefix);
             }
         }
 
@@ -380,17 +397,22 @@ public class ConcreteValues {
 
         // for each string in values
         for (String string : this.values) {
-
+            // initialize flag
+            boolean flag = true;
             // for each possible substring
             for (String substr : substring.values) {
-                // if the string does not contain the substring
-                if (!string.contains(substr)) {
-                    // add string to result list
-                    results.add(string);
+                // if the string does contain the substring
+                if (string.contains(substr)) {
+                    // unset flag
+                    flag = false;
 
                     // no need to keep iterating, break the loop
                     break;
                 }
+            }
+            // if all containing values do not have the suffix
+            if (flag) {
+                results.add(string);
             }
         }
 
@@ -400,23 +422,29 @@ public class ConcreteValues {
                                   results);
     }
 
+    @SuppressWarnings("Duplicates")
     public ConcreteValues assertNotEndsWith(ConcreteValues suffix) {
         // initialize result list
         List<String> results = new ArrayList<>();
 
         // for each string in values
         for (String string : this.values) {
-
+            // initialize flag
+            boolean flag = true;
             // for each possible suffix
             for (String suf : suffix.values) {
-                // if the string does not end with the suffix
-                if (!string.endsWith(suf)) {
-                    // add string to result list
-                    results.add(string);
+                // if the string does end with the suffix
+                if (string.endsWith(suf)) {
+                    // unset flag
+                    flag = false;
 
                     // no need to keep iterating, break the loop
                     break;
                 }
+            }
+            // if all containing values do not have the suffix
+            if (flag) {
+                results.add(string);
             }
         }
 
@@ -432,17 +460,22 @@ public class ConcreteValues {
 
         // for each string in values
         for (String string : this.values) {
-
+            // initialize flag
+            boolean flag = true;
             // for each possible other string
             for (String otherString : other.values) {
-                // if the string does not equal the other
-                if (!string.equals(otherString)) {
-                    // add string to result list
-                    results.add(string);
+                // if the string does equal the other
+                if (string.equals(otherString)) {
+                    // unset flag
+                    flag = false;
 
                     // no need to keep iterating, break the loop
                     break;
                 }
+            }
+            // if all containing values do not have the suffix
+            if (flag) {
+                results.add(string);
             }
         }
 
@@ -458,17 +491,22 @@ public class ConcreteValues {
 
         // for each string in values
         for (String string : this.values) {
-
+            // initialize flag
+            boolean flag = true;
             // for each possible other string
             for (String otherString : other.values) {
-                // if the string does not equal the other ignoring case
-                if (!string.equalsIgnoreCase(otherString)) {
-                    // add string to result list
-                    results.add(string);
+                // if the string does equal the other ignoring case
+                if (string.equalsIgnoreCase(otherString)) {
+                    // unset flag
+                    flag = false;
 
                     // no need to keep iterating, break the loop
                     break;
                 }
+            }
+            // if all containing values do not have the suffix
+            if (flag) {
+                results.add(string);
             }
         }
 
@@ -484,7 +522,6 @@ public class ConcreteValues {
 
         // for each string in values
         for (String string : this.values) {
-
             // if string is empty
             if (!string.isEmpty()) {
                 // add string to results
@@ -498,23 +535,29 @@ public class ConcreteValues {
                                   results);
     }
 
+    @SuppressWarnings("Duplicates")
     public ConcreteValues assertNotStartsWith(ConcreteValues prefix) {
         // initialize result list
         List<String> results = new ArrayList<>();
 
         // for each string in values
         for (String string : this.values) {
-
+            // initialize flag
+            boolean flag = true;
             // for each possible prefix
             for (String pre : prefix.values) {
-                // if the string does not start with the prefix
-                if (!string.startsWith(pre)) {
-                    // add string to result list
-                    results.add(string);
+                // if the string does start with the prefix
+                if (string.startsWith(pre)) {
+                    // unset flag
+                    flag = false;
 
                     // no need to keep iterating, break the loop
                     break;
                 }
+            }
+            // if all containing values do not have the suffix
+            if (flag) {
+                results.add(string);
             }
         }
 

@@ -6,6 +6,7 @@ import edu.boisestate.cs.BasicTimer;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 
 public class StaticConcreteSolver
@@ -412,7 +413,7 @@ public class StaticConcreteSolver
         ConcreteValues values = symbolicStringMap.get(id);
 
         // satisfiable if string values list is not null and only one string
-        return values != null && values.getValues().size() == 1;
+        return values != null && new TreeSet<>(values.getValues()).size() == 1;
     }
 
     @Override
