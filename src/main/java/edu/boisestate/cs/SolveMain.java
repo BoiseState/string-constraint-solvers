@@ -15,6 +15,7 @@ import edu.boisestate.cs.reporting.MCReporter;
 import edu.boisestate.cs.reporting.Reporter;
 import edu.boisestate.cs.reporting.SATReporter;
 import edu.boisestate.cs.solvers.*;
+import edu.boisestate.cs.util.LambdaVoid1;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
@@ -97,7 +98,18 @@ public class SolveMain {
 
     }
 
-    private static void loadGraph(Components components, Settings settings) {
+    private static void loadGraph(Components components, final Settings settings) {
+        // store graph as component
+        LambdaVoid1<String> setMinAlphabet = new LambdaVoid1<String>() {
+            @Override
+            public void execute(String s) {
+                settings.setMinAlphabet(s);
+            }
+        };
+        components.setGraph(loadGraph(settings.getGraphFilePath(), setMinAlphabet));
+    }
+
+    public static DirectedGraph<PrintConstraint, SymbolicEdge> loadGraph(String graphPath, LambdaVoid1<String> setMinAlphabet) {
 
         // initialize graph object as null
         DirectedGraph<PrintConstraint, SymbolicEdge> graph =
@@ -107,7 +119,7 @@ public class SolveMain {
         ObjectMapper mapper = new ObjectMapper();
 
         // initialize json file object
-        File graphFile = new File(settings.getGraphFilePath());
+        File graphFile = new File(graphPath);
 
         // initialize lists for processing
         Map<Integer, PrintConstraint> constraintMap = new HashMap<>();
@@ -125,7 +137,7 @@ public class SolveMain {
             Map<String, Object> alphabetData =
                     (Map<String, Object>) graphData.get("alphabet");
             String minAlphabet = (String) alphabetData.get("declaration");
-            settings.setMinAlphabet(minAlphabet);
+            setMinAlphabet.execute(minAlphabet);
 
             // get constraint data from graph data
             List<Map<String, Object>> vertexData =
@@ -209,8 +221,8 @@ public class SolveMain {
             i.printStackTrace();
         }
 
-        // store graph as component
-        components.setGraph(graph);
+        // return graph
+        return graph;
     }
 
     private static void loadParser(Components components, Settings settings) {

@@ -7,14 +7,14 @@ public class BasicTimer {
 
     static public void start() {
         stopTime = 0;
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
     }
 
     static public void stop() {
-        stopTime = System.currentTimeMillis();
+        stopTime = System.nanoTime();
     }
 
     static public long getRunTime() {
-        return stopTime - startTime;
+        return (stopTime - startTime) / 1000;
     }
 }

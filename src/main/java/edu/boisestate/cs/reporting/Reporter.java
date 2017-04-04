@@ -84,6 +84,8 @@ abstract public class Reporter {
             PrintConstraint constraint = iterator.next();
             int constraintId = constraint.getId();
 
+//            System.out.printf("%d: %s\n", constraintId, constraint.getValue());
+
             // initialize constraint source map
             Map<String, Integer> sourceMap = new HashMap<>();
 
@@ -112,16 +114,22 @@ abstract public class Reporter {
             // if constraint is an end node
             if (ends.contains(constraint)) {
 
+//                System.out.printf("%d: Predicate\n", constraint.getId());
+
                 // add end
                 boolean isBoolFunc = parser.addEnd(constraint);
 
                 if (isBoolFunc) {
+//                    System.out.printf("%d: Predicate Calculating Stats\n", constraint.getId());
+
                     this.calculateStats(constraint);
                 }
 
             }
             // if constraint is root node
             else if (roots.contains(constraint)) {
+
+//                System.out.printf("%d: Root\n", constraint.getId());
 
                 // add root
                 String init = parser.addRoot(constraint);
@@ -133,6 +141,8 @@ abstract public class Reporter {
             }
             // constraint is op node
             else {
+
+//                System.out.printf("%d: Operation\n", constraint.getId());
 
                 // add operation
                 String operation = parser.addOperation(constraint);
@@ -150,10 +160,13 @@ abstract public class Reporter {
                 this.operationsMap.put(constraintId, currentOps);
 
                 // get previous time
-                long prevTime = timerMap.get(targetId);
+                long prevTime = 0;
+                if (timerMap.containsKey(targetId)) {
+                    prevTime = timerMap.get(targetId);
+                }
 
                 // add operation time to map
-                long currTime =  + prevTime;
+                long currTime = lastTime + prevTime;
                 timerMap.put(constraintId, currTime);
             }
         }
@@ -175,6 +188,11 @@ abstract public class Reporter {
 
     protected void addBooleanOperation(int base, int arg, String constName) {
 
+        long accTime = 0;
+        if (timerMap.containsKey(base)) {
+            accTime = timerMap.get(base);
+        }
+
         if (constName.equals("isEmpty")) {
 
             // update base constraint operations
@@ -183,7 +201,7 @@ abstract public class Reporter {
             // create ops array for current operation
             String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
             newBaseOps[newBaseOps.length - 1] =
-                    String.format("<S:%d>.isEmpty()", base);
+                    String.format("<S:%d>.isEmpty(){%s}", base, accTime);
 
             // add operations to map
             this.operationsMap.put(base, newBaseOps);
@@ -197,16 +215,18 @@ abstract public class Reporter {
             String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
             if (solver.isSingleton(arg)) {
                 newBaseOps[newBaseOps.length - 1] =
-                        String.format("<S:%d>.%s(\\\"%s\\\")",
+                        String.format("<S:%d>.%s(\\\"%s\\\"){%d}",
                                       base,
                                       constName,
-                                      Parser.actualVals.get(arg));
+                                      Parser.actualVals.get(arg),
+                                      accTime);
             } else {
                 newBaseOps[newBaseOps.length - 1] =
-                        String.format("<S:%d>.%s(<S:%d>)",
+                        String.format("<S:%d>.%s(<S:%d>){%d}",
                                       base,
                                       constName,
-                                      arg);
+                                      arg,
+                                      accTime);
             }
 
             // update base operations
@@ -218,7 +238,7 @@ abstract public class Reporter {
             // create ops array for arg operation
             String[] newArgOps = Arrays.copyOf(argOps, argOps.length + 1);
             newArgOps[newArgOps.length - 1] =
-                    String.format("<S:%d>.%s(<S:%d>)", base, constName, arg);
+                    String.format("<S:%d>.%s(<S:%d>){%d}", base, constName, arg, accTime);
 
             // update arg operations
             this.operationsMap.put(arg, newArgOps);

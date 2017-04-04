@@ -1,6 +1,7 @@
 package edu.boisestate.cs.solvers;
 
 import edu.boisestate.cs.Alphabet;
+import edu.boisestate.cs.BasicTimer;
 
 import java.util.HashSet;
 import java.util.List;
@@ -45,11 +46,17 @@ public class StaticConcreteSolver
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
         ConcreteValues argValues = this.symbolicStringMap.get(arg);
 
+        // start timer
+        BasicTimer.start();
+
         // perform substring on arg values
         ConcreteValues substr = argValues.substring(start, end);
 
         // perform concatenation, equivalent to append
         ConcreteValues results = baseValues.concat(substr);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -61,8 +68,14 @@ public class StaticConcreteSolver
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
         ConcreteValues argValues = this.symbolicStringMap.get(arg);
 
+        // start timer
+        BasicTimer.start();
+
         // perform concatenation, equivalent to append
         ConcreteValues results = baseValues.concat(argValues);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -79,14 +92,23 @@ public class StaticConcreteSolver
 
         // true branch
         if (result) {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values
             baseValues = baseValues.assertContainsOther(argValues);
 
             // get satisfying arg values
             argValues = argValues.assertContainedInOther(baseValues);
+
+            // start timer
+            BasicTimer.stop();
         }
         // false branch
         else {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values as temp values
             ConcreteValues tempValues = baseValues.assertNotContainsOther(argValues);
 
@@ -95,6 +117,9 @@ public class StaticConcreteSolver
 
             // set base values from temp values
             baseValues = tempValues;
+
+            // start timer
+            BasicTimer.stop();
         }
 
         // store resulting concrete values
@@ -107,8 +132,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform delete
         ConcreteValues results = baseValues.delete(start, end);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -119,8 +150,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform delete character at index
         ConcreteValues results = baseValues.deleteCharAt(loc);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -134,14 +171,23 @@ public class StaticConcreteSolver
 
         // true branch
         if (result) {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values
             baseValues = baseValues.assertEndsWith(argValues);
 
             // get satisfying arg values
             argValues = argValues.assertContainedInEnding(baseValues);
+
+            // start timer
+            BasicTimer.stop();
         }
         // false branch
         else {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values as temp values
             ConcreteValues tempValues = baseValues.assertNotEndsWith(argValues);
 
@@ -150,6 +196,9 @@ public class StaticConcreteSolver
 
             // set base values from temp values
             baseValues = tempValues;
+
+            // start timer
+            BasicTimer.stop();
         }
 
         // store resulting concrete values
@@ -165,14 +214,23 @@ public class StaticConcreteSolver
 
         // true branch
         if (result) {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values
             baseValues = baseValues.assertEqual(argValues);
 
             // get satisfying arg values
             argValues = baseValues.copy();
+
+            // start timer
+            BasicTimer.stop();
         }
         // false branch
         else {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values as temp values
             ConcreteValues tempValues = baseValues.assertNotEqual(argValues);
 
@@ -181,6 +239,9 @@ public class StaticConcreteSolver
 
             // set base values from temp values
             baseValues = tempValues;
+
+            // start timer
+            BasicTimer.stop();
         }
 
         // store resulting concrete values
@@ -196,14 +257,23 @@ public class StaticConcreteSolver
 
         // true branch
         if (result) {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values
             baseValues = baseValues.assertEqualIgnoreCase(argValues);
 
             // get satisfying arg values
             argValues = argValues.assertEqualIgnoreCase(baseValues);
+
+            // start timer
+            BasicTimer.stop();
         }
         // false branch
         else {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values as temp values
             ConcreteValues tempValues = baseValues.assertNotEqualIgnoreCase(argValues);
 
@@ -212,6 +282,9 @@ public class StaticConcreteSolver
 
             // set base values from temp values
             baseValues = tempValues;
+
+            // start timer
+            BasicTimer.stop();
         }
 
         // store resulting concrete values
@@ -252,8 +325,14 @@ public class StaticConcreteSolver
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
         ConcreteValues argValues = this.symbolicStringMap.get(arg);
 
+        // start timer
+        BasicTimer.start();
+
         // perform insertion
         ConcreteValues results = baseValues.insert(offset, argValues);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -270,11 +349,17 @@ public class StaticConcreteSolver
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
         ConcreteValues argValues = this.symbolicStringMap.get(arg);
 
+        // start timer
+        BasicTimer.start();
+
         // perform substring on arg values
         ConcreteValues substr = argValues.substring(start, end);
 
         // perform insertion
         ConcreteValues results = baseValues.insert(offset, substr);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -287,13 +372,25 @@ public class StaticConcreteSolver
 
         // true branch
         if (result) {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values
             baseValues = baseValues.assertIsEmpty();
+
+            // start timer
+            BasicTimer.stop();
         }
         // false branch
         else {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values
             baseValues = baseValues.assertNotIsEmpty();
+
+            // start timer
+            BasicTimer.stop();
         }
 
         // store resulting concrete values
@@ -341,9 +438,15 @@ public class StaticConcreteSolver
 
     @Override
     public void newConcreteString(int id, String string) {
+        // start timer
+        BasicTimer.start();
+
         // create new concrete values from string
         ConcreteValues newValues =
                 new ConcreteValues(this.alphabet, this.initialBound, string);
+
+        // start timer
+        BasicTimer.stop();
 
         // store new values in symbolic string map
         this.symbolicStringMap.put(id, newValues);
@@ -352,6 +455,9 @@ public class StaticConcreteSolver
 
     @Override
     public void newSymbolicString(int id) {
+        // start timer
+        BasicTimer.start();
+
         // get list of all possible strings from alphabet
         List<String> strings = this.alphabet.allStrings(0, this.initialBound);
 
@@ -360,6 +466,9 @@ public class StaticConcreteSolver
                                                       this.initialBound,
                                                       strings);
 
+        // start timer
+        BasicTimer.stop();
+
         // store new values in symbolic string map
         this.symbolicStringMap.put(id, newValues);
 
@@ -367,8 +476,14 @@ public class StaticConcreteSolver
 
     @Override
     public void propagateSymbolicString(int id, int base) {
+        // start timer
+        BasicTimer.start();
+
         // get values
         ConcreteValues values = this.symbolicStringMap.get(base);
+
+        // start timer
+        BasicTimer.stop();
 
         // store copy of values in map
         this.symbolicStringMap.put(id, values.copy());
@@ -379,8 +494,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform replace
         ConcreteValues results = baseValues.replaceFindKnown(find);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -391,8 +512,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform replace
         ConcreteValues results = baseValues.replace(find, replace);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -403,8 +530,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform replace
         ConcreteValues results = baseValues.replaceReplaceKnown(replace);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -415,8 +548,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform replace
         ConcreteValues results = baseValues.replaceChar();
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -435,8 +574,14 @@ public class StaticConcreteSolver
         ConcreteValues findValues = symbolicStringMap.get(arg1);
         ConcreteValues replaceValues = symbolicStringMap.get(arg2);
 
+        // start timer
+        BasicTimer.start();
+
         // perform replace
         ConcreteValues results = baseValues.replace(findValues, replaceValues);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -447,8 +592,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform reverse
         ConcreteValues results = baseValues.reverse();
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -460,8 +611,14 @@ public class StaticConcreteSolver
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
         ConcreteValues argValues = this.symbolicStringMap.get(arg);
 
+        // start timer
+        BasicTimer.start();
+
         // perform insertion
         ConcreteValues results = baseValues.setCharAt(offset, argValues);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -472,8 +629,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform set length
         ConcreteValues results = baseValues.reverse();
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -492,14 +655,23 @@ public class StaticConcreteSolver
 
         // true branch
         if (result) {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values
             baseValues = baseValues.assertStartsWith(argValues);
 
             // get satisfying arg values
             argValues = argValues.assertContainedInStart(baseValues);
+
+            // start timer
+            BasicTimer.stop();
         }
         // false branch
         else {
+            // start timer
+            BasicTimer.start();
+
             // get satisfying base values as temp values
             ConcreteValues tempValues = baseValues.assertNotStartsWith(argValues);
 
@@ -508,6 +680,9 @@ public class StaticConcreteSolver
 
             // set base values from temp values
             baseValues = tempValues;
+
+            // start timer
+            BasicTimer.stop();
         }
 
         // store resulting concrete values
@@ -520,8 +695,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform substring
         ConcreteValues results = baseValues.substring(start);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -532,8 +713,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform substring
         ConcreteValues results = baseValues.substring(start, end);
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -544,8 +731,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform to lower case
         ConcreteValues results = baseValues.toLowerCase();
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -556,8 +749,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform to upper case
         ConcreteValues results = baseValues.toUpperCase();
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);
@@ -568,8 +767,14 @@ public class StaticConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
 
+        // start timer
+        BasicTimer.start();
+
         // perform trim
         ConcreteValues results = baseValues.trim();
+
+        // start timer
+        BasicTimer.stop();
 
         // store result in map
         this.symbolicStringMap.put(id, results);

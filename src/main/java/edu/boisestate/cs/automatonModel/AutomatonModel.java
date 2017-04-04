@@ -146,7 +146,7 @@ public abstract class AutomatonModel
 
     public abstract AutomatonModel clone();
 
-    protected static Automaton getRequiredCharAutomaton(Automaton a, Alphabet alphabet, int boundLength) {
+    static Automaton getRequiredCharAutomaton(Automaton a, Alphabet alphabet, int boundLength) {
         // if initial state is accepting
         State initialState = a.getInitialState();
         if (initialState.isAccept() && initialState.getTransitions().isEmpty()) {
@@ -212,7 +212,11 @@ public abstract class AutomatonModel
         State s = initial;
 
         // create required char automaton
-        for (int i = 0; i < boundLength; i ++) {
+        int length = boundLength;
+        if (accept >= 0) {
+            length = accept;
+        }
+        for (int i = 0; i < length; i ++) {
             // create new destination state
             State dest = new State();
 

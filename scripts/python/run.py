@@ -86,17 +86,12 @@ def main(arguments):
 
     # run generate graph script
     log.debug('Running Script: generate_graphs.py')
-    generate_script_args = ['--ops-depth',
-                            '2',
-                            '--no-duplicates',
-                            '--unknown-string',
-                            '--length',
-                            '2',
-                            '--single-graph']
+    generate_script_args = [['--ops-depth', '2', '--no-duplicates', '--unknown-string', '--length', '2', '--single-graph', '--non-uniform']]
 
     if args.debug:
         generate_script_args.append('--debug')
-    generate_graphs.main(generate_script_args)
+    for args in generate_script_args:
+        generate_graphs.main(args)
 
     # run solvers via script
     log.debug('Running Script: run_solvers_on_graphs.py')

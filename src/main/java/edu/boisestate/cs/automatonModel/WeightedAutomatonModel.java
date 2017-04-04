@@ -1075,7 +1075,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         return returnAutomata;
     }
 
-    protected static WeightedAutomaton getRequiredCharAutomaton(WeightedAutomaton a, Alphabet alphabet, int boundLength) {
+    static WeightedAutomaton getRequiredCharAutomaton(WeightedAutomaton a, Alphabet alphabet, int boundLength) {
         // if initial state is accepting
         WeightedState initialState = a.getInitialState();
         if (initialState.isAccept() && initialState.getTransitions().isEmpty()) {
@@ -1141,7 +1141,11 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedState s = initial;
 
         // create required char automaton
-        for (int i = 0; i < boundLength; i ++) {
+        int length = boundLength;
+        if (accept >= 0) {
+            length = accept;
+        }
+        for (int i = 0; i < length; i ++) {
             // create new destination state
             WeightedState dest = new WeightedState();
 

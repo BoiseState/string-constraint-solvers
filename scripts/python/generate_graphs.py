@@ -31,6 +31,20 @@ settings = None
 value_id_map = dict()
 vertices = list()
 
+predicates = [
+    'contains!!Ljava/lang/CharSequence;',
+    'contentEquals!!Ljava/lang/CharSequence;',
+    'contentEquals!!Ljava/lang/StringBuffer;',
+    'endsWith!!Ljava/lang/String;',
+    'equals!!Ljava/lang/Object;',
+    'equalsIgnoreCase!!Ljava/lang/String;',
+    'isEmpty!!',
+    'matches!!Ljava/lang/String;',
+    'regionMatches!!ILjava/lang/String;II',
+    'startsWith!!Ljava/lang/String;',
+    'startsWith!!Ljava/lang/String;I'
+]
+
 
 # Data Classes
 # root node
@@ -61,10 +75,11 @@ class OperationValue:
 
 # boolean constraint node
 class BooleanConstraintValue:
-    def __init__(self, op, op_args=None, num=0):
+    def __init__(self, op, op_args=None, num=0, result=False):
         self.op = op
         self.op_args = list() if op_args is None else op_args
         self.num = num
+        self.result = result
 
     def get_value(self):
         return '{0.op}!:!{0.num}'.format(self)
@@ -105,7 +120,8 @@ class Settings:
         self.allow_duplicates = False if options.no_duplicates else True
         self.alphabet = parse_alphabet_declaration(options.alphabet)
         self.depth = int(options.ops_depth)
-        self.id_counter = 1
+        self.graph_name = options.graph_file
+        self.id_counter = 2
         self.max_initial_length = int(options.length)
         self.op_counter = 0
         self.op_total = 1
@@ -124,6 +140,7 @@ class Settings:
         self.non_uniform = False
         if options.non_uniform:
             self.non_uniform = True
+            self.inputs.append(chr(0))
         # use unknown string if no other inputs specified
         if len(self.inputs) == 0 or options.unknown_string:
             self.inputs.append(chr(0))
@@ -166,7 +183,9 @@ def add_append_operations(ops):
 
 def add_concat_operations(ops):
     # sb.concat(string)
-    for c in settings.alphabet:
+    # args = settings.alphabet
+    args = sorted(settings.alphabet)[:1]
+    for c in args:
         ops.append(OperationValue('concat!!Ljava/lang/String;', [c]))
 
 
@@ -336,9 +355,10 @@ def add_equals_predicates(constraints):
 
     # s.contentEquals(str)
     # s.equals(str)
-    constraints.append(BooleanConstraintValue('contentEquals!!Ljava/lang/CharSequence;', [string]))
-    constraints.append(BooleanConstraintValue('contentEquals!!Ljava/lang/StringBuffer;', [string]))
-    constraints.append(BooleanConstraintValue('equals!!Ljava/lang/Object;', [string]))
+    # constraints.append(BooleanConstraintValue('contentEquals!!Ljava/lang/CharSequence;', [string]))
+    # constraints.append(BooleanConstraintValue('contentEquals!!Ljava/lang/StringBuffer;', [string]))
+    constraints.append(BooleanConstraintValue('equals!!Ljava/lang/Object;', [string], result=True))
+    constraints.append(BooleanConstraintValue('equals!!Ljava/lang/Object;', [string], result=False))
 
 
 def add_equals_ignore_case_predicates(constraints):
@@ -348,7 +368,8 @@ def add_equals_ignore_case_predicates(constraints):
     string = symbol_string[0:2]
 
     # s.equalsIgnoreCase(str)
-    constraints.append(BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;', [string]))
+    constraints.append(BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;', [string], result=True))
+    constraints.append(BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;', [string], result=False))
 
 
 def add_is_empty_predicates(constraints):
@@ -397,16 +418,16 @@ def get_operations():
     # initialize operations list
     ops_list = list()
 
-    # add operation instances
+    # Operations
     # add_append_substring_operations(ops_list)
     # add_append_operations(ops_list)
     add_concat_operations(ops_list)
     # add_delete_char_at_operations(ops_list)
-    add_delete_operations(ops_list)
+    # add_delete_operations(ops_list)
     # add_insert_char_operations(ops_list)
     # add_insert_string_operations(ops_list)
     # add_insert_substring_operations(ops_list)
-    add_replace_char_operations(ops_list)
+    # add_replace_char_operations(ops_list)
     # add_replace_string_operations(ops_list)
     # add_replace_regex_string_operations(ops_list)
     # add_replace_substring_operations(ops_list)
@@ -416,15 +437,6 @@ def get_operations():
     # add_to_string_operations(ops_list)
     # add_to_upper_case_operations(ops_list)
     # add_trim_operations(ops_list)
-    add_contains_predicates(ops_list)
-    # add_ends_with_predicates(ops_list)
-    # add_equals_predicates(ops_list)
-    # add_equals_ignore_case_predicates(ops_list)
-    # add_is_empty_predicates(ops_list)
-    # add_matches_predicates(ops_list)
-    # add_region_matches_predicates(ops_list)
-    # add_starts_with_predicates(ops_list)
-    # add_starts_with_offset_predicates(ops_list)
 
     # set global operations from ops_list
     global operations
@@ -797,9 +809,12 @@ def perform_ends_with(string, const):
 
 
 def perform_equals(string, const):
-    # randomize arg if unknown
-    if len(const.op_args[0]) == 1 and ord(const.op_args[0]) == 0:
-        const.op_args[0] = str(random_length(max_length=len(string)))
+    if const.result:
+        const.op_args[0] = string
+    else:
+        # randomize arg if false
+        if len(const.op_args[0]) == 1 and ord(const.op_args[0]) == 0:
+            const.op_args[0] = str(random_length(max_length=len(string)))
 
     # return true or false for boolean constraint
     if string == const.op_args[0]:
@@ -810,8 +825,11 @@ def perform_equals(string, const):
 
 def perform_equals_ignore_case(string, const):
     # randomize arg if unknown
-    if len(const.op_args[0]) == 1 and ord(const.op_args[0]) == 0:
-        const.op_args[0] = str(random_length(max_length=len(string)))
+    if const.result:
+        const.op_args[0] = string.swapcae()
+    else:
+        if len(const.op_args[0]) == 1 and ord(const.op_args[0]) == 0:
+            const.op_args[0] = str(random_length(max_length=len(string)))
 
     # return true or false for boolean constraint
     if string.lower() == const.op_args[0].lower():
@@ -990,12 +1008,15 @@ def add_operation(t, countdown, v_list=None):
         add_bool_constraint(op_vertex, v_list)
 
 
-def add_bool_constraint(t, v_list):
+def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
+    if predicate_list is None:
+        predicate_list = get_boolean_constraints()
+
     # for each boolean constraint
-    for const in get_boolean_constraints():
+    for const in predicate_list:
 
         # if no duplicates allowed
-        if not settings.allow_duplicates:
+        if not settings.allow_duplicates and not allow_duplicates:
             t = t.clone()
             v_list.append(t)
 
@@ -1069,7 +1090,12 @@ def get_options(arguments):
                                       'strings used to generate graphs.',
                                  action='store_true')
 
-    generate_parser.add_argument('-f',
+    generate_parser.add_argument('-g',
+                                 '--graph-file',
+                                 default='gen',
+                                 help='The name of the generated graph file.')
+
+    generate_parser.add_argument('-c',
                                  '--non-uniform',
                                  help='Include non-uniform string before all '
                                       'subsequent string operations.',
@@ -1173,7 +1199,7 @@ def parse_alphabet_declaration(alphabet_declaration):
         elif len(sd) == 3 and sd[1] == '-':
             start = sd[0]
             end = sd[2]
-            for c in range(ord(start), ord(end)):
+            for c in range(ord(start), ord(end) + 1):
                 symbol_set.add(chr(c))
 
         # invalid alphabet declaration
@@ -1246,7 +1272,6 @@ def create_alphabet_declaration(alphabet):
 
 
 def get_root_verticies(settings_inst):
-    verticies = list()
     for value in settings_inst.inputs:
         # create root node value
         if len(value) == 1 and ord(value) == 0:
@@ -1273,10 +1298,11 @@ def main(arguments):
     dir_path = '{0}/../../graphs'.format(os.path.dirname(__file__))
     dir_path = os.path.normpath(dir_path)
     for f in os.listdir(dir_path):
-        if re.search('gen.*\.json', f):
+        if re.search(settings.graph_name + '.*\.json', f):
             os.remove(os.path.join(dir_path, f))
 
     # for each input value
+    vertices_collection = []
     for value in settings.inputs:
 
         # create root node value
@@ -1289,13 +1315,27 @@ def main(arguments):
         val = root_value.get_value()
         root_vertex = Vertex(val, root_value.string, generate_id(val))
 
+        init_v_list = list()
+
+        if settings.non_uniform:
+            contains_predicates = list()
+            add_contains_predicates(contains_predicates)
+            contains_predicates = contains_predicates[:1]
+            vertices.append(init_v_list)
+            add_bool_constraint(root_vertex,
+                                init_v_list,
+                                allow_duplicates=True,
+                                predicate_list=contains_predicates)
+
         # add operations to the vertex
         add_operation(root_vertex, settings.depth)
 
         # add bool contraints for initial string
-        init_v_list = list()
-        vertices.append(init_v_list)
-        add_bool_constraint(root_vertex, init_v_list)
+        if not settings.non_uniform:
+            vertices.append(init_v_list)
+            add_bool_constraint(root_vertex, init_v_list)
+        else:
+            settings.non_uniform = False
 
         log.debug('*** {0} Operations Added ***'.format(settings.op_counter))
         num_v = 0
@@ -1348,40 +1388,29 @@ def main(arguments):
 
         # flatten vertices collection into single nested list if simple
         if settings.depth == 1 or settings.single_graph:
-            # get first vertex sublist
-            v_list1 = vertices_collection[0]
-
-            # get root vertex instance
-            root_v = next(v for v in v_list1
-                          if v['id'] == root_vertex.node_id)
-
             # get collection of verticies
             v_collection = list()
             for v_list in vertices_collection:
                 for v in v_list:
-                    if v['id'] != root_vertex.node_id:
-                        v_collection.append(v)
+                    v_collection.append(v)
             vertices_collection = [v_collection]
 
-            # add root vertex to flattened collection of vertices
-            vertices_collection[0].append(root_v)
-
-        for j, v_list in enumerate(vertices_collection):
-            # create graph dictionary
-            graph = {
-                'vertices': v_list,
-                'alphabet': {
-                    'declaration': create_alphabet_declaration(
-                        settings.alphabet),
-                    'size': len(settings.alphabet)
-                }
+    for j, v_list in enumerate(vertices_collection):
+        # create graph dictionary
+        graph = {
+            'vertices': v_list,
+            'alphabet': {
+                'declaration': create_alphabet_declaration(
+                    settings.alphabet),
+                'size': len(settings.alphabet)
             }
+        }
 
-            # write out update graph file
-            file_path = '{0}/../../graphs/gen{1:02d}.json'.format(
-                os.path.dirname(__file__), j + 1)
-            with open(file_path, 'w') as graph_file:
-                json.dump(graph, graph_file)
+        # write out update graph file
+        file_path = '{0}/../../graphs/{1}{2:02d}.json'.format(
+            os.path.dirname(__file__), settings.graph_name, j + 1)
+        with open(file_path, 'w') as graph_file:
+            json.dump(graph, graph_file)
 
 
 if __name__ == '__main__':

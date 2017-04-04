@@ -358,9 +358,13 @@ def produce_output_data(data_map, solvers, f_name):
     # for solver in solvers:
     for solver in sorted(solvers, cmp=compare_solvers):
         # add field names for each solver
-        field_names.append('{0} In Count'.format(solver))
-        field_names.append('{0} True Count'.format(solver))
-        field_names.append('{0} False Count'.format(solver))
+        prefix = solver.upper()[0]
+        field_names.append(prefix + ' IN MC')
+        field_names.append(prefix + ' T MC')
+        field_names.append(prefix + ' F MC')
+        field_names.append(prefix + ' Time')
+        field_names.append(prefix + ' T Time')
+        field_names.append(prefix + ' F Time')
 
     # initialize output row list
     output_rows = list()
@@ -374,9 +378,13 @@ def produce_output_data(data_map, solvers, f_name):
         row['Id'] = op_id
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)
-            row['{0} In Count'.format(solver)] = data_row.get('IN COUNT')
-            row['{0} True Count'.format(solver)] = data_row.get('T COUNT')
-            row['{0} False Count'.format(solver)] = data_row.get('F COUNT')
+            prefix = solver.upper()[0]
+            row[prefix + ' IN MC'] = data_row.get('IN COUNT')
+            row[prefix + ' T MC'] = data_row.get('T COUNT')
+            row[prefix + ' F MC'] = data_row.get('F COUNT')
+            row[prefix + ' Time'] = data_row.get('ACC TIME')
+            row[prefix + ' T Time'] = data_row.get('T TIME')
+            row[prefix + ' F Time'] = data_row.get('F TIME')
 
         # add row to output rows
         output_rows.append(row)
@@ -406,7 +414,7 @@ def analyze_results(f_name, file_set):
     # get data map from files
     data_map = get_data_map_from_csv_files(f_name, file_set)
     # verify data
-    verify_data(data_map, solvers, f_name)
+    # verify_data(data_map, solvers, f_name)
     # output data
     produce_output_data(data_map, solvers, f_name)
 

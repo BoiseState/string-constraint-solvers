@@ -106,7 +106,7 @@ public class Parser {
         Map<String, Integer> sourceMap = constraint.getSourceMap();
 
         // initialize operation string
-        String operationString = "[Unknown string operation]";
+        String operationString = String.format("[Unknown string operation %d: %s]", id, string);
 
         // if debug mode set
         if (debug) {
@@ -156,7 +156,7 @@ public class Parser {
 
         } else if (string.startsWith("substring")) {
 
-            operationString = processSubstring(constraint);
+            operationString = processSubstring(constraint, string);
 
         } else if (fName.equals("setLength")) {
 
@@ -872,8 +872,8 @@ public class Parser {
 
             solver.newSymbolicString(id);
 
-            operation = String.format("<S:%d>.[Unknown Replace Operation]",
-                                      base);
+            operation = String.format("<S:%d>.[Unknown Replace Operation: %s]",
+                                      base, fName);
         }
 
         // return operation string
@@ -965,7 +965,7 @@ public class Parser {
      *
      * @return Returns a string representation of the operation.
      */
-    private String processSubstring(PrintConstraint constraint) {
+    private String processSubstring(PrintConstraint constraint, String fName) {
 
         // get constraint info as variables
         Map<String, Integer> sourceMap = constraint.getSourceMap();
@@ -998,8 +998,8 @@ public class Parser {
                 solver.propagateSymbolicString(id, base);
 
                 operation =
-                        String.format("<S:%d>.[Unknown substring operation]",
-                                      base);
+                        String.format("<S:%d>.[Unknown substring operation: %s]",
+                                      base, fName);
             }
         }
         // string.substring(int beginIndex, int endIndex)
