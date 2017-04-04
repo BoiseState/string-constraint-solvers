@@ -2,10 +2,7 @@ package edu.boisestate.cs.automatonModel;
 
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.MinMaxPair;
-import edu.boisestate.cs.automaton.BasicWeightedAutomata;
-import edu.boisestate.cs.automaton.WeightedAutomaton;
-import edu.boisestate.cs.automaton.WeightedState;
-import edu.boisestate.cs.automaton.WeightedTransition;
+import edu.boisestate.cs.automaton.*;
 import edu.boisestate.cs.automatonModel.operations.BinaryWeightedAutomatonOp;
 import edu.boisestate.cs.automatonModel.operations.StringModelCounter;
 import edu.boisestate.cs.automatonModel.operations.UnaryWeightedAutomatonOp;
@@ -1009,7 +1006,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
             result = result.intersection(bounding);
 
             // minimize result
-            result.minimize();
+            minimizeBrzozowski(result);
 
             // set appropriate index in results array
             results[i] = splitAutomatonByLength(result, maxLength, this.alphabet);
@@ -1051,7 +1048,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
             result = result.intersection(bounding);
 
             // minimize result
-            result.minimize();
+//            minimizeBrzozowski(result);
 
             // set appropriate index in results array
             results[i] = splitAutomatonByLength(result, maxLength, this.alphabet);
@@ -1143,7 +1140,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         // create required char automaton
         int length = boundLength;
         if (accept >= 0) {
-            length = accept;
+            length = accept + 1;
         }
         for (int i = 0; i < length; i ++) {
             // create new destination state

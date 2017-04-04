@@ -214,7 +214,7 @@ public abstract class AutomatonModel
         // create required char automaton
         int length = boundLength;
         if (accept >= 0) {
-            length = accept;
+            length = accept + 1;
         }
         for (int i = 0; i < length; i ++) {
             // create new destination state

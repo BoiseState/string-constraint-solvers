@@ -52,26 +52,26 @@ public class Given_WeightedPreciseSuffix_For_WeightedAutomata {
         WeightedAutomaton nonUniform = getNonUniformBoundedWeightedAutomaton(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", 0, empty, 0},
-                {"Empty", 0, empty, 1},
-                {"Empty", 0, empty, 2},
-                {"Empty", 0, empty, 3},
-                {"Empty String", 0, emptyString, 0},
-                {"Empty String", 0, emptyString, 1},
-                {"Empty String", 0, emptyString, 2},
-                {"Empty String", 0, emptyString, 3},
-                {"Concrete", 2, concrete, 0},
-                {"Concrete", 2, concrete, 1},
-                {"Concrete", 2, concrete, 2},
-                {"Concrete", 2, concrete, 3},
-                {"Uniform", 64, uniform, 0},
-                {"Uniform", 64, uniform, 1},
-                {"Uniform", 64, uniform, 2},
-                {"Uniform", 64, uniform, 3},
-                {"Non-uniform", 37, nonUniform, 0},
-                {"Non-uniform", 37, nonUniform, 1},
-                {"Non-uniform", 37, nonUniform, 2},
-                {"Non-uniform", 37, nonUniform, 3}
+//                {"Empty", 0, empty, 0},
+//                {"Empty", 0, empty, 1},
+//                {"Empty", 0, empty, 2},
+//                {"Empty", 0, empty, 3},
+//                {"Empty String", 0, emptyString, 0},
+//                {"Empty String", 0, emptyString, 1},
+//                {"Empty String", 0, emptyString, 2},
+//                {"Empty String", 0, emptyString, 3},
+//                {"Concrete", 2, concrete, 0},
+//                {"Concrete", 2, concrete, 1},
+//                {"Concrete", 2, concrete, 2},
+//                {"Concrete", 2, concrete, 3},
+//                {"Uniform", 64, uniform, 0},
+//                {"Uniform", 64, uniform, 1},
+//                {"Uniform", 64, uniform, 2},
+//                {"Uniform", 64, uniform, 3},
+//                {"Non-uniform", 37, nonUniform, 0},
+//                {"Non-uniform", 37, nonUniform, 1},
+//                {"Non-uniform", 37, nonUniform, 2},
+//                {"Non-uniform", 37, nonUniform, 3}
         });
     }
 

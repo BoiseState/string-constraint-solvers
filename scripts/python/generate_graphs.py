@@ -8,8 +8,12 @@ import re
 import sys
 import time
 
-# Configure Logging
+# set relevent path and file variables
 file_name = os.path.basename(__file__).replace('.py', '')
+project_dir = '{0}/../..'.format(os.path.dirname(__file__))
+project_dir = os.path.normpath(project_dir)
+
+# Configure Logging
 log = logging.getLogger(file_name)
 log.setLevel(logging.ERROR)
 
@@ -22,15 +26,7 @@ ch.setFormatter(formatter)
 
 log.addHandler(ch)
 
-# Global values
-boolean_constraints = None
-has_lower_case_op = False
-has_upper_case_op = False
-operations = None
-settings = None
-value_id_map = dict()
-vertices = list()
-
+# Constants
 predicates = [
     'contains!!Ljava/lang/CharSequence;',
     'contentEquals!!Ljava/lang/CharSequence;',
@@ -45,6 +41,19 @@ predicates = [
     'startsWith!!Ljava/lang/String;I'
 ]
 
+# Global values
+my_globals = dict()
+
+
+def reset_globals():
+    my_globals['boolean_constraints'] = None
+    my_globals['has_lower_case_op'] = False
+    my_globals['has_upper_case_op'] = False
+    my_globals['operations'] = None
+    my_globals['settings'] = None
+    my_globals['value_id_map'] = dict()
+    my_globals['vertices'] = list()
+
 
 # Data Classes
 # root node
@@ -52,7 +61,7 @@ class RootValue:
     def __init__(self, has_string, string=None, method=''):
         self.has_string = has_string
         self.string = string if string is not None else random_string(
-            settings.max_initial_length)
+            my_globals['settings'].max_initial_length)
         self.method = method
 
     def get_value(self):
@@ -151,7 +160,6 @@ class Settings:
         if options.single_graph:
             self.single_graph = True
 
-
     def get_ops_total(self):
         for i in range(0, self.depth + 2):
             self.op_total += (len(get_operations()) ** i)
@@ -163,7 +171,7 @@ class Settings:
 # operations array
 def add_append_substring_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
+    symbol_string = ''.join(my_globals['settings'].alphabet)
 
     # sb.append(string , offset , length )
     # sb.append(string , start , end )
@@ -179,50 +187,50 @@ def add_append_substring_operations(ops):
 
 def add_append_operations(ops):
     # sb.append(string)
-    # args = settings.alphabet
-    args = sorted(settings.alphabet)[:2]
+    # args = my_globals['settings'].alphabet
+    args = sorted(my_globals['settings'].alphabet)[:2]
     for c in args:
         ops.append(OperationValue('append!!Ljava/lang/String;', [c]))
 
 
 def add_concat_operations(ops):
     # sb.concat(string)
-    # args = settings.alphabet
-    args = sorted(settings.alphabet)[:2]
+    # args = my_globals['settings'].alphabet
+    args = sorted(my_globals['settings'].alphabet)[:2]
     for c in args:
         ops.append(OperationValue('concat!!Ljava/lang/String;', [c]))
 
 
 def add_delete_char_at_operations(ops):
     # sb.deleteCharAt(index)
-    for i in range(0, settings.max_initial_length):
+    for i in range(0, my_globals['settings'].max_initial_length):
         ops.append(OperationValue('deleteCharAt!!I', [str(i)]))
 
 
 def add_delete_operations(ops):
     # sb.delete(start, end)
-    for i in range(0, settings.max_initial_length + 1):
-        for j in range(i, settings.max_initial_length + 1):
+    for i in range(0, my_globals['settings'].max_initial_length + 1):
+        for j in range(i, my_globals['settings'].max_initial_length + 1):
             ops.append(OperationValue('delete!!II', [str(i), str(j)]))
 
 
 def add_insert_char_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
+    symbol_string = ''.join(my_globals['settings'].alphabet)
 
     # sb.insert(index, string)
     for i in range(0, len(symbol_string) - 1):
-        for c in settings.alphabet:
+        for c in my_globals['settings'].alphabet:
             ops.append(OperationValue('insert!!IC', [str(i), c]))
 
 
 def add_insert_string_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
+    symbol_string = ''.join(my_globals['settings'].alphabet)
 
     # sb.insert(index, string)
     for i in range(0, len(symbol_string) - 1):
-        for c in settings.alphabet:
+        for c in my_globals['settings'].alphabet:
             # add insert for char array
             ops.append(OperationValue('insert!!I[C', [str(i), c]))
 
@@ -233,11 +241,11 @@ def add_insert_string_operations(ops):
 
 def add_insert_substring_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
+    symbol_string = ''.join(my_globals['settings'].alphabet)
 
     # sb.insert(index, string, offset, length)
     # sb.insert(index, string, start, end)
-    for i in range(0, settings.max_initial_length - 1):
+    for i in range(0, my_globals['settings'].max_initial_length - 1):
         for j in range(0, len(symbol_string) - 1):
             # add insert substring for char array
             ops.append(OperationValue('insert!!I[CII',
@@ -250,8 +258,8 @@ def add_insert_substring_operations(ops):
 
 def add_replace_char_operations(ops):
     # s.replace(old, new)
-    # args = settings.alphabet
-    args = sorted(settings.alphabet)[:2]
+    # args = my_globals['settings'].alphabet
+    args = sorted(my_globals['settings'].alphabet)[:2]
     for c1 in args:
         for c2 in args:
             # if c1 != c2:
@@ -260,7 +268,7 @@ def add_replace_char_operations(ops):
 
 def add_replace_string_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
+    symbol_string = ''.join(my_globals['settings'].alphabet)
     # get target from first 2 symbols
     target = symbol_string[0:2]
     # get replacement from last 2 symbols
@@ -274,7 +282,7 @@ def add_replace_string_operations(ops):
 
 def add_replace_regex_string_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
+    symbol_string = ''.join(my_globals['settings'].alphabet)
     # get regex from first symbol
     regex = symbol_string[0:1] + '+'
     # get replacement from last 2 symbols
@@ -292,13 +300,13 @@ def add_replace_regex_string_operations(ops):
 
 def add_replace_substring_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
+    symbol_string = ''.join(my_globals['settings'].alphabet)
     # get string from first 2 symbols
     string = symbol_string[0:2]
 
     # replace(start, end, string)
-    for i in range(0, settings.max_initial_length - 1):
-        for j in range(i, settings.max_initial_length):
+    for i in range(0, my_globals['settings'].max_initial_length - 1):
+        for j in range(i, my_globals['settings'].max_initial_length):
             ops.append(OperationValue('replace!!IILjava/lang/String;',
                                       [str(i), str(j), string]))
 
@@ -310,12 +318,12 @@ def add_reverse_operations(ops):
 
 def add_substring_operations(ops):
     # s.substring(start)
-    for i in range(0, settings.max_initial_length - 1):
+    for i in range(0, my_globals['settings'].max_initial_length - 1):
         ops.append(OperationValue('substring!!I', [str(i)]))
 
     # s.substring(start, end)
-    for i in range(0, settings.max_initial_length - 1):
-        for j in range(i, settings.max_initial_length):
+    for i in range(0, my_globals['settings'].max_initial_length - 1):
+        for j in range(i, my_globals['settings'].max_initial_length):
             ops.append(OperationValue('substring!!II', [str(i), str(j)]))
 
 
@@ -342,20 +350,20 @@ def add_trim_operations(ops):
 # boolean constraints array
 def add_contains_predicates(constraints):
     # s.contains(substr)
-    for c in settings.alphabet:
+    for c in my_globals['settings'].alphabet:
         constraints.append(BooleanConstraintValue('contains!!Ljava/lang/CharSequence;', [c]))
 
 
 def add_ends_with_predicates(constraints):
     # s.endsWith(suffix)
-    for c in settings.alphabet:
+    for c in my_globals['settings'].alphabet:
         constraints.append(
             BooleanConstraintValue('endsWith!!Ljava/lang/String;', [c]))
 
 
 def add_equals_predicates(constraints):
     # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
+    symbol_string = ''.join(my_globals['settings'].alphabet)
     # get string from first 2 symbols
     string = symbol_string[0:2]
 
@@ -369,7 +377,7 @@ def add_equals_predicates(constraints):
 
 def add_equals_ignore_case_predicates(constraints):
     # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
+    symbol_string = ''.join(my_globals['settings'].alphabet)
     # get string from first 2 symbols
     string = symbol_string[0:2]
 
@@ -385,32 +393,32 @@ def add_is_empty_predicates(constraints):
 
 def add_matches_predicates(constraints):
     # s.matches(regex known)
-    for c in settings.alphabet:
+    for c in my_globals['settings'].alphabet:
         constraints.append(BooleanConstraintValue('matches!!Ljava/lang/String;'), [c])
 
 
 def add_region_matches_predicates(constraints):
     # join all symbols from alphabet
-    symbol_string = ''.join(settings.alphabet)
+    symbol_string = ''.join(my_globals['settings'].alphabet)
 
     # s.regionMatches(toffset, other, ooffset, length)
-    for i in range(0, settings.max_initial_length):
+    for i in range(0, my_globals['settings'].max_initial_length):
         for j in range(0, len(symbol_string)):
-            for k in range(1, min(settings.max_initial_length - i, len(symbol_string) - j)):
+            for k in range(1, min(my_globals['settings'].max_initial_length - i, len(symbol_string) - j)):
                 constraints.append(BooleanConstraintValue('regionMatches!!ILjava/lang/String;II'), [str(i), symbol_string, str(j), str(k)])
 
 
 def add_starts_with_predicates(constraints):
     # s.startsWith(prefix)
-    for c in settings.alphabet:
+    for c in my_globals['settings'].alphabet:
         constraints.append(
             BooleanConstraintValue('startsWith!!Ljava/lang/String;', [c]))
 
 
 def add_starts_with_offset_predicates(constraints):
     # s.startsWith(prefix, offset)
-    for c in settings.alphabet:
-        for i in range(0, settings.max_initial_length):
+    for c in my_globals['settings'].alphabet:
+        for i in range(0, my_globals['settings'].max_initial_length):
             constraints.append(
                 BooleanConstraintValue('startsWith!!Ljava/lang/String;I',
                                        [c, str(i)]))
@@ -418,6 +426,7 @@ def add_starts_with_offset_predicates(constraints):
 
 def get_operations():
     # check for existing operations value
+    operations = my_globals['operations']
     if operations is not None:
         return operations
 
@@ -426,53 +435,53 @@ def get_operations():
 
     # === Operations ===
     # appendSubstring
-    if 'append-substring' in settings.operations:
+    if 'append-substring' in my_globals['settings'].operations:
         add_append_substring_operations(ops_list)
-    if 'append' in settings.operations:
+    if 'append' in my_globals['settings'].operations:
         add_append_operations(ops_list)
-    if 'concat' in settings.operations:
+    if 'concat' in my_globals['settings'].operations:
         add_concat_operations(ops_list)
-    if 'delete-char-at' in settings.operations:
+    if 'delete-char-at' in my_globals['settings'].operations:
         add_delete_char_at_operations(ops_list)
-    if 'delete' in settings.operations:
+    if 'delete' in my_globals['settings'].operations:
         add_delete_operations(ops_list)
-    if 'insert-char' in settings.operations:
+    if 'insert-char' in my_globals['settings'].operations:
         add_insert_char_operations(ops_list)
-    if 'insert-string' in settings.operations:
+    if 'insert-string' in my_globals['settings'].operations:
         add_insert_string_operations(ops_list)
-    if 'insert-substring' in settings.operations:
+    if 'insert-substring' in my_globals['settings'].operations:
         add_insert_substring_operations(ops_list)
-    if 'replace-char' in settings.operations:
+    if 'replace-char' in my_globals['settings'].operations:
         add_replace_char_operations(ops_list)
-    if 'replace-string' in settings.operations:
+    if 'replace-string' in my_globals['settings'].operations:
         add_replace_string_operations(ops_list)
-    if 'replace-regex-string' in settings.operations:
+    if 'replace-regex-string' in my_globals['settings'].operations:
         add_replace_regex_string_operations(ops_list)
-    if 'replace-substring' in settings.operations:
+    if 'replace-substring' in my_globals['settings'].operations:
         add_replace_substring_operations(ops_list)
-    if 'reverse' in settings.operations:
+    if 'reverse' in my_globals['settings'].operations:
         add_reverse_operations(ops_list)
-    if 'substring' in settings.operations:
+    if 'substring' in my_globals['settings'].operations:
         add_substring_operations(ops_list)
-    if 'to-lower-case' in settings.operations:
+    if 'to-lower-case' in my_globals['settings'].operations:
         add_to_lower_case_operations(ops_list)
-    if 'to-string' in settings.operations:
+    if 'to-string' in my_globals['settings'].operations:
         add_to_string_operations(ops_list)
-    if 'to-upper-case' in settings.operations:
+    if 'to-upper-case' in my_globals['settings'].operations:
         add_to_upper_case_operations(ops_list)
-    if 'trim' in settings.operations:
+    if 'trim' in my_globals['settings'].operations:
         add_trim_operations(ops_list)
 
     # set global operations from ops_list
-    global operations
-    operations = ops_list
+    my_globals['operations'] = ops_list
 
     # return operations array
-    return operations
+    return ops_list
 
 
 def get_boolean_constraints():
     # check for existing boolean constraints value
+    boolean_constraints = my_globals['boolean_constraints']
     if boolean_constraints is not None:
         return boolean_constraints
 
@@ -480,31 +489,30 @@ def get_boolean_constraints():
     constraints_list = list()
 
     # add boolean constraint instances
-    if 'contains' in settings.operations:
+    if 'contains' in my_globals['settings'].operations:
         add_contains_predicates(constraints_list)
-    if 'ends-with' in settings.operations:
+    if 'ends-with' in my_globals['settings'].operations:
         add_ends_with_predicates(constraints_list)
-    if 'equals' in settings.operations:
+    if 'equals' in my_globals['settings'].operations:
         add_equals_predicates(constraints_list)
-    if 'equals-ignore-case' in settings.operations:
+    if 'equals-ignore-case' in my_globals['settings'].operations:
         add_equals_ignore_case_predicates(constraints_list)
-    if 'is-empty' in settings.operations:
+    if 'is-empty' in my_globals['settings'].operations:
         add_is_empty_predicates(constraints_list)
-    if 'matches' in settings.operations:
+    if 'matches' in my_globals['settings'].operations:
         add_matches_predicates(constraints_list)
-    if 'region-matches' in settings.operations:
+    if 'region-matches' in my_globals['settings'].operations:
         add_region_matches_predicates(constraints_list)
-    if 'starts-with' in settings.operations:
+    if 'starts-with' in my_globals['settings'].operations:
         add_starts_with_predicates(constraints_list)
-    if 'starts-with-offset' in settings.operations:
+    if 'starts-with-offset' in my_globals['settings'].operations:
         add_starts_with_offset_predicates(constraints_list)
 
     # set global operations from ops_list
-    global boolean_constraints
-    boolean_constraints = constraints_list
+    my_globals['boolean_constraints'] = constraints_list
 
     # return operations array
-    return boolean_constraints
+    return constraints_list
 
 
 # id generator
@@ -512,15 +520,15 @@ def generate_id(value, force=False):
     # specify id_counter is the global variable
 
     # if id already generated for value
-    if not force and value in value_id_map:
+    if not force and value in my_globals['value_id_map']:
         # return that value
-        return value_id_map.get(value)
+        return my_globals['value_id_map'].get(value)
 
     # generate new id from id counter
-    new_id = settings.id_counter
+    new_id = my_globals['settings'].id_counter
 
     # increment id counter
-    settings.id_counter += 1
+    my_globals['settings'].id_counter += 1
 
     # return new id
     return new_id
@@ -530,18 +538,18 @@ def random_length(min_length=None, max_length=None):
     if min_length is None:
         min_length = 0
     if max_length is None:
-        max_length = settings.max_initial_length
+        max_length = my_globals['settings'].max_initial_length
     return random.randint(min_length, max_length)
 
 
 def random_char():
-    alpha_list = list(settings.alphabet)
+    alpha_list = list(my_globals['settings'].alphabet)
     return random.choice(alpha_list).upper()
 
 
 def random_string(length=None):
     if length is None:
-        length = settings.max_initial_length
+        length = my_globals['settings'].max_initial_length
     chars = list()
     for num in range(1, length):
         chars.append(random_char())
@@ -987,20 +995,21 @@ def add_operation(t, countdown, v_list=None):
     new_v_list = v_list is None
 
     # for each operation
-    for op in get_operations():
+    ops_collection = get_operations()
+    for op in ops_collection:
 
         # check and create vertices list
         if new_v_list:
             v_list = list()
-            vertices.append(v_list)
+            my_globals['vertices'].append(v_list)
             v_list.append(t)
 
-        settings.op_counter += 1
+        my_globals['settings'].op_counter += 1
 
-        if settings.op_total > 100 and settings.op_counter % (
-                    settings.op_total / 100) == 0:
-            percent = settings.op_counter * 100 / settings.op_total
-            log.debug('Operation Addition Progress: {0}%'.format(percent))
+        # if my_globals['settings'].op_total > 100 and my_globals['settings'].op_counter % (
+        #             my_globals['settings'].op_total / 100) == 0:
+        #     percent = my_globals['settings'].op_counter * 100 / my_globals['settings'].op_total
+        #     log.debug('Operation Addition Progress: {0}%'.format(percent))
 
         # get actual value resulting from op
         actual_val = perform_op(t.actual_value, op)
@@ -1050,7 +1059,7 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
     for const in predicate_list:
 
         # if no duplicates allowed
-        if not settings.allow_duplicates and not allow_duplicates:
+        if not my_globals['settings'].allow_duplicates and not allow_duplicates:
             t = t.clone()
             v_list.append(t)
 
@@ -1075,7 +1084,7 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
 
             # create vertex
             arg_val = arg_value.get_value()
-            do_force = not settings.allow_duplicates
+            do_force = not my_globals['settings'].allow_duplicates
             arg_vertex = Vertex(arg_val,
                                 arg,
                                 generate_id(arg_val, force=do_force))
@@ -1281,7 +1290,7 @@ def parse_alphabet_declaration(alphabet_declaration):
     to_add = set()
 
     # ensure correct lower case letters are included in alphabet
-    if has_lower_case_op:
+    if my_globals['has_lower_case_op']:
         for c in symbol_set:
             c_lower = c.lower()
             # if lower equivilant
@@ -1289,7 +1298,7 @@ def parse_alphabet_declaration(alphabet_declaration):
                 to_add.add(c_lower)
 
     # ensure correct upper case letters are included in alphabet
-    if has_upper_case_op:
+    if my_globals['has_upper_case_op']:
         for c in symbol_set:
             c_upper = c.upper()
             # if lower equivilant
@@ -1353,28 +1362,31 @@ def get_root_verticies(settings_inst):
         # create vertex from root node
         val = root_value.get_value()
         vertex = Vertex(val, root_value.string, generate_id(val))
-        vertices.append(vertex)
+        my_globals['vertices'].append(vertex)
     # TODO: Add contains vertex for non-uniform initial string
 
 
 def main(arguments):
+    reset_globals()
+
     # get option from arguments
     options = get_options(arguments)
 
     # get settings
-    global settings
-    settings = Settings(options)
+    my_globals['settings'] = Settings(options)
 
     # clean existing files
-    dir_path = '{0}/../../graphs'.format(os.path.dirname(__file__))
+    dir_path = os.path.join(project_dir, 'graphs')
     dir_path = os.path.normpath(dir_path)
     for f in os.listdir(dir_path):
-        if re.search(settings.graph_name + '.*\.json', f):
-            os.remove(os.path.join(dir_path, f))
+        if re.search(my_globals['settings'].graph_name + '.*\.json', f):
+            remove_file = os.path.join(dir_path, f)
+            log.debug('Removing Previous Graph File: %s', remove_file)
+            os.remove(remove_file)
 
     # for each input value
     vertices_collection = []
-    for value in settings.inputs:
+    for value in my_globals['settings'].inputs:
 
         # create root node value
         if len(value) == 1 and ord(value) == 0:
@@ -1388,35 +1400,35 @@ def main(arguments):
 
         init_v_list = list()
 
-        if settings.non_uniform:
+        if my_globals['settings'].non_uniform:
             contains_predicates = list()
             add_contains_predicates(contains_predicates)
             contains_predicates = contains_predicates[:1]
-            vertices.append(init_v_list)
+            my_globals['vertices'].append(init_v_list)
             add_bool_constraint(root_vertex,
                                 init_v_list,
                                 allow_duplicates=True,
                                 predicate_list=contains_predicates)
 
         # add operations to the vertex
-        add_operation(root_vertex, settings.depth)
+        add_operation(root_vertex, my_globals['settings'].depth)
 
         # add bool contraints for initial string
-        if not settings.non_uniform:
-            vertices.append(init_v_list)
+        if not my_globals['settings'].non_uniform:
+            my_globals['vertices'].append(init_v_list)
             add_bool_constraint(root_vertex, init_v_list)
         else:
-            settings.non_uniform = False
+            my_globals['settings'].non_uniform = False
 
-        log.debug('*** {0} Operations Added ***'.format(settings.op_counter))
+        log.debug('*** {0} Operations Added ***'.format(my_globals['settings'].op_counter))
         num_v = 0
-        for v_list in vertices:
+        for v_list in my_globals['vertices']:
             num_v += len(v_list)
         v_counter = 0
 
         vertices_collection = list()
 
-        for v_list in vertices:
+        for v_list in my_globals['vertices']:
 
             # initialize vertex list
             vertex_list = list()
@@ -1425,9 +1437,9 @@ def main(arguments):
             for v in v_list:
 
                 v_counter += 1
-                if num_v > 100 and v_counter % (num_v / 100) == 0:
-                    percent = v_counter * 100 / num_v
-                    log.debug('Vertex Creation Progress: {0}%'.format(percent))
+                # if num_v > 100 and v_counter % (num_v / 100) == 0:
+                #     percent = v_counter * 100 / num_v
+                #     log.debug('Vertex Creation Progress: {0}%'.format(percent))
 
                 # initialize vertex
                 vertex = {
@@ -1458,7 +1470,7 @@ def main(arguments):
             vertices_collection.append(vertex_list)
 
         # flatten vertices collection into single nested list if simple
-        if settings.depth == 1 or settings.single_graph:
+        if my_globals['settings'].depth == 1 or my_globals['settings'].single_graph:
             # get collection of verticies
             v_collection = list()
             for v_list in vertices_collection:
@@ -1472,16 +1484,19 @@ def main(arguments):
             'vertices': v_list,
             'alphabet': {
                 'declaration': create_alphabet_declaration(
-                    settings.alphabet),
-                'size': len(settings.alphabet)
+                    my_globals['settings'].alphabet),
+                'size': len(my_globals['settings'].alphabet)
             }
         }
 
         # write out update graph file
         file_path = '{0}/../../graphs/{1}{2:02d}.json'.format(
-            os.path.dirname(__file__), settings.graph_name, j + 1)
+            os.path.dirname(__file__), my_globals['settings'].graph_name, j + 1)
         with open(file_path, 'w') as graph_file:
+            log.debug('Creating Graph File: %s', graph_file.name)
             json.dump(graph, graph_file)
+
+    # cleanup global variables
 
 
 if __name__ == '__main__':

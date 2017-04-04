@@ -73,49 +73,58 @@ def main(arguments):
                             help="Display debug messages for script.",
                             action="store_true")
 
-    args = run_parser.parse_args(arguments)
+    options = run_parser.parse_args(arguments)
 
     # check debug flag
-    if args.debug:
+    if options.debug:
         log.setLevel(logging.DEBUG)
         ch.setLevel(logging.DEBUG)
-        log.debug('Args: {0}'.format(args))
+        log.debug('Args: {0}'.format(options))
 
     # compile sources
     compile_sources()
 
     # run generate graph script
-    log.debug('Running Script: generate_graphs.py')
-    generate_script_args = [['--ops-depth', '2', '--no-duplicates', '--unknown-string', '--length', '2', '--single-graph', '--non-uniform']]
+    log.debug('Running Scripts: generate_graphs.py')
+    generate_script_args = [
+        ['--ops-depth', '1', '--no-duplicates', '--unknown-string', '--length', '3', '--single-graph', '--non-uniform', '--operations', 'concat', 'contains', 'equals', '--graph-file', 'concat'],
+        ['--ops-depth', '1', '--no-duplicates', '--unknown-string', '--length', '3', '--single-graph', '--operations', 'delete', 'contains', 'equals', '--graph-file', 'delete'],
+        ['--ops-depth', '1', '--no-duplicates', '--unknown-string', '--length', '3', '--single-graph', '--operations', 'replace-char', 'contains', 'equals', '--graph-file', 'replace']
+    ]
 
-    if args.debug:
-        generate_script_args.append('--debug')
+    if options.debug:
+        for args in generate_script_args:
+            args.append('--debug')
     for args in generate_script_args:
         generate_graphs.main(args)
 
     # run solvers via script
-    log.debug('Running Script: run_solvers_on_graphs.py')
-    solver_script_args = ['--graph-files',
-                          'gen*.json',
-                          '--length',
-                          '2',
-                          '--concrete-solver',
-                          '--unbounded-solver',
-                          '--bounded-solver',
-                          '--aggregate-solver',
-                          '--mc-reporter']
+    log.debug('Running Scripts: run_solvers_on_graphs.py')
+    solver_script_args = [
+        ['--graph-files', 'concat*.json', '--length', '3', '--concrete-solver', '--unbounded-solver', '--bounded-solver', '--aggregate-solver', '--weighted-solver', '--mc-reporter'],
+        ['--graph-files', 'delete*.json', '--length', '3', '--concrete-solver', '--unbounded-solver', '--bounded-solver', '--aggregate-solver', '--weighted-solver', '--mc-reporter'],
+        ['--graph-files', 'replace*.json', '--length', '3', '--concrete-solver', '--unbounded-solver', '--bounded-solver', '--aggregate-solver', '--weighted-solver', '--mc-reporter']
+    ]
 
-    if args.debug:
-        solver_script_args.append('--debug')
-    run_solvers_on_graphs.main(solver_script_args)
+    if options.debug:
+        for args in solver_script_args:
+            args.append('--debug')
+    for args in solver_script_args:
+        run_solvers_on_graphs.main(args)
 
     # run analyze results script
-    log.debug('Running Script: analyze_results.py')
-    analyze_script_args = ['--result-files', 'gen*', '--mc-reporter']
+    log.debug('Running Scripts: analyze_results.py')
+    analyze_script_args = [
+        ['--result-files', 'concat*', '--mc-reporter'],
+        ['--result-files', 'delete*', '--mc-reporter'],
+        ['--result-files', 'replace*', '--mc-reporter']
+    ]
 
-    if args.debug:
-        analyze_script_args.append('--debug')
-    analyze_results.main(analyze_script_args)
+    if options.debug:
+        for args in analyze_script_args:
+            args.append('--debug')
+    for args in analyze_script_args:
+        analyze_results.main(args)
 
 
 if __name__ == '__main__':

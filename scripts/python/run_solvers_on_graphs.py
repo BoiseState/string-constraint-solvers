@@ -345,7 +345,11 @@ def run_solver(solver, files, class_path, settings):
         # include other framework args
         for arg in settings.framework_args:
             cmd.append(arg)
-        log.debug('Command: %s', ' '.join(cmd))
+        log.debug('Command: %s', ' '.join(['java -cp <CLASSPATH> -Xmx2g '
+                                           'edu.boisestate.cs.SolveMain '
+                                           '{0}'.format(gf),
+                                           ' '.join(solver.args),
+                                           ' '.join(settings.framework_args)]))
 
         try:
             with open(result_filepath, 'w') as out_file:

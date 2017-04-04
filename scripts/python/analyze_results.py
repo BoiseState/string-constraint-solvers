@@ -355,15 +355,25 @@ def produce_output_data(data_map, solvers, f_name):
     field_names.append('Id')
     field_names.append('Operation')
 
-    # for solver in solvers:
-    for solver in sorted(solvers, cmp=compare_solvers):
-        # add field names for each solver
+    # set field names for each solver
+    sorted_solvers = sorted(solvers, cmp=compare_solvers)
+    for solver in sorted_solvers:
         prefix = solver.upper()[0]
         field_names.append(prefix + ' IN MC')
+    for solver in sorted_solvers:
+        prefix = solver.upper()[0]
         field_names.append(prefix + ' T MC')
+    for solver in sorted_solvers:
+        prefix = solver.upper()[0]
         field_names.append(prefix + ' F MC')
+    for solver in sorted_solvers:
+        prefix = solver.upper()[0]
         field_names.append(prefix + ' Time')
+    for solver in sorted_solvers:
+        prefix = solver.upper()[0]
         field_names.append(prefix + ' T Time')
+    for solver in sorted_solvers:
+        prefix = solver.upper()[0]
         field_names.append(prefix + ' F Time')
 
     # initialize output row list

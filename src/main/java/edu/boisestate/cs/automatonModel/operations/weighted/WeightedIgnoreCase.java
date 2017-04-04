@@ -56,6 +56,11 @@ public class WeightedIgnoreCase
                         // get i as char
                         char c = (char) i;
 
+                        // duplicate transition for single char if needed
+                        if (min != max) {
+                            transitions.add(new WeightedTransition(c, dest, weight));
+                        }
+
                         // if char is uppercase
                         if (Character.isUpperCase(c)) {
 
@@ -74,6 +79,10 @@ public class WeightedIgnoreCase
                             transitions.add(ucTrans);
                         }
                     }
+                }
+                if (min != max) {
+                    transitions.remove(t);
+
                 }
             }
         }

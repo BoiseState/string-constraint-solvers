@@ -316,6 +316,7 @@ public class AggregateAutomataModel
         return new AggregateAutomataModel(results, this.alphabet, newBoundLength);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public AutomatonModel assertNotContainedInOther(AutomatonModel notContainingModel) {
         ensureAggregateModel(notContainingModel);
@@ -391,6 +392,7 @@ public class AggregateAutomataModel
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public AutomatonModel assertNotEndsOther(AutomatonModel notContainingModel) {
         ensureAggregateModel(notContainingModel);
@@ -495,6 +497,7 @@ public class AggregateAutomataModel
         return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public AutomatonModel assertNotStartsOther(AutomatonModel notContainingModel) {
         ensureAggregateModel(notContainingModel);

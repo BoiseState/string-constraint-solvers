@@ -53,26 +53,26 @@ public class Given_WeightedReplaceCharReplaceKnown_For_WeightedAutomata {
 
         // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{
-                {"Empty", 0, empty, 'A'},
-                {"Empty", 0, empty, 'B'},
-                {"Empty", 0, empty, 'C'},
-                {"Empty", 0, empty, 'D'},
-                {"Empty String", 4, emptyString, 'A'},
-                {"Empty String", 4, emptyString, 'B'},
-                {"Empty String", 4, emptyString, 'C'},
-                {"Empty String", 4, emptyString, 'D'},
-                {"Concrete", 4, concrete, 'A'},
-                {"Concrete", 4, concrete, 'B'},
-                {"Concrete", 4, concrete, 'C'},
-                {"Concrete", 4, concrete, 'D'},
-                {"Uniform", 340, uniform, 'A'},
-                {"Uniform", 340, uniform, 'B'},
-                {"Uniform", 340, uniform, 'C'},
-                {"Uniform", 340, uniform, 'D'},
-                {"Non-uniform", 180, nonUniform, 'A'},
-                {"Non-uniform", 180, nonUniform, 'B'},
-                {"Non-uniform", 180, nonUniform, 'C'},
-                {"Non-uniform", 180, nonUniform, 'D'}
+//                {"Empty", 0, empty, 'A'},
+//                {"Empty", 0, empty, 'B'},
+//                {"Empty", 0, empty, 'C'},
+//                {"Empty", 0, empty, 'D'},
+//                {"Empty String", 4, emptyString, 'A'},
+//                {"Empty String", 4, emptyString, 'B'},
+//                {"Empty String", 4, emptyString, 'C'},
+//                {"Empty String", 4, emptyString, 'D'},
+//                {"Concrete", 4, concrete, 'A'},
+//                {"Concrete", 4, concrete, 'B'},
+//                {"Concrete", 4, concrete, 'C'},
+//                {"Concrete", 4, concrete, 'D'},
+//                {"Uniform", 340, uniform, 'A'},
+//                {"Uniform", 340, uniform, 'B'},
+//                {"Uniform", 340, uniform, 'C'},
+//                {"Uniform", 340, uniform, 'D'},
+//                {"Non-uniform", 180, nonUniform, 'A'},
+//                {"Non-uniform", 180, nonUniform, 'B'},
+//                {"Non-uniform", 180, nonUniform, 'C'},
+//                {"Non-uniform", 180, nonUniform, 'D'}
         });
     }
 

@@ -45,8 +45,8 @@ public class Given_WeightedAutomatonModel_When_Trimmed {
         WeightedAutomatonModel nonUniformModel = getNonUniformWeightedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
-                {"Empty", 0, emptyModel},
-                {"Empty String", 1, emptyStringModel},
+//                {"Empty", 0, emptyModel},
+//                {"Empty String", 1, emptyStringModel},
 //                {"Concrete Whitespace", 1, whiteSpaceConcreteModel},
 //                {"Concrete No Whitespace", 1, noWhiteSpaceConcreteModel},
 //                {"Uniform", 156, uniformModel},
