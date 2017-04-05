@@ -148,7 +148,7 @@ public class Parser {
             fName.equals("concat") ||
             fName.equals("append")) {
 
-            operationString = processAppend(constraint);
+            operationString = processConcat(constraint);
 
         } else if (fName.equals("<init>")) {
 
@@ -274,13 +274,14 @@ public class Parser {
      *
      * @return Returns a string representation of the operation.
      */
-    private String processAppend(PrintConstraint constraint) {
+    private String processConcat(PrintConstraint constraint) {
 
         // get constraint info as variables
         Map<String, Integer> sourceMap = constraint.getSourceMap();
         String string = constraint.getSplitValue();
         int id = constraint.getId();
         int base = sourceMap.get("t");
+        String fName = string.split("!!")[0];
 
         // get arg id from source map, -1 if none
         int arg = -1;
@@ -289,11 +290,9 @@ public class Parser {
         }
 
         // initialize operation string
-        String operation = String.format("<S:%d>.append(<CS:%d>)", base, arg);
+        String operation = String.format("<S:%d>.%s(<CS:%d>)", base, fName, arg);
         if (this.solver.isSingleton(arg)) {
-            operation = String.format("<S:%d>.append(\\\"%s\\\")",
-                                      base,
-                                      actualVals.get(arg));
+            operation = String.format("<S:%d>.%s(\\\"%s\\\")", base, fName, actualVals.get(arg));
         }
 
         // if argument not set
@@ -364,7 +363,7 @@ public class Parser {
             solver.newConcreteString(charId, charString);
 
             // update operation string
-            operation = String.format("<S:%d>.append('%s')", base, charString);
+            operation = String.format("<S:%d>.%s('%s')", base, fName, charString);
 
         }
         // stringBuilder.concatenate(boolean b)
@@ -399,7 +398,7 @@ public class Parser {
             }
 
             // update operation string
-            operation = String.format("<S:%d>.append(%s)", base, argString);
+            operation = String.format("<S:%d>.%s(%s)", base, fName, argString);
         }
         // stringBuilder.concatenate(String str)
         // if only param is a string
@@ -414,9 +413,7 @@ public class Parser {
                 solver.newConcreteString(arg, argValue);
 
                 // update operation string
-                operation = String.format("<S:%d>.concat(\\\"%s\\\")",
-                                          base,
-                                          argValue);
+                operation = String.format("<S:%d>.%s(\\\"%s\\\")", base, fName, argValue);
 
             } else {
 
@@ -424,7 +421,7 @@ public class Parser {
                 solver.newSymbolicString(arg);
 
                 // update operation string
-                operation = String.format("<S:%d>.concat(<S:%d>)", base, arg);
+                operation = String.format("<S:%d>.%s(<S:%d>)", base, fName, arg);
             }
         }
 

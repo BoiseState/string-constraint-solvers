@@ -12,6 +12,10 @@
                 "size": {
                     "type": "number",
                     "minimum": 0
+                },
+                "max" : {
+                  "type": "number",
+                  "minimum": 0
                 }
             }
         },

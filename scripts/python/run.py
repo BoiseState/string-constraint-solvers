@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 import argparse
-import logging
 
 import logging
 import os
@@ -8,7 +7,7 @@ import platform
 import subprocess
 import sys
 
-import analyze_results
+import gather_results
 import generate_graphs
 import run_solvers_on_graphs
 
@@ -29,6 +28,15 @@ formatter = logging.Formatter(
 ch.setFormatter(formatter)
 
 log.addHandler(ch)
+
+# globals
+result_groups = (
+    'concat',
+    'delete',
+    'replace'
+)
+
+
 
 
 def compile_sources():
@@ -114,17 +122,17 @@ def main(arguments):
 
     # run analyze results script
     log.debug('Running Scripts: analyze_results.py')
-    analyze_script_args = [
+    gather_script_args = [
         ['--result-files', 'concat*', '--mc-reporter'],
         ['--result-files', 'delete*', '--mc-reporter'],
         ['--result-files', 'replace*', '--mc-reporter']
     ]
 
     if options.debug:
-        for args in analyze_script_args:
+        for args in gather_script_args:
             args.append('--debug')
-    for args in analyze_script_args:
-        analyze_results.main(args)
+    for args in gather_script_args:
+        gather_results.main(args)
 
 
 if __name__ == '__main__':
