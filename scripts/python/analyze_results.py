@@ -29,7 +29,61 @@ log.addHandler(ch)
 
 # initialize settings and matricies variables
 SETTINGS = None
-VERIFICATION_MATRICIES = None
+VERIFICATION_MATRICIES = {
+    'concat': (('-', '-', '>', '>', '='),
+               ('-', '-', '>', '>', '-'),
+               ('<', '<', '-', '=', '<'),
+               ('<', '<', '=', '-', '<'),
+               ('=', '-', '>', '>', '-')),
+    'delete': (('-', '>', '>', '>', '='),
+               ('<', '-', '=', '<', '<'),
+               ('<', '=', '-', '<', '<'),
+               ('<', '>', '>', '-', '<'),
+               ('=', '>', '>', '>', '-')),
+    'insert': (('-', '-', '>', '>', '='),
+               ('-', '-', '>', '>', '-'),
+               ('<', '<', '-', '=', '<'),
+               ('<', '<', '=', '-', '<'),
+               ('=', '-', '>', '>', '-')),
+    'injective': (('-', '=', '=', '=', '='),
+                  ('=', '-', '=', '=', '='),
+                  ('=', '=', '-', '=', '='),
+                  ('=', '=', '=', '-', '='),
+                  ('=', '=', '=', '=', '-')),
+    'replace': (('-', '>', '>', '>', '='),
+                ('<', '-', '=', '=', '<'),
+                ('<', '=', '-', '=', '<'),
+                ('<', '=', '=', '-', '<'),
+                ('=', '>', '>', '>', '-')),
+    'setCharAt': (('-', '>', '>', '>', '='),
+                  ('<', '-', '=', '=', '<'),
+                  ('<', '=', '-', '=', '<'),
+                  ('<', '=', '=', '-', '<'),
+                  ('=', '>', '>', '>', '-')),
+    'setLength': (('-', '>', '>', '>', '='),
+                  ('<', '-', '=', '=', '<'),
+                  ('<', '=', '-', '<', '<'),
+                  ('<', '=', '>', '-', '<'),
+                  ('=', '>', '>', '>', '-')),
+    'substring': (('-', '-', '>', '>', '='),
+                  ('-', '-', '>', '-', '-'),
+                  ('<', '<', '-', '<', '<'),
+                  ('<', '-', '>', '-', '<'),
+                  ('=', '-', '>', '>', '-')),
+    'trim': (('-', '>', '>', '>', '='),
+             ('<', '-', '=', '<', '<'),
+             ('<', '=', '-', '<', '<'),
+             ('<', '>', '>', '-', '<'),
+             ('=', '>', '>', '>', '-'))
+}
+
+SOLVER_ORDER = {
+    'concrete': 1,
+    'unbounded': 2,
+    'bounded': 3,
+    'aggregate': 4,
+    'weighted': 5
+}
 
 
 class Settings:
@@ -51,90 +105,13 @@ class Settings:
             self.reporter = 'sat'
 
 
-# initialize verification matricies
-def get_verification_matricies():
-    if VERIFICATION_MATRICIES is not None:
-        return VERIFICATION_MATRICIES
-
-    verification = dict()
-    # add concat matrix
-    verification['concat'] = [['-', '-', '>', '>', '='],
-                              ['-', '-', '>', '>', '-'],
-                              ['<', '<', '-', '=', '<'],
-                              ['<', '<', '=', '-', '<'],
-                              ['=', '-', '>', '>', '-']]
-    verification['delete'] = [['-', '>', '>', '>', '='],
-                              ['<', '-', '=', '<', '<'],
-                              ['<', '=', '-', '<', '<'],
-                              ['<', '>', '>', '-', '<'],
-                              ['=', '>', '>', '>', '-']]
-    verification['insert'] = [['-', '-', '>', '>', '='],
-                              ['-', '-', '>', '>', '-'],
-                              ['<', '<', '-', '=', '<'],
-                              ['<', '<', '=', '-', '<'],
-                              ['=', '-', '>', '>', '-']]
-    verification['injective'] = [['-', '=', '=', '=', '='],
-                                 ['=', '-', '=', '=', '='],
-                                 ['=', '=', '-', '=', '='],
-                                 ['=', '=', '=', '-', '='],
-                                 ['=', '=', '=', '=', '-']]
-    verification['replace'] = [['-', '>', '>', '>', '='],
-                               ['<', '-', '=', '=', '<'],
-                               ['<', '=', '-', '=', '<'],
-                               ['<', '=', '=', '-', '<'],
-                               ['=', '>', '>', '>', '-']]
-    verification['setCharAt'] = [['-', '>', '>', '>', '='],
-                                 ['<', '-', '=', '=', '<'],
-                                 ['<', '=', '-', '=', '<'],
-                                 ['<', '=', '=', '-', '<'],
-                                 ['=', '>', '>', '>', '-']]
-    verification['setLength'] = [['-', '>', '>', '>', '='],
-                                 ['<', '-', '=', '=', '<'],
-                                 ['<', '=', '-', '<', '<'],
-                                 ['<', '=', '>', '-', '<'],
-                                 ['=', '>', '>', '>', '-']]
-    verification['substring'] = [['-', '-', '>', '>', '='],
-                                 ['-', '-', '>', '-', '-'],
-                                 ['<', '<', '-', '<', '<'],
-                                 ['<', '-', '>', '-', '<'],
-                                 ['=', '-', '>', '>', '-']]
-    verification['trim'] = [['-', '>', '>', '>', '='],
-                            ['<', '-', '=', '<', '<'],
-                            ['<', '=', '-', '<', '<'],
-                            ['<', '>', '>', '-', '<'],
-                            ['=', '>', '>', '>', '-']]
-
-    # save matricies for future use
-    global VERIFICATION_MATRICIES
-    VERIFICATION_MATRICIES = verification
-
-    # return matricies
-    return verification
-
-
 def compare_solvers(x, y):
-    if x == y:
-        return 0
-    elif x == 'concrete':
-        return -1
-    elif y == 'concrete':
-        return 1
-    elif x == 'unbounded':
-        return -1
-    elif y == 'unbounded':
-        return 1
-    elif x == 'bounded':
-        return -1
-    elif y == 'bounded':
-        return 1
-    elif x == 'aggregate':
-        return -1
-    elif y == 'aggregate':
-        return 1
-    elif x == 'weighted':
-        return -1
-    elif y == 'weighted':
-        return 1
+    if x in SOLVER_ORDER.keys() and y in SOLVER_ORDER.keys():
+        return SOLVER_ORDER[x] - SOLVER_ORDER[y]
+    elif x in SOLVER_ORDER.keys():
+        return SOLVER_ORDER[x] - 6
+    elif y in SOLVER_ORDER.keys():
+        return 6 - SOLVER_ORDER[y]
     else:
         return 0
 
@@ -145,12 +122,12 @@ def compare_rows(x, y):
     op_y = y.get('Operation')
 
     # extract operations using regular expression
-    regex_pattern = '<S:\d+> = (?:<init>|\".*?\")' \
-                    '(?: -> <S:\d+>.(\w+\(.*?\)))?' \
-                    '(?: -> <S:\d+>.(\w+\(.*?\)))?' \
-                    '(?: -> <S:\d+>.(\w+\(.*?\)))?' \
-                    '(?: -> <S:\d+>.(\w+\(.*?\)))?' \
-                    '(?: -> <S:\d+>.(\w+\(.*?\)))?'
+    regex_pattern = '<S:\d+> = (?:<init>|\".*?\")\{\d\}' \
+                    '(?: -> <S:\d+>.(\w+\(.*?\))\{\d\})?' \
+                    '(?: -> <S:\d+>.(\w+\(.*?\))\{\d\})?' \
+                    '(?: -> <S:\d+>.(\w+\(.*?\))\{\d\})?' \
+                    '(?: -> <S:\d+>.(\w+\(.*?\))\{\d\})?' \
+                    '(?: -> <S:\d+>.(\w+\(.*?\))\{\d\})?'
     x_match = re.match(regex_pattern, op_x)
     y_match = re.match(regex_pattern, op_y)
 

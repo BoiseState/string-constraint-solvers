@@ -410,7 +410,10 @@ final public class BasicWeightedOperations {
         }
         if (a2.isSingleton()) {
             if (a1.run(a2.singleton)) {
-                return a2.cloneIfRequired();
+                WeightedAutomaton clone = a2.cloneIfRequired();
+                clone.setNumEmptyStrings(a1.getNumEmptyStrings());
+                clone.setInitialFactor(a1.getInitialFactor());
+                return clone;
             } else {
                 return BasicWeightedAutomata.makeEmpty();
             }
@@ -424,6 +427,7 @@ final public class BasicWeightedOperations {
                 WeightedAutomaton.getSortedTransitions(a2.getStates());
         WeightedAutomaton c = new WeightedAutomaton();
         c.setInitialFactor(a1.getInitialFactor());
+        c.setNumEmptyStrings(a1.getNumEmptyStrings());
         LinkedList<WeightedStatePair> workList = new LinkedList<>();
         HashMap<WeightedStatePair, WeightedStatePair> newStates =
                 new HashMap<>();

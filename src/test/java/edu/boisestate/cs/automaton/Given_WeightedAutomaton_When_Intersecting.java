@@ -58,6 +58,7 @@ public class Given_WeightedAutomaton_When_Intersecting {
         WeightedAutomaton unbalancedNonUniform0 = unbalanced_NonUniform_WeightedAutomaton_0();
         WeightedAutomaton unbalancedNonUniform1 = unbalanced_NonUniform_WeightedAutomaton_1();
         WeightedAutomaton unbalancedNonUniform2 = unbalanced_NonUniform_WeightedAutomaton_2();
+        WeightedAutomaton uniform0Delete01 = uniform1_Delete_0_1();
 
         // index 1 is the bounding length (-1) for none
         return Arrays.asList(new Object[][]{
@@ -115,7 +116,12 @@ public class Given_WeightedAutomaton_When_Intersecting {
                 {"Unbalanced Non-Uniform 2", "Empty String", 0, unbalancedNonUniform2, emptyString},
                 {"Unbalanced Non-Uniform 2", "Concrete", 0, unbalancedNonUniform2, concrete},
                 {"Unbalanced Non-Uniform 2", "Uniform", 37, unbalancedNonUniform2, uniform},
-                {"Unbalanced Non-Uniform 2", "Non-Uniform", 28, unbalancedNonUniform2, nonUniform}
+                {"Unbalanced Non-Uniform 2", "Non-Uniform", 28, unbalancedNonUniform2, nonUniform},
+                {"Uniform 1 delete(0,1)", "Empty", 0, uniform0Delete01, empty},
+                {"Uniform 1 delete(0,1)", "Empty String", 4, uniform0Delete01, emptyString},
+                {"Uniform 1 delete(0,1)", "Concrete", 0, uniform0Delete01, concrete},
+                {"Uniform 1 delete(0,1)", "Uniform", 4, uniform0Delete01, uniform},
+                {"Uniform 1 delete(0,1)", "Non-Uniform", 0, uniform0Delete01, nonUniform}
         });
     }
 

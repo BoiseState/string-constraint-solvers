@@ -1200,7 +1200,7 @@ public class WeightedAutomaton
         StringBuilder b = new StringBuilder("digraph Automaton {\n");
         b.append("  rankdir = LR;\n");
         if (numEmptyStrings > 1) {
-            b.append("  info [shape=point,label=\"Empty Strings: ")
+            b.append("  info [shape=note,label=\"Empty Strings: ")
              .append(numEmptyStrings)
              .append("\"];\n");
         }

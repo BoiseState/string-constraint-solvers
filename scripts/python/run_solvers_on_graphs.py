@@ -263,8 +263,7 @@ def get_classpath():
                 subprocess.check_call(cmd,
                                       stderr=dev_null,
                                       stdout=dev_null,
-                                      cwd=project_dir,
-                                      shell=True)
+                                      cwd=project_dir)
 
             # use subprocess to get class path from maven
             cmd = ['mvn', 'dependency:build-classpath']
@@ -293,12 +292,12 @@ def get_classpath():
     # maven not available or unsuccessful
     class_path += os.path.join(project_dir, 'bin')
 
-    # # for all matching files in lib directory
-    # for f in os.listdir(os.path.join(project_dir, 'lib')):
-    #     if os.path.isfile(f) and \
-    #             fnmatch.fnmatch(f, '*.jar'):
-    #         # add file path to class path
-    #         class_path += os.path.join(project_dir, 'lib', f)
+    # for all matching files in lib directory
+    for f in os.listdir(os.path.join(project_dir, 'lib')):
+        if os.path.isfile(f) and \
+                fnmatch.fnmatch(f, '*.jar'):
+            # add file path to class path
+            class_path += os.path.join(project_dir, 'lib', f)
 
     # return classpath
     log.debug('Constructed classpath: %s', class_path)

@@ -200,6 +200,10 @@ def add_concat_operations(ops):
     for c in args:
         ops.append(OperationValue('concat!!Ljava/lang/String;', [c]))
 
+    # add unknown string concatenation for non-uniform inputs
+    if my_globals['settings'].non_uniform:
+        ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)]))
+
 
 def add_delete_char_at_operations(ops):
     # sb.deleteCharAt(index)

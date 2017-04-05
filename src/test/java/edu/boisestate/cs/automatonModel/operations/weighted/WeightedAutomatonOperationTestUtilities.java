@@ -540,4 +540,21 @@ public class WeightedAutomatonOperationTestUtilities {
         // return automaton
         return automaton;
     }
+
+    @SuppressWarnings("Duplicates")
+    public static WeightedAutomaton uniform1_Delete_0_1() {
+        // crete states
+        WeightedState q0 = new WeightedState();
+
+        // set accept state
+        q0.setAccept(true);
+
+        // create automaton
+        WeightedAutomaton automaton = new WeightedAutomaton();
+        automaton.setInitialState(q0);
+        automaton.setNumEmptyStrings(4);
+
+        // return automaton
+        return automaton;
+    }
 }
