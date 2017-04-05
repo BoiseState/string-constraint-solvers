@@ -78,6 +78,10 @@ class OperationValue:
         self.op_args = list() if op_args is None else op_args
         self.num = num
 
+        self.args_known = dict()
+        for x in op_args:
+            self.args_known[x] = True
+
     def get_value(self):
         return '{0.op}!:!{0.num}'.format(self)
 
@@ -567,7 +571,10 @@ def random_string(length=None):
 def perform_concat(string, op):
     # randomize arg value if unknown
     if ord(op.op_args[0]) == 0:
-        op.op_args[0] = random_char()
+        max_len = gen_globals['settings'].max_initial_length
+        str_len = random_length(0, max_len)
+        op.op_args[0] = random_string(str_len)
+        op.args_known[op.op_args[0]] = False
 
     # return concatenated string
     return string + op.op_args[0]
@@ -943,7 +950,8 @@ def perform_op(original_value, op):
         return perform_replace_char(original_value, op)
     elif op.op == 'replace!!Ljava/lang/CharSequence;Ljava/lang/CharSequence;':
         return perform_replace_string(original_value, op)
-    elif op.op in ['replaceAll!!Ljava/lang/String;Ljava/lang/String;', 'replaceFirst!!Ljava/lang/String;Ljava/lang/String;']:
+    elif op.op in ['replaceAll!!Ljava/lang/String;Ljava/lang/String;',
+                   'replaceFirst!!Ljava/lang/String;Ljava/lang/String;']:
         return perform_replace_regex(original_value, op)
     elif op.op == 'replace!!IILjava/lang/String;':
         return perform_replace_substring(original_value, op)
@@ -961,22 +969,6 @@ def perform_op(original_value, op):
         return perform_to_upper_case(original_value)
     elif op.op == 'trim!!':
         return perform_trim(original_value)
-
-    # predicates
-    if op.op == 'contains!!Ljava/lang/CharSequence;':
-        return perform_contains(original_value, op)
-    elif op.op == 'endsWith!!Ljava/lang/String;':
-        return perform_ends_with(original_value, op)
-    elif op.op in ['contentEquals!!Ljava/lang/CharSequence;', 'contentEquals!!Ljava/lang/StringBuffer;', 'equals!!Ljava/lang/Object;']:
-        return perform_equals(original_value, op)
-    elif op.op == 'equalsIgnoreCase!!Ljava/lang/String;':
-        return perform_equals_ignore_case(original_value, op)
-    elif op.op == 'isEmpty!!':
-        return perform_is_empty(original_value)
-    elif op.op == 'startsWith!!Ljava/lang/String;':
-        return perform_starts_with(original_value, op)
-    elif op.op == 'startsWith!!Ljava/lang/String;':
-        return perform_starts_with_offset(original_value, op)
 
 
 def perform_predicate(value, const):
@@ -1036,7 +1028,7 @@ def add_operation(t, countdown, v_list=None):
         # for each operation argument
         for j, arg in enumerate(op.op_args):
             # create root value for arg
-            if len(arg) == 1 and ord(arg) == 0:
+            if not op.args_known[arg]:
                 arg_value = RootValue(False, method="getStringValue!!")
             else:
                 arg_value = RootValue(True, arg, "init")
