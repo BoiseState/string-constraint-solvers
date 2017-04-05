@@ -17,6 +17,8 @@ import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmpty;
 import static edu.boisestate.cs.automaton.BasicWeightedAutomata.makeEmptyString;
 import static edu.boisestate.cs.automaton.WeightedMinimizationOperations
         .minimizeBrzozowski;
+import static edu.boisestate.cs.automaton.WeightedMinimizationOperations
+        .minimizeHopcroft;
 
 public class WeightedAutomatonModel extends AutomatonModel {
 
@@ -180,6 +182,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
         // get all substrings
         WeightedAutomaton substrings = performUnaryOperation(containing, new WeightedAllSubstrings(), this.alphabet);
+        minimizeHopcroft(substrings);
 
         // get resulting automata
         WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, substrings, intersectOp, boundLength);
@@ -201,6 +204,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] containedAutomata = getAutomataFromWeightedModel(containedModel);
         WeightedAutomaton contained = mergeAutomata(containedAutomata);
         WeightedAutomaton x = anyString1.concatenate(contained).concatenate(anyString2);
+        minimizeHopcroft(x);
 
         // get resulting automata
         WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, x, intersectOp, boundLength);
@@ -235,6 +239,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
         // get all suffixes
         WeightedAutomaton suffixes = performUnaryOperation(containing, new WeightedAllSuffixes(), this.alphabet);
+        minimizeHopcroft(suffixes);
 
         // get resulting automata
         WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, suffixes, intersectOp, boundLength);
@@ -255,6 +260,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] endingAutomata = getAutomataFromWeightedModel(endingModel);
         WeightedAutomaton ending = mergeAutomata(endingAutomata);
         WeightedAutomaton x = anyString.concatenate(ending);
+        minimizeHopcroft(x);
 
         // get resulting automata
         WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, x, intersectOp, boundLength);
@@ -271,6 +277,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         // get equal automaton
         WeightedAutomaton[] equalAutomata = getAutomataFromWeightedModel(equalModel);
         WeightedAutomaton equal = mergeAutomata(equalAutomata);
+        minimizeHopcroft(equal);
 
         // get resulting automata
         WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, equal, intersectOp, boundLength);
@@ -288,6 +295,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] equalAutomata = getAutomataFromWeightedModel(equalModel);
         WeightedAutomaton equal = mergeAutomata(equalAutomata);
         WeightedAutomaton equalIgnoreCase = performUnaryOperation(equal, new WeightedIgnoreCase(), this.alphabet);
+        minimizeHopcroft(equalIgnoreCase);
 
         // get resulting automata
         WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, equalIgnoreCase, intersectOp, boundLength);
@@ -306,6 +314,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
         // get any string with length between min and max
         WeightedAutomaton minMax = makeCharSet(this.alphabet.getCharSet()).repeat(min, max);
+        minimizeHopcroft(minMax);
 
         // get new bound length
         int newBoundLength = max;
@@ -320,6 +329,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         return new WeightedAutomatonModel(results, this.alphabet, newBoundLength);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public AutomatonModel assertNotContainedInOther(AutomatonModel notContainingModel) {
         ensureWeightedModel(notContainingModel);
@@ -342,6 +352,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         if(!notContaining.isEmpty()) {
             // get all substrings
             WeightedAutomaton substrings = performUnaryOperation(notContaining, new WeightedAllSubstrings(), this.alphabet);
+            minimizeHopcroft(substrings);
 
             // get resulting automata
             results = performBinaryAutomatonOperation(automata, substrings, minusOp, boundLength);
@@ -372,6 +383,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
             // concatenate with contained automaton
             WeightedAutomaton x = anyString1.concatenate(notContained)
                                             .concatenate(anyString2);
+            minimizeHopcroft(x);
 
             // get resulting automata
             results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
@@ -413,6 +425,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         if(!notContaining.isEmpty()) {
             // get all suffixes
             WeightedAutomaton suffixes = performUnaryOperation(notContaining, new WeightedAllSuffixes(), this.alphabet);
+            minimizeHopcroft(suffixes);
 
             // get resulting automata
             results = performBinaryAutomatonOperation(automata, suffixes, minusOp, boundLength);
@@ -440,6 +453,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
             // concatenate with contained automaton
             WeightedAutomaton x = anyString.concatenate(notEnding);
+            minimizeHopcroft(x);
 
             // get resulting automata
             results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
@@ -461,6 +475,8 @@ public class WeightedAutomatonModel extends AutomatonModel {
         // if not equal automaton is a singleton
         WeightedAutomaton[] results = automata;
         if (notEqual.getFiniteStrings(1) != null) {
+            minimizeHopcroft(notEqual);
+
             // get resulting automata
             results = performBinaryAutomatonOperation(automata, notEqual, minusOp, boundLength);
         }
@@ -482,6 +498,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] results = automata;
         if (notEqual.getFiniteStrings(1) != null) {
             WeightedAutomaton notEqualIgnoreCase = performUnaryOperation( notEqual, new WeightedIgnoreCase(), this.alphabet);
+            minimizeHopcroft(notEqualIgnoreCase);
 
             // get resulting automata
             results = performBinaryAutomatonOperation( automata, notEqualIgnoreCase, minusOp, boundLength);
@@ -514,6 +531,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         if(!notContaining.isEmpty()) {
             // get all prefixes
             WeightedAutomaton prefixes = performUnaryOperation(notContaining, new WeightedAllPrefixes(), this.alphabet);
+            minimizeHopcroft(prefixes);
 
             // get resulting automata
             results = performBinaryAutomatonOperation(automata, prefixes, minusOp, boundLength);
@@ -541,6 +559,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
             // concatenate with contained automaton
             WeightedAutomaton x = notStarting.concatenate(anyString);
+            minimizeHopcroft(x);
 
             // get resulting automata
             results = performBinaryAutomatonOperation(automata, x, minusOp, boundLength);
@@ -567,6 +586,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
         // get all prefixes
         WeightedAutomaton prefixes = performUnaryOperation(containing, new WeightedAllPrefixes(), this.alphabet);
+        minimizeHopcroft(prefixes);
 
         // get resulting automata
         WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, prefixes, intersectOp, boundLength);
@@ -587,6 +607,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] startingAutomata = getAutomataFromWeightedModel(startingModel);
         WeightedAutomaton starting = mergeAutomata(startingAutomata);
         WeightedAutomaton x = starting.concatenate(anyString);
+        minimizeHopcroft(x);
 
         // get resulting automata
         WeightedAutomaton[] results = performBinaryAutomatonOperation(automata, x, intersectOp, boundLength);
