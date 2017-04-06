@@ -51,7 +51,7 @@ public class Given_BoundedAutomatonModel_When_AssertingEmpty {
                 {"Empty String", 1, emptyStringModel},
                 {"Concrete", 0, concreteModel},
                 {"Uniform", 1, uniformModel},
-                {"Non-uniform", 0, nonUniformModel}
+                {"Non-Uniform", 0, nonUniformModel}
         });
     }
 

@@ -111,18 +111,18 @@ public class Given_WeightedPreciseSetCharAt_For_WeightedAutomata {
 //                {"Uniform", "'B'", 64, uniform, 2, b},
 //                {"Uniform", "'C'", 64, uniform, 2, c},
 //                {"Uniform", "'D'", 64, uniform, 2, d},
-//                {"Non-uniform", "'A'", 45, nonUniform, 0, a},
-//                {"Non-uniform", "'B'", 45, nonUniform, 0, b},
-//                {"Non-uniform", "'C'", 45, nonUniform, 0, c},
-//                {"Non-uniform", "'D'", 45, nonUniform, 0, d},
-//                {"Non-uniform", "'A'", 44, nonUniform, 1, a},
-//                {"Non-uniform", "'B'", 44, nonUniform, 1, b},
-//                {"Non-uniform", "'C'", 44, nonUniform, 1, c},
-//                {"Non-uniform", "'D'", 44, nonUniform, 1, d},
-//                {"Non-uniform", "'A'", 37, nonUniform, 2, a},
-//                {"Non-uniform", "'B'", 37, nonUniform, 2, b},
-//                {"Non-uniform", "'C'", 37, nonUniform, 2, c},
-//                {"Non-uniform", "'D'", 37, nonUniform, 2, d}
+//                {"Non-Uniform", "'A'", 45, nonUniform, 0, a},
+//                {"Non-Uniform", "'B'", 45, nonUniform, 0, b},
+//                {"Non-Uniform", "'C'", 45, nonUniform, 0, c},
+//                {"Non-Uniform", "'D'", 45, nonUniform, 0, d},
+//                {"Non-Uniform", "'A'", 44, nonUniform, 1, a},
+//                {"Non-Uniform", "'B'", 44, nonUniform, 1, b},
+//                {"Non-Uniform", "'C'", 44, nonUniform, 1, c},
+//                {"Non-Uniform", "'D'", 44, nonUniform, 1, d},
+//                {"Non-Uniform", "'A'", 37, nonUniform, 2, a},
+//                {"Non-Uniform", "'B'", 37, nonUniform, 2, b},
+//                {"Non-Uniform", "'C'", 37, nonUniform, 2, c},
+//                {"Non-Uniform", "'D'", 37, nonUniform, 2, d}
         });
     }
 

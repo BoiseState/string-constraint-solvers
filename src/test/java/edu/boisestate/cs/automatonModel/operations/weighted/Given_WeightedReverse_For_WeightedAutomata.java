@@ -52,7 +52,7 @@ public class Given_WeightedReverse_For_WeightedAutomata {
                 {"Empty String", 1, emptyString},
                 {"Concrete", 1, concrete},
                 {"Uniform Unbounded", 85, uniform},
-                {"Non-uniform Unbounded", 45, nonUniform}
+                {"Non-Uniform Unbounded", 45, nonUniform}
         });
     }
 

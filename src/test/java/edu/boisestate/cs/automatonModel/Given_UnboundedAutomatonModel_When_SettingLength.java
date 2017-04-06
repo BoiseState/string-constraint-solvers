@@ -60,10 +60,10 @@ public class Given_UnboundedAutomatonModel_When_SettingLength {
                 {"Uniform", 5, uniformModel, 1},
                 {"Uniform", 21, uniformModel, 2},
                 {"Uniform", 85, uniformModel, 3},
-                {"Non-uniform", 1, nonUniformModel, 0},
-                {"Non-uniform", 4, nonUniformModel, 1},
-                {"Non-uniform", 17, nonUniformModel, 2},
-                {"Non-uniform", 72, nonUniformModel, 3}
+                {"Non-Uniform", 1, nonUniformModel, 0},
+                {"Non-Uniform", 4, nonUniformModel, 1},
+                {"Non-Uniform", 17, nonUniformModel, 2},
+                {"Non-Uniform", 72, nonUniformModel, 3}
         });
     }
 

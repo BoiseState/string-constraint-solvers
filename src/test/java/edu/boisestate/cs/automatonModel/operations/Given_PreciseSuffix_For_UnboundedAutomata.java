@@ -63,10 +63,10 @@ public class Given_PreciseSuffix_For_UnboundedAutomata {
                 {"Uniform", 21, uniform, 1},
                 {"Uniform", 5, uniform, 2},
                 {"Uniform", 1, uniform, 3},
-                {"Non-uniform", 45, nonUniform, 0},
-                {"Non-uniform", 21, nonUniform, 1},
-                {"Non-uniform", 5, nonUniform, 2},
-                {"Non-uniform", 1, nonUniform, 3}
+                {"Non-Uniform", 45, nonUniform, 0},
+                {"Non-Uniform", 21, nonUniform, 1},
+                {"Non-Uniform", 5, nonUniform, 2},
+                {"Non-Uniform", 1, nonUniform, 3}
         });
     }
 

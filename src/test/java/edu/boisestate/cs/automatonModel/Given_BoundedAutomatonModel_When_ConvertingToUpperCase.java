@@ -52,7 +52,7 @@ public class Given_BoundedAutomatonModel_When_ConvertingToUpperCase {
                 {"Concrete", 1, concreteLowerModel},
                 {"Concrete", 1, concreteUpperModel},
                 {"Uniform", 85, uniformModel},
-                {"Non-uniform", 45, nonUniformModel}
+                {"Non-Uniform", 45, nonUniformModel}
         });
     }
 

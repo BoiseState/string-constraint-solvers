@@ -50,7 +50,7 @@ public class Given_WeightedAutomatonModel_When_Trimmed {
 //                {"Concrete Whitespace", 1, whiteSpaceConcreteModel},
 //                {"Concrete No Whitespace", 1, noWhiteSpaceConcreteModel},
 //                {"Uniform", 156, uniformModel},
-//                {"Non-uniform", 71, nonUniformModel}
+//                {"Non-Uniform", 71, nonUniformModel}
         });
     }
 

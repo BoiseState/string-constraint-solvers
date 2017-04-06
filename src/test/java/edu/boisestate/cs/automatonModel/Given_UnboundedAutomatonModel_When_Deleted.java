@@ -89,16 +89,16 @@ public class Given_UnboundedAutomatonModel_When_Deleted {
                 {"Uniform", 80, uniformModel, 2, 2},
                 {"Uniform", 16, uniformModel, 2, 3},
                 {"Uniform", 64, uniformModel, 3, 3},
-                {"Non-uniform", 45, nonUniformModel, 0, 0},
-                {"Non-uniform", 21, nonUniformModel, 0, 1},
-                {"Non-uniform", 5, nonUniformModel, 0, 2},
-                {"Non-uniform", 1, nonUniformModel, 0, 3},
-                {"Non-uniform", 45, nonUniformModel, 1, 1},
-                {"Non-uniform", 20, nonUniformModel, 1, 2},
-                {"Non-uniform", 4, nonUniformModel, 1, 3},
-                {"Non-uniform", 44, nonUniformModel, 2, 2},
-                {"Non-uniform", 16, nonUniformModel, 2, 3},
-                {"Non-uniform", 37, nonUniformModel, 3, 3}
+                {"Non-Uniform", 45, nonUniformModel, 0, 0},
+                {"Non-Uniform", 21, nonUniformModel, 0, 1},
+                {"Non-Uniform", 5, nonUniformModel, 0, 2},
+                {"Non-Uniform", 1, nonUniformModel, 0, 3},
+                {"Non-Uniform", 45, nonUniformModel, 1, 1},
+                {"Non-Uniform", 20, nonUniformModel, 1, 2},
+                {"Non-Uniform", 4, nonUniformModel, 1, 3},
+                {"Non-Uniform", 44, nonUniformModel, 2, 2},
+                {"Non-Uniform", 16, nonUniformModel, 2, 3},
+                {"Non-Uniform", 37, nonUniformModel, 3, 3}
             });
     }
 

@@ -80,8 +80,8 @@ public class Given_StringModelCounter_When_ModelCounting_For_Automata {
                 {1, -1, "Concrete", concrete},
                 {85, initialBoundLength, "Uniform", uniform},
                 {85, -1, "Uniform", boundUniform},
-                {45, initialBoundLength, "Non-uniform", nonUniform},
-                {45, -1, "Non-uniform", boundNonUniform}
+                {45, initialBoundLength, "Non-Uniform", nonUniform},
+                {45, -1, "Non-Uniform", boundNonUniform}
         });
     }
 

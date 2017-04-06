@@ -52,7 +52,7 @@ public class Given_BoundedAutomatonModel_When_Trimmed {
                 {"Concrete Whitespace", 1, whiteSpaceConcreteModel},
                 {"Concrete No Whitespace", 1, noWhiteSpaceConcreteModel},
                 {"Uniform", 101, uniformModel},
-                {"Non-uniform", 52, nonUniformModel}
+                {"Non-Uniform", 52, nonUniformModel}
         });
     }
 

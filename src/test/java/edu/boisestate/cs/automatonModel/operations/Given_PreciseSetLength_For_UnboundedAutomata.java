@@ -63,10 +63,10 @@ public class Given_PreciseSetLength_For_UnboundedAutomata {
                 {"Uniform", 5, uniform, 1},
                 {"Uniform", 21, uniform, 2},
                 {"Uniform", 85, uniform, 3},
-                {"Non-uniform", 1, nonUniform, 0},
-                {"Non-uniform", 4, nonUniform, 1},
-                {"Non-uniform", 17, nonUniform, 2},
-                {"Non-uniform", 72, nonUniform, 3}
+                {"Non-Uniform", 1, nonUniform, 0},
+                {"Non-Uniform", 4, nonUniform, 1},
+                {"Non-Uniform", 17, nonUniform, 2},
+                {"Non-Uniform", 72, nonUniform, 3}
         });
     }
 

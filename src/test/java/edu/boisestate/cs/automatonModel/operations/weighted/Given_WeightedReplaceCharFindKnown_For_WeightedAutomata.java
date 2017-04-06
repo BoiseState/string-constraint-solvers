@@ -69,10 +69,10 @@ public class Given_WeightedReplaceCharFindKnown_For_WeightedAutomata {
 //                {"Uniform", 340, uniform, 'B'},
 //                {"Uniform", 340, uniform, 'C'},
 //                {"Uniform", 340, uniform, 'D'},
-//                {"Non-uniform", 180, nonUniform, 'A'},
-//                {"Non-uniform", 180, nonUniform, 'B'},
-//                {"Non-uniform", 180, nonUniform, 'C'},
-//                {"Non-uniform", 180, nonUniform, 'D'}
+//                {"Non-Uniform", 180, nonUniform, 'A'},
+//                {"Non-Uniform", 180, nonUniform, 'B'},
+//                {"Non-Uniform", 180, nonUniform, 'C'},
+//                {"Non-Uniform", 180, nonUniform, 'D'}
         });
     }
 

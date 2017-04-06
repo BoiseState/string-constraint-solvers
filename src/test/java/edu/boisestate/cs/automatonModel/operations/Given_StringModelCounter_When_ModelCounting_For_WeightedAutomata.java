@@ -88,7 +88,7 @@ public class Given_StringModelCounter_When_ModelCounting_For_WeightedAutomata {
                 {"Empty String 4", 4, emptyString4},
                 {"Concrete", 1, concrete},
                 {"Uniform", 85, boundUniform},
-                {"Non-uniform", 45, boundNonUniform},
+                {"Non-Uniform", 45, boundNonUniform},
                 {"Balanced Uniform 0", 1, balancedUniform0},
                 {"Balanced Uniform 1", 4, balancedUniform1},
                 {"Balanced Uniform 2", 16, balancedUniform2},

@@ -50,7 +50,7 @@ public class Given_WeightedAutomatonModel_When_ConvertingToLowerCase {
                 {"Concrete", 1, concreteLowerModel},
                 {"Concrete", 1, concreteUpperModel},
                 {"Uniform", 585, uniformModel},
-                {"Non-uniform", 185, nonUniformModel}
+                {"Non-Uniform", 185, nonUniformModel}
         });
     }
 

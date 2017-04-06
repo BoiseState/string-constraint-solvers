@@ -62,10 +62,10 @@ public class Given_WeightedAutomatonModel_When_SettingLength {
 //                {"Uniform", 85, uniformModel, 1},
 //                {"Uniform", 85, uniformModel, 2},
 //                {"Uniform", 85, uniformModel, 3},
-//                {"Non-uniform", 45, nonUniformModel, 0},
-//                {"Non-uniform", 45, nonUniformModel, 1},
-//                {"Non-uniform", 45, nonUniformModel, 2},
-//                {"Non-uniform", 45, nonUniformModel, 3}
+//                {"Non-Uniform", 45, nonUniformModel, 0},
+//                {"Non-Uniform", 45, nonUniformModel, 1},
+//                {"Non-Uniform", 45, nonUniformModel, 2},
+//                {"Non-Uniform", 45, nonUniformModel, 3}
         });
     }
 

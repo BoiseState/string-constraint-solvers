@@ -55,7 +55,7 @@ public class Given_WeightedReplaceCharUnknown_For_WeightedAutomata {
 //                {"Empty String", 16, emptyString},
 //                {"Concrete", 16, concrete},
 //                {"Uniform", 1360, uniform},
-//                {"Non-uniform", 720, nonUniform}
+//                {"Non-Uniform", 720, nonUniform}
         });
     }
 

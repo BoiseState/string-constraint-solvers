@@ -52,7 +52,7 @@ public class Given_PreciseTrim_For_BoundedAutomata {
                 {"Concrete Non-Whitespace", 1, concreteNonWhitespace},
                 {"Concrete Whitespace", 1, concreteWhitespace},
                 {"Uniform", 101, uniform},
-                {"Non-uniform", 52, nonUniform},
+                {"Non-Uniform", 52, nonUniform},
                 {"Any Character", 5, anyChar}
         });
     }

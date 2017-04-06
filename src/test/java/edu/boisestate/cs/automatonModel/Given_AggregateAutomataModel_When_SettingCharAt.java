@@ -102,18 +102,18 @@ public class Given_AggregateAutomataModel_When_SettingCharAt {
                 {"Uniform", "B", 16, uniformModel, 2, bModel},
                 {"Uniform", "C", 16, uniformModel, 2, cModel},
                 {"Uniform", "D", 16, uniformModel, 2, dModel},
-                {"Non-uniform", "A", 21, nonUniformModel, 0, aModel},
-                {"Non-uniform", "B", 21, nonUniformModel, 0, bModel},
-                {"Non-uniform", "C", 21, nonUniformModel, 0, cModel},
-                {"Non-uniform", "D", 21, nonUniformModel, 0, dModel},
-                {"Non-uniform", "A", 20, nonUniformModel, 1, aModel},
-                {"Non-uniform", "B", 20, nonUniformModel, 1, bModel},
-                {"Non-uniform", "C", 20, nonUniformModel, 1, cModel},
-                {"Non-uniform", "D", 20, nonUniformModel, 1, dModel},
-                {"Non-uniform", "A", 16, nonUniformModel, 2, aModel},
-                {"Non-uniform", "B", 16, nonUniformModel, 2, bModel},
-                {"Non-uniform", "C", 16, nonUniformModel, 2, cModel},
-                {"Non-uniform", "D", 16, nonUniformModel, 2, dModel}
+                {"Non-Uniform", "A", 21, nonUniformModel, 0, aModel},
+                {"Non-Uniform", "B", 21, nonUniformModel, 0, bModel},
+                {"Non-Uniform", "C", 21, nonUniformModel, 0, cModel},
+                {"Non-Uniform", "D", 21, nonUniformModel, 0, dModel},
+                {"Non-Uniform", "A", 20, nonUniformModel, 1, aModel},
+                {"Non-Uniform", "B", 20, nonUniformModel, 1, bModel},
+                {"Non-Uniform", "C", 20, nonUniformModel, 1, cModel},
+                {"Non-Uniform", "D", 20, nonUniformModel, 1, dModel},
+                {"Non-Uniform", "A", 16, nonUniformModel, 2, aModel},
+                {"Non-Uniform", "B", 16, nonUniformModel, 2, bModel},
+                {"Non-Uniform", "C", 16, nonUniformModel, 2, cModel},
+                {"Non-Uniform", "D", 16, nonUniformModel, 2, dModel}
         });
     }
 

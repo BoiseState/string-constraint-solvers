@@ -65,10 +65,10 @@ public class Given_BoundedAutomatonModel_When_GettingSuffix {
                 {"Uniform", 21, uniformModel, 1},
                 {"Uniform", 5, uniformModel, 2},
                 {"Uniform", 1, uniformModel, 3},
-                {"Non-uniform", 45, nonUniformModel, 0},
-                {"Non-uniform", 21, nonUniformModel, 1},
-                {"Non-uniform", 5, nonUniformModel, 2},
-                {"Non-uniform", 1, nonUniformModel, 3}
+                {"Non-Uniform", 45, nonUniformModel, 0},
+                {"Non-Uniform", 21, nonUniformModel, 1},
+                {"Non-Uniform", 5, nonUniformModel, 2},
+                {"Non-Uniform", 1, nonUniformModel, 3}
         });
     }
 

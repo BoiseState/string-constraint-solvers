@@ -90,16 +90,16 @@ public class Given_PreciseSubstring_For_BoundedAutomata {
                 {"Uniform", 1, uniform, 2, 2},
                 {"Uniform", 4, uniform, 2, 3},
                 {"Uniform", 1, uniform, 3, 3},
-                {"Non-uniform", 1, nonUniform, 0, 0},
-                {"Non-uniform", 4, nonUniform, 0, 1},
-                {"Non-uniform", 16, nonUniform, 0, 2},
-                {"Non-uniform", 37, nonUniform, 0, 3},
-                {"Non-uniform", 1, nonUniform, 1, 1},
-                {"Non-uniform", 4, nonUniform, 1, 2},
-                {"Non-uniform", 16, nonUniform, 1, 3},
-                {"Non-uniform", 1, nonUniform, 2, 2},
-                {"Non-uniform", 4, nonUniform, 2, 3},
-                {"Non-uniform", 1, nonUniform, 3, 3}
+                {"Non-Uniform", 1, nonUniform, 0, 0},
+                {"Non-Uniform", 4, nonUniform, 0, 1},
+                {"Non-Uniform", 16, nonUniform, 0, 2},
+                {"Non-Uniform", 37, nonUniform, 0, 3},
+                {"Non-Uniform", 1, nonUniform, 1, 1},
+                {"Non-Uniform", 4, nonUniform, 1, 2},
+                {"Non-Uniform", 16, nonUniform, 1, 3},
+                {"Non-Uniform", 1, nonUniform, 2, 2},
+                {"Non-Uniform", 4, nonUniform, 2, 3},
+                {"Non-Uniform", 1, nonUniform, 3, 3}
         });
     }
 

@@ -104,18 +104,18 @@ public class Given_WeightedAutomatonModel_When_SettingCharAt {
 //                {"Uniform", "'B'", 64, uniformModel, 2, bModel},
 //                {"Uniform", "'C'", 64, uniformModel, 2, cModel},
 //                {"Uniform", "'D'", 64, uniformModel, 2, dModel},
-//                {"Non-uniform", "'A'", 45, nonUniformModel, 0, aModel},
-//                {"Non-uniform", "'B'", 45, nonUniformModel, 0, bModel},
-//                {"Non-uniform", "'C'", 45, nonUniformModel, 0, cModel},
-//                {"Non-uniform", "'D'", 45, nonUniformModel, 0, dModel},
-//                {"Non-uniform", "'A'", 44, nonUniformModel, 1, aModel},
-//                {"Non-uniform", "'B'", 44, nonUniformModel, 1, bModel},
-//                {"Non-uniform", "'C'", 44, nonUniformModel, 1, cModel},
-//                {"Non-uniform", "'D'", 44, nonUniformModel, 1, dModel},
-//                {"Non-uniform", "'A'", 37, nonUniformModel, 2, aModel},
-//                {"Non-uniform", "'B'", 37, nonUniformModel, 2, bModel},
-//                {"Non-uniform", "'C'", 37, nonUniformModel, 2, cModel},
-//                {"Non-uniform", "'D'", 37, nonUniformModel, 2, dModel}
+//                {"Non-Uniform", "'A'", 45, nonUniformModel, 0, aModel},
+//                {"Non-Uniform", "'B'", 45, nonUniformModel, 0, bModel},
+//                {"Non-Uniform", "'C'", 45, nonUniformModel, 0, cModel},
+//                {"Non-Uniform", "'D'", 45, nonUniformModel, 0, dModel},
+//                {"Non-Uniform", "'A'", 44, nonUniformModel, 1, aModel},
+//                {"Non-Uniform", "'B'", 44, nonUniformModel, 1, bModel},
+//                {"Non-Uniform", "'C'", 44, nonUniformModel, 1, cModel},
+//                {"Non-Uniform", "'D'", 44, nonUniformModel, 1, dModel},
+//                {"Non-Uniform", "'A'", 37, nonUniformModel, 2, aModel},
+//                {"Non-Uniform", "'B'", 37, nonUniformModel, 2, bModel},
+//                {"Non-Uniform", "'C'", 37, nonUniformModel, 2, cModel},
+//                {"Non-Uniform", "'D'", 37, nonUniformModel, 2, dModel}
         });
     }
 

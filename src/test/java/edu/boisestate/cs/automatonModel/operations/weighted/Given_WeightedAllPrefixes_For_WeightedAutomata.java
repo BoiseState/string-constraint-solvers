@@ -52,9 +52,9 @@ public class Given_WeightedAllPrefixes_For_WeightedAutomata {
                 {"Empty String", 1, emptyString},
                 {"Concrete", 4, concrete},
                 {"Uniform Bounded", 85, uniformBounded},
-                {"Non-uniform Bounded", 58, nonUniformBounded},
+                {"Non-Uniform Bounded", 58, nonUniformBounded},
                 {"Uniform Unbounded", 85, uniformBounded},
-                {"Non-uniform Unbounded", 58, nonUniformBounded}
+                {"Non-Uniform Unbounded", 58, nonUniformBounded}
         });
     }
 

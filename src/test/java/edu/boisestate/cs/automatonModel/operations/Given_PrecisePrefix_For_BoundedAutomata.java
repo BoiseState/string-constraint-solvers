@@ -64,10 +64,10 @@ public class Given_PrecisePrefix_For_BoundedAutomata {
                 {"Uniform", 4, uniform, 1},
                 {"Uniform", 16, uniform, 2},
                 {"Uniform", 64, uniform, 3},
-                {"Non-uniform", 1, nonUniform, 0},
-                {"Non-uniform", 4, nonUniform, 1},
-                {"Non-uniform", 16, nonUniform, 2},
-                {"Non-uniform", 37, nonUniform, 3}
+                {"Non-Uniform", 1, nonUniform, 0},
+                {"Non-Uniform", 4, nonUniform, 1},
+                {"Non-Uniform", 16, nonUniform, 2},
+                {"Non-Uniform", 37, nonUniform, 3}
         });
     }
 

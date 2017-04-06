@@ -96,16 +96,16 @@ public class Given_PreciseDelete_For_BoundedAutomata {
                 {"Uniform", 80, uniform, 2, 2},
                 {"Uniform", 16, uniform, 2, 3},
                 {"Uniform", 64, uniform, 3, 3},
-                {"Non-uniform", 45, nonUniform, 0, 0},
-                {"Non-uniform", 21, nonUniform, 0, 1},
-                {"Non-uniform", 5, nonUniform, 0, 2},
-                {"Non-uniform", 1, nonUniform, 0, 3},
-                {"Non-uniform", 45, nonUniform, 1, 1},
-                {"Non-uniform", 20, nonUniform, 1, 2},
-                {"Non-uniform", 4, nonUniform, 1, 3},
-                {"Non-uniform", 44, nonUniform, 2, 2},
-                {"Non-uniform", 16, nonUniform, 2, 3},
-                {"Non-uniform", 37, nonUniform, 3, 3}
+                {"Non-Uniform", 45, nonUniform, 0, 0},
+                {"Non-Uniform", 21, nonUniform, 0, 1},
+                {"Non-Uniform", 5, nonUniform, 0, 2},
+                {"Non-Uniform", 1, nonUniform, 0, 3},
+                {"Non-Uniform", 45, nonUniform, 1, 1},
+                {"Non-Uniform", 20, nonUniform, 1, 2},
+                {"Non-Uniform", 4, nonUniform, 1, 3},
+                {"Non-Uniform", 44, nonUniform, 2, 2},
+                {"Non-Uniform", 16, nonUniform, 2, 3},
+                {"Non-Uniform", 37, nonUniform, 3, 3}
         });
     }
 

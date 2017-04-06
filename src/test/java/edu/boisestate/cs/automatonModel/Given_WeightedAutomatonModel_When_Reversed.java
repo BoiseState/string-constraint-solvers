@@ -48,7 +48,7 @@ public class Given_WeightedAutomatonModel_When_Reversed {
                 {"Empty String", 1, emptyStringModel},
                 {"Concrete", 1, concreteModel},
                 {"Uniform", 85, uniformModel},
-                {"Non-uniform", 45, nonUniformModel}
+                {"Non-Uniform", 45, nonUniformModel}
         });
     }
 

@@ -69,10 +69,10 @@ public class Given_WeightedPreciseSetLength_For_WeightedAutomata {
 //                {"Uniform", 85, uniform, 1},
 //                {"Uniform", 85, uniform, 2},
 //                {"Uniform", 85, uniform, 3},
-//                {"Non-uniform", 45, nonUniform, 0},
-//                {"Non-uniform", 45, nonUniform, 1},
-//                {"Non-uniform", 45, nonUniform, 2},
-//                {"Non-uniform", 45, nonUniform, 3}
+//                {"Non-Uniform", 45, nonUniform, 0},
+//                {"Non-Uniform", 45, nonUniform, 1},
+//                {"Non-Uniform", 45, nonUniform, 2},
+//                {"Non-Uniform", 45, nonUniform, 3}
         });
     }
 

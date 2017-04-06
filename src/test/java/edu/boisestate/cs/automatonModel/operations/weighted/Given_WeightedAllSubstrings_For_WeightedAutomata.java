@@ -52,9 +52,9 @@ public class Given_WeightedAllSubstrings_For_WeightedAutomata {
                 {"Empty String", 1, emptyString},
                 {"Concrete", 7, concrete},
                 {"Uniform Bounded", 85, uniformBounded},
-                {"Non-uniform Bounded", 58, nonUniformBounded},
+                {"Non-Uniform Bounded", 58, nonUniformBounded},
                 {"Uniform Unbounded", 85, uniformBounded},
-                {"Non-uniform Unbounded", 58, nonUniformBounded}
+                {"Non-Uniform Unbounded", 58, nonUniformBounded}
         });
     }
 

@@ -47,7 +47,7 @@ public class Given_AggregateAutomataModel_When_AssertingNotEmpty {
                 {"Empty String", 0, emptyStringModel},
                 {"Concrete", 1, concreteModel},
                 {"Uniform", 84, uniformModel},
-                {"Non-uniform", 45, nonUniformModel}
+                {"Non-Uniform", 45, nonUniformModel}
         });
     }
 

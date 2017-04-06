@@ -68,10 +68,10 @@ public class Given_WeightedPreciseSuffix_For_WeightedAutomata {
 //                {"Uniform", 64, uniform, 1},
 //                {"Uniform", 64, uniform, 2},
 //                {"Uniform", 64, uniform, 3},
-//                {"Non-uniform", 37, nonUniform, 0},
-//                {"Non-uniform", 37, nonUniform, 1},
-//                {"Non-uniform", 37, nonUniform, 2},
-//                {"Non-uniform", 37, nonUniform, 3}
+//                {"Non-Uniform", 37, nonUniform, 0},
+//                {"Non-Uniform", 37, nonUniform, 1},
+//                {"Non-Uniform", 37, nonUniform, 2},
+//                {"Non-Uniform", 37, nonUniform, 3}
         });
     }
 

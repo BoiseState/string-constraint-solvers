@@ -54,7 +54,7 @@ public class Given_WeightedPreciseTrim_For_WeightedAutomata {
 //                {"Concrete Non-Whitespace", 1, concreteNonWhitespace},
 //                {"Concrete Whitespace", 1, concreteWhitespace},
 //                {"Uniform", 156, uniform},
-//                {"Non-uniform", 71, nonUniform}
+//                {"Non-Uniform", 71, nonUniform}
         });
     }
 

@@ -50,7 +50,7 @@ public class Given_IgnoreCase_For_BoundedAutomata {
                 {"Empty String", 1, emptyString},
                 {"Concrete", 8, concrete},
                 {"Uniform", 585, uniform},
-                {"Non-uniform", 326, nonUniform}
+                {"Non-Uniform", 326, nonUniform}
         });
     }
 
