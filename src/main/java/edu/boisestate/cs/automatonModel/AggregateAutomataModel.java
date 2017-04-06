@@ -5,8 +5,10 @@ import dk.brics.automaton.BasicAutomata;
 import dk.brics.string.stringoperations.*;
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automatonModel.operations.*;
+import edu.boisestate.cs.util.Tuple;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,7 +28,9 @@ public class AggregateAutomataModel
             return a1.minus(a2);
         }
     };
+
     private Automaton[] automata;
+    private int[] factors;
 
     private void setAutomata(Automaton[] automatonArray) {
 
@@ -44,8 +48,29 @@ public class AggregateAutomataModel
 
         // create arrays from parameter
         this.automata = new Automaton[automata.length];
+        this.factors = new int[automata.length];
 
         setAutomata(automata);
+
+        for (int i = 0; i < automata.length; i++) {
+            this.factors[i] = 1;
+        }
+
+        this.modelManager = new AggregateAutomatonModelManager(alphabet, initialBoundLength);
+    }
+
+    AggregateAutomataModel(Automaton[] automata,
+                           Alphabet alphabet,
+                           int initialBoundLength,
+                           int[] factors) {
+        super(alphabet, initialBoundLength);
+
+        // create arrays from parameter
+        this.automata = new Automaton[automata.length];
+
+        setAutomata(automata);
+
+        this.factors = Arrays.copyOf(factors, automata.length);
 
         this.modelManager = new AggregateAutomatonModelManager(alphabet, initialBoundLength);
     }
@@ -54,6 +79,7 @@ public class AggregateAutomataModel
         super(alphabet, 0);
 
         this.automata = new Automaton[]{automaton};
+        this.factors = new int[] {1};
 
         this.modelManager = new AggregateAutomatonModelManager(alphabet, 0);
     }
@@ -179,10 +205,10 @@ public class AggregateAutomataModel
         Automaton substrings = performUnaryOperation(containing, new Substring(), this.alphabet);
 
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, substrings, intersectOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, substrings, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -200,19 +226,19 @@ public class AggregateAutomataModel
         Automaton x = anyString1.concatenate(contained).concatenate(anyString2);
 
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, x, intersectOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, x, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
     public AutomatonModel assertEmpty() {
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, BasicAutomata.makeEmptyString(), intersectOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, BasicAutomata.makeEmptyString(), intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, 0);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, 0);
     }
 
     @Override
@@ -233,10 +259,10 @@ public class AggregateAutomataModel
         Automaton suffixes = performUnaryOperation(containing, new Postfix(), this.alphabet);
 
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, suffixes, intersectOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, suffixes, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -253,10 +279,10 @@ public class AggregateAutomataModel
         Automaton x = anyString.concatenate(ending);
 
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, x, intersectOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, x, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -269,10 +295,10 @@ public class AggregateAutomataModel
         Automaton equal = mergeAutomata(equalAutomata);
 
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, equal, intersectOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, equal, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -286,10 +312,10 @@ public class AggregateAutomataModel
         Automaton equalIgnoreCase = performUnaryOperation(equal, new IgnoreCase(), this.alphabet);
 
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, equalIgnoreCase, intersectOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, equalIgnoreCase, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
@@ -304,7 +330,7 @@ public class AggregateAutomataModel
         Automaton minMax = BasicAutomata.makeCharSet(this.alphabet.getCharSet()).repeat(min, max);
 
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, minMax, intersectOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, minMax, intersectOp, boundLength);
 
         // get new bound length
         int newBoundLength = max;
@@ -313,7 +339,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, newBoundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -336,7 +362,7 @@ public class AggregateAutomataModel
         // get automaton of required chars from not containing automaton
         notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
 
-        Automaton[] results = automata;
+        Tuple<Automaton[], int[]> results = new Tuple<>(automata, factors);
         if (!notContaining.isEmpty()) {
 
             // get all substrings
@@ -347,7 +373,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -361,7 +387,7 @@ public class AggregateAutomataModel
         // get automaton of required chars from not containing automaton
         notContained = getRequiredCharAutomaton(notContained, alphabet, boundLength);
 
-        Automaton[] results = automata;
+        Tuple<Automaton[], int[]> results = new Tuple<>(automata, factors);
         if (!notContained.isEmpty()) {
             // create any string automata
             Automaton anyString1 =
@@ -380,16 +406,16 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
     public AutomatonModel assertNotEmpty() {
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, BasicAutomata.makeEmptyString(), minusOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, BasicAutomata.makeEmptyString(), minusOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -412,7 +438,7 @@ public class AggregateAutomataModel
         // get automaton of required chars from not containing automaton
         notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
 
-        Automaton[] results = automata;
+        Tuple<Automaton[], int[]> results = new Tuple<>(automata, factors);
         if (!notContaining.isEmpty()) {
 
             // get all suffixes
@@ -423,7 +449,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -437,7 +463,7 @@ public class AggregateAutomataModel
         // get automaton of required chars from not containing automaton
         notEnding = getRequiredCharAutomaton(notEnding, alphabet, boundLength);
 
-        Automaton[] results = automata;
+        Tuple<Automaton[], int[]> results = new Tuple<>(automata, factors);
         if (!notEnding.isEmpty()) {
             // create any string automata
             Automaton anyString =
@@ -452,7 +478,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -465,14 +491,14 @@ public class AggregateAutomataModel
         Automaton notEqual = mergeAutomata(notEqualAutomata);
 
         // if not equal automaton is a singleton
-        Automaton[] results = automata;
+        Tuple<Automaton[], int[]> results = new Tuple<>(automata, factors);
         if (notEqual.getFiniteStrings(1) != null) {
             // get resulting automata
             results = performBinaryAutomatonOperation(automata, notEqual, minusOp, boundLength);
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -485,7 +511,7 @@ public class AggregateAutomataModel
         Automaton notEqual = mergeAutomata(notEqualAutomata);
 
         // if not equal automaton is a singleton
-        Automaton[] results = automata;
+        Tuple<Automaton[], int[]> results = new Tuple<>(automata, factors);
         if (notEqual.getFiniteStrings(1) != null) {
             Automaton notEqualIgnoreCase = performUnaryOperation(notEqual, new IgnoreCase(), this.alphabet);
 
@@ -494,7 +520,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -517,7 +543,7 @@ public class AggregateAutomataModel
         // get automaton of required chars from not containing automaton
         notContaining = getRequiredCharAutomaton(notContaining, alphabet, boundLength);
 
-        Automaton[] results = automata;
+        Tuple<Automaton[], int[]> results = new Tuple<>(automata, factors);
         if (!notContaining.isEmpty()) {
 
             // get all prefixes
@@ -528,7 +554,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -542,7 +568,7 @@ public class AggregateAutomataModel
         // get automaton of required chars from not containing automaton
         notStarting = getRequiredCharAutomaton(notStarting, alphabet, boundLength);
 
-        Automaton[] results = automata;
+        Tuple<Automaton[], int[]> results = new Tuple<>(automata, factors);
         if (!notStarting.isEmpty()) {
             // create any string automata
             Automaton anyString =
@@ -557,7 +583,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
@@ -578,10 +604,10 @@ public class AggregateAutomataModel
         Automaton prefixes = performUnaryOperation(containing, new Prefix(), this.alphabet);
 
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, prefixes, intersectOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, prefixes, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("Duplicates")
@@ -598,10 +624,10 @@ public class AggregateAutomataModel
         Automaton x = starting.concatenate(anyString);
 
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, x, intersectOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, x, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
@@ -622,10 +648,10 @@ public class AggregateAutomataModel
                 return a1.concatenate(a2);
             }
         };
-        Automaton[] results = performBinaryAutomatonOperation(automata, arg, op, newBoundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, arg, op, newBoundLength);
 
         // return new model from results automata array
-        return new AggregateAutomataModel(results, this.alphabet, newBoundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
     }
 
     @Override
@@ -658,10 +684,10 @@ public class AggregateAutomataModel
         }
 
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new PreciseDelete(start, end)), newBoundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new PreciseDelete(start, end)), newBoundLength);
 
         // return new model from results automata array
-        return new AggregateAutomataModel(results, alphabet, newBoundLength);
+        return new AggregateAutomataModel(results.getFirst(), alphabet, newBoundLength, results.getSecond());
     }
 
     @Override
@@ -702,10 +728,10 @@ public class AggregateAutomataModel
         Automaton arg = mergeAutomata(argAutomata);
 
         // get resulting automata
-        Automaton[] results = performBinaryAutomatonOperation(automata, arg, intersectOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, arg, intersectOp, boundLength);
 
         // return new model from results automata array
-        return new AggregateAutomataModel(results, alphabet, boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
@@ -727,10 +753,10 @@ public class AggregateAutomataModel
                 return operation.op(a1,a2);
             }
         };
-        Automaton[] results = performBinaryAutomatonOperation(automata, arg, binaryOp, newBoundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, arg, binaryOp, newBoundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, newBoundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
     }
 
     @Override
@@ -739,12 +765,14 @@ public class AggregateAutomataModel
         BigInteger totalModelCount = BigInteger.ZERO;
 
         // for each automaton in automata array
-        for (Automaton automaton : this.automata) {
+        for (int i = 0; i < automata.length; i++) {
             // get automaton model count
-            BigInteger modelCount = StringModelCounter.ModelCount(automaton);
+            BigInteger modelCount = StringModelCounter.ModelCount(automata[i]);
+            BigInteger factor = BigInteger.valueOf(factors[i]);
+            BigInteger factoredMC = modelCount.multiply(factor);
 
             // add automaton model count to total model count
-            totalModelCount = totalModelCount.add(modelCount);
+            totalModelCount = totalModelCount.add(factoredMC);
         }
 
         // return final model count
@@ -754,10 +782,10 @@ public class AggregateAutomataModel
     @Override
     public AutomatonModel replace(char find, char replace) {
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new Replace1(find, replace)), boundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new Replace1(find, replace)), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
@@ -769,46 +797,46 @@ public class AggregateAutomataModel
         }
 
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new Replace6(find, replace)), newBoundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new Replace6(find, replace)), newBoundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results, this.alphabet, newBoundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
     }
 
     @Override
     public AutomatonModel replaceChar() {
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new Replace4()), boundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new Replace4()), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
     public AutomatonModel replaceFindKnown(char find) {
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new Replace2(find)), boundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new Replace2(find)), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
     public AutomatonModel replaceReplaceKnown(char replace) {
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new Replace3(replace)), boundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new Replace3(replace)), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
     public AutomatonModel reverse() {
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new Reverse()), boundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new Reverse()), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
@@ -818,10 +846,10 @@ public class AggregateAutomataModel
         int newBoundLength = end - start;
 
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new PreciseSubstring(start, end)), newBoundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new PreciseSubstring(start, end)), newBoundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, newBoundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
     }
 
     @Override
@@ -840,13 +868,13 @@ public class AggregateAutomataModel
                 return operation.op(a1,a2);
             }
         };
-        Automaton[] results = performBinaryAutomatonOperation(automata, arg, binaryOp, boundLength);
+        Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(automata, arg, binaryOp, boundLength);
 
         // calculate new bound length
         int newBoundLength = this.boundLength + 1;
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, this.alphabet, newBoundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
     }
 
     @Override
@@ -857,10 +885,10 @@ public class AggregateAutomataModel
         Alphabet newAlphabet = new Alphabet(symbolSet);
 
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new PreciseSetLength(length)), length);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new PreciseSetLength(length)), length);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results, newAlphabet, length);
+        return new AggregateAutomataModel(results.getFirst(), newAlphabet, length, results.getSecond());
     }
 
     @Override
@@ -873,49 +901,51 @@ public class AggregateAutomataModel
         }
 
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new PreciseSuffix(start)), newBoundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new PreciseSuffix(start)), newBoundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results, this.alphabet, newBoundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
     }
 
     @Override
     public AutomatonModel toLowercase() {
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new ToLowerCase()), boundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new ToLowerCase()), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
     public AutomatonModel toUppercase() {
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new ToUpperCase()), boundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new ToUpperCase()), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @Override
     public AutomatonModel trim() {
         // get resulting automata
-        Automaton[] results = performUnaryAutomatonOperations(automata, getUnaryOp(new PreciseTrim()), boundLength);
+        Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(automata, getUnaryOp(new PreciseTrim()), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
     }
 
     @SuppressWarnings("CloneDoesntCallSuperClone")
     @Override
     public AutomatonModel clone() {
-        Automaton[] clones = new Automaton[this.automata.length];
-        for (int i = 0; i < clones.length; i++) {
-            clones[i] = this.automata[i].clone();
+        Automaton[] cloneAutomata = new Automaton[this.automata.length];
+        int[] cloneFactors = new int[this.automata.length];
+        for (int i = 0; i < cloneAutomata.length; i++) {
+            cloneAutomata[i] = this.automata[i].clone();
+            cloneFactors[i] = this.factors[i];
         }
 
         // create new model from existing automata
-        return new AggregateAutomataModel(clones, this.alphabet, this.boundLength);
+        return new AggregateAutomataModel(cloneAutomata, this.alphabet, this.boundLength, cloneFactors);
     }
 
     private void ensureAggregateModel(AutomatonModel arg) {
@@ -940,7 +970,7 @@ public class AggregateAutomataModel
         return result;
     }
 
-    private Automaton[] performBinaryAutomatonOperation(Automaton[] automata, Automaton arg, BinaryAutomatonOp op, int maxLength) {
+    private Tuple<Automaton[], int[]> performBinaryAutomatonOperation(Automaton[] automata, Automaton arg, BinaryAutomatonOp op, int maxLength) {
 
         // create automata to bound results to alphabet
         String charSet = this.alphabet.getCharSet();
@@ -965,10 +995,12 @@ public class AggregateAutomataModel
             results[i] = splitAutomatonByLength(result, maxLength, this.alphabet);
         }
 
-        // initialize return automaton array
+        // initialize return structures
+        int [] returnFactors = new int [maxLength + 1];
         Automaton[] returnAutomata = new Automaton[maxLength + 1];
         for (int i = 0; i < returnAutomata.length; i++) {
             returnAutomata[i] = BasicAutomata.makeEmpty();
+            returnFactors[i] = 1;
         }
 
         // merge result automata into return array
@@ -979,11 +1011,11 @@ public class AggregateAutomataModel
             }
         }
 
-        // return results array
-        return returnAutomata;
+        // return results
+        return new Tuple<>(returnAutomata, returnFactors);
     }
 
-    private Automaton[] performUnaryAutomatonOperations(Automaton[] automata,
+    private Tuple<Automaton[], int[]> performUnaryAutomatonOperations(Automaton[] automata,
                                                UnaryAutomatonOp op,
                                                int maxLength) {
 
@@ -1010,10 +1042,12 @@ public class AggregateAutomataModel
             results[i] = splitAutomatonByLength(result, maxLength, this.alphabet);
         }
 
-        // initialize return automaton array
+        // initialize return structures
+        int [] returnFactors = new int [maxLength + 1];
         Automaton[] returnAutomata = new Automaton[maxLength + 1];
         for (int i = 0; i < returnAutomata.length; i++) {
             returnAutomata[i] = BasicAutomata.makeEmpty();
+            returnFactors[i] = 1;
         }
 
         // merge result automata into return array
@@ -1023,7 +1057,7 @@ public class AggregateAutomataModel
             }
         }
 
-        // return results array
-        return returnAutomata;
+        // return results
+        return new Tuple<>(returnAutomata, returnFactors);
     }
 }
