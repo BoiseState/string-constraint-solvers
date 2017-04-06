@@ -570,7 +570,7 @@ def random_string(length=None):
 
 def perform_concat(string, op):
     # randomize arg value if unknown
-    if ord(op.op_args[0]) == 0:
+    if len(op.op_args[0]) == 1 and ord(op.op_args[0]) == 0:
         max_len = gen_globals['settings'].max_initial_length
         str_len = random_length(0, max_len)
         op.op_args[0] = random_string(str_len)

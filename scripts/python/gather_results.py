@@ -375,7 +375,7 @@ def produce_output_data(data_map, solvers, f_name):
         output_rows.append(row)
 
     # sort output rows
-    output_rows = sorted(output_rows, cmp=compare_rows)
+    output_rows = sorted(output_rows, cmp=lambda x, y: int(x.get('Id')) - int(y.get('Id')))
 
     # get output file path
     csv_file_path = os.path.join(project_dir,

@@ -31,7 +31,7 @@ log.addHandler(ch)
 
 # globals
 result_groups = (
-    'concat',
+    'contains',
     'delete',
     'replace'
 )
@@ -95,7 +95,7 @@ def main(arguments):
     # run generate graph script
     log.debug('Running Scripts: generate_graphs.py')
     generate_script_args = [
-        ['--ops-depth', '1', '--no-duplicates', '--unknown-string', '--length', '3', '--single-graph', '--non-uniform', '--operations', 'concat', 'contains', 'equals', '--graph-file', 'concat'],
+        ['--ops-depth', '1', '--no-duplicates', '--unknown-string', '--length', '3', '--single-graph', '--non-uniform', '--operations', 'concat', 'delete', 'replace-char', 'contains', 'equals', '--graph-file', 'contains'],
         ['--ops-depth', '1', '--no-duplicates', '--unknown-string', '--length', '3', '--single-graph', '--operations', 'delete', 'contains', 'equals', '--graph-file', 'delete'],
         ['--ops-depth', '1', '--no-duplicates', '--unknown-string', '--length', '3', '--single-graph', '--operations', 'replace-char', 'contains', 'equals', '--graph-file', 'replace']
     ]
@@ -109,7 +109,7 @@ def main(arguments):
     # run solvers via script
     log.debug('Running Scripts: run_solvers_on_graphs.py')
     solver_script_args = [
-        ['--graph-files', 'concat*.json', '--length', '3', '--concrete-solver', '--unbounded-solver', '--bounded-solver', '--aggregate-solver', '--weighted-solver', '--mc-reporter'],
+        ['--graph-files', 'contains*.json', '--length', '3', '--concrete-solver', '--unbounded-solver', '--bounded-solver', '--aggregate-solver', '--weighted-solver', '--mc-reporter'],
         ['--graph-files', 'delete*.json', '--length', '3', '--concrete-solver', '--unbounded-solver', '--bounded-solver', '--aggregate-solver', '--weighted-solver', '--mc-reporter'],
         ['--graph-files', 'replace*.json', '--length', '3', '--concrete-solver', '--unbounded-solver', '--bounded-solver', '--aggregate-solver', '--weighted-solver', '--mc-reporter']
     ]
@@ -123,7 +123,7 @@ def main(arguments):
     # run analyze results script
     log.debug('Running Scripts: analyze_results.py')
     gather_script_args = [
-        ['--result-files', 'concat*', '--mc-reporter'],
+        ['--result-files', 'contains*', '--mc-reporter'],
         ['--result-files', 'delete*', '--mc-reporter'],
         ['--result-files', 'replace*', '--mc-reporter']
     ]

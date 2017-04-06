@@ -187,3 +187,4 @@ traceFile
 /SolverInterface/
 scripts/python/*.pyc
 temp/
+.~*

@@ -7,6 +7,7 @@ import dk.brics.automaton.*;
 import dk.brics.string.charset.CharSet;
 import dk.brics.string.stringoperations.UnaryOperation;
 
+import java.math.BigInteger;
 import java.util.*;
 
 @SuppressWarnings("Duplicates")
@@ -14,11 +15,13 @@ public class PreciseDelete
         extends UnaryOperation {
     private int end;
     private int start;
+    private int removed;
 
     public PreciseDelete(int start, int end) {
         // initialize indices from parameters
         this.start = start;
         this.end = end;
+        this.removed = 0;
     }
 
     @Override
@@ -102,10 +105,14 @@ public class PreciseDelete
 
         // initialize end states map
         Map<State, Set<State>> endStatesMap = new HashMap<>();
+//        Map<State, Map<State, Integer>> statesRemovedMap = new HashMap<>();
         for (State state : states) {
             Set<State> stateSet = new HashSet<>();
             stateSet.add(stateMap.get(state));
             endStatesMap.put(state, stateSet);
+//            Map<State, Integer> statesRemoved = new HashMap<>();
+//            statesRemoved.put(stateMap.get(state), 1);
+//            statesRemovedMap.put(state, statesRemoved);
         }
 
         // walk automaton from start index to end index
@@ -113,24 +120,34 @@ public class PreciseDelete
             for (State keyState : states) {
                 // get existing state set
                 Set<State> stateSet = endStatesMap.get(keyState);
+//                Map<State, Integer> statesRemoved = statesRemovedMap.get(keyState);
 
                 // if automaton is long enough
                 if (!stateSet.isEmpty()) {
                     // initialize next state set
                     Set<State> nextStates = new HashSet<>();
+//                    Map<State, Integer> nextStatesRemoved = new HashMap<>();
 
                     // get all transistions from each state
                     for (State state : stateSet) {
 
                         // add transitions to copied states
-                        for (Transition transition : state.getTransitions()) {
+                        for (Transition t : state.getTransitions()) {
                             // add destination state as next state
-                            nextStates.add(transition.getDest());
+                            State dest = t.getDest();
+                            nextStates.add(dest);
+//                            int size = t.getMax() - t.getMin() + 1;
+//                            int nextRemove = statesRemoved.get(state) * size;
+//                            if (nextStatesRemoved.containsKey(dest)) {
+//                                nextRemove += nextStatesRemoved.get(dest);
+//                            }
+//                            nextStatesRemoved.put(dest, nextRemove);
                         }
                     }
 
                     // update end states with new states
                     endStatesMap.put(keyState, nextStates);
+//                    statesRemovedMap.put(keyState, nextStatesRemoved);
                 }
             }
         }
@@ -148,6 +165,12 @@ public class PreciseDelete
 
                 // set end states map from set
                 endStatesMap.put(state, endStates);
+
+                // update removed
+//                Map<State, Integer> statesRemoved = new HashMap<>();
+//                BigInteger mc = StringModelCounter.ModelCount(stateMap.get(state), start-end);
+//                statesRemoved.put(endState, mc.intValue());
+//                statesRemovedMap.put(state, statesRemoved);
             }
         }
 
@@ -156,6 +179,10 @@ public class PreciseDelete
         for (State state : states) {
             for (State endState: endStatesMap.get(state)){
                 epsilons.add(new StatePair(state, endState));
+
+                // get removed count
+//                Map<State, Integer> statesRemoved = statesRemovedMap.get(state);
+//                this.removed += statesRemoved.get(endState);
             }
         }
 
