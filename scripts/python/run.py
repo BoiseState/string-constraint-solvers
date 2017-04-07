@@ -1,11 +1,11 @@
 #! /usr/bin/env python
 import argparse
-
 import logging
-import os
 import platform
 import subprocess
 import sys
+
+import os
 
 import gather_results
 import generate_graphs
@@ -31,38 +31,73 @@ log.addHandler(ch)
 
 # globals
 result_groups = {
-    'contains': {
-        'generate': ['--ops-depth', '1',
-                     '--no-duplicates',
-                     '--unknown-string',
-                     '--length', '3',
-                     '--single-graph',
-                     '--non-uniform',
-                     '--operations', 'concat', 'delete', 'replace-char',
-                     'contains', 'equals',
-                     '--graph-file', 'contains'],
+    'all': {
+        'generate': [
+            '--ops-depth', '1',
+            '--no-duplicates',
+            '--unknown-string',
+            '--non-uniform',
+            '--inputs', 'ABC'
+            '--length', '3',
+            '--single-graph',
+            '--operations', 'concat', 'delete', 'replace-char', 'reverse'
+            'contains', 'equals',
+            '--graph-file', 'all'
+        ],
         'solve': [
-            '--graph-files', 'contains*.json',
+            '--graph-files', 'all*.json',
             '--length', '3',
             '--concrete-solver',
             '--unbounded-solver',
             '--bounded-solver',
             '--aggregate-solver',
             '--weighted-solver',
-            '--mc-reporter'],
+            '--mc-reporter'
+        ],
         'gather': [
-            '--result-files', 'contains*',
-            '--mc-reporter']
+            '--result-files', 'all*',
+            '--mc-reporter'
+        ]
+    },
+    'concat': {
+        'generate': [
+            '--ops-depth', '1',
+            '--no-duplicates',
+            '--unknown-string',
+            '--non-uniform',
+            '--inputs', 'ABC'
+            '--length', '3',
+            '--single-graph',
+            '--operations', 'concat', 'contains', 'equals',
+            '--graph-file', 'concat'
+        ],
+        'solve': [
+            '--graph-files', 'concat*.json',
+            '--length', '3',
+            '--concrete-solver',
+            '--unbounded-solver',
+            '--bounded-solver',
+            '--aggregate-solver',
+            '--weighted-solver',
+            '--mc-reporter'
+        ],
+        'gather': [
+            '--result-files', 'concat*',
+            '--mc-reporter'
+        ]
     },
     'delete': {
         'generate': [
             '--ops-depth', '1',
             '--no-duplicates',
             '--unknown-string',
+            '--non-uniform',
+            '--inputs', 'ABC'
             '--length', '3',
             '--single-graph',
             '--operations', 'delete', 'contains', 'equals',
-            '--graph-file', 'delete'],
+            '--graph-file', 'delete'
+        ],
         'solve': [
             '--graph-files', 'delete*.json',
             '--length', '3',
@@ -71,20 +106,25 @@ result_groups = {
             '--bounded-solver',
             '--aggregate-solver',
             '--weighted-solver',
-            '--mc-reporter'],
+            '--mc-reporter'
+        ],
         'gather': [
             '--result-files', 'delete*',
-            '--mc-reporter']
+            '--mc-reporter'
+        ]
     },
     'replace': {
         'generate': [
             '--ops-depth', '1',
             '--no-duplicates',
             '--unknown-string',
+            '--non-uniform',
+            '--inputs', 'ABC'
             '--length', '3',
             '--single-graph',
             '--operations', 'replace-char', 'contains', 'equals',
-            '--graph-file', 'replace'],
+            '--graph-file', 'replace'
+        ],
         'solve': [
             '--graph-files', 'replace*.json',
             '--length', '3',
@@ -93,10 +133,39 @@ result_groups = {
             '--bounded-solver',
             '--aggregate-solver',
             '--weighted-solver',
-            '--mc-reporter'],
+            '--mc-reporter'
+        ],
         'gather': [
             '--result-files', 'replace*',
-            '--mc-reporter']
+            '--mc-reporter'
+        ]
+    },
+    'reverse': {
+        'generate': [
+            '--ops-depth', '1',
+            '--no-duplicates',
+            '--unknown-string',
+            '--non-uniform',
+            '--inputs', 'ABC'
+            '--length', '3',
+            '--single-graph',
+            '--operations', 'reverse', 'contains', 'equals',
+            '--graph-file', 'reverse'
+        ],
+        'solve': [
+            '--graph-files', 'reverse*.json',
+            '--length', '3',
+            '--concrete-solver',
+            '--unbounded-solver',
+            '--bounded-solver',
+            '--aggregate-solver',
+            '--weighted-solver',
+            '--mc-reporter'
+        ],
+        'gather': [
+            '--result-files', 'reverse*',
+            '--mc-reporter'
+        ]
     }
 }
 
@@ -108,7 +177,8 @@ def compile_sources():
         with open(os.devnull, 'w') as dev_null:
             subprocess.check_call([check_cmd_cmd, 'mvn'],
                                   stderr=dev_null,
-                                  stdout=dev_null)
+                                  stdout=dev_null,
+                                  shell=platform.system() == 'Windows')
 
         maven_available = True
         log.debug('Maven available on the current system.')
@@ -163,7 +233,7 @@ def main(arguments):
     # run generate graph script
     log.debug('Running Scripts: generate_graphs.py')
     for group in result_groups.keys():
-        if group in options.groups:
+        if not options.groups or group in options.groups:
             args = result_groups[group]['generate']
             if options.debug:
                 args.append('--debug')
@@ -173,7 +243,7 @@ def main(arguments):
     # run solvers via script
     log.debug('Running Scripts: run_solvers_on_graphs.py')
     for group in result_groups.keys():
-        if group in options.groups:
+        if not options.groups or group in options.groups:
             args = result_groups[group]['solve']
             if options.debug:
                 args.append('--debug')
@@ -183,7 +253,7 @@ def main(arguments):
     # run analyze results script
     log.debug('Running Scripts: analyze_results.py')
     for group in result_groups.keys():
-        if group in options.groups:
+        if not options.groups or group in options.groups:
             args = result_groups[group]['gather']
             if options.debug:
                 args.append('--debug')

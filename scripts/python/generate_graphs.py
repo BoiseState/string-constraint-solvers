@@ -76,11 +76,14 @@ class RootValue:
 class OperationValue:
     def __init__(self, op, op_args=None, num=0):
         self.op = op
-        self.op_args = list() if op_args is None else op_args
         self.num = num
 
+        self.op_args = list()
+        if op_args is not None:
+            self.op_args.extend(op_args)
+
         self.args_known = dict()
-        for x in op_args:
+        for x in self.op_args:
             self.args_known[x] = True
 
     def get_value(self):
@@ -367,7 +370,7 @@ def add_trim_operations(ops):
 
 
 # boolean constraints array
-def add_contains_predicates(constraints):
+def add_contains_predicates(constraints, length=None):
     # s.contains(substr)
     for c in gen_globals['settings'].alphabet:
         constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [c], result=True))
@@ -874,11 +877,14 @@ def perform_trim(string):
 
 def perform_contains(string, pred):
     if pred.result:
-        is_unknown = pred.args_known.pop(pred.op_args[0])
-        contained_strings = [x for x in get_all_strings(len(string)) if x in string]
-        contained_string = random.choice(contained_strings)
-        pred.op_args[0] = contained_string
-        pred.args_known[pred.op_args[0]] = is_unknown
+        is_unknown = pred.args_known[pred.op_args[0]]
+        contained_strings = [x for x in gen_globals['settings'].alphabet
+                             if x in string]
+        if contained_strings:
+            del pred.args_known[pred.op_args[0]]
+            contained_string = random.choice(contained_strings)
+            pred.op_args[0] = contained_string
+            pred.args_known[pred.op_args[0]] = is_unknown
     else:
         # randomize arg value if unknown
         if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
@@ -1459,8 +1465,10 @@ def main(arguments):
     gen_globals['settings'] = Settings(options)
 
     # clean existing files
-    dir_path = os.path.join(project_dir, 'graphs')
-    dir_path = os.path.normpath(dir_path)
+    dir_path = os.path.join(project_dir, 'graphs', 'synthetic')
+    if not os.path.exists(dir_path):
+        log.debug('creating output dir: %s', dir_path)
+        os.makedirs(dir_path)
     for f in os.listdir(dir_path):
         if re.search(gen_globals['settings'].graph_name + '.*\.json', f):
             remove_file = os.path.join(dir_path, f)
@@ -1483,7 +1491,9 @@ def main(arguments):
 
         init_v_list = list()
 
-        if gen_globals['settings'].non_uniform:
+        if gen_globals['settings'].non_uniform \
+                and len(value) == 1 \
+                and ord(value) == 0:
             contains_predicates = list()
             add_contains_predicates(contains_predicates)
             contains_predicates = contains_predicates[:1]
@@ -1497,11 +1507,13 @@ def main(arguments):
         add_operation(root_vertex, gen_globals['settings'].depth)
 
         # add bool contraints for initial string
-        if not gen_globals['settings'].non_uniform:
+        if gen_globals['settings'].non_uniform \
+                and len(value) == 1 \
+                and ord(value) == 0:
+            gen_globals['settings'].non_uniform = False
+        else:
             gen_globals['vertices'].append(init_v_list)
             add_bool_constraint(root_vertex, init_v_list)
-        else:
-            gen_globals['settings'].non_uniform = False
 
         log.debug('*** {0} Operations Added ***'.format(gen_globals['settings'].op_counter))
         num_v = 0
@@ -1573,8 +1585,8 @@ def main(arguments):
         }
 
         # write out update graph file
-        file_path = '{0}/../../graphs/{1}{2:02d}.json'.format(
-            os.path.dirname(__file__), gen_globals['settings'].graph_name, j + 1)
+        gfname = '{0}{1:02d}.json'.format(gen_globals['settings'].graph_name, j + 1)
+        file_path = os.path.join(dir_path, gfname)
         with open(file_path, 'w') as graph_file:
             log.debug('Creating Graph File: %s', graph_file.name)
             json.dump(graph, graph_file)

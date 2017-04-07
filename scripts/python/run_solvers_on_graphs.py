@@ -213,12 +213,18 @@ def get_graph_files(settings):
     # initialize set for graph file paths
     graph_files = set()
 
-    # get graph directory path
-    graph_dir_path = os.path.join(project_dir, 'graphs')
-
     # for all matching files in graph directory
+    graph_dir_path = os.path.join(project_dir, 'graphs')
     for f in os.listdir(graph_dir_path):
-        if os.path.isfile(os.path.join(project_dir, 'graphs', f)) and \
+        if os.path.isfile(os.path.join(graph_dir_path, f)) and \
+                fnmatch.fnmatch(f, settings.graph_file_pattern):
+            # add file to graph files set
+            graph_files.add(os.path.join(graph_dir_path, f))
+
+    # for all matching files in synthetic graph directory
+    graph_dir_path = os.path.join(project_dir, 'graphs', 'synthetic')
+    for f in os.listdir(graph_dir_path):
+        if os.path.isfile(os.path.join(graph_dir_path, f)) and \
                 fnmatch.fnmatch(f, settings.graph_file_pattern):
             # add file to graph files set
             graph_files.add(os.path.join(graph_dir_path, f))

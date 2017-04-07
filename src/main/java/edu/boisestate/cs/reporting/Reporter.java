@@ -134,9 +134,15 @@ abstract public class Reporter {
                 // add root
                 String init = parser.addRoot(constraint);
 
+                long lastTime = BasicTimer.getRunTime();
+                init += "{" + lastTime + "}";
+
                 // add initialization operation
                 String[] ops = new String[] {init};
                 this.operationsMap.put(constraintId, ops);
+
+                // add operation time to map
+                timerMap.put(constraintId, lastTime);
 
             }
             // constraint is op node
@@ -151,10 +157,11 @@ abstract public class Reporter {
                 String[] prevOps = this.operationsMap.get(targetId);
 
                 long lastTime = BasicTimer.getRunTime();
+                operation += "{" + lastTime + "}";
 
                 // create ops array for current operation
                 String[] currentOps = Arrays.copyOf(prevOps, prevOps.length + 1);
-                currentOps[currentOps.length - 1] = operation + "{" + lastTime + "}";
+                currentOps[currentOps.length - 1] = operation;
 
                 // add operations to map
                 this.operationsMap.put(constraintId, currentOps);

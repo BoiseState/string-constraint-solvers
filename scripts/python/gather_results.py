@@ -85,6 +85,73 @@ SOLVER_ORDER = {
     'weighted': 5
 }
 
+INPUT_TYPES = (
+    'Concrete',
+    'Uniform',
+    'Non-Uniform'
+)
+
+OP_GROUPS = {
+    'Injective': [
+        'init'
+        'reverse',
+        'toString',
+        'trimToSize'
+    ],
+    '+ Struct Alt': [
+        'append',
+        'concat',
+        'insert'
+    ],
+    '- Struct Alt': [
+        'delete',
+        'deleteCharAt',
+        'setLength',
+        'subSequence',
+        'substring',
+        'trim'
+    ],
+    'Substitution': [
+        'replace',
+        'setCharAt',
+        'toLowerCase',
+        'toUpperCase'
+    ]
+}
+
+OP_TYPES = (
+    ('Injective', 'Concrete', ''),
+    ('Injective', 'Uniform', ''),
+    ('Injective', 'Non-Uniform', ''),
+    ('+ Struct Alt', 'Concrete', 'Concrete'),
+    ('+ Struct Alt', 'Concrete', 'Uniform'),
+    ('+ Struct Alt', 'Concrete', 'Non-Uniform'),
+    ('+ Struct Alt', 'Uniform', 'Concrete'),
+    ('+ Struct Alt', 'Uniform', 'Uniform'),
+    ('+ Struct Alt', 'Uniform', 'Non-Uniform'),
+    ('+ Struct Alt', 'Non-Uniform', 'Concrete'),
+    ('+ Struct Alt', 'Non-Uniform', 'Uniform'),
+    ('+ Struct Alt', 'Non-Uniform', 'Non-Uniform'),
+    ('- Struct Alt', 'Concrete', ''),
+    ('- Struct Alt', 'Uniform', ''),
+    ('- Struct Alt', 'Non-Uniform', ''),
+    ('Substitution', 'Concrete', ''),
+    ('Substitution', 'Uniform', ''),
+    ('Substitution', 'Non-Uniform', ''),
+)
+
+REGEX = dict()
+REGEX['init_known'] = re.compile('^<S:(?P<id>\d+)> = \\"\w*\\"'
+                                 '{(?P<time>\d+)}$')
+REGEX['init_unknown'] = re.compile('^<S:(?P<id>\d+)> = <init>'
+                                   '{(?P<time>\d+)}$')
+REGEX['op'] = re.compile('^<S:(?P<id>\d+)>.(?P<op>\w+)\((?P<args>.*)\)'
+                         '{(?P<time>\d+)}$')
+REGEX['arg_str_known'] = re.compile('^\\"(?P<string>\w*)\\"$')
+REGEX['arg_str_unknown'] = re.compile('^<(S|CS):(?P<id>\d+)>$')
+REGEX['arg_char'] = re.compile('^\'(?P<char>\w)\'$')
+REGEX['arg_num'] = re.compile('^(?P<num>\d+)$')
+
 
 class Settings:
     def __init__(self, options):
@@ -103,6 +170,18 @@ class Settings:
             self.reporter = 'model-count'
         if options.sat_reporter:
             self.reporter = 'sat'
+
+
+class Operation:
+    def __init__(self, base_id, op, time, args=None):
+        self.base_id = base_id
+        self.time = time
+        self.op_group = ''
+        self.input_type = ''
+
+        self.args = list()
+        if args is not None:
+            self.args.extend(args)
 
 
 def compare_solvers(x, y):
@@ -160,6 +239,26 @@ def get_last_operation(x):
         return 'init'
     op_match = re.match(regex_op, op_str.strip())
     return op_match.group['op']
+
+
+def get_operations(x):
+    # initialize operations list
+    ops_list = list()
+
+    op_strings = x.split('->')
+    # parse initial operation string
+    match_init = REGEX['init_known'].match(op_strings[0].strip())
+    if not match_init:
+        match_init = REGEX['init_unknown'].match(op_strings[0].strip())
+    base_id = match_init.group('id')
+    time = match_init.group('time')
+    ops_list.append(Operation(base_id, 'init', time))
+
+    # parse remaining operation strings
+    for op_string in op_strings:
+        match_op = REGEX['op'].match(op_strings.strip())
+
+
 
 
 def set_options(arguments):
@@ -324,7 +423,7 @@ def verify_data(data_map, solvers):
             verify_matrix('trim', data_map, solvers, op_id)
 
 
-def produce_output_data(data_map, solvers, f_name):
+def produce_mc_output_data(data_map, solvers, f_name):
     # initialize csv field names
     field_names = list()
     field_names.append('Id')
@@ -332,24 +431,17 @@ def produce_output_data(data_map, solvers, f_name):
 
     # set field names for each solver
     sorted_solvers = sorted(solvers, cmp=compare_solvers)
+    in_fields = list()
+    t_fields = list()
+    f_fields = list()
     for solver in sorted_solvers:
         prefix = solver.upper()[0]
-        field_names.append(prefix + ' IN MC')
-    for solver in sorted_solvers:
-        prefix = solver.upper()[0]
-        field_names.append(prefix + ' T MC')
-    for solver in sorted_solvers:
-        prefix = solver.upper()[0]
-        field_names.append(prefix + ' F MC')
-    for solver in sorted_solvers:
-        prefix = solver.upper()[0]
-        field_names.append(prefix + ' Time')
-    for solver in sorted_solvers:
-        prefix = solver.upper()[0]
-        field_names.append(prefix + ' T Time')
-    for solver in sorted_solvers:
-        prefix = solver.upper()[0]
-        field_names.append(prefix + ' F Time')
+        in_fields.append(prefix + ' IN MC')
+        t_fields.append(prefix + ' T MC')
+        f_fields.append(prefix + ' F MC')
+    field_names.extend(in_fields)
+    field_names.extend(t_fields)
+    field_names.extend(f_fields)
 
     # initialize output row list
     output_rows = list()
@@ -359,7 +451,9 @@ def produce_output_data(data_map, solvers, f_name):
         # initialize row
         row = dict()
         # add operation
-        row['Operation'] = data_map.get('unbounded').get(op_id).get('PREV OPS')
+        operations = data_map.get('unbounded').get(op_id).get('PREV OPS')
+        operations = re.sub('{\d+}', '', operations)
+        row['Operation'] = operations
         row['Id'] = op_id
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)
@@ -367,9 +461,6 @@ def produce_output_data(data_map, solvers, f_name):
             row[prefix + ' IN MC'] = data_row.get('IN COUNT')
             row[prefix + ' T MC'] = data_row.get('T COUNT')
             row[prefix + ' F MC'] = data_row.get('F COUNT')
-            row[prefix + ' Time'] = data_row.get('ACC TIME')
-            row[prefix + ' T Time'] = data_row.get('T TIME')
-            row[prefix + ' F Time'] = data_row.get('F TIME')
 
         # add row to output rows
         output_rows.append(row)
@@ -381,8 +472,69 @@ def produce_output_data(data_map, solvers, f_name):
     csv_file_path = os.path.join(project_dir,
                                  'results',
                                  SETTINGS.reporter,
-                                 'analysis',
-                                 f_name)
+                                 'all',
+                                 'mc-' + f_name)
+    log.info('Outputting data to: %s', csv_file_path)
+    with open(csv_file_path, 'w') as csv_file:
+        # creat csv writer with field names
+        writer = csv.DictWriter(csv_file, field_names, delimiter='\t')
+        # output header
+        writer.writeheader()
+        # output rows
+        writer.writerows(output_rows)
+
+
+def produce_time_output_data(data_map, solvers, f_name):
+    # initialize csv field names
+    field_names = list()
+    field_names.append('Id')
+    field_names.append('Operation')
+
+    # set field names for each solver
+    sorted_solvers = sorted(solvers, cmp=compare_solvers)
+    in_fields = list()
+    t_fields = list()
+    f_fields = list()
+    for solver in sorted_solvers:
+        prefix = solver.upper()[0]
+        in_fields.append(prefix + ' IN MC')
+        t_fields.append(prefix + ' T MC')
+        f_fields.append(prefix + ' F MC')
+    field_names.extend(in_fields)
+    field_names.extend(t_fields)
+    field_names.extend(f_fields)
+
+    # initialize output row list
+    output_rows = list()
+
+    # for each operation id
+    for op_id in data_map.get(next(iter(solvers))).keys():
+        # initialize row
+        row = dict()
+        # add operation
+        operations = data_map.get('unbounded').get(op_id).get('PREV OPS')
+        operations = re.sub('{\d+}', '', operations)
+        row['Operation'] = operations
+        row['Id'] = op_id
+        for solver in solvers:
+            data_row = data_map.get(solver).get(op_id)
+            prefix = solver.upper()[0]
+            row[prefix + ' IN MC'] = data_row.get('IN COUNT')
+            row[prefix + ' T MC'] = data_row.get('T COUNT')
+            row[prefix + ' F MC'] = data_row.get('F COUNT')
+
+        # add row to output rows
+        output_rows.append(row)
+
+    # sort output rows
+    output_rows = sorted(output_rows, cmp=lambda x, y: int(x.get('Id')) - int(y.get('Id')))
+
+    # get output file path
+    csv_file_path = os.path.join(project_dir,
+                                 'results',
+                                 SETTINGS.reporter,
+                                 'all',
+                                 'time-' + f_name)
     log.info('Outputting data to: %s', csv_file_path)
     with open(csv_file_path, 'w') as csv_file:
         # creat csv writer with field names
@@ -401,7 +553,7 @@ def gather_results(f_name, file_set):
     # verify data
     # verify_data(data_map, solvers, f_name)
     # output data
-    produce_output_data(data_map, solvers, f_name)
+    produce_mc_output_data(data_map, solvers, f_name)
 
 
 def gather_result_sets(result_file_sets):
@@ -425,7 +577,7 @@ def main(arguments):
     output_dir = os.path.join(project_dir,
                               'results',
                               SETTINGS.reporter,
-                              'analysis')
+                              'all')
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 

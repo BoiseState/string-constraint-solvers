@@ -410,9 +410,14 @@ public class AutomatonModelSolver
 
     @Override
     public void newConcreteString(int id, String string) {
+        // start timer
+        BasicTimer.start();
 
         // create new automaton model from string
         AutomatonModel model = this.modelManager.createString(string);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store new model
         this.symbolicStringMap.put(id, model);
@@ -423,10 +428,15 @@ public class AutomatonModelSolver
 
     @Override
     public void newSymbolicString(int id) {
+        // start timer
+        BasicTimer.start();
 
         // create new symbolic string
         AutomatonModel model =
                 this.modelManager.createAnyString(this.initialBound);
+
+        // stop timer
+        BasicTimer.stop();
 
         // store new model
         this.symbolicStringMap.put(id, model);
@@ -434,7 +444,6 @@ public class AutomatonModelSolver
 
     @Override
     public void propagateSymbolicString(int id, int base) {
-
         // get model
         AutomatonModel model = this.symbolicStringMap.get(base);
 
@@ -443,6 +452,9 @@ public class AutomatonModelSolver
 
         // clone model
         AutomatonModel clone = model.clone();
+
+        // stop timer
+        BasicTimer.stop();
 
         // store clone
         this.symbolicStringMap.put(id, clone);
