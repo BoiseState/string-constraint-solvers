@@ -50,6 +50,7 @@ def reset_globals():
     gen_globals['has_lower_case_op'] = False
     gen_globals['has_upper_case_op'] = False
     gen_globals['operations'] = None
+    gen_globals['rand_seed'] = 1
     gen_globals['settings'] = None
     gen_globals['value_id_map'] = dict()
     gen_globals['vertices'] = list()
@@ -87,12 +88,16 @@ class OperationValue:
 
 
 # boolean constraint node
-class BooleanConstraintValue:
+class PredicateValue:
     def __init__(self, op, op_args=None, num=0, result=False):
         self.op = op
         self.op_args = list() if op_args is None else op_args
         self.num = num
         self.result = result
+
+        self.args_known = dict()
+        for x in op_args:
+            self.args_known[x] = True
 
     def get_value(self):
         return '{0.op}!:!{0.num}'.format(self)
@@ -274,8 +279,10 @@ def add_replace_char_operations(ops):
     args = sorted(gen_globals['settings'].alphabet)[:2]
     for c1 in args:
         for c2 in args:
-            # if c1 != c2:
+            if c1 != c2:
                 ops.append(OperationValue('replace!!CC', [c1, c2]))
+
+    ops.append(OperationValue('replace!!CC', [args[0], args[0]]))
 
 
 def add_replace_string_operations(ops):
@@ -363,14 +370,15 @@ def add_trim_operations(ops):
 def add_contains_predicates(constraints):
     # s.contains(substr)
     for c in gen_globals['settings'].alphabet:
-        constraints.append(BooleanConstraintValue('contains!!Ljava/lang/CharSequence;', [c]))
+        constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [c], result=True))
+        constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [c], result=False))
 
 
 def add_ends_with_predicates(constraints):
     # s.endsWith(suffix)
     for c in gen_globals['settings'].alphabet:
         constraints.append(
-            BooleanConstraintValue('endsWith!!Ljava/lang/String;', [c]))
+            PredicateValue('endsWith!!Ljava/lang/String;', [c]))
 
 
 def add_equals_predicates(constraints):
@@ -383,8 +391,10 @@ def add_equals_predicates(constraints):
     # s.equals(str)
     # constraints.append(BooleanConstraintValue('contentEquals!!Ljava/lang/CharSequence;', [string]))
     # constraints.append(BooleanConstraintValue('contentEquals!!Ljava/lang/StringBuffer;', [string]))
-    constraints.append(BooleanConstraintValue('equals!!Ljava/lang/Object;', [string], result=True))
-    constraints.append(BooleanConstraintValue('equals!!Ljava/lang/Object;', [string], result=False))
+    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [string], result=True))
+    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [string], result=False))
+    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=True))
+    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=False))
 
 
 def add_equals_ignore_case_predicates(constraints):
@@ -394,19 +404,19 @@ def add_equals_ignore_case_predicates(constraints):
     string = symbol_string[0:2]
 
     # s.equalsIgnoreCase(str)
-    constraints.append(BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;', [string], result=True))
-    constraints.append(BooleanConstraintValue('equalsIgnoreCase!!Ljava/lang/String;', [string], result=False))
+    constraints.append(PredicateValue('equalsIgnoreCase!!Ljava/lang/String;', [string], result=True))
+    constraints.append(PredicateValue('equalsIgnoreCase!!Ljava/lang/String;', [string], result=False))
 
 
 def add_is_empty_predicates(constraints):
     # s.isEmpty()
-    constraints.append(BooleanConstraintValue('isEmpty!!'))
+    constraints.append(PredicateValue('isEmpty!!'))
 
 
 def add_matches_predicates(constraints):
     # s.matches(regex known)
     for c in gen_globals['settings'].alphabet:
-        constraints.append(BooleanConstraintValue('matches!!Ljava/lang/String;'), [c])
+        constraints.append(PredicateValue('matches!!Ljava/lang/String;'), [c])
 
 
 def add_region_matches_predicates(constraints):
@@ -417,14 +427,14 @@ def add_region_matches_predicates(constraints):
     for i in range(0, gen_globals['settings'].max_initial_length):
         for j in range(0, len(symbol_string)):
             for k in range(1, min(gen_globals['settings'].max_initial_length - i, len(symbol_string) - j)):
-                constraints.append(BooleanConstraintValue('regionMatches!!ILjava/lang/String;II'), [str(i), symbol_string, str(j), str(k)])
+                constraints.append(PredicateValue('regionMatches!!ILjava/lang/String;II'), [str(i), symbol_string, str(j), str(k)])
 
 
 def add_starts_with_predicates(constraints):
     # s.startsWith(prefix)
     for c in gen_globals['settings'].alphabet:
         constraints.append(
-            BooleanConstraintValue('startsWith!!Ljava/lang/String;', [c]))
+            PredicateValue('startsWith!!Ljava/lang/String;', [c]))
 
 
 def add_starts_with_offset_predicates(constraints):
@@ -432,8 +442,8 @@ def add_starts_with_offset_predicates(constraints):
     for c in gen_globals['settings'].alphabet:
         for i in range(0, gen_globals['settings'].max_initial_length):
             constraints.append(
-                BooleanConstraintValue('startsWith!!Ljava/lang/String;I',
-                                       [c, str(i)]))
+                PredicateValue('startsWith!!Ljava/lang/String;I',
+                               [c, str(i)]))
 
 
 def get_operations():
@@ -547,6 +557,8 @@ def generate_id(value, force=False):
 
 
 def random_length(min_length=None, max_length=None):
+    random.seed(gen_globals['rand_seed'])
+    gen_globals['rand_seed'] += 1
     if min_length is None:
         min_length = 0
     if max_length is None:
@@ -555,6 +567,8 @@ def random_length(min_length=None, max_length=None):
 
 
 def random_char():
+    random.seed(gen_globals['rand_seed'])
+    gen_globals['rand_seed'] += 1
     alpha_list = list(gen_globals['settings'].alphabet)
     return random.choice(alpha_list).upper()
 
@@ -566,6 +580,23 @@ def random_string(length=None):
     for num in range(1, length):
         chars.append(random_char())
     return ''.join(chars)
+
+
+def get_all_strings(max_length):
+    strings = set()
+    strings.add('')
+    prev_set = set()
+    prev_set.add('')
+    for i in range(0, max_length):
+        next_set = set()
+        for prev in prev_set:
+            for c in gen_globals['settings'].alphabet:
+                new_str = prev + c
+                strings.add(new_str)
+                next_set.add(new_str)
+
+        prev_set = next_set
+    return strings
 
 
 def perform_concat(string, op):
@@ -841,55 +872,95 @@ def perform_trim(string):
     return string.strip()
 
 
-def perform_contains(string, const):
-    # randomize arg if unknown
-    if len(const.op_args[0]) == 1 and ord(const.op_args[0]) == 0:
-        const.op_args[0] = str(random_length(max_length=len(string)))
+def perform_contains(string, pred):
+    if pred.result:
+        is_unknown = pred.args_known.pop(pred.op_args[0])
+        contained_strings = [x for x in get_all_strings(len(string)) if x in string]
+        contained_string = random.choice(contained_strings)
+        pred.op_args[0] = contained_string
+        pred.args_known[pred.op_args[0]] = is_unknown
+    else:
+        # randomize arg value if unknown
+        if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
+                or pred.op_args[0] in string:
+            is_uknown = len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0
+            not_contained_strings = [x for x in get_all_strings(len(string)) if x not in string]
+            if not_contained_strings:
+                not_contained_string = random.choice(not_contained_strings)
+                pred.op_args[0] = not_contained_string
+            else:
+                pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
+            pred.args_known[pred.op_args[0]] = is_uknown
 
     # return true or false for boolean constraint
-    if const.op_args[0] in string:
+    if pred.op_args[0] in string:
         return 'true'
     else:
         return 'false'
 
 
-def perform_ends_with(string, const):
-    # randomize arg if unknown
-    if len(const.op_args[0]) == 1 and ord(const.op_args[0]) == 0:
-        const.op_args[0] = str(random_length(max_length=len(string)))
+def perform_ends_with(string, pred):
+    # randomize arg value if unknown
+    if len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0:
+        max_len = gen_globals['settings'].max_initial_length
+        str_len = random_length(0, max_len)
+        pred.op_args[0] = random_string(str_len)
+        pred.args_known[pred.op_args[0]] = False
 
     # return true or false for boolean constraint
-    if string.endswith(const.op_args[0]):
+    if string.endswith(pred.op_args[0]):
         return 'true'
     else:
         return 'false'
 
 
-def perform_equals(string, const):
-    if const.result:
-        const.op_args[0] = string
+def perform_equals(string, pred):
+    if pred.result:
+        is_unknown = pred.args_known.pop(pred.op_args[0])
+        pred.op_args[0] = string
+        pred.args_known[pred.op_args[0]] = is_unknown
     else:
-        # randomize arg if false
-        if len(const.op_args[0]) == 1 and ord(const.op_args[0]) == 0:
-            const.op_args[0] = str(random_length(max_length=len(string)))
+        # randomize arg value if unknown
+        if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
+                or pred.op_args[0] == string:
+            is_uknown = len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0
+            not_contained_strings = [x for x in get_all_strings(len(string)) if x != string]
+            if not_contained_strings:
+                not_contained_string = random.choice(not_contained_strings)
+                pred.op_args[0] = not_contained_string
+            else:
+                pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
+            pred.args_known[pred.op_args[0]] = is_uknown
 
     # return true or false for boolean constraint
-    if string == const.op_args[0]:
+    if string == pred.op_args[0]:
         return 'true'
     else:
         return 'false'
 
 
-def perform_equals_ignore_case(string, const):
-    # randomize arg if unknown
-    if const.result:
-        const.op_args[0] = string.swapcae()
+def perform_equals_ignore_case(string, pred):
+    if pred.result:
+        is_unknown = pred.args_known.pop(pred.op_args[0])
+        contained_strings = [x for x in get_all_strings(len(string)) if x.lower() == string.lower()]
+        contained_string = random.choice(contained_strings)
+        pred.op_args[0] = contained_string
+        pred.args_known[pred.op_args[0]] = is_unknown
     else:
-        if len(const.op_args[0]) == 1 and ord(const.op_args[0]) == 0:
-            const.op_args[0] = str(random_length(max_length=len(string)))
+        # randomize arg value if unknown
+        if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
+                or pred.op_args[0] == string:
+            is_uknown = len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0
+            not_contained_strings = [x for x in get_all_strings(len(string)) if x.lower() != string.lower()]
+            if not_contained_strings:
+                not_contained_string = random.choice(not_contained_strings)
+                pred.op_args[0] = not_contained_string
+            else:
+                pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
+            pred.args_known[pred.op_args[0]] = is_uknown
 
-    # return true or false for boolean constraint
-    if string.lower() == const.op_args[0].lower():
+# return true or false for boolean constraint
+    if string.lower() == pred.op_args[0].lower():
         return 'true'
     else:
         return 'false'
@@ -903,28 +974,34 @@ def perform_is_empty(string):
         return 'false'
 
 
-def perform_starts_with(string, const):
-    # randomize arg if unknown
-    if len(const.op_args[0]) == 1 and ord(const.op_args[0]) == 0:
-        const.op_args[0] = str(random_length(max_length=len(string)))
+def perform_starts_with(string, pred):
+    # randomize arg value if unknown
+    if len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0:
+        max_len = gen_globals['settings'].max_initial_length
+        str_len = random_length(0, max_len)
+        pred.op_args[0] = random_string(str_len)
+        pred.args_known[pred.op_args[0]] = False
 
     # return true or false for boolean constraint
-    if string.startswith(const.op_args[0]):
+    if string.startswith(pred.op_args[0]):
         return 'true'
     else:
         return 'false'
 
 
-def perform_starts_with_offset(string, const):
-    # randomize arg if unknown
-    if len(const.op_args[0]) == 1 and ord(const.op_args[0]) == 0:
-        const.op_args[0] = str(random_length(max_length=len(string)))
+def perform_starts_with_offset(string, pred):
+    # randomize arg value if unknown
+    if len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0:
+        max_len = gen_globals['settings'].max_initial_length
+        str_len = random_length(0, max_len)
+        pred.op_args[0] = random_string(str_len)
+        pred.args_known[pred.op_args[0]] = False
     # randomize offset if unknown
-    if len(const.op_args[1]) == 1 and ord(const.op_args[1]) == 0:
-        const.op_args[1] = random_length(max_length=len(string))
+    if len(pred.op_args[1]) == 1 and ord(pred.op_args[1]) == 0:
+        pred.op_args[1] = random_length(max_length=len(string))
 
     # return true or false for boolean constraint
-    if string[const.op_args[1]:].startswith(const.op_args[0]):
+    if string[pred.op_args[1]:].startswith(pred.op_args[0]):
         return 'true'
     else:
         return 'false'
@@ -1059,7 +1136,7 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
         predicate_list = get_boolean_constraints()
 
     # for each boolean constraint
-    for const in predicate_list:
+    for pred in predicate_list:
 
         # if no duplicates allowed
         if not gen_globals['settings'].allow_duplicates and not allow_duplicates:
@@ -1067,10 +1144,10 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
             v_list.append(t)
 
         # get actual value resulting from op
-        actual_val = perform_predicate(t.actual_value, const)
+        actual_val = perform_predicate(t.actual_value, pred)
 
         # create vertex for operation
-        value = const.get_value()
+        value = pred.get_value()
         const_vertex = Vertex(value, actual_val, generate_id(value))
 
         # add operation vertex to collection
@@ -1081,9 +1158,12 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
         const_vertex.incoming_edges.append(edge)
 
         # for each operation argument
-        for k, arg in enumerate(const.op_args):
+        for k, arg in enumerate(pred.op_args):
             # create root value for arg
-            arg_value = RootValue(True, arg, "init")
+            if not pred.args_known[arg]:
+                arg_value = RootValue(False, method="getStringValue!!")
+            else:
+                arg_value = RootValue(True, arg, "init")
 
             # create vertex
             arg_val = arg_value.get_value()

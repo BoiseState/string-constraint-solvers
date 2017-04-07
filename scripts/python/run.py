@@ -30,13 +30,75 @@ ch.setFormatter(formatter)
 log.addHandler(ch)
 
 # globals
-result_groups = (
-    'contains',
-    'delete',
-    'replace'
-)
-
-
+result_groups = {
+    'contains': {
+        'generate': ['--ops-depth', '1',
+                     '--no-duplicates',
+                     '--unknown-string',
+                     '--length', '3',
+                     '--single-graph',
+                     '--non-uniform',
+                     '--operations', 'concat', 'delete', 'replace-char',
+                     'contains', 'equals',
+                     '--graph-file', 'contains'],
+        'solve': [
+            '--graph-files', 'contains*.json',
+            '--length', '3',
+            '--concrete-solver',
+            '--unbounded-solver',
+            '--bounded-solver',
+            '--aggregate-solver',
+            '--weighted-solver',
+            '--mc-reporter'],
+        'gather': [
+            '--result-files', 'contains*',
+            '--mc-reporter']
+    },
+    'delete': {
+        'generate': [
+            '--ops-depth', '1',
+            '--no-duplicates',
+            '--unknown-string',
+            '--length', '3',
+            '--single-graph',
+            '--operations', 'delete', 'contains', 'equals',
+            '--graph-file', 'delete'],
+        'solve': [
+            '--graph-files', 'delete*.json',
+            '--length', '3',
+            '--concrete-solver',
+            '--unbounded-solver',
+            '--bounded-solver',
+            '--aggregate-solver',
+            '--weighted-solver',
+            '--mc-reporter'],
+        'gather': [
+            '--result-files', 'delete*',
+            '--mc-reporter']
+    },
+    'replace': {
+        'generate': [
+            '--ops-depth', '1',
+            '--no-duplicates',
+            '--unknown-string',
+            '--length', '3',
+            '--single-graph',
+            '--operations', 'replace-char', 'contains', 'equals',
+            '--graph-file', 'replace'],
+        'solve': [
+            '--graph-files', 'replace*.json',
+            '--length', '3',
+            '--concrete-solver',
+            '--unbounded-solver',
+            '--bounded-solver',
+            '--aggregate-solver',
+            '--weighted-solver',
+            '--mc-reporter'],
+        'gather': [
+            '--result-files', 'replace*',
+            '--mc-reporter']
+    }
+}
 
 
 def compile_sources():
@@ -81,6 +143,12 @@ def main(arguments):
                             help="Display debug messages for script.",
                             action="store_true")
 
+    run_parser.add_argument('-g',
+                            '--groups',
+                            nargs='+',
+                            default=list(),
+                            help='List of result groups to gather results for.')
+
     options = run_parser.parse_args(arguments)
 
     # check debug flag
@@ -94,45 +162,33 @@ def main(arguments):
 
     # run generate graph script
     log.debug('Running Scripts: generate_graphs.py')
-    generate_script_args = [
-        ['--ops-depth', '1', '--no-duplicates', '--unknown-string', '--length', '3', '--single-graph', '--non-uniform', '--operations', 'concat', 'delete', 'replace-char', 'contains', 'equals', '--graph-file', 'contains'],
-        ['--ops-depth', '1', '--no-duplicates', '--unknown-string', '--length', '3', '--single-graph', '--operations', 'delete', 'contains', 'equals', '--graph-file', 'delete'],
-        ['--ops-depth', '1', '--no-duplicates', '--unknown-string', '--length', '3', '--single-graph', '--operations', 'replace-char', 'contains', 'equals', '--graph-file', 'replace']
-    ]
-
-    if options.debug:
-        for args in generate_script_args:
-            args.append('--debug')
-    for args in generate_script_args:
-        generate_graphs.main(args)
+    for group in result_groups.keys():
+        if group in options.groups:
+            args = result_groups[group]['generate']
+            if options.debug:
+                args.append('--debug')
+            log.debug('args: %s', ' '.join(args))
+            generate_graphs.main(args)
 
     # run solvers via script
     log.debug('Running Scripts: run_solvers_on_graphs.py')
-    solver_script_args = [
-        ['--graph-files', 'contains*.json', '--length', '3', '--concrete-solver', '--unbounded-solver', '--bounded-solver', '--aggregate-solver', '--weighted-solver', '--mc-reporter'],
-        ['--graph-files', 'delete*.json', '--length', '3', '--concrete-solver', '--unbounded-solver', '--bounded-solver', '--aggregate-solver', '--weighted-solver', '--mc-reporter'],
-        ['--graph-files', 'replace*.json', '--length', '3', '--concrete-solver', '--unbounded-solver', '--bounded-solver', '--aggregate-solver', '--weighted-solver', '--mc-reporter']
-    ]
-
-    if options.debug:
-        for args in solver_script_args:
-            args.append('--debug')
-    for args in solver_script_args:
-        run_solvers_on_graphs.main(args)
+    for group in result_groups.keys():
+        if group in options.groups:
+            args = result_groups[group]['solve']
+            if options.debug:
+                args.append('--debug')
+            log.debug('args: %s', ' '.join(args))
+            run_solvers_on_graphs.main(args)
 
     # run analyze results script
     log.debug('Running Scripts: analyze_results.py')
-    gather_script_args = [
-        ['--result-files', 'contains*', '--mc-reporter'],
-        ['--result-files', 'delete*', '--mc-reporter'],
-        ['--result-files', 'replace*', '--mc-reporter']
-    ]
-
-    if options.debug:
-        for args in gather_script_args:
-            args.append('--debug')
-    for args in gather_script_args:
-        gather_results.main(args)
+    for group in result_groups.keys():
+        if group in options.groups:
+            args = result_groups[group]['gather']
+            if options.debug:
+                args.append('--debug')
+            log.debug('args: %s', ' '.join(args))
+            gather_results.main(args)
 
 
 if __name__ == '__main__':
