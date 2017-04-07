@@ -241,7 +241,8 @@ def get_classpath():
             subprocess.check_call([check_cmd_cmd, 'mvn'],
                                   stderr=dev_null,
                                   stdout=dev_null,
-                                  cwd=project_dir)
+                                  cwd=project_dir,
+                                  shell=platform.system() == 'Windows')
 
         maven_available = True
         log.debug('Maven available on the current system.')
@@ -263,14 +264,19 @@ def get_classpath():
                 subprocess.check_call(cmd,
                                       stderr=dev_null,
                                       stdout=dev_null,
-                                      cwd=project_dir)
+                                      cwd=project_dir,
+                                      shell=platform.system() == 'Windows')
 
             # use subprocess to get class path from maven
             cmd = ['mvn', 'dependency:build-classpath']
             sp1 = subprocess.Popen(cmd,
                                    stdout=subprocess.PIPE,
-                                   cwd=project_dir)
-            cmd = ['grep', '-v', '^\[INFO\]']
+                                   cwd=project_dir,
+                                   shell=platform.system() == 'Windows')
+            grep_cmd = 'grep'
+            if platform.system() == 'Windows':
+                grep_cmd = 'findstr'
+            cmd = [grep_cmd, '-v', '^\[INFO\]']
             sp2 = subprocess.Popen(cmd,
                                    stdin=sp1.stdout,
                                    stdout=subprocess.PIPE,
@@ -355,7 +361,8 @@ def run_solver(solver, files, class_path, settings):
             with open(result_filepath, 'w') as out_file:
                 sp1 = subprocess.Popen(cmd,
                                        stderr=subprocess.STDOUT,
-                                       stdout=out_file)
+                                       stdout=out_file,
+                                       shell=platform.system() == 'Windows')
                 sp1.wait()
         except OSError as os_e:
             log.debug('OSError while running solver framework.')
