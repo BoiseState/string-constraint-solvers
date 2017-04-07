@@ -157,7 +157,7 @@ abstract public class Reporter {
                 String[] prevOps = this.operationsMap.get(targetId);
 
                 long lastTime = BasicTimer.getRunTime();
-                operation += "{" + lastTime + "}";
+                operation = String.format("[%s]%s{%d}", constraintId, operation, lastTime);
 
                 // create ops array for current operation
                 String[] currentOps = Arrays.copyOf(prevOps, prevOps.length + 1);

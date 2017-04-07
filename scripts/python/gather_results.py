@@ -145,8 +145,8 @@ REGEX['init_known'] = re.compile('^<S:(?P<id>\d+)> = \\"\w*\\"'
                                  '{(?P<time>\d+)}$')
 REGEX['init_unknown'] = re.compile('^<S:(?P<id>\d+)> = <init>'
                                    '{(?P<time>\d+)}$')
-REGEX['op'] = re.compile('^<S:(?P<id>\d+)>.(?P<op>\w+)\((?P<args>.*)\)'
-                         '{(?P<time>\d+)}$')
+REGEX['op'] = re.compile('^\[(?P<const_id>\d)\]<S:(?P<base_id>\d+)>.(?P<op>\w+)'
+                         '\((?P<args>.*)\){(?P<time>\d+)}$')
 REGEX['arg_str_known'] = re.compile('^\\"(?P<string>\w*)\\"$')
 REGEX['arg_str_unknown'] = re.compile('^<(S|CS):(?P<id>\d+)>$')
 REGEX['arg_char'] = re.compile('^\'(?P<char>\w)\'$')
@@ -173,15 +173,30 @@ class Settings:
 
 
 class Operation:
-    def __init__(self, base_id, op, time, args=None):
-        self.base_id = base_id
+    def __init__(self, const_id, op, time, input_type, base_id=None, args=None):
+        self.const_id = const_id
         self.time = time
-        self.op_group = ''
-        self.input_type = ''
+        self.input_type = input_type
+
+        self.base_id = base_id
+        if base_id is None:
+            self.base_id = const_id
 
         self.args = list()
         if args is not None:
             self.args.extend(args)
+
+        self.op_group = ''
+        for group in OP_GROUPS.keys():
+            if op in OP_GROUPS[group]:
+                self.op_group = group
+
+
+class OperationArgumaent:
+    def __init__(self, arg_type, arg_id=None, value=None):
+        self.arg_id = arg_id
+        self.arg_type = arg_type
+        self.value = value
 
 
 def compare_solvers(x, y):
@@ -245,20 +260,58 @@ def get_operations(x):
     # initialize operations list
     ops_list = list()
 
+    input_type = 'Concrete'
     op_strings = x.split('->')
     # parse initial operation string
     match_init = REGEX['init_known'].match(op_strings[0].strip())
     if not match_init:
         match_init = REGEX['init_unknown'].match(op_strings[0].strip())
+        input_type = 'Uniform'
     base_id = match_init.group('id')
     time = match_init.group('time')
-    ops_list.append(Operation(base_id, 'init', time))
+    ops_list.append(Operation(base_id, 'init', time, input_type))
 
     # parse remaining operation strings
-    for op_string in op_strings:
-        match_op = REGEX['op'].match(op_strings.strip())
+    for i, op_string in enumerate(op_strings[1:]):
+        match_op = REGEX['op'].match(op_string.strip())
+        const_id = match_op.group('const_id')
+        base_id = match_op.group('base_id')
+        time = match_op.group('time')
+        op = match_op.group('op')
+        args = match_op.group('args')
+        arg_list = list()
+        for arg in args.split(','):
+            match = REGEX['arg_str_known'].match(arg.strip())
+            if match:
+                value = match.group('string')
+                arg_list.append(OperationArgumaent('str', value=value))
+                continue
+            match = REGEX['arg_str_unknown'].match(arg.strip())
+            if match:
+                arg_id = match.group('id')
+                arg_list.append(OperationArgumaent('str', arg_id=arg_id))
+                continue
+            match = REGEX['arg_char'].match(arg.strip())
+            if match:
+                value = match.group('char')
+                arg_list.append(OperationArgumaent('char', value=value))
+                continue
+            match = REGEX['arg_num'].match(arg.strip())
+            if match:
+                value = match.group('num')
+                arg_list.append(OperationArgumaent('num', value=value))
 
+        if i == 0 and op == 'contains':
+            input_type = 'Non-Uniform'
 
+        ops_list.append(Operation(const_id,
+                                  op,
+                                  time,
+                                  input_type,
+                                  base_id,
+                                  arg_list))
+
+    return ops_list
 
 
 def set_options(arguments):
@@ -466,7 +519,8 @@ def produce_mc_output_data(data_map, solvers, f_name):
         output_rows.append(row)
 
     # sort output rows
-    output_rows = sorted(output_rows, cmp=lambda x, y: int(x.get('Id')) - int(y.get('Id')))
+    output_rows = sorted(output_rows,
+                         cmp=lambda x, y: int(x.get('Id')) - int(y.get('Id')))
 
     # get output file path
     csv_file_path = os.path.join(project_dir,
@@ -527,7 +581,8 @@ def produce_time_output_data(data_map, solvers, f_name):
         output_rows.append(row)
 
     # sort output rows
-    output_rows = sorted(output_rows, cmp=lambda x, y: int(x.get('Id')) - int(y.get('Id')))
+    output_rows = sorted(output_rows,
+                         cmp=lambda x, y: int(x.get('Id')) - int(y.get('Id')))
 
     # get output file path
     csv_file_path = os.path.join(project_dir,
