@@ -36,7 +36,7 @@ public class Given_WeightedAutomatonModel_When_SettingCharAt {
     private AutomatonModel charSetModel;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton Model>.setCharAt({4}, <{1} Automaton Model>) - Expected MC = {3}")
+    @Parameters(name = "{index}: <{0} Automaton Model>.setCharAt({4}, <{1} Automaton Model>) - Expected MC = {2}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");

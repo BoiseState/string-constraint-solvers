@@ -352,9 +352,7 @@ public class AggregateAutomataModel
         Automaton notContaining = mergeAutomata(notContainingArray);
 
         // if either automata is  empty
-        if (notContaining.isEmpty()) {
-            return this.clone();
-        } else if (this.isEmpty()) {
+        if (notContaining.isEmpty() || this.isEmpty()) {
             Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
             return new AggregateAutomataModel(a, this.alphabet, 0);
         }
@@ -383,6 +381,12 @@ public class AggregateAutomataModel
 
         Automaton[] notContainedAutomata = getAutomataFromAggregateModel(notContainedModel);
         Automaton notContained = mergeAutomata(notContainedAutomata);
+
+        // if arg automata are  empty
+        if (notContained.isEmpty()) {
+            Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
+            return new AggregateAutomataModel(a, this.alphabet, 0);
+        }
 
         // get automaton of required chars from not containing automaton
         notContained = getRequiredCharAutomaton(notContained, alphabet, boundLength);
@@ -428,9 +432,7 @@ public class AggregateAutomataModel
         Automaton notContaining = mergeAutomata(notContainingArray);
 
         // if either automata is  empty
-        if (notContaining.isEmpty()) {
-            return this.clone();
-        } else if (this.isEmpty()) {
+        if (notContaining.isEmpty() || this.isEmpty()) {
             Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
             return new AggregateAutomataModel(a, this.alphabet, 0);
         }
@@ -459,6 +461,12 @@ public class AggregateAutomataModel
 
         Automaton[] notEndingAutomata = getAutomataFromAggregateModel(notEndingModel);
         Automaton notEnding = mergeAutomata(notEndingAutomata);
+
+        // if arg automata are  empty
+        if (notEnding.isEmpty()) {
+            Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
+            return new AggregateAutomataModel(a, this.alphabet, 0);
+        }
 
         // get automaton of required chars from not containing automaton
         notEnding = getRequiredCharAutomaton(notEnding, alphabet, boundLength);
@@ -490,6 +498,12 @@ public class AggregateAutomataModel
         Automaton[] notEqualAutomata = getAutomataFromAggregateModel(notEqualModel);
         Automaton notEqual = mergeAutomata(notEqualAutomata);
 
+        // if arg automata are  empty
+        if (notEqual.isEmpty()) {
+            Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
+            return new AggregateAutomataModel(a, this.alphabet, 0);
+        }
+
         // if not equal automaton is a singleton
         Tuple<Automaton[], int[]> results = new Tuple<>(automata, factors);
         if (notEqual.getFiniteStrings(1) != null) {
@@ -509,6 +523,12 @@ public class AggregateAutomataModel
         // get not equal automaton
         Automaton[] notEqualAutomata = getAutomataFromAggregateModel(notEqualModel);
         Automaton notEqual = mergeAutomata(notEqualAutomata);
+
+        // if arg automata are  empty
+        if (notEqual.isEmpty()) {
+            Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
+            return new AggregateAutomataModel(a, this.alphabet, 0);
+        }
 
         // if not equal automaton is a singleton
         Tuple<Automaton[], int[]> results = new Tuple<>(automata, factors);
@@ -533,9 +553,7 @@ public class AggregateAutomataModel
         Automaton notContaining = mergeAutomata(notContainingArray);
 
         // if either automata is  empty
-        if (notContaining.isEmpty()) {
-            return this.clone();
-        } else if (this.isEmpty()) {
+        if (notContaining.isEmpty() || this.isEmpty()) {
             Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
             return new AggregateAutomataModel(a, this.alphabet, 0);
         }
@@ -564,6 +582,12 @@ public class AggregateAutomataModel
 
         Automaton[] notStartingAutomata = getAutomataFromAggregateModel(notStartingModel);
         Automaton notStarting = mergeAutomata(notStartingAutomata);
+
+        // if arg automata are  empty
+        if (notStarting.isEmpty()) {
+            Automaton[] a = new Automaton[] {BasicAutomata.makeEmpty()};
+            return new AggregateAutomataModel(a, this.alphabet, 0);
+        }
 
         // get automaton of required chars from not containing automaton
         notStarting = getRequiredCharAutomaton(notStarting, alphabet, boundLength);

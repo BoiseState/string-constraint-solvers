@@ -179,7 +179,7 @@ public class StaticConcreteSolver
             baseValues = baseValues.assertEndsWith(argValues);
 
             // get satisfying arg values
-            argValues = argValues.assertContainedInEnding(baseValues);
+            argValues = argValues.assertEndsOther(baseValues);
 
             // start timer
             BasicTimer.stop();
@@ -193,7 +193,7 @@ public class StaticConcreteSolver
             ConcreteValues tempValues = baseValues.assertNotEndsWith(argValues);
 
             // get satisfying arg values
-            argValues = argValues.assertNotContainedInEnding(baseValues);
+            argValues = argValues.assertNotEndsOther(baseValues);
 
             // set base values from temp values
             baseValues = tempValues;
@@ -388,7 +388,7 @@ public class StaticConcreteSolver
             BasicTimer.start();
 
             // get satisfying base values
-            baseValues = baseValues.assertNotIsEmpty();
+            baseValues = baseValues.assertNotEmpty();
 
             // start timer
             BasicTimer.stop();
@@ -572,14 +572,14 @@ public class StaticConcreteSolver
     public void replaceStrings(int id, int base, int arg1, int arg2) {
         // get concrete values
         ConcreteValues baseValues = symbolicStringMap.get(base);
-        ConcreteValues findValues = symbolicStringMap.get(arg1);
-        ConcreteValues replaceValues = symbolicStringMap.get(arg2);
+        String findString = concreteStringMap.get(arg1);
+        String replaceString = concreteStringMap.get(arg2);
 
         // start timer
         BasicTimer.start();
 
         // perform replace
-        ConcreteValues results = baseValues.replace(findValues, replaceValues);
+        ConcreteValues results = baseValues.replace(findString, replaceString);
 
         // start timer
         BasicTimer.stop();
@@ -588,6 +588,7 @@ public class StaticConcreteSolver
         this.symbolicStringMap.put(id, results);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public void reverse(int id, int base) {
         // get concrete values
@@ -625,6 +626,7 @@ public class StaticConcreteSolver
         this.symbolicStringMap.put(id, results);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public void setLength(int id, int base, int length) {
         // get concrete values
@@ -663,7 +665,7 @@ public class StaticConcreteSolver
             baseValues = baseValues.assertStartsWith(argValues);
 
             // get satisfying arg values
-            argValues = argValues.assertContainedInStart(baseValues);
+            argValues = argValues.assertStartsOther(baseValues);
 
             // start timer
             BasicTimer.stop();
@@ -677,7 +679,7 @@ public class StaticConcreteSolver
             ConcreteValues tempValues = baseValues.assertNotStartsWith(argValues);
 
             // get satisfying arg values
-            argValues = argValues.assertNotContainedInStart(baseValues);
+            argValues = argValues.assertNotStartsOther(baseValues);
 
             // set base values from temp values
             baseValues = tempValues;

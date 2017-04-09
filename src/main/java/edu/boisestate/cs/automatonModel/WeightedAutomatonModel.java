@@ -339,9 +339,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton notContaining = mergeAutomata(notContainingArray);
 
         // if not containing automaton is empty
-        if (notContaining.isEmpty()) {
-            return this.clone();
-        } else if (this.isEmpty()) {
+        if (notContaining.isEmpty() || this.isEmpty()) {
             WeightedAutomaton[] a = new WeightedAutomaton[] {BasicWeightedAutomata.makeEmpty()};
             return new WeightedAutomatonModel(a, this.alphabet, 0);
         }
@@ -369,6 +367,12 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
         WeightedAutomaton[] notContainedAutomata = getAutomataFromWeightedModel(notContainedModel);
         WeightedAutomaton notContained = mergeAutomata(notContainedAutomata);
+
+        // if not containing automaton is empty
+        if (notContained.isEmpty()) {
+            WeightedAutomaton[] a = new WeightedAutomaton[] {BasicWeightedAutomata.makeEmpty()};
+            return new WeightedAutomatonModel(a, this.alphabet, 0);
+        }
 
         notContained = getRequiredCharAutomaton(notContained, alphabet, boundLength);
 
@@ -412,9 +416,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton notContaining = mergeAutomata(notContainingArray);
 
         // if not containing automaton is empty
-        if (notContaining.isEmpty()) {
-            return this.clone();
-        } else if (this.isEmpty()) {
+        if (notContaining.isEmpty() || this.isEmpty()) {
             WeightedAutomaton[] a = new WeightedAutomaton[] {BasicWeightedAutomata.makeEmpty()};
             return new WeightedAutomatonModel(a, this.alphabet, 0);
         }
@@ -442,6 +444,12 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
         WeightedAutomaton[] notEndingAutomata = getAutomataFromWeightedModel(notEndingModel);
         WeightedAutomaton notEnding = mergeAutomata(notEndingAutomata);
+
+        // if not containing automaton is empty
+        if (notEnding.isEmpty()) {
+            WeightedAutomaton[] a = new WeightedAutomaton[] {BasicWeightedAutomata.makeEmpty()};
+            return new WeightedAutomatonModel(a, this.alphabet, 0);
+        }
 
         notEnding = getRequiredCharAutomaton(notEnding, alphabet, boundLength);
 
@@ -472,6 +480,12 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton[] notEqualAutomata = getAutomataFromWeightedModel(notEqualModel);
         WeightedAutomaton notEqual = mergeAutomata(notEqualAutomata);
 
+        // if not containing automaton is empty
+        if (notEqual.isEmpty()) {
+            WeightedAutomaton[] a = new WeightedAutomaton[] {BasicWeightedAutomata.makeEmpty()};
+            return new WeightedAutomatonModel(a, this.alphabet, 0);
+        }
+
         // if not equal automaton is a singleton
         WeightedAutomaton[] results = automata;
         if (notEqual.getFiniteStrings(1) != null) {
@@ -493,6 +507,12 @@ public class WeightedAutomatonModel extends AutomatonModel {
         // get not equal automaton
         WeightedAutomaton[] notEqualAutomata = getAutomataFromWeightedModel(notEqualModel);
         WeightedAutomaton notEqual = mergeAutomata(notEqualAutomata);
+
+        // if not containing automaton is empty
+        if (notEqual.isEmpty()) {
+            WeightedAutomaton[] a = new WeightedAutomaton[] {BasicWeightedAutomata.makeEmpty()};
+            return new WeightedAutomatonModel(a, this.alphabet, 0);
+        }
 
         // if not equal automaton is a singleton
         WeightedAutomaton[] results = automata;
@@ -518,9 +538,7 @@ public class WeightedAutomatonModel extends AutomatonModel {
         WeightedAutomaton notContaining = mergeAutomata(notContainingArray);
 
         // if not containing automaton is empty
-        if (notContaining.isEmpty()) {
-            return this.clone();
-        } else if (this.isEmpty()) {
+        if (notContaining.isEmpty() || this.isEmpty()) {
             WeightedAutomaton[] a = new WeightedAutomaton[] {BasicWeightedAutomata.makeEmpty()};
             return new WeightedAutomatonModel(a, this.alphabet, 0);
         }
@@ -548,6 +566,12 @@ public class WeightedAutomatonModel extends AutomatonModel {
 
         WeightedAutomaton[] notStartingAutomata = getAutomataFromWeightedModel(notStartsModel);
         WeightedAutomaton notStarting = mergeAutomata(notStartingAutomata);
+
+        // if not containing automaton is empty
+        if (notStarting.isEmpty()) {
+            WeightedAutomaton[] a = new WeightedAutomaton[] {BasicWeightedAutomata.makeEmpty()};
+            return new WeightedAutomatonModel(a, this.alphabet, 0);
+        }
 
         notStarting = getRequiredCharAutomaton(notStarting, alphabet, boundLength);
 

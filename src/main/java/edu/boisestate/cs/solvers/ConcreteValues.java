@@ -93,32 +93,6 @@ public class ConcreteValues {
         this.values.add(string);
     }
 
-    public ConcreteValues assertContainedInEnding(ConcreteValues containing) {
-        // initialize result list
-        List<String> results = new ArrayList<>();
-
-        // for each suffix in values
-        for (String suffix : this.values) {
-
-            // for each possible string
-            for (String string : containing.values) {
-                // if the string ends with the suffix
-                if (string.endsWith(suffix)) {
-                    // add suffix to result list
-                    results.add(suffix);
-
-                    // no need to keep iterating, break the loop
-                    break;
-                }
-            }
-        }
-
-        // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
-    }
-
     public ConcreteValues assertContainedInOther(ConcreteValues containing) {
         // initialize result list
         List<String> results = new ArrayList<>();
@@ -140,35 +114,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
-    }
-
-    public ConcreteValues assertContainedInStart(ConcreteValues containing) {
-        // initialize result list
-        List<String> results = new ArrayList<>();
-
-        // for each prefix in values
-        for (String prefix : this.values) {
-
-            // for each possible string
-            for (String string : containing.values) {
-                // if the string starts with the prefix
-                if (string.startsWith(prefix)) {
-                    // add prefix to result list
-                    results.add(prefix);
-
-                    // no need to keep iterating, break the loop
-                    break;
-                }
-            }
-        }
-
-        // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues assertContainsOther(ConcreteValues substring) {
@@ -192,9 +138,31 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
+    }
+
+    public ConcreteValues assertEndsOther(ConcreteValues containing) {
+        // initialize result list
+        List<String> results = new ArrayList<>();
+
+        // for each suffix in values
+        for (String suffix : this.values) {
+
+            // for each possible string
+            for (String string : containing.values) {
+                // if the string ends with the suffix
+                if (string.endsWith(suffix)) {
+                    // add suffix to result list
+                    results.add(suffix);
+
+                    // no need to keep iterating, break the loop
+                    break;
+                }
+            }
+        }
+
+        // return new concrete values from result list
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues assertEndsWith(ConcreteValues suffix) {
@@ -218,9 +186,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues assertEqual(ConcreteValues other) {
@@ -244,9 +210,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues assertEqualIgnoreCase(ConcreteValues other) {
@@ -270,9 +234,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues assertIsEmpty() {
@@ -290,27 +252,84 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     @SuppressWarnings("Duplicates")
-    public ConcreteValues assertNotContainedInEnding(ConcreteValues
-                                                             containing) {
+    public ConcreteValues assertNotContainedInOther(ConcreteValues containing) {
+        // initialize result list
+        List<String> results = new ArrayList<>();
+
+        // for each substring in values
+        for (String substr : this.values) {
+            // initialize flag
+            boolean notContained = false;
+            // for each possible string
+            for (String string : containing.values) {
+                // if the string does contain the substring
+                if (!string.contains(substr)) {
+                    // unset flag
+                    notContained = true;
+
+                    // no need to keep iterating, break the loop
+                    break;
+                }
+            }
+            // if all containing values do not contain the substring
+            if (notContained) {
+                results.add(substr);
+            }
+        }
+
+        // return new concrete values from result list
+        return new ConcreteValues(alphabet, initialBoundLength, results);
+    }
+
+    @SuppressWarnings("Duplicates")
+    public ConcreteValues assertNotContainsOther(ConcreteValues substring) {
+        // initialize result list
+        List<String> results = new ArrayList<>();
+
+        // for each string in values
+        for (String string : this.values) {
+            // initialize flag
+            boolean flag = false;
+            // for each possible substring
+            for (String substr : substring.values) {
+                // if the string does contain the substring
+                if (!string.contains(substr)) {
+                    // unset flag
+                    flag = true;
+
+                    // no need to keep iterating, break the loop
+                    break;
+                }
+            }
+            // if all containing values do not have the suffix
+            if (flag) {
+                results.add(string);
+            }
+        }
+
+        // return new concrete values from result list
+        return new ConcreteValues(alphabet, initialBoundLength, results);
+    }
+
+    @SuppressWarnings("Duplicates")
+    public ConcreteValues assertNotEndsOther(ConcreteValues containing) {
         // initialize result list
         List<String> results = new ArrayList<>();
 
         // for each suffix in values
         for (String suffix : this.values) {
             // initialize flag
-            boolean flag = true;
+            boolean flag = false;
             // for each possible string
             for (String string : containing.values) {
                 // if the string does end with the suffix
-                if (string.endsWith(suffix)) {
+                if (!string.endsWith(suffix)) {
                     // unset flag
-                    flag = false;
+                    flag = true;
 
                     // no need to keep iterating, break the loop
                     break;
@@ -323,103 +342,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
-    }
-
-    public ConcreteValues assertNotContainedInOther(ConcreteValues containing) {
-        // initialize result list
-        List<String> results = new ArrayList<>();
-
-        // for each substring in values
-        for (String substr : this.values) {
-            // initialize flag
-            boolean flag = true;
-            // for each possible string
-            for (String string : containing.values) {
-                // if the string does contain the substring
-                if (!string.contains(substr)) {
-                    // unset flag
-                    flag = false;
-
-                    // no need to keep iterating, break the loop
-                    break;
-                }
-            }
-            // if all containing values do not contain the substring
-            if (flag) {
-                results.add(substr);
-            }
-        }
-
-        // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
-    }
-
-    @SuppressWarnings("Duplicates")
-    public ConcreteValues assertNotContainedInStart(ConcreteValues containing) {
-        // initialize result list
-        List<String> results = new ArrayList<>();
-
-        // for each prefix in values
-        for (String prefix : this.values) {
-            // initialize flag
-            boolean flag = true;
-            // for each possible string
-            for (String string : containing.values) {
-                // if the string does start with the prefix
-                if (string.startsWith(prefix)) {
-                    // unset flag
-                    flag = false;
-
-                    // no need to keep iterating, break the loop
-                    break;
-                }
-            }
-            // if all containing values do not have the prefix
-            if (flag) {
-                results.add(prefix);
-            }
-        }
-
-        // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
-    }
-
-    public ConcreteValues assertNotContainsOther(ConcreteValues substring) {
-        // initialize result list
-        List<String> results = new ArrayList<>();
-
-        // for each string in values
-        for (String string : this.values) {
-            // initialize flag
-            boolean flag = true;
-            // for each possible substring
-            for (String substr : substring.values) {
-                // if the string does contain the substring
-                if (string.contains(substr)) {
-                    // unset flag
-                    flag = false;
-
-                    // no need to keep iterating, break the loop
-                    break;
-                }
-            }
-            // if all containing values do not have the suffix
-            if (flag) {
-                results.add(string);
-            }
-        }
-
-        // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     @SuppressWarnings("Duplicates")
@@ -430,13 +353,13 @@ public class ConcreteValues {
         // for each string in values
         for (String string : this.values) {
             // initialize flag
-            boolean flag = true;
+            boolean flag = false;
             // for each possible suffix
             for (String suf : suffix.values) {
                 // if the string does end with the suffix
-                if (string.endsWith(suf)) {
+                if (!string.endsWith(suf)) {
                     // unset flag
-                    flag = false;
+                    flag = true;
 
                     // no need to keep iterating, break the loop
                     break;
@@ -449,11 +372,10 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
+    @SuppressWarnings("Duplicates")
     public ConcreteValues assertNotEqual(ConcreteValues other) {
         // initialize result list
         List<String> results = new ArrayList<>();
@@ -461,13 +383,13 @@ public class ConcreteValues {
         // for each string in values
         for (String string : this.values) {
             // initialize flag
-            boolean flag = true;
+            boolean flag = false;
             // for each possible other string
             for (String otherString : other.values) {
                 // if the string does equal the other
-                if (string.equals(otherString)) {
+                if (!string.equals(otherString)) {
                     // unset flag
-                    flag = false;
+                    flag = true;
 
                     // no need to keep iterating, break the loop
                     break;
@@ -480,11 +402,10 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
+    @SuppressWarnings("Duplicates")
     public ConcreteValues assertNotEqualIgnoreCase(ConcreteValues other) {
         // initialize result list
         List<String> results = new ArrayList<>();
@@ -492,13 +413,13 @@ public class ConcreteValues {
         // for each string in values
         for (String string : this.values) {
             // initialize flag
-            boolean flag = true;
+            boolean flag = false;
             // for each possible other string
             for (String otherString : other.values) {
                 // if the string does equal the other ignoring case
-                if (string.equalsIgnoreCase(otherString)) {
+                if (!string.equalsIgnoreCase(otherString)) {
                     // unset flag
-                    flag = false;
+                    flag = true;
 
                     // no need to keep iterating, break the loop
                     break;
@@ -511,12 +432,11 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
-    public ConcreteValues assertNotIsEmpty() {
+    @SuppressWarnings("Duplicates")
+    public ConcreteValues assertNotEmpty() {
         // initialize result list
         List<String> results = new ArrayList<>();
 
@@ -530,9 +450,37 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
+    }
+
+    @SuppressWarnings("Duplicates")
+    public ConcreteValues assertNotStartsOther(ConcreteValues containing) {
+        // initialize result list
+        List<String> results = new ArrayList<>();
+
+        // for each prefix in values
+        for (String prefix : this.values) {
+            // initialize flag
+            boolean flag = false;
+            // for each possible string
+            for (String string : containing.values) {
+                // if the string does start with the prefix
+                if (!string.startsWith(prefix)) {
+                    // unset flag
+                    flag = true;
+
+                    // no need to keep iterating, break the loop
+                    break;
+                }
+            }
+            // if all containing values do not have the prefix
+            if (flag) {
+                results.add(prefix);
+            }
+        }
+
+        // return new concrete values from result list
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     @SuppressWarnings("Duplicates")
@@ -543,13 +491,13 @@ public class ConcreteValues {
         // for each string in values
         for (String string : this.values) {
             // initialize flag
-            boolean flag = true;
+            boolean flag = false;
             // for each possible prefix
             for (String pre : prefix.values) {
                 // if the string does start with the prefix
-                if (string.startsWith(pre)) {
+                if (!string.startsWith(pre)) {
                     // unset flag
-                    flag = false;
+                    flag = true;
 
                     // no need to keep iterating, break the loop
                     break;
@@ -562,9 +510,31 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
+    }
+
+    public ConcreteValues assertStartsOther(ConcreteValues containing) {
+        // initialize result list
+        List<String> results = new ArrayList<>();
+
+        // for each prefix in values
+        for (String prefix : this.values) {
+
+            // for each possible string
+            for (String string : containing.values) {
+                // if the string starts with the prefix
+                if (string.startsWith(prefix)) {
+                    // add prefix to result list
+                    results.add(prefix);
+
+                    // no need to keep iterating, break the loop
+                    break;
+                }
+            }
+        }
+
+        // return new concrete values from result list
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues assertStartsWith(ConcreteValues prefix) {
@@ -588,9 +558,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues concat(ConcreteValues arg) {
@@ -606,18 +574,14 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     /**
      * return@ the copy of itself
      **/
     public ConcreteValues copy() {
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  this.values);
+        return new ConcreteValues(alphabet, initialBoundLength, this.values);
     }
 
     public ConcreteValues delete(int start, int end) {
@@ -637,9 +601,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues deleteCharAt(int loc) {
@@ -660,9 +622,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues insert(int offset, ConcreteValues arg) {
@@ -685,9 +645,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues replace(char find, char replace) {
@@ -701,30 +659,22 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
-    public ConcreteValues replace(ConcreteValues find, ConcreteValues replace) {
+    public ConcreteValues replace(String find, String replace) {
 
         // initialize result list
         List<String> results = new ArrayList<>();
 
         // for each string in both base and arg values
         for (String baseStr : this.values) {
-            for (String findStr : find.values) {
-                for (String replaceStr : replace.values) {
-                    // add replaced string to result list
-                    results.add(baseStr.replace(findStr, replaceStr));
-                }
-            }
+            // add replaced string to result list
+            results.add(baseStr.replace(find, replace));
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues replaceChar() {
@@ -742,9 +692,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues replaceFindKnown(char find) {
@@ -760,9 +708,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues replaceReplaceKnown(char replace) {
@@ -778,9 +724,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues reverse() {
@@ -796,11 +740,10 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
+    @SuppressWarnings("Duplicates")
     public ConcreteValues setCharAt(int offset, ConcreteValues arg) {
 
         // initialize result list
@@ -821,9 +764,28 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
+    }
+
+    public ConcreteValues setLength(int length) {
+
+        // initialize result list
+        List<String> results = new ArrayList<>();
+
+        // for each string in both base and arg values
+        for (String baseStr : this.values) {
+            try {
+                // add result of setting character to result list
+                StringBuilder strBuilder = new StringBuilder(baseStr);
+                strBuilder.setLength(length);
+                results.add(strBuilder.toString());
+            } catch (Exception e) {
+                this.exceptionCount += 1;
+            }
+        }
+
+        // return new concrete values from result list
+        return new ConcreteValues(this.alphabet, length, results);
     }
 
 
@@ -843,9 +805,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues substring(int start) {
@@ -864,9 +824,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues toLowerCase() {
@@ -881,9 +839,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues toUpperCase() {
@@ -898,9 +854,7 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 
     public ConcreteValues trim() {
@@ -915,8 +869,6 @@ public class ConcreteValues {
         }
 
         // return new concrete values from result list
-        return new ConcreteValues(this.alphabet,
-                                  this.initialBoundLength,
-                                  results);
+        return new ConcreteValues(alphabet, initialBoundLength, results);
     }
 }

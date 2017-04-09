@@ -39,16 +39,16 @@ public class Given_WeightedAutomatonModel_When_Trimmed {
         // create automaton models
         WeightedAutomatonModel emptyModel = getEmptyWeightedModel(alphabet);
         WeightedAutomatonModel emptyStringModel = getEmptyStringWeightedModel(alphabet);
-        WeightedAutomatonModel whiteSpaceConcreteModel = getConcreteWeightedModel(alphabet," A ");
-        WeightedAutomatonModel noWhiteSpaceConcreteModel = getConcreteWeightedModel(alphabet,"ABC");
+        WeightedAutomatonModel whitespaceConcreteModel = getConcreteWeightedModel(alphabet," A ");
+        WeightedAutomatonModel noWhitespaceConcreteModel = getConcreteWeightedModel(alphabet,"ABC");
         WeightedAutomatonModel uniformModel = getUniformWeightedModel(alphabet, initialBoundLength);
         WeightedAutomatonModel nonUniformModel = getNonUniformWeightedModel(alphabet, initialBoundLength);
 
         return Arrays.asList(new Object[][]{
 //                {"Empty", 0, emptyModel},
 //                {"Empty String", 1, emptyStringModel},
-//                {"Concrete Whitespace", 1, whiteSpaceConcreteModel},
-//                {"Concrete No Whitespace", 1, noWhiteSpaceConcreteModel},
+//                {"Concrete Whitespace", 1, whitespaceConcreteModel},
+//                {"Concrete No Whitespace", 1, noWhitespaceConcreteModel},
 //                {"Uniform", 156, uniformModel},
 //                {"Non-Uniform", 71, nonUniformModel}
         });

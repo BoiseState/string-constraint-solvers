@@ -2,6 +2,8 @@ package edu.boisestate.cs.util;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
+import dk.brics.automaton.SpecialOperations;
+import dk.brics.string.stringoperations.Substring;
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automaton.WeightedAutomaton;
 import edu.boisestate.cs.automaton.WeightedState;
@@ -13,9 +15,13 @@ import java.util.*;
 public class Testing {
 
     public static void main(String[] args) {
-        automatonTesting();
-//        automatonOperationTesting();
+//        automatonTesting();
+        automatonOperationTesting();
 //        stringTesting();
+
+//        String s1 = "a";
+//        String s2 = "a";
+//        System.out.printf("%b\n", s1.contains(s2));
     }
 
     private static void automatonTesting() {
@@ -158,24 +164,17 @@ public class Testing {
     private static void automatonOperationTesting() {
 
         int boundingLength = 3;
-        Automaton anyChar = BasicAutomata.makeCharSet(" ABCD");
+        Automaton anyChar = BasicAutomata.makeCharSet("ABCD");
         Automaton uniform = anyChar.repeat(0,boundingLength);
-        Automaton x = anyChar.repeat().concatenate(BasicAutomata.makeChar('A')) .concatenate(anyChar.repeat());
+        Automaton x = anyChar.repeat().concatenate(BasicAutomata.makeChar('A')).concatenate(anyChar.repeat());
         Automaton nonUniform = uniform.intersection(x);
+        nonUniform.minimize();
 
-        Automaton[] automata = new Automaton[boundingLength+1];
-        for (int i = 0; i < automata.length; i++) {
-            automata[i] = nonUniform.intersection(anyChar.repeat(i,i));
-            automata[i].minimize();
-            DotToGraph.outputDotFileAndPng(automata[i].toDot(), "before" + i);
-        }
+        DotToGraph.outputDotFileAndPng(nonUniform.toDot(), "nonUniform");
 
-        PreciseTrim operation = new PreciseTrim();
-        for (int i = 0; i < automata.length; i ++) {
-            Automaton result = operation.op(automata[i]);
-            result.minimize();
-            DotToGraph.outputDotFileAndPng(result.toDot(), "after" + i);
-        }
+        Automaton overlap = SpecialOperations.overlap(nonUniform, nonUniform);
+        overlap.minimize();
+        DotToGraph.outputDotFileAndPng(overlap.toDot(), "overlap");
     }
 
     private static class sortByStringName

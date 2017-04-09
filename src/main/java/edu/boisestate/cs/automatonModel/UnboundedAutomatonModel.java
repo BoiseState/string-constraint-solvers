@@ -176,9 +176,7 @@ public class UnboundedAutomatonModel
         Automaton notContaining = getAutomatonFromUnboundedModel(notContainingModel);
 
         // if not containing automaton is  empty
-        if (notContaining.isEmpty() || automaton.isEmpty()) {
-            return new UnboundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
-        } else if (automaton.isEmptyString()) {
+        if (notContaining.isEmpty() || automaton.isEmpty() || automaton.isEmptyString()) {
             return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), alphabet, boundLength);
         }
 
@@ -207,6 +205,12 @@ public class UnboundedAutomatonModel
 
         // get not contained automaton
         Automaton notContained = getAutomatonFromUnboundedModel(notContainedModel);
+
+        // if not containing automaton is  empty
+        if (notContained.isEmpty() || automaton.isEmpty()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), alphabet, 0);
+        }
+
         notContained = getRequiredCharAutomaton(notContained, alphabet, boundLength);
 
         Automaton result = automaton;
@@ -249,9 +253,7 @@ public class UnboundedAutomatonModel
         Automaton notContaining = getAutomatonFromUnboundedModel(notContainingModel);
 
         // if not containing automaton is  empty
-        if (notContaining.isEmpty() || automaton.isEmpty()) {
-            return new UnboundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
-        } else if (automaton.isEmptyString()) {
+        if (notContaining.isEmpty() || automaton.isEmpty() || automaton.isEmptyString()) {
             return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), alphabet, boundLength);
         }
 
@@ -281,6 +283,12 @@ public class UnboundedAutomatonModel
         ensureUnboundedModel(notEndingModel);
 
         Automaton notEnding = getAutomatonFromUnboundedModel(notEndingModel);
+
+        // if not containing automaton is  empty
+        if (notEnding.isEmpty() || automaton.isEmpty()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), alphabet, 0);
+        }
+
         notEnding = getRequiredCharAutomaton(notEnding, alphabet, boundLength);
 
         Automaton result = automaton;
@@ -309,6 +317,11 @@ public class UnboundedAutomatonModel
         // get not equal automaton
         Automaton notEqual = getAutomatonFromUnboundedModel(notEqualModel);
 
+        // if not containing automaton is  empty
+        if (notEqual.isEmpty() || automaton.isEmpty()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), alphabet, 0);
+        }
+
         // if not equal automaton is a singleton
         Automaton result = automaton;
         if (notEqual.getFiniteStrings(1) != null) {
@@ -327,6 +340,11 @@ public class UnboundedAutomatonModel
 
         // get not equal automaton
         Automaton notEqual = getAutomatonFromUnboundedModel(notEqualModel);
+
+        // if not containing automaton is  empty
+        if (notEqual.isEmpty() || automaton.isEmpty()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), alphabet, 0);
+        }
 
         // if not equal automaton is a singleton
         Automaton result = automaton;
@@ -351,9 +369,7 @@ public class UnboundedAutomatonModel
         Automaton notContaining = getAutomatonFromUnboundedModel(notContainingModel);
 
         // if not containing automaton is  empty
-        if (notContaining.isEmpty() || automaton.isEmpty()) {
-            return new UnboundedAutomatonModel(this.automaton.clone(), this.alphabet, this.boundLength);
-        } else if (automaton.isEmptyString()) {
+        if (notContaining.isEmpty() || automaton.isEmpty() || automaton.isEmptyString()) {
             return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), alphabet, boundLength);
         }
 
@@ -382,6 +398,12 @@ public class UnboundedAutomatonModel
         ensureUnboundedModel(notStartsModel);
 
         Automaton notStarting = getAutomatonFromUnboundedModel(notStartsModel);
+
+        // if not containing automaton is  empty
+        if (notStarting.isEmpty() || automaton.isEmpty()) {
+            return new BoundedAutomatonModel(BasicAutomata.makeEmpty(), alphabet, 0);
+        }
+
         notStarting = getRequiredCharAutomaton(notStarting, alphabet, boundLength);
 
         Automaton result = automaton;

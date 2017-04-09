@@ -31,11 +31,13 @@ public class DotToGraph {
         Runtime rt = Runtime.getRuntime();
 
         try {
-            rt.exec("dot -Tpng " + filePath + ".dot -o " + filePath + ".png");
+            Process dotProcess = rt.exec("dot -Tpng " + filePath + ".dot -o " + filePath + ".png");
+            dotProcess.waitFor();
+
 
             // trim png using imagemagik
-            rt.exec("convert " + filePath + ".png -trim " + filePath + ".png");
-        } catch (IOException e) {
+            Process convertProcess = rt.exec("convert " + filePath + ".png -trim " + filePath + ".png");
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 

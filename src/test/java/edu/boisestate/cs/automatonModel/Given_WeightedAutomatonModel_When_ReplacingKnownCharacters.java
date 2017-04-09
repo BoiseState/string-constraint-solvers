@@ -34,8 +34,7 @@ public class Given_WeightedAutomatonModel_When_ReplacingKnownCharacters {
     private AutomatonModel replacedModel;
 
     @SuppressWarnings("Duplicates")
-    @Parameters(name = "{index}: <{0} Automaton Model>.replace('{3}', '{4}') - " +
-                       "Expected MC = {1}")
+    @Parameters(name = "{index}: <{0} Automaton Model>.replace({3}, {4}) - Expected MC = {1}")
     public static Iterable<Object[]> data() {
         // initialize alphabet and initial bound length
         Alphabet alphabet = new Alphabet("A-D");
