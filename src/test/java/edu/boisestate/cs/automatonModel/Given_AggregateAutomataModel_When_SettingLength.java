@@ -27,7 +27,7 @@ public class Given_AggregateAutomataModel_When_SettingLength {
     public AggregateAutomataModel model;
     @Parameter(value = 3)
     public int length;
-    private AutomatonModel lengthModel;
+    private AutomatonModel resultModel;
 
     @SuppressWarnings("Duplicates")
     @Parameters(name = "{index}: <{0} Automaton Model>.setLength({3}) - Expected MC = {1}")
@@ -56,13 +56,13 @@ public class Given_AggregateAutomataModel_When_SettingLength {
                 {"Concrete", 1, concreteModel, 1},
                 {"Concrete", 1, concreteModel, 2},
                 {"Concrete", 1, concreteModel, 3},
-                {"Uniform", 1, uniformModel, 0},
-                {"Uniform", 5, uniformModel, 1},
-                {"Uniform", 21, uniformModel, 2},
+                {"Uniform", 4, uniformModel, 0},
+                {"Uniform", 13, uniformModel, 1},
+                {"Uniform", 37, uniformModel, 2},
                 {"Uniform", 85, uniformModel, 3},
-                {"Non-Uniform", 0, nonUniformModel, 0},
-                {"Non-Uniform", 1, nonUniformModel, 1},
-                {"Non-Uniform", 8, nonUniformModel, 2},
+                {"Non-Uniform", 3, nonUniformModel, 0},
+                {"Non-Uniform", 9, nonUniformModel, 1},
+                {"Non-Uniform", 24, nonUniformModel, 2},
                 {"Non-Uniform", 45, nonUniformModel, 3}
         });
     }
@@ -70,14 +70,14 @@ public class Given_AggregateAutomataModel_When_SettingLength {
     @Before
     public void setup() {
         // *** act ***
-        this.lengthModel = this.model.setLength(this.length);
+        this.resultModel = this.model.setLength(this.length);
 
     }
 
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = this.lengthModel.modelCount().intValue();
+        int modelCount = this.resultModel.modelCount().intValue();
 
         // *** assert ***
         String reason = String.format( "<%s Automaton Model>.setLength(%d)", description, length);

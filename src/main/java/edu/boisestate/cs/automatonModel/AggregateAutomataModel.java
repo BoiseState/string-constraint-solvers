@@ -208,7 +208,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(substrings, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -229,7 +229,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(x, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -238,7 +238,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(BasicAutomata.makeEmptyString(), intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, 0);
+        return new AggregateAutomataModel(results.get1(), this.alphabet, 0);
     }
 
     @Override
@@ -262,7 +262,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(suffixes, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -282,7 +282,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(x, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -298,7 +298,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(equal, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -315,7 +315,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(equalIgnoreCase, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -339,7 +339,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, newBoundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -371,7 +371,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -410,7 +410,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -419,7 +419,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(BasicAutomata.makeEmptyString(), minusOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -451,7 +451,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -486,7 +486,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -512,7 +512,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -540,7 +540,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -572,7 +572,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -607,7 +607,7 @@ public class AggregateAutomataModel
         }
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -631,7 +631,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(prefixes, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("Duplicates")
@@ -651,7 +651,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(x, intersectOp, boundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -675,7 +675,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(arg, op, newBoundLength);
 
         // return new model from results automata array
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, newBoundLength, results.get2());
     }
 
     @Override
@@ -711,7 +711,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new PreciseDelete(start, end)), newBoundLength);
 
         // return new model from results automata array
-        return new AggregateAutomataModel(results.getFirst(), alphabet, newBoundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), alphabet, newBoundLength, results.get2());
     }
 
     @Override
@@ -755,7 +755,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(arg, intersectOp, boundLength);
 
         // return new model from results automata array
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -780,7 +780,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performBinaryAutomatonOperation(arg, binaryOp, newBoundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, newBoundLength, results.get2());
     }
 
     @Override
@@ -809,7 +809,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new Replace1(find, replace)), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -824,7 +824,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new Replace6(find, replace)), newBoundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, newBoundLength, results.get2());
     }
 
     @Override
@@ -833,7 +833,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new Replace4()), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -842,7 +842,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new Replace2(find)), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -851,7 +851,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new Replace3(replace)), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -860,7 +860,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new Reverse()), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -873,7 +873,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new PreciseSubstring(start, end)), newBoundLength);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, newBoundLength, results.get2());
     }
 
     @Override
@@ -898,7 +898,7 @@ public class AggregateAutomataModel
         int newBoundLength = this.boundLength + 1;
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, newBoundLength, results.get2());
     }
 
     @Override
@@ -912,7 +912,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new PreciseSetLength(length)), length);
 
         // return new model from resulting automaton
-        return new AggregateAutomataModel(results.getFirst(), newAlphabet, length, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), newAlphabet, length, results.get2());
     }
 
     @Override
@@ -928,7 +928,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new PreciseSuffix(start)), newBoundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, newBoundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, newBoundLength, results.get2());
     }
 
     @Override
@@ -937,7 +937,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new ToLowerCase()), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -946,7 +946,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new ToUpperCase()), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @Override
@@ -955,7 +955,7 @@ public class AggregateAutomataModel
         Tuple<Automaton[], int[]> results = performUnaryAutomatonOperations(getUnaryOp(new PreciseTrim()), boundLength);
 
         // return new model from resulting automata
-        return new AggregateAutomataModel(results.getFirst(), this.alphabet, this.boundLength, results.getSecond());
+        return new AggregateAutomataModel(results.get1(), this.alphabet, this.boundLength, results.get2());
     }
 
     @SuppressWarnings("CloneDoesntCallSuperClone")

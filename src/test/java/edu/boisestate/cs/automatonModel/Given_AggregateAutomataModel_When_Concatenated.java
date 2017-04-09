@@ -67,12 +67,12 @@ public class Given_AggregateAutomataModel_When_Concatenated {
                 {"Uniform", "Empty String", 85, uniformModel, emptyStringModel},
                 {"Uniform", "Concrete", 85, uniformModel, concreteModel},
                 {"Uniform", "Uniform", 7225, uniformModel, uniformModel},
-                {"Uniform", "Non-Uniform", 3825, uniformModel, nonUniformModel},
+                {"Uniform", "Non-Uniform", 4122, uniformModel, nonUniformModel}, // over-approx
                 {"Non-Uniform", "Empty", 0, nonUniformModel, emptyModel},
                 {"Non-Uniform", "Empty String", 45, nonUniformModel, emptyStringModel},
                 {"Non-Uniform", "Concrete", 45, nonUniformModel, concreteModel},
-                {"Non-Uniform", "Uniform", 3825, nonUniformModel, uniformModel},
-                {"Non-Uniform", "Non-Uniform", 2025, nonUniformModel, nonUniformModel}
+                {"Non-Uniform", "Uniform", 4122, nonUniformModel, uniformModel}, // over-approx
+                {"Non-Uniform", "Non-Uniform", 2235, nonUniformModel, nonUniformModel} // over-approx
         });
     }
 

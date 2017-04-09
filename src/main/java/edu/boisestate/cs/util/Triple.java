@@ -1,9 +1,10 @@
 package edu.boisestate.cs.util;
 
-public class Tuple<TElement1, TElement2> {
+public class Triple<TElement1, TElement2, TElement3> {
 
     private final TElement1 element1;
     private final TElement2 element2;
+    private final TElement3 element3;
 
     public TElement1 get1() {
         return element1;
@@ -13,9 +14,14 @@ public class Tuple<TElement1, TElement2> {
         return element2;
     }
 
-    public Tuple(TElement1 element1, TElement2 element2) {
+    public TElement3 get3() {
+        return element3;
+    }
+
+    public Triple(TElement1 element1, TElement2 element2, TElement3 element3) {
         this.element1 = element1;
         this.element2 = element2;
+        this.element3 = element3;
     }
 
     @Override
@@ -27,22 +33,28 @@ public class Tuple<TElement1, TElement2> {
             return false;
         }
 
-        Tuple<?, ?> tuple = (Tuple<?, ?>) o;
+        Triple<?, ?, ?> triple = (Triple<?, ?, ?>) o;
 
         if (element1 != null ?
-            !element1.equals(tuple.element1) :
-            tuple.element1 != null) {
+            !element1.equals(triple.element1) :
+            triple.element1 != null) {
             return false;
         }
-        return element2 != null ?
-               element2.equals(tuple.element2) :
-               tuple.element2 == null;
+        if (element2 != null ?
+            !element2.equals(triple.element2) :
+            triple.element2 != null) {
+            return false;
+        }
+        return element3 != null ?
+               element3.equals(triple.element3) :
+               triple.element3 == null;
     }
 
     @Override
     public int hashCode() {
         int result = element1 != null ? element1.hashCode() : 0;
         result = 31 * result + (element2 != null ? element2.hashCode() : 0);
+        result = 31 * result + (element3 != null ? element3.hashCode() : 0);
         return result;
     }
 }

@@ -2,13 +2,11 @@ package edu.boisestate.cs.util;
 
 import dk.brics.automaton.Automaton;
 import dk.brics.automaton.BasicAutomata;
-import dk.brics.automaton.SpecialOperations;
-import dk.brics.string.stringoperations.Substring;
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automaton.WeightedAutomaton;
 import edu.boisestate.cs.automaton.WeightedState;
 import edu.boisestate.cs.automaton.WeightedTransition;
-import edu.boisestate.cs.automatonModel.operations.PreciseTrim;
+import edu.boisestate.cs.automatonModel.operations.*;
 
 import java.util.*;
 
@@ -168,13 +166,167 @@ public class Testing {
         Automaton uniform = anyChar.repeat(0,boundingLength);
         Automaton x = anyChar.repeat().concatenate(BasicAutomata.makeChar('A')).concatenate(anyChar.repeat());
         Automaton nonUniform = uniform.intersection(x);
+        uniform.minimize();
         nonUniform.minimize();
 
-        DotToGraph.outputDotFileAndPng(nonUniform.toDot(), "nonUniform");
+        Automaton[] automata_u = new Automaton[boundingLength + 1];
+        for (int i = 0; i < automata_u.length; i ++) {
+            Automaton bounding = anyChar.repeat(i,i);
+            automata_u[i] = uniform.intersection(bounding);
+            automata_u[i].minimize();
+            DotToGraph.outputDotFileAndPng(automata_u[i].toDot(), "uniform-" + i);
+        }
 
-        Automaton overlap = SpecialOperations.overlap(nonUniform, nonUniform);
-        overlap.minimize();
-        DotToGraph.outputDotFileAndPng(overlap.toDot(), "overlap");
+        Automaton[] automata_n = new Automaton[boundingLength + 1];
+        for (int i = 0; i < automata_n.length; i ++) {
+            Automaton bounding = anyChar.repeat(i,i);
+            automata_n[i] = nonUniform.intersection(bounding);
+            automata_n[i].minimize();
+            DotToGraph.outputDotFileAndPng(automata_n[i].toDot(), "nonUniform-" + i);
+        }
+
+        // Concat
+        Automaton[] concat_u_u = new Automaton[automata_u.length];
+        Automaton[] concat_u_n = new Automaton[automata_u.length];
+        Automaton[] concat_n_u = new Automaton[automata_u.length];
+        Automaton[] concat_n_n = new Automaton[automata_u.length];
+        for (int i = 0; i < concat_u_u.length; i ++) {
+            concat_u_u[i] = automata_u[i].concatenate(uniform);
+            concat_u_u[i].minimize();
+            DotToGraph.outputDotFileAndPng(concat_u_u[i].toDot(), "concat-uniform-" + i + "-uniform");
+
+            concat_u_n[i] = automata_u[i].concatenate(nonUniform);
+            concat_u_n[i].minimize();
+            DotToGraph.outputDotFileAndPng(concat_u_n[i].toDot(), "concat-uniform-" + i + "-nonUniform");
+
+            concat_n_u[i] = automata_n[i].concatenate(uniform);
+            concat_n_u[i].minimize();
+            DotToGraph.outputDotFileAndPng(concat_n_u[i].toDot(), "concat-nonUniform-" + i + "-uniform");
+
+            concat_n_n[i] = automata_n[i].concatenate(nonUniform);
+            concat_n_n[i].minimize();
+            DotToGraph.outputDotFileAndPng(concat_n_n[i].toDot(), "concat-nonUniform-" + i + "-nonUniform");
+        }
+
+        // Delete
+        Map<Tuple<Integer, Integer>, Automaton[]> delete_u = new HashMap<>();
+        Map<Tuple<Integer, Integer>, Automaton[]> delete_n = new HashMap<>();
+        for (int i = 0; i <= 3; i++) {
+            for (int j = i; j <= 3; j++) {
+                delete_u.put(new Tuple<>(i, j), new Automaton[automata_u.length]);
+                delete_n.put(new Tuple<>(i, j), new Automaton[automata_u.length]);
+            }
+        }
+        for (Tuple<Integer, Integer> tuple : delete_u.keySet()) {
+            Automaton[] a_u = delete_u.get(tuple);
+            Automaton[] a_n = delete_n.get(tuple);
+            PreciseDelete delete = new PreciseDelete(tuple.get1(), tuple.get2());
+            for (int i = 0; i < a_u.length; i++) {
+                a_u[i] = delete.op(automata_u[i]);
+                a_u[i].minimize();
+                DotToGraph.outputDotFileAndPng(a_u[i].toDot(), "delete-uniform-" + i + "-" + tuple .get1() + "-" + tuple.get2());
+
+                a_n[i] = delete.op(automata_n[i]);
+                a_n[i].minimize();
+                DotToGraph.outputDotFileAndPng(a_n[i].toDot(), "delete-nonUniform-" + i + "-" + tuple .get1() + "-" + tuple.get2());
+            }
+        }
+
+        // Insert
+        Map<Integer,Automaton[]> insert_u_u = new TreeMap<>();
+        Map<Integer,Automaton[]> insert_u_n = new TreeMap<>();
+        Map<Integer,Automaton[]> insert_n_u = new TreeMap<>();
+        Map<Integer,Automaton[]> insert_n_n = new TreeMap<>();
+        for (int i = 0; i <= 3; i++) {
+                insert_u_u.put(i, new Automaton[automata_u.length]);
+                insert_u_n.put(i, new Automaton[automata_u.length]);
+                insert_n_u.put(i, new Automaton[automata_n.length]);
+                insert_n_n.put(i, new Automaton[automata_n.length]);
+        }
+        for (int offset : insert_n_n.keySet()) {
+            Automaton[] a_u_u = insert_u_u.get(offset);
+            Automaton[] a_u_n = insert_u_n.get(offset);
+            Automaton[] a_n_u = insert_n_u.get(offset);
+            Automaton[] a_n_n = insert_n_n.get(offset);
+            PreciseInsert insert = new PreciseInsert(offset);
+            for (int i = 0; i < a_u_u.length; i++) {
+                a_u_u[i] = insert.op(automata_u[i], uniform);
+                a_u_u[i].minimize();
+                DotToGraph.outputDotFileAndPng(a_u_u[i].toDot(), "insert-uniform-" + i + "-" + offset + "-uniform");
+
+                a_u_n[i] = insert.op(automata_u[i], nonUniform);
+                a_u_n[i].minimize();
+                DotToGraph.outputDotFileAndPng(a_u_n[i].toDot(), "insert-uniform-" + i + "-" + offset + "-nonUniform");
+
+                a_n_u[i] = insert.op(automata_n[i], uniform);
+                a_n_u[i].minimize();
+                DotToGraph.outputDotFileAndPng(a_n_u[i].toDot(), "insert-nonUniform-" + i + "-" + offset + "-uniform");
+
+                a_n_n[i] = insert.op(automata_n[i], nonUniform);
+                a_n_n[i].minimize();
+                DotToGraph.outputDotFileAndPng(a_n_n[i].toDot(), "insert-nonUniform-" + i + "-" + offset + "-nonUniform");
+            }
+        }
+
+        // Substring
+        Map<Tuple<Integer, Integer>, Automaton[]> substring_u = new HashMap<>();
+        Map<Tuple<Integer, Integer>, Automaton[]> substring_n = new HashMap<>();
+        for (int i = 0; i <= 3; i++) {
+            for (int j = i; j <= 3; j++) {
+                substring_u.put(new Tuple<>(i, j), new Automaton[automata_u.length]);
+                substring_n.put(new Tuple<>(i, j), new Automaton[automata_u.length]);
+            }
+        }
+        for (Tuple<Integer, Integer> tuple : substring_u.keySet()) {
+            Automaton[] a_u = substring_u.get(tuple);
+            Automaton[] a_n = substring_n.get(tuple);
+            PreciseSubstring substring = new PreciseSubstring(tuple.get1(), tuple.get2());
+            for (int i = 0; i < a_u.length; i++) {
+                a_u[i] = substring.op(automata_u[i]);
+                a_u[i].minimize();
+                DotToGraph.outputDotFileAndPng(a_u[i].toDot(), "substring-uniform-" + i + "-" + tuple .get1() + "-" + tuple.get2());
+
+                a_n[i] = substring.op(automata_n[i]);
+                a_n[i].minimize();
+                DotToGraph.outputDotFileAndPng(a_n[i].toDot(), "substring-nonUniform-" + i + "-" + tuple .get1() + "-" + tuple.get2());
+            }
+        }
+
+        // SetLength
+        Map<Integer, Automaton[]> setLength_u = new TreeMap<>();
+        Map<Integer, Automaton[]> setLength_n = new TreeMap<>();
+        for (int i = 0; i <= 3; i++) {
+            setLength_u.put(i, new Automaton[automata_u.length]);
+            setLength_n.put(i, new Automaton[automata_u.length]);
+        }
+        for (int length : setLength_u.keySet()) {
+            Automaton[] a_u = setLength_u.get(length);
+            Automaton[] a_n = setLength_n.get(length);
+            PreciseSetLength setLength = new PreciseSetLength(length);
+            for (int i = 0; i < a_u.length; i++) {
+                a_u[i] = setLength.op(automata_u[i]);
+                a_u[i].minimize();
+                DotToGraph.outputDotFileAndPng(a_u[i].toDot(), "setLength-uniform-" + i + "-" + length);
+
+                a_n[i] = setLength.op(automata_n[i]);
+                a_n[i].minimize();
+                DotToGraph.outputDotFileAndPng(a_n[i].toDot(), "setLength-nonUniform-" + i + "-" + length);
+            }
+        }
+
+        // Trim
+        Automaton[] trim_u = new Automaton[automata_u.length];
+        Automaton[] trim_n = new Automaton[automata_u.length];
+        PreciseTrim trim = new PreciseTrim();
+        for (int i = 0; i < trim_u.length; i ++) {
+            trim_u[i] = trim.op(automata_u[i]);
+            trim_u[i].minimize();
+            DotToGraph.outputDotFileAndPng(trim_u[i].toDot(), "trim-uniform-" + i);
+
+            trim_n[i] = trim.op(automata_n[i]);
+            trim_n[i].minimize();
+            DotToGraph.outputDotFileAndPng(trim_n[i].toDot(), "trim-nonUniform-" + i);
+        }
     }
 
     private static class sortByStringName

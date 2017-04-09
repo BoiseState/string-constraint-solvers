@@ -97,10 +97,10 @@ public class Given_AggregateAutomataModel_When_Deleted {
                 {"Non-Uniform", 6, nonUniformModel, 0, 2},
                 {"Non-Uniform", 3, nonUniformModel, 0, 3},
                 {"Non-Uniform", 45, nonUniformModel, 1, 1},
-                {"Non-Uniform", 21, nonUniformModel, 1, 2},
-                {"Non-Uniform", 9, nonUniformModel, 1, 3},
+                {"Non-Uniform", 24, nonUniformModel, 1, 2},
+                {"Non-Uniform", 12, nonUniformModel, 1, 3},
                 {"Non-Uniform", 44, nonUniformModel, 2, 2},
-                {"Non-Uniform", 23, nonUniformModel, 2, 3},
+                {"Non-Uniform", 32, nonUniformModel, 2, 3},
                 {"Non-Uniform", 37, nonUniformModel, 3, 3}
         });
     }
