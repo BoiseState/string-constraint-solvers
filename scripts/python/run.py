@@ -37,10 +37,9 @@ result_groups = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABC',
             '--length', '3',
             '--single-graph',
-            '--operations', 'concat', 'delete', 'replace-char', 'reverse', 'contains', 'equals',
+            '--operations', 'concat', 'delete', 'replace-char', 'contains', 'equals',
             '--graph-file', 'all'
         ],
         'solve': [

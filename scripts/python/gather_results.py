@@ -186,7 +186,7 @@ class Settings:
 
 class Operation:
     def __init__(self, const_id, op, time, input_type, base_id=None, args=None):
-        self.const_id = const_id
+        self.op_id = const_id
         self.time = time
         self.input_type = input_type
         self.op = op.strip()
@@ -205,11 +205,15 @@ class Operation:
                 self.op_group = group
 
 
-class OperationArgumaent:
+class OperationArgument:
     def __init__(self, arg_type, arg_id=None, value=None):
         self.arg_id = arg_id
         self.arg_type = arg_type
         self.value = value
+
+    def get_string(self):
+        val = self.value if self.value is not None else self.arg_id
+        return '{0}:{1}'.format(self.arg_type, val)
 
 
 def get_solver_key(x):
@@ -293,22 +297,22 @@ def get_operations(x):
             match = REGEX['arg_str_known'].match(arg.strip())
             if match:
                 value = match.group('string')
-                arg_list.append(OperationArgumaent('str', value=value))
+                arg_list.append(OperationArgument('str', value=value))
                 continue
             match = REGEX['arg_str_unknown'].match(arg.strip())
             if match:
                 arg_id = match.group('id')
-                arg_list.append(OperationArgumaent('str', arg_id=arg_id))
+                arg_list.append(OperationArgument('str', arg_id=arg_id))
                 continue
             match = REGEX['arg_char'].match(arg.strip())
             if match:
                 value = match.group('char')
-                arg_list.append(OperationArgumaent('char', value=value))
+                arg_list.append(OperationArgument('char', value=value))
                 continue
             match = REGEX['arg_num'].match(arg.strip())
             if match:
                 value = match.group('num')
-                arg_list.append(OperationArgumaent('num', value=value))
+                arg_list.append(OperationArgument('num', value=value))
 
         if i == 0 and op == 'contains':
             input_type = 'Non-Uniform'
@@ -575,44 +579,89 @@ def produce_mc_output_data(data_map, solvers, f_name):
         writer.writerows(output_rows)
 
 
+def get_all_op_data(data_map, solvers):
+    # initialize return data
+    return_data = dict()
+
+    # for each constraint id
+    for const_id in data_map.get('unbounded').keys():
+        # get ops info list for each solver from previous ops info
+        ops_lists = dict()
+        for solver in solvers:
+            prev_ops = data_map.get(solver).get(const_id).get('PREV OPS')
+            ops_lists[solver] = get_operations(prev_ops)
+
+        # for each op info in unbounded ops list
+        for op_info in ops_lists.get('unbounded'):
+            if op_info.op_id in return_data:
+                op_map = return_data.get(op_info)
+                op_map['const_ids'].add(const_id)
+            else:
+                # add op info data to new op map
+                op_map = dict()
+                op_map['input_type'] = op_info.input_type
+                op_map['op'] = op_info.op
+                op_map['op_group'] = op_info.op_group
+                op_map['base_id'] = op_info.base_id
+                op_map['const_ids'] = set()
+                op_map['const_ids'].add(const_id)
+
+                # add args strings
+                op_map['args'] = list()
+                for arg in op_info.args:
+                    op_map['args'].append(arg.get_string())
+
+                # add solver time
+                op_map['time'] = dict()
+                for solver in solvers:
+                    op_map['time'][solver] = ops_lists[solver].time
+
+                # add op map to solver op data
+                return_data[op_info.op_id] = op_map
+
+    # return data
+    return return_data
+
+
 def produce_time_output_data(data_map, solvers, f_name):
+    # get all op data
+    op_data = get_all_op_data(data_map, solvers)
+
     # initialize csv field names
     field_names = list()
-    field_names.append('Id')
-    field_names.append('Operation')
+    field_names.append('Op Id')
+    field_names.append('Const Ids')
+    field_names.append('Op')
+    field_names.append('Op Group')
+    field_names.append('In Type')
+    field_names.append('Args')
+    field_names.append('Base Id')
 
     # set field names for each solver
     sorted_solvers = sorted(solvers, cmp=get_solver_key)
-    in_fields = list()
-    t_fields = list()
-    f_fields = list()
     for solver in sorted_solvers:
         prefix = solver.upper()[0]
-        in_fields.append(prefix + ' IN MC')
-        t_fields.append(prefix + ' T MC')
-        f_fields.append(prefix + ' F MC')
-    field_names.extend(in_fields)
-    field_names.extend(t_fields)
-    field_names.extend(f_fields)
+        field_names.append(prefix + ' Op Time')
 
     # initialize output row list
     output_rows = list()
 
     # for each operation id
-    for op_id in data_map.get(next(iter(solvers))).keys():
+    for op_id in op_data.keys():
+        # get op map
+        op_map = op_data[op_id]
         # initialize row
         row = dict()
-        # add operation
-        operations = data_map.get('unbounded').get(op_id).get('PREV OPS')
-        operations = re.sub('{\d+}', '', operations)
-        row['Operation'] = operations
-        row['Id'] = op_id
+        row['Op Id'] = op_id
+        row['Const Ids'] = ', '.join(op_map.get('const_ids'))
+        row['Op'] = op_map.get('op')
+        row['Op Group'] = op_map.get('op_group')
+        row['In Type'] = op_map.get('input_type')
+        row['Base Id'] = op_map.get('base_id')
+        row['Args'] = ', '.join(op_map.get('args'))
         for solver in solvers:
-            data_row = data_map.get(solver).get(op_id)
             prefix = solver.upper()[0]
-            row[prefix + ' IN MC'] = data_row.get('IN COUNT')
-            row[prefix + ' T MC'] = data_row.get('T COUNT')
-            row[prefix + ' F MC'] = data_row.get('F COUNT')
+            row[prefix + ' Op Time'] = op_map.get('time').get(solver)
 
         # add row to output rows
         output_rows.append(row)
@@ -639,12 +688,18 @@ def produce_time_output_data(data_map, solvers, f_name):
 def gather_results(f_name, file_set):
     # get solvers from file_set
     solvers = list(file_set.keys())
+
     # get data map from files
     data_map = get_data_map_from_csv_files(f_name, file_set)
+
     # verify data
     # verify_data(data_map, solvers, f_name)
-    # output data
+
+    # output mc data
     produce_mc_output_data(data_map, solvers, f_name)
+
+    # output time data
+    produce_time_output_data(data_map, solvers, f_name)
 
 
 def gather_result_sets(result_file_sets):
