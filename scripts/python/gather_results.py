@@ -132,24 +132,24 @@ INPUT_TYPES = (
 
 
 OP_TYPES = (
-    ('Injective', 'Concrete', ''),
-    ('Injective', 'Uniform', ''),
-    ('Injective', 'Non-Uniform', ''),
-    ('+ Struct Alt', 'Concrete', 'Concrete'),
-    ('+ Struct Alt', 'Concrete', 'Uniform'),
-    ('+ Struct Alt', 'Concrete', 'Non-Uniform'),
-    ('+ Struct Alt', 'Uniform', 'Concrete'),
-    ('+ Struct Alt', 'Uniform', 'Uniform'),
-    ('+ Struct Alt', 'Uniform', 'Non-Uniform'),
-    ('+ Struct Alt', 'Non-Uniform', 'Concrete'),
-    ('+ Struct Alt', 'Non-Uniform', 'Uniform'),
-    ('+ Struct Alt', 'Non-Uniform', 'Non-Uniform'),
-    ('- Struct Alt', 'Concrete', ''),
-    ('- Struct Alt', 'Uniform', ''),
-    ('- Struct Alt', 'Non-Uniform', ''),
-    ('Substitution', 'Concrete', ''),
-    ('Substitution', 'Uniform', ''),
-    ('Substitution', 'Non-Uniform', ''),
+    'Injective(<Concrete>)',
+    'Injective(<Uniform>)',
+    'Injective(<Non-Uniform>)',
+    'P_Struct_Alt(<Concrete>,<Concrete>)',
+    'P_Struct_Alt(<Concrete>,<Uniform>)',
+    'P_Struct_Alt(<Concrete>,<Non-Uniform>)',
+    'P_Struct_Alt(<Uniform>,<Concrete>)',
+    'P_Struct_Alt(<Uniform>,<Uniform>)',
+    'P_Struct_Alt(<Uniform>,<Non-Uniform>)',
+    'P_Struct_Alt(<Non-Uniform>,<Concrete>)',
+    'P_Struct_Alt(<Non-Uniform>,<Uniform>)',
+    'P_Struct_Alt(<Non-Uniform>,<Non-Uniform>)',
+    'N_Struct_Alt(<Concrete>)',
+    'N_Struct_Alt(<Uniform>)',
+    'N_Struct_Alt(<Non-Uniform>)',
+    'Substitution(<Concrete>)',
+    'Substitution(<Uniform>)',
+    'Substitution(<Non-Uniform>)'
 )
 
 REGEX = dict()
@@ -177,11 +177,9 @@ class Settings:
         # initialize result file pattern
         self.result_file_pattern = options.result_files
 
-        # initialize reporter choice
-        if options.mc_reporter:
-            self.reporter = 'model-count'
-        if options.sat_reporter:
-            self.reporter = 'sat'
+        self.single_file = False
+        if options.single_out_file:
+            self.single_file = True
 
 
 class Operation:
@@ -216,45 +214,42 @@ class OperationArgument:
         return '{0}:{1}'.format(self.arg_type, val)
 
 
+def set_options(arguments):
+    # process command line args
+    gather_parser = argparse.ArgumentParser(prog=__doc__,
+                                            description='Gather results into '
+                                                        'csv files for each '
+                                                        'different automaton '
+                                                        'model version.')
+
+    gather_parser.add_argument('-d',
+                               '--debug',
+                               help='Display debug messages for this script.',
+                               action="store_true")
+
+    gather_parser.add_argument('-s',
+                               '--single-out-file',
+                               help='Enforces a single output file for each '
+                                    'type of result.',
+                               action="store_true")
+
+    gather_parser.add_argument('-f',
+                               '--result-files',
+                               default='*',
+                               help='A Unix shell-style pattern which is '
+                                    'used to '
+                                    'match a set of result files.')
+
+    # set settings variable from parsed options
+    global SETTINGS
+    SETTINGS = Settings(gather_parser.parse_args(arguments))
+
+
 def get_solver_key(x):
     if x in SOLVER_ORDER.keys():
         return SOLVER_ORDER[x]
     else:
         return 6
-
-
-def compare_rows(x, y):
-    # get both operations
-    op_x = x.get('Operation')
-    op_y = y.get('Operation')
-
-    # extract operations using regular expression
-    regex_pattern = '<S:\d+> = (?:<init>|\".*?\")\{\d\}' \
-                    '(?: -> <S:\d+>.(\w+\(.*?\))\{\d\})?' \
-                    '(?: -> <S:\d+>.(\w+\(.*?\))\{\d\})?' \
-                    '(?: -> <S:\d+>.(\w+\(.*?\))\{\d\})?' \
-                    '(?: -> <S:\d+>.(\w+\(.*?\))\{\d\})?' \
-                    '(?: -> <S:\d+>.(\w+\(.*?\))\{\d\})?'
-    x_match = re.match(regex_pattern, op_x)
-    y_match = re.match(regex_pattern, op_y)
-
-    if x_match and y_match:
-        x_op_count = len(x_match.groups()) - 1
-        y_op_count = len(y_match.groups()) - 1
-        for i in range(1, ):
-            x_group = x_match.group(i)
-            y_group = y_match.group(i)
-            op_diff = cmp(x_group, y_group)
-
-            if op_diff != 0:
-                return op_diff
-            elif y_op_count > x_op_count == i + 1:
-                return -1
-            elif i + 1 < y_op_count < x_op_count:
-                return 1
-
-    # return comparision of operation strings
-    return cmp(op_x, op_y)
 
 
 def get_last_operation(x):
@@ -327,43 +322,68 @@ def get_operations(x):
     return ops_list
 
 
-def set_options(arguments):
-    # process command line args
-    gather_parser = argparse.ArgumentParser(prog=__doc__,
-                                            description='Gather results into '
-                                                        'csv files for each '
-                                                        'different automaton '
-                                                        'model version.')
+def get_all_op_data(data_map, solvers):
+    # initialize return data
+    return_data = dict()
 
-    gather_parser.add_argument('-d',
-                               '--debug',
-                               help='Display debug messages for this script.',
-                               action="store_true")
+    # for each constraint id
+    for const_id in data_map.get('unbounded').keys():
+        # get ops info list for each solver from previous ops info
+        ops_lists = dict()
+        for solver in solvers:
+            prev_ops = data_map.get(solver).get(const_id).get('PREV OPS')
+            ops_lists[solver] = get_operations(prev_ops)
+            # for op in ops_lists['unbounded']:
+            #     log.debug('*** operation %s ***', op_id)
+            #     log.debug('operation %s - op: %s', op_id, op.op)
+            #     log.debug('operation %s - time: %s', op_id, op.time)
+            #     log.debug('operation %s - input_type: %s', op_id, op.input_type)
+            #     log.debug('operation %s - base_id: %s', op_id, op.base_id)
+            #     log.debug('operation %s - op_group: %s', op_id, op.op_group)
+            #     for i, arg in enumerate(op.args):
+            #         log.debug('operation %s - arg %d - arg_id: %s',
+            #                   op_id,
+            #                   i,
+            #                   arg.arg_id)
+            #         log.debug('operation %s - arg %d - arg_type: %s',
+            #                   op_id,
+            #                   i,
+            #                   arg.arg_type)
+            #         log.debug('operation %s - arg %d - arg_value: %s',
+            #                   op_id,
+            #                   i,
+            #                   arg.value)
 
-    gather_parser.add_argument('-f',
-                               '--result-files',
-                               default='*',
-                               help='A Unix shell-style pattern which is '
-                                    'used to '
-                                    'match a set of result files.')
+        # for each op info in unbounded ops list
+        for i, op_info in enumerate(ops_lists.get('unbounded')):
+            if op_info.op_id in return_data:
+                op_map = return_data.get(op_info.op_id)
+                op_map.get('const_ids').add(const_id)
+            else:
+                # add op info data to new op map
+                op_map = dict()
+                op_map['input_type'] = op_info.input_type
+                op_map['op'] = op_info.op
+                op_map['op_group'] = op_info.op_group
+                op_map['base_id'] = op_info.base_id
+                op_map['const_ids'] = set()
+                op_map['const_ids'].add(const_id)
 
-    # reporter argument group
-    reporters = gather_parser.add_mutually_exclusive_group(required=True)
+                # add args strings
+                op_map['args'] = list()
+                for arg in op_info.args:
+                    op_map['args'].append(arg.get_string())
 
-    reporters.add_argument('-m',
-                           '--mc-reporter',
-                           help='Gather result files from the model count '
-                                'reporter.',
-                           action='store_true')
+                # add solver time
+                op_map['time'] = dict()
+                for solver in solvers:
+                    op_map['time'][solver] = ops_lists.get(solver)[i].time
 
-    reporters.add_argument('-s',
-                           '--sat-reporter',
-                           help='Gather result files from the sat reporter.',
-                           action='store_true')
+                # add op map to solver op data
+                return_data[op_info.op_id] = op_map
 
-    # set settings variable from parsed options
-    global SETTINGS
-    SETTINGS = Settings(gather_parser.parse_args(arguments))
+    # return data
+    return return_data
 
 
 def get_result_files(dir_path, file_pattern):
@@ -388,7 +408,7 @@ def get_result_file_sets():
     solver_file_sets = dict()
 
     # get correct reporter result directory
-    result_dir = os.path.join(project_dir, 'results', SETTINGS.reporter)
+    result_dir = os.path.join(project_dir, 'results', 'model-count')
 
     # for all items in reporter results directory
     for d in os.listdir(result_dir):
@@ -489,26 +509,58 @@ def verify_data(data_map, solvers):
             verify_matrix('trim', data_map, solvers, op_id)
 
 
-def produce_mc_output_data(data_map, solvers, f_name):
-    # initialize csv field names
-    field_names = list()
-    field_names.append('Id')
-    field_names.append('Operation')
+def produce_mc_csv_data(data_map, solvers):
+    # initialize output row list
+    mc_rows = list()
 
-    # set field names for each solver
-    sorted_solvers = sorted(solvers, key=get_solver_key)
-    in_fields = list()
-    t_fields = list()
-    f_fields = list()
-    for solver in sorted_solvers:
-        prefix = solver.upper()[0]
-        in_fields.append(prefix + ' IN MC')
-        t_fields.append(prefix + ' T MC')
-        f_fields.append(prefix + ' F MC')
-    field_names.extend(in_fields)
-    field_names.extend(t_fields)
-    field_names.extend(f_fields)
+    # for each operation id
+    for op_id in data_map.get(next(iter(solvers))).keys():
+        # initialize row
+        row = dict()
+        # add operation
+        operations = data_map.get('unbounded').get(op_id).get('PREV OPS')
+        ops_list = get_operations(operations)
 
+        operations = re.sub('{\d+}', '', operations)
+        operations = re.sub('\[\d+\]', '', operations)
+        operations = operations.replace('\\"', '"')
+        row['Operation'] = operations
+        row['Id'] = op_id
+        c_info = data_map.get('concrete').get(op_id)
+        c_in_cnt = float(c_info.get('IN COUNT'))
+        c_t_cnt = float(c_info.get('T COUNT'))
+        c_t_per = 0
+        if c_in_cnt != 0:
+            c_t_per = c_t_cnt / c_in_cnt
+        for solver in solvers:
+            data_row = data_map.get(solver).get(op_id)
+            prefix = solver.upper()[0]
+            in_cnt = data_row.get('IN COUNT')
+            t_cnt = data_row.get('T COUNT')
+            f_cnt = data_row.get('F COUNT')
+            t_per = 0
+            f_per = 0
+            if in_cnt != '0':
+                t_per = float(t_cnt) / float(in_cnt)
+                f_per = float(f_cnt) / float(in_cnt)
+            row[prefix + ' IN MC'] = in_cnt
+            row[prefix + ' T MC'] = t_cnt
+            row[prefix + ' F MC'] = f_cnt
+            row[prefix + ' T %'] = t_per
+            row[prefix + ' F %'] = f_per
+            if solver != 'concrete':
+                row[prefix + ' Agrees'] = (c_t_per < .5 and t_per < .5) \
+                                          or (c_t_per > .5 and t_per > .5)
+                row[prefix + ' Diff'] = t_per - c_t_per
+
+        # add row to output rows
+        mc_rows.append(row)
+
+    # return sorted rows
+    return sorted(mc_rows, key=lambda x: int(x.get('Id')))
+
+
+def produce_mc_time_csv_data(data_map, solvers):
     # initialize output row list
     output_rows = list()
 
@@ -518,27 +570,6 @@ def produce_mc_output_data(data_map, solvers, f_name):
         row = dict()
         # add operation
         operations = data_map.get('unbounded').get(op_id).get('PREV OPS')
-        ops_list = get_operations(operations)
-        # for op in ops_list:
-        #     log.debug('*** operation %s ***', op_id)
-        #     log.debug('operation %s - op: %s', op_id, op.op)
-        #     log.debug('operation %s - time: %s', op_id, op.time)
-        #     log.debug('operation %s - input_type: %s', op_id, op.input_type)
-        #     log.debug('operation %s - base_id: %s', op_id, op.base_id)
-        #     log.debug('operation %s - op_group: %s', op_id, op.op_group)
-        #     for i, arg in enumerate(op.args):
-        #         log.debug('operation %s - arg %d - arg_id: %s',
-        #                   op_id,
-        #                   i,
-        #                   arg.arg_id)
-        #         log.debug('operation %s - arg %d - arg_type: %s',
-        #                   op_id,
-        #                   i,
-        #                   arg.arg_type)
-        #         log.debug('operation %s - arg %d - arg_value: %s',
-        #                   op_id,
-        #                   i,
-        #                   arg.value)
 
         operations = re.sub('{\d+}', '', operations)
         operations = re.sub('\[\d+\]', '', operations)
@@ -548,100 +579,20 @@ def produce_mc_output_data(data_map, solvers, f_name):
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)
             prefix = solver.upper()[0]
-            row[prefix + ' IN MC'] = data_row.get('IN COUNT')
-            row[prefix + ' T MC'] = data_row.get('T COUNT')
-            row[prefix + ' F MC'] = data_row.get('F COUNT')
+            row[prefix + ' Acc Time'] = data_row.get('ACC TIME')
+            row[prefix + ' T MC Time'] = data_row.get('T Time')
+            row[prefix + ' F MC Time'] = data_row.get('F Time')
 
         # add row to output rows
         output_rows.append(row)
 
-    # sort output rows
-    output_rows = sorted(output_rows, key=lambda x: int(x.get('Id')))
-
-    # get output file path
-    csv_file_path = os.path.join(project_dir,
-                                 'results',
-                                 SETTINGS.reporter,
-                                 'all',
-                                 'mc-' + f_name)
-    log.info('Outputting data to: %s', csv_file_path)
-    with open(csv_file_path, 'w') as csv_file:
-        # create csv writer with field names
-        writer = csv.DictWriter(csv_file,
-                                field_names,
-                                delimiter='\t',
-                                quoting=csv.QUOTE_NONE,
-                                quotechar='|',
-                                lineterminator='\n')
-        # output header
-        writer.writeheader()
-        # output rows
-        writer.writerows(output_rows)
+    # return sorted output rows
+    return sorted(output_rows, key=lambda x: int(x.get('Id')))
 
 
-def get_all_op_data(data_map, solvers):
-    # initialize return data
-    return_data = dict()
-
-    # for each constraint id
-    for const_id in data_map.get('unbounded').keys():
-        # get ops info list for each solver from previous ops info
-        ops_lists = dict()
-        for solver in solvers:
-            prev_ops = data_map.get(solver).get(const_id).get('PREV OPS')
-            ops_lists[solver] = get_operations(prev_ops)
-
-        # for each op info in unbounded ops list
-        for op_info in ops_lists.get('unbounded'):
-            if op_info.op_id in return_data:
-                op_map = return_data.get(op_info)
-                op_map['const_ids'].add(const_id)
-            else:
-                # add op info data to new op map
-                op_map = dict()
-                op_map['input_type'] = op_info.input_type
-                op_map['op'] = op_info.op
-                op_map['op_group'] = op_info.op_group
-                op_map['base_id'] = op_info.base_id
-                op_map['const_ids'] = set()
-                op_map['const_ids'].add(const_id)
-
-                # add args strings
-                op_map['args'] = list()
-                for arg in op_info.args:
-                    op_map['args'].append(arg.get_string())
-
-                # add solver time
-                op_map['time'] = dict()
-                for solver in solvers:
-                    op_map['time'][solver] = ops_lists[solver].time
-
-                # add op map to solver op data
-                return_data[op_info.op_id] = op_map
-
-    # return data
-    return return_data
-
-
-def produce_time_output_data(data_map, solvers, f_name):
+def produce_op_time_csv_data(data_map, solvers):
     # get all op data
     op_data = get_all_op_data(data_map, solvers)
-
-    # initialize csv field names
-    field_names = list()
-    field_names.append('Op Id')
-    field_names.append('Const Ids')
-    field_names.append('Op')
-    field_names.append('Op Group')
-    field_names.append('In Type')
-    field_names.append('Args')
-    field_names.append('Base Id')
-
-    # set field names for each solver
-    sorted_solvers = sorted(solvers, cmp=get_solver_key)
-    for solver in sorted_solvers:
-        prefix = solver.upper()[0]
-        field_names.append(prefix + ' Op Time')
 
     # initialize output row list
     output_rows = list()
@@ -667,22 +618,99 @@ def produce_time_output_data(data_map, solvers, f_name):
         output_rows.append(row)
 
     # sort output rows
-    output_rows = sorted(output_rows, cmp=lambda x: int(x.get('Id')))
+    return sorted(output_rows, key=lambda x: int(x.get('Op Id')))
 
-    # get output file path
-    csv_file_path = os.path.join(project_dir,
-                                 'results',
-                                 SETTINGS.reporter,
-                                 'all',
-                                 'time-' + f_name)
-    log.info('Outputting data to: %s', csv_file_path)
-    with open(csv_file_path, 'w') as csv_file:
-        # creat csv writer with field names
-        writer = csv.DictWriter(csv_file, field_names, delimiter='\t')
-        # output header
-        writer.writeheader()
-        # output rows
-        writer.writerows(output_rows)
+
+def get_mc_field_names(solvers):
+    # initialize csv field names
+    field_names = list()
+
+    if SETTINGS.single_file:
+        field_names.append('File')
+
+    field_names.append('Id')
+    field_names.append('Operation')
+
+    # set field names for each solver
+    sorted_solvers = sorted(solvers, key=get_solver_key)
+    in_fields = list()
+    t_fields = list()
+    f_fields = list()
+    t_p_fields = list()
+    f_p_fields = list()
+    agree_fields = list()
+    diff_fields = list()
+    for solver in sorted_solvers:
+        prefix = solver.upper()[0]
+        in_fields.append(prefix + ' IN MC')
+        t_fields.append(prefix + ' T MC')
+        f_fields.append(prefix + ' F MC')
+        t_p_fields.append(prefix + ' T %')
+        f_p_fields.append(prefix + ' F %')
+        agree_fields.append(prefix + ' Agrees')
+        diff_fields.append(prefix + ' Diff')
+    field_names.extend(in_fields)
+    field_names.extend(t_fields)
+    field_names.extend(f_fields)
+    field_names.extend(t_p_fields)
+    field_names.extend(f_p_fields)
+    agree_fields.remove('C Agrees')
+    field_names.extend(agree_fields)
+    diff_fields.remove('C Diff')
+    field_names.extend(diff_fields)
+
+    return field_names
+
+
+def get_mc_time_field_names(solvers):
+    # initialize csv field names
+    field_names = list()
+
+    if SETTINGS.single_file:
+        field_names.append('File')
+
+    field_names.append('Id')
+    field_names.append('Operation')
+
+    # set field names for each solver
+    sorted_solvers = sorted(solvers, key=get_solver_key)
+    in_fields = list()
+    t_fields = list()
+    f_fields = list()
+    for solver in sorted_solvers:
+        prefix = solver.upper()[0]
+        in_fields.append(prefix + ' Acc Time')
+        t_fields.append(prefix + ' T MC Time')
+        f_fields.append(prefix + ' F MC Time')
+    field_names.extend(in_fields)
+    field_names.extend(t_fields)
+    field_names.extend(f_fields)
+
+    return field_names
+
+
+def get_op_time_field_names(solvers):
+    # initialize csv field names
+    field_names = list()
+
+    if SETTINGS.single_file:
+        field_names.append('File')
+
+    field_names.append('Op Id')
+    field_names.append('Const Ids')
+    field_names.append('Op')
+    field_names.append('Op Group')
+    field_names.append('In Type')
+    field_names.append('Args')
+    field_names.append('Base Id')
+
+    # set field names for each solver
+    sorted_solvers = sorted(solvers, key=get_solver_key)
+    for solver in sorted_solvers:
+        prefix = solver.upper()[0]
+        field_names.append(prefix + ' Op Time')
+
+    return field_names
 
 
 def gather_results(f_name, file_set):
@@ -695,21 +723,94 @@ def gather_results(f_name, file_set):
     # verify data
     # verify_data(data_map, solvers, f_name)
 
+    csv_rows = dict()
+
     # output mc data
-    produce_mc_output_data(data_map, solvers, f_name)
+    csv_rows['mc'] = produce_mc_csv_data(data_map, solvers)
+
+    # output mc time data
+    csv_rows['mc-time'] = produce_mc_time_csv_data(data_map, solvers)
 
     # output time data
-    produce_time_output_data(data_map, solvers, f_name)
+    csv_rows['op-time'] = produce_op_time_csv_data(data_map, solvers)
+
+    return csv_rows
 
 
 def gather_result_sets(result_file_sets):
+    csv_data = dict()
     # for each file name in the result file sets
     for f_name in sorted(result_file_sets.keys()):
         # get file set
         file_set = result_file_sets.get(f_name)
         log.debug('getting result files for %s', f_name)
         # gather file set
-        gather_results(f_name, file_set)
+        csv_data[f_name] = gather_results(f_name, file_set)
+
+    return csv_data
+
+
+def output_csv_file(output_rows, field_names, f_name):
+
+    # get output file path
+    out_f_name = f_name
+    if SETTINGS.single_file:
+        out_f_name = re.sub('\d+', '', f_name)
+    csv_file_path = os.path.join(project_dir,
+                                 'results',
+                                 'model-count',
+                                 'all',
+                                 out_f_name)
+
+    log.info('Outputting data to: %s', csv_file_path)
+    with open(csv_file_path, 'w') as csv_file:
+        # create csv writer with field names
+        writer = csv.DictWriter(csv_file,
+                                field_names,
+                                delimiter='\t',
+                                quoting=csv.QUOTE_NONE,
+                                quotechar='|',
+                                lineterminator='\n')
+        # output header
+        writer.writeheader()
+        # output rows
+        writer.writerows(output_rows)
+
+
+def output_csv_files(csv_data, solvers):
+    mc_field_names = get_mc_field_names(solvers)
+    mc_time_field_names = get_mc_time_field_names(solvers)
+    op_time_field_names = get_op_time_field_names(solvers)
+
+    if SETTINGS.single_file:
+        mc_rows = list()
+        mc_time_rows = list()
+        op_time_rows = list()
+        for f_name in csv_data.keys():
+            for row in csv_data.get(f_name).get('mc'):
+                row['File'] = f_name
+                mc_rows.append(row)
+
+            for row in csv_data.get(f_name).get('mc-time'):
+                row['File'] = f_name
+                mc_time_rows.append(row)
+
+            for row in csv_data.get(f_name).get('op-time'):
+                row['File'] = f_name
+                op_time_rows.append(row)
+
+        f_name = next(iter(csv_data.keys()))
+        output_csv_file(mc_rows, mc_field_names, 'mc-' + f_name)
+        output_csv_file(mc_time_rows, mc_time_field_names, 'mc-time-' + f_name)
+        output_csv_file(op_time_rows, op_time_field_names, 'op-time-' + f_name)
+    else:
+        for f_name in csv_data.keys():
+            mc_rows = csv_data.get(f_name).get('mc')
+            mc_time_rows = csv_data.get(f_name).get('mc-time')
+            op_time_rows = csv_data.get(f_name).get('op-time')
+            output_csv_file(mc_rows, mc_field_names, 'mc-' + f_name)
+            output_csv_file(mc_time_rows, mc_time_field_names, 'mc-time-' + f_name)
+            output_csv_file(op_time_rows, op_time_field_names, 'op-time-' + f_name)
 
 
 def main(arguments):
@@ -722,13 +823,17 @@ def main(arguments):
     # ensure output directory exists
     output_dir = os.path.join(project_dir,
                               'results',
-                              SETTINGS.reporter,
+                              'model-count',
                               'all')
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
     # gather result sets
-    gather_result_sets(result_file_sets)
+    csv_file_data = gather_result_sets(result_file_sets)
+
+    # output csv files
+    solvers = next(iter(result_file_sets.values())).keys()
+    output_csv_files(csv_file_data, solvers)
 
 
 if __name__ == '__main__':

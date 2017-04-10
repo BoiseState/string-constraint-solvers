@@ -26,6 +26,9 @@ ch.setFormatter(formatter)
 
 log.addHandler(ch)
 
+# Constants
+CLASS_PATH_SEP = ';' if platform.system() == 'Windows' else ':'
+
 
 class Solver:
     def __init__(self, name, args):
@@ -297,7 +300,7 @@ def get_classpath():
 
             # return current classpath concatenated with maven classpath
             log.debug('Maven build classpath: "%s"', mvn_class_path)
-            return class_path + ';' + mvn_class_path
+            return class_path + CLASS_PATH_SEP + mvn_class_path
 
         except OSError as os_e:
             log.debug('OSError while getting class path from maven.')
@@ -372,8 +375,11 @@ def run_solver(solver, files, class_path, settings):
             with open(result_filepath, 'w') as out_file:
                 sp1 = subprocess.Popen(cmd,
                                        stderr=subprocess.STDOUT,
-                                       stdout=out_file,
+                                       stdout=subprocess.PIPE,
                                        shell=platform.system() == 'Windows')
+                for line in sp1.stdout:
+                    out_file.write(line)
+                    # log.debug('<%s>: %s', result_filename,line[:20])
                 sp1.wait()
         except OSError as os_e:
             log.debug('OSError while running solver framework.')

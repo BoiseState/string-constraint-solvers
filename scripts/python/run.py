@@ -33,18 +33,14 @@ log.addHandler(ch)
 result_groups = {
     'all': {
         'generate': [
-            '--ops-depth', '1',
+            '--ops-depth', '2',
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--length', '3',
             '--single-graph',
-            '--operations', 'concat', 'delete', 'replace-char', 'contains', 'equals',
-            '--graph-file', 'all'
+            '--operations', 'concat', 'delete', 'replace-char', 'contains', 'equals'
         ],
         'solve': [
-            '--graph-files', 'all*.json',
-            '--length', '3',
             '--concrete-solver',
             '--unbounded-solver',
             '--bounded-solver',
@@ -64,14 +60,10 @@ result_groups = {
             '--unknown-string',
             '--non-uniform',
             '--inputs', 'ABC',
-            '--length', '3',
             '--single-graph',
-            '--operations', 'concat', 'contains', 'equals',
-            '--graph-file', 'concat'
+            '--operations', 'concat', 'contains', 'equals'
         ],
         'solve': [
-            '--graph-files', 'concat*.json',
-            '--length', '3',
             '--concrete-solver',
             '--unbounded-solver',
             '--bounded-solver',
@@ -91,14 +83,10 @@ result_groups = {
             '--unknown-string',
             '--non-uniform',
             '--inputs', 'ABC',
-            '--length', '3',
             '--single-graph',
-            '--operations', 'delete', 'contains', 'equals',
-            '--graph-file', 'delete'
+            '--operations', 'delete', 'contains', 'equals'
         ],
         'solve': [
-            '--graph-files', 'delete*.json',
-            '--length', '3',
             '--concrete-solver',
             '--unbounded-solver',
             '--bounded-solver',
@@ -118,14 +106,10 @@ result_groups = {
             '--unknown-string',
             '--non-uniform',
             '--inputs', 'ABC',
-            '--length', '3',
             '--single-graph',
-            '--operations', 'replace-char', 'contains', 'equals',
-            '--graph-file', 'replace'
+            '--operations', 'replace-char', 'contains', 'equals'
         ],
         'solve': [
-            '--graph-files', 'replace*.json',
-            '--length', '3',
             '--concrete-solver',
             '--unbounded-solver',
             '--bounded-solver',
@@ -145,14 +129,10 @@ result_groups = {
             '--unknown-string',
             '--non-uniform',
             '--inputs', 'ABC',
-            '--length', '3',
             '--single-graph',
-            '--operations', 'reverse', 'contains', 'equals',
-            '--graph-file', 'reverse'
+            '--operations', 'reverse', 'contains', 'equals'
         ],
         'solve': [
-            '--graph-files', 'reverse*.json',
-            '--length', '3',
             '--concrete-solver',
             '--unbounded-solver',
             '--bounded-solver',
@@ -200,12 +180,11 @@ def compile_sources():
             log.debug('CalledProcessError while getting class path from maven.')
 
 
-def main(arguments):
+def get_options(arguments):
     # process command line args
     run_parser = argparse.ArgumentParser(prog=__doc__,
                                          description='Run all full suite of'
                                                      ' scripts')
-
     run_parser.add_argument('-d',
                             '--debug',
                             help="Display debug messages for script.",
@@ -217,13 +196,32 @@ def main(arguments):
                             default=list(),
                             help='List of result groups to gather results for.')
 
+    run_parser.add_argument('-l',
+                            '--min-length',
+                            default=1,
+                            type=int,
+                            help='The minimum length of strings for '
+                                 'generated graphs.')
+
+    run_parser.add_argument('-m',
+                            '--max-length',
+                            default=6,
+                            type=int,
+                            help='The maximum length of strings for '
+                                 'generated graphs.')
+
     run_parser.add_argument('-s',
                             '--steps',
                             nargs='+',
                             default=list(),
-                            help='List of steps to run: generate, solve, gather.')
+                            help='List of steps to run: generate, solve, '
+                                 'gather.')
 
-    options = run_parser.parse_args(arguments)
+    return run_parser.parse_args(arguments)
+
+
+def main(arguments):
+    options = get_options(arguments)
 
     # check debug flag
     if options.debug:
@@ -237,29 +235,39 @@ def main(arguments):
     # run generate graph script
     if not options.steps or 'generate' in options.steps:
         log.debug('Running Scripts: generate_graphs.py')
-        for group in result_groups.keys():
+        for group in sorted(result_groups.keys()):
             if not options.groups or group in options.groups:
-                args = result_groups[group]['generate']
-                if options.debug:
-                    args.append('--debug')
-                log.debug('%s args: %s', group, ' '.join(args))
-                generate_graphs.main(args)
+                for i in range(options.min_length, options.max_length + 1):
+                    args = list(result_groups[group]['generate'])
+                    args.append('--length')
+                    args.append(str(i))
+                    args.append('--graph-file')
+                    args.append('{0}{1:02d}'.format(group, i))
+                    if options.debug:
+                        args.append('--debug')
+                    log.debug('%s args: %s', group, ' '.join(args))
+                    generate_graphs.main(args)
 
     # run solvers via script
     if not options.steps or 'solve' in options.steps:
         log.debug('Running Scripts: run_solvers_on_graphs.py')
-        for group in result_groups.keys():
+        for group in sorted(result_groups.keys()):
             if not options.groups or group in options.groups:
-                args = result_groups[group]['solve']
-                if options.debug:
-                    args.append('--debug')
-                log.debug('%s args: %s', group, ' '.join(args))
-                run_solvers_on_graphs.main(args)
+                for i in range(options.min_length, options.max_length + 1):
+                    args = list(result_groups[group]['solve'])
+                    args.append('--length')
+                    args.append(str(i))
+                    args.append('--graph-files')
+                    args.append('{0}{1:02d}*.json'.format(group, i))
+                    if options.debug:
+                        args.append('--debug')
+                    log.debug('%s args: %s', group, ' '.join(args))
+                    run_solvers_on_graphs.main(args)
 
     # run analyze results script
     if not options.steps or 'gather' in options.steps:
         log.debug('Running Scripts: analyze_results.py')
-        for group in result_groups.keys():
+        for group in sorted(result_groups.keys()):
             if not options.groups or group in options.groups:
                 args = result_groups[group]['gather']
                 if options.debug:

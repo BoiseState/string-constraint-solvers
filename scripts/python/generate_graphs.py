@@ -92,11 +92,12 @@ class OperationValue:
 
 # boolean constraint node
 class PredicateValue:
-    def __init__(self, op, op_args=None, num=0, result=False):
+    def __init__(self, op, op_args=None, num=0, result=False, non_uniform=False):
         self.op = op
         self.op_args = list() if op_args is None else op_args
         self.num = num
         self.result = result
+        self.non_uniform = non_uniform
 
         self.args_known = dict()
         for x in op_args:
@@ -372,9 +373,18 @@ def add_trim_operations(ops):
 # boolean constraints array
 def add_contains_predicates(constraints, length=None):
     # s.contains(substr)
+    # concrete args
     for c in gen_globals['settings'].alphabet:
         constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [c], result=True))
         constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [c], result=False))
+
+    # uniform args
+    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=True))
+    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=False))
+
+    # non uniform args
+    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=True, non_uniform=True))
+    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=False, non_uniform=True))
 
 
 def add_ends_with_predicates(constraints):
@@ -391,13 +401,21 @@ def add_equals_predicates(constraints):
     string = symbol_string[0:2]
 
     # s.contentEquals(str)
-    # s.equals(str)
     # constraints.append(BooleanConstraintValue('contentEquals!!Ljava/lang/CharSequence;', [string]))
     # constraints.append(BooleanConstraintValue('contentEquals!!Ljava/lang/StringBuffer;', [string]))
+
+    # s.equals(str)
+    # concrete args
     constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [string], result=True))
     constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [string], result=False))
+
+    # uniform args
     constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=True))
     constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=False))
+
+    # non uniform args
+    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=True, non_uniform=True))
+    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=False, non_uniform=True))
 
 
 def add_equals_ignore_case_predicates(constraints):
@@ -1178,6 +1196,16 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
                                 arg,
                                 generate_id(arg_val, force=do_force))
 
+            # make argument non uniform
+            if not pred.args_known and pred.non_uniform:
+                contains_predicates = list()
+                add_contains_predicates(contains_predicates)
+                contains_predicates = contains_predicates[:1]
+                add_bool_constraint(arg_vertex,
+                                    v_list,
+                                    allow_duplicates=True,
+                                    predicate_list=contains_predicates)
+
             # add arg vertex to collection
             v_list.append(arg_vertex)
 
@@ -1469,11 +1497,20 @@ def main(arguments):
     if not os.path.exists(dir_path):
         log.debug('creating output dir: %s', dir_path)
         os.makedirs(dir_path)
-    for f in os.listdir(dir_path):
-        if re.search(gen_globals['settings'].graph_name + '.*\.json', f):
-            remove_file = os.path.join(dir_path, f)
-            log.debug('Removing Previous Graph File: %s', remove_file)
-            os.remove(remove_file)
+
+    if gen_globals['settings'].depth == 1 \
+            or gen_globals['settings'].single_graph:
+        prev_file = gen_globals['settings'].graph_name + '.json'
+        try:
+            os.remove(os.path.join(dir_path, prev_file))
+        except OSError:
+            pass
+    else:
+        for f in os.listdir(dir_path):
+            if re.search(gen_globals['settings'].graph_name + '.*\.json', f):
+                remove_file = os.path.join(dir_path, f)
+                log.debug('Removing Previous Graph File: %s', remove_file)
+                os.remove(remove_file)
 
     # for each input value
     vertices_collection = []
@@ -1565,7 +1602,8 @@ def main(arguments):
             vertices_collection.append(vertex_list)
 
         # flatten vertices collection into single nested list if simple
-        if gen_globals['settings'].depth == 1 or gen_globals['settings'].single_graph:
+        if gen_globals['settings'].depth == 1 \
+                or gen_globals['settings'].single_graph:
             # get collection of verticies
             v_collection = list()
             for v_list in vertices_collection:
@@ -1586,6 +1624,10 @@ def main(arguments):
 
         # write out update graph file
         gfname = '{0}{1:02d}.json'.format(gen_globals['settings'].graph_name, j + 1)
+        if gen_globals['settings'].depth == 1 \
+                or gen_globals['settings'].single_graph:
+            gfname = gen_globals['settings'].graph_name + '.json'
+
         file_path = os.path.join(dir_path, gfname)
         with open(file_path, 'w') as graph_file:
             log.debug('Creating Graph File: %s', graph_file.name)
