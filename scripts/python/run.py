@@ -37,11 +37,10 @@ result_groups = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABC'
+            '--inputs', 'ABC',
             '--length', '3',
             '--single-graph',
-            '--operations', 'concat', 'delete', 'replace-char', 'reverse'
-            'contains', 'equals',
+            '--operations', 'concat', 'delete', 'replace-char', 'reverse', 'contains', 'equals',
             '--graph-file', 'all'
         ],
         'solve': [
@@ -65,7 +64,7 @@ result_groups = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABC'
+            '--inputs', 'ABC',
             '--length', '3',
             '--single-graph',
             '--operations', 'concat', 'contains', 'equals',
@@ -92,7 +91,7 @@ result_groups = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABC'
+            '--inputs', 'ABC',
             '--length', '3',
             '--single-graph',
             '--operations', 'delete', 'contains', 'equals',
@@ -119,7 +118,7 @@ result_groups = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABC'
+            '--inputs', 'ABC',
             '--length', '3',
             '--single-graph',
             '--operations', 'replace-char', 'contains', 'equals',
@@ -146,7 +145,7 @@ result_groups = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABC'
+            '--inputs', 'ABC',
             '--length', '3',
             '--single-graph',
             '--operations', 'reverse', 'contains', 'equals',
@@ -219,6 +218,12 @@ def main(arguments):
                             default=list(),
                             help='List of result groups to gather results for.')
 
+    run_parser.add_argument('-s',
+                            '--steps',
+                            nargs='+',
+                            default=list(),
+                            help='List of steps to run: generate, solve, gather.')
+
     options = run_parser.parse_args(arguments)
 
     # check debug flag
@@ -231,34 +236,37 @@ def main(arguments):
     compile_sources()
 
     # run generate graph script
-    log.debug('Running Scripts: generate_graphs.py')
-    for group in result_groups.keys():
-        if not options.groups or group in options.groups:
-            args = result_groups[group]['generate']
-            if options.debug:
-                args.append('--debug')
-            log.debug('args: %s', ' '.join(args))
-            generate_graphs.main(args)
+    if not options.steps or 'generate' in options.steps:
+        log.debug('Running Scripts: generate_graphs.py')
+        for group in result_groups.keys():
+            if not options.groups or group in options.groups:
+                args = result_groups[group]['generate']
+                if options.debug:
+                    args.append('--debug')
+                log.debug('%s args: %s', group, ' '.join(args))
+                generate_graphs.main(args)
 
     # run solvers via script
-    log.debug('Running Scripts: run_solvers_on_graphs.py')
-    for group in result_groups.keys():
-        if not options.groups or group in options.groups:
-            args = result_groups[group]['solve']
-            if options.debug:
-                args.append('--debug')
-            log.debug('args: %s', ' '.join(args))
-            run_solvers_on_graphs.main(args)
+    if not options.steps or 'solve' in options.steps:
+        log.debug('Running Scripts: run_solvers_on_graphs.py')
+        for group in result_groups.keys():
+            if not options.groups or group in options.groups:
+                args = result_groups[group]['solve']
+                if options.debug:
+                    args.append('--debug')
+                log.debug('%s args: %s', group, ' '.join(args))
+                run_solvers_on_graphs.main(args)
 
     # run analyze results script
-    log.debug('Running Scripts: analyze_results.py')
-    for group in result_groups.keys():
-        if not options.groups or group in options.groups:
-            args = result_groups[group]['gather']
-            if options.debug:
-                args.append('--debug')
-            log.debug('args: %s', ' '.join(args))
-            gather_results.main(args)
+    if not options.steps or 'gather' in options.steps:
+        log.debug('Running Scripts: analyze_results.py')
+        for group in result_groups.keys():
+            if not options.groups or group in options.groups:
+                args = result_groups[group]['gather']
+                if options.debug:
+                    args.append('--debug')
+                log.debug('%s args: %s', group, ' '.join(args))
+                gather_results.main(args)
 
 
 if __name__ == '__main__':

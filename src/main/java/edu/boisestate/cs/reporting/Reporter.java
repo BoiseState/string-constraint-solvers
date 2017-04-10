@@ -193,7 +193,10 @@ abstract public class Reporter {
         return head.toString();
     }
 
-    protected void addBooleanOperation(int base, int arg, String constName) {
+    protected void addBooleanOperation(int base,
+                                       int arg,
+                                       String constName,
+                                       int const_id) {
 
         long accTime = 0;
         if (timerMap.containsKey(base)) {
@@ -208,7 +211,7 @@ abstract public class Reporter {
             // create ops array for current operation
             String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
             newBaseOps[newBaseOps.length - 1] =
-                    String.format("<S:%d>.isEmpty(){%s}", base, accTime);
+                    String.format("[%d]<S:%d>.isEmpty(){%s}", const_id, base, accTime);
 
             // add operations to map
             this.operationsMap.put(base, newBaseOps);
@@ -222,14 +225,16 @@ abstract public class Reporter {
             String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
             if (solver.isSingleton(arg)) {
                 newBaseOps[newBaseOps.length - 1] =
-                        String.format("<S:%d>.%s(\\\"%s\\\"){%d}",
+                        String.format("[%d]<S:%d>.%s(\\\"%s\\\"){%d}",
+                                      const_id,
                                       base,
                                       constName,
                                       Parser.actualVals.get(arg),
                                       accTime);
             } else {
                 newBaseOps[newBaseOps.length - 1] =
-                        String.format("<S:%d>.%s(<S:%d>){%d}",
+                        String.format("[%d]<S:%d>.%s(<S:%d>){%d}",
+                                      const_id,
                                       base,
                                       constName,
                                       arg,
@@ -245,7 +250,7 @@ abstract public class Reporter {
             // create ops array for arg operation
             String[] newArgOps = Arrays.copyOf(argOps, argOps.length + 1);
             newArgOps[newArgOps.length - 1] =
-                    String.format("<S:%d>.%s(<S:%d>){%d}", base, constName, arg, accTime);
+                    String.format("[%d]<S:%d>.%s(<S:%d>){%d}", const_id, base, constName, arg, accTime);
 
             // update arg operations
             this.operationsMap.put(arg, newArgOps);

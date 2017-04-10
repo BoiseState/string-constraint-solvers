@@ -173,7 +173,7 @@ public class MCReporter
         String constName = constraint.getSplitValue().split("!!")[0];
 
         // add boolean operation to operation list
-        addBooleanOperation(base, arg, constName);
+        addBooleanOperation(base, arg, constName, constraint.getId());
 
         // get operations
         String[] opsArray = this.operationsMap.get(base);
@@ -184,7 +184,7 @@ public class MCReporter
         // id
         columns.add(String.valueOf(constraint.getId()));
         // actual value
-        columns.add(String.format("\"%s\"", constraint.getActualVal()));
+        columns.add(String.format("\\\"%s\\\"", constraint.getActualVal()));
         // is singleton?
         columns.add(String.valueOf(isSingleton));
         // true sat?

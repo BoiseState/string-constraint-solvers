@@ -288,11 +288,16 @@ def get_classpath():
                                    stdout=subprocess.PIPE,
                                    cwd=project_dir)
             sp1.stdout.close()
-            mvn_class_path = sp2.communicate()[0].strip()
+            out_bytes = sp2.communicate()[0]
+            if isinstance(out_bytes, bytes):
+                mvn_class_path = out_bytes.decode('utf-8')
+            else:
+                mvn_class_path = out_bytes
+            mvn_class_path = mvn_class_path.strip()
 
             # return current classpath concatenated with maven classpath
             log.debug('Maven build classpath: "%s"', mvn_class_path)
-            return '{0}:{1}'.format(class_path, mvn_class_path)
+            return class_path + ';' + mvn_class_path
 
         except OSError as os_e:
             log.debug('OSError while getting class path from maven.')
@@ -387,6 +392,7 @@ def main(arguments):
 
     # get java classpath for framework
     class_path = get_classpath()
+    log.debug('Full Classpath: %s', class_path)
 
     # for each specified solver
     for solver in settings.solvers:

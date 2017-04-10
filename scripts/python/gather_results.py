@@ -4,12 +4,13 @@ import argparse
 import csv
 import fnmatch
 import logging
-# set relevent path and file variables
+import os
+import platform
 import re
 import sys
 
-import os
 
+# set relevent path and file variables
 file_name = os.path.basename(__file__).replace('.py', '')
 project_dir = '{0}/../..'.format(os.path.dirname(__file__))
 project_dir = os.path.normpath(project_dir)
@@ -85,15 +86,9 @@ SOLVER_ORDER = {
     'weighted': 5
 }
 
-INPUT_TYPES = (
-    'Concrete',
-    'Uniform',
-    'Non-Uniform'
-)
-
 OP_GROUPS = {
     'Injective': [
-        'init'
+        'init',
         'reverse',
         'toString',
         'trimToSize'
@@ -116,8 +111,25 @@ OP_GROUPS = {
         'setCharAt',
         'toLowerCase',
         'toUpperCase'
+    ],
+    'Contains Predicate': [
+        'contains',
+        'endsWith',
+        'startsWith'
+    ],
+    'Equals Predicate': [
+        'equals',
+        'contentEquals',
+        'equalsIgnoreCase',
+        'isEmpty'
     ]
 }
+INPUT_TYPES = (
+    'Concrete',
+    'Uniform',
+    'Non-Uniform'
+)
+
 
 OP_TYPES = (
     ('Injective', 'Concrete', ''),
@@ -141,13 +153,13 @@ OP_TYPES = (
 )
 
 REGEX = dict()
-REGEX['init_known'] = re.compile('^<S:(?P<id>\d+)> = \\"\w*\\"'
+REGEX['init_known'] = re.compile('^<S:(?P<id>\d+)> = \\\\".*\\\\"'
                                  '{(?P<time>\d+)}$')
 REGEX['init_unknown'] = re.compile('^<S:(?P<id>\d+)> = <init>'
                                    '{(?P<time>\d+)}$')
-REGEX['op'] = re.compile('^\[(?P<const_id>\d)\]<S:(?P<base_id>\d+)>.(?P<op>\w+)'
-                         '\((?P<args>.*)\){(?P<time>\d+)}$')
-REGEX['arg_str_known'] = re.compile('^\\"(?P<string>\w*)\\"$')
+REGEX['op'] = re.compile('^\[(?P<const_id>\d+)\]<S:(?P<base_id>\d+)>.'
+                         '(?P<op>\w+)\((?P<args>.*)\){(?P<time>\d+)}$')
+REGEX['arg_str_known'] = re.compile('^\\\\"(?P<string>\w*)\\\\"$')
 REGEX['arg_str_unknown'] = re.compile('^<(S|CS):(?P<id>\d+)>$')
 REGEX['arg_char'] = re.compile('^\'(?P<char>\w)\'$')
 REGEX['arg_num'] = re.compile('^(?P<num>\d+)$')
@@ -177,6 +189,7 @@ class Operation:
         self.const_id = const_id
         self.time = time
         self.input_type = input_type
+        self.op = op.strip()
 
         self.base_id = base_id
         if base_id is None:
@@ -188,7 +201,7 @@ class Operation:
 
         self.op_group = ''
         for group in OP_GROUPS.keys():
-            if op in OP_GROUPS[group]:
+            if self.op in OP_GROUPS[group]:
                 self.op_group = group
 
 
@@ -199,15 +212,11 @@ class OperationArgumaent:
         self.value = value
 
 
-def compare_solvers(x, y):
-    if x in SOLVER_ORDER.keys() and y in SOLVER_ORDER.keys():
-        return SOLVER_ORDER[x] - SOLVER_ORDER[y]
-    elif x in SOLVER_ORDER.keys():
-        return SOLVER_ORDER[x] - 6
-    elif y in SOLVER_ORDER.keys():
-        return 6 - SOLVER_ORDER[y]
+def get_solver_key(x):
+    if x in SOLVER_ORDER.keys():
+        return SOLVER_ORDER[x]
     else:
-        return 0
+        return 6
 
 
 def compare_rows(x, y):
@@ -483,7 +492,7 @@ def produce_mc_output_data(data_map, solvers, f_name):
     field_names.append('Operation')
 
     # set field names for each solver
-    sorted_solvers = sorted(solvers, cmp=compare_solvers)
+    sorted_solvers = sorted(solvers, key=get_solver_key)
     in_fields = list()
     t_fields = list()
     f_fields = list()
@@ -505,7 +514,31 @@ def produce_mc_output_data(data_map, solvers, f_name):
         row = dict()
         # add operation
         operations = data_map.get('unbounded').get(op_id).get('PREV OPS')
+        ops_list = get_operations(operations)
+        # for op in ops_list:
+        #     log.debug('*** operation %s ***', op_id)
+        #     log.debug('operation %s - op: %s', op_id, op.op)
+        #     log.debug('operation %s - time: %s', op_id, op.time)
+        #     log.debug('operation %s - input_type: %s', op_id, op.input_type)
+        #     log.debug('operation %s - base_id: %s', op_id, op.base_id)
+        #     log.debug('operation %s - op_group: %s', op_id, op.op_group)
+        #     for i, arg in enumerate(op.args):
+        #         log.debug('operation %s - arg %d - arg_id: %s',
+        #                   op_id,
+        #                   i,
+        #                   arg.arg_id)
+        #         log.debug('operation %s - arg %d - arg_type: %s',
+        #                   op_id,
+        #                   i,
+        #                   arg.arg_type)
+        #         log.debug('operation %s - arg %d - arg_value: %s',
+        #                   op_id,
+        #                   i,
+        #                   arg.value)
+
         operations = re.sub('{\d+}', '', operations)
+        operations = re.sub('\[\d+\]', '', operations)
+        operations = operations.replace('\\"', '"')
         row['Operation'] = operations
         row['Id'] = op_id
         for solver in solvers:
@@ -519,8 +552,7 @@ def produce_mc_output_data(data_map, solvers, f_name):
         output_rows.append(row)
 
     # sort output rows
-    output_rows = sorted(output_rows,
-                         cmp=lambda x, y: int(x.get('Id')) - int(y.get('Id')))
+    output_rows = sorted(output_rows, key=lambda x: int(x.get('Id')))
 
     # get output file path
     csv_file_path = os.path.join(project_dir,
@@ -530,8 +562,13 @@ def produce_mc_output_data(data_map, solvers, f_name):
                                  'mc-' + f_name)
     log.info('Outputting data to: %s', csv_file_path)
     with open(csv_file_path, 'w') as csv_file:
-        # creat csv writer with field names
-        writer = csv.DictWriter(csv_file, field_names, delimiter='\t')
+        # create csv writer with field names
+        writer = csv.DictWriter(csv_file,
+                                field_names,
+                                delimiter='\t',
+                                quoting=csv.QUOTE_NONE,
+                                quotechar='|',
+                                lineterminator='\n')
         # output header
         writer.writeheader()
         # output rows
@@ -545,7 +582,7 @@ def produce_time_output_data(data_map, solvers, f_name):
     field_names.append('Operation')
 
     # set field names for each solver
-    sorted_solvers = sorted(solvers, cmp=compare_solvers)
+    sorted_solvers = sorted(solvers, cmp=get_solver_key)
     in_fields = list()
     t_fields = list()
     f_fields = list()
@@ -581,8 +618,7 @@ def produce_time_output_data(data_map, solvers, f_name):
         output_rows.append(row)
 
     # sort output rows
-    output_rows = sorted(output_rows,
-                         cmp=lambda x, y: int(x.get('Id')) - int(y.get('Id')))
+    output_rows = sorted(output_rows, cmp=lambda x: int(x.get('Id')))
 
     # get output file path
     csv_file_path = os.path.join(project_dir,

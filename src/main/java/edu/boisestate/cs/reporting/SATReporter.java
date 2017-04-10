@@ -125,7 +125,7 @@ public class SATReporter extends Reporter {
         String constName = constraint.getSplitValue().split("!!")[0];
 
         // add boolean operation to operation list
-        addBooleanOperation(base, arg, constName);
+        addBooleanOperation(base, arg, constName, constraint.getId());
 
         // get operations
         String[] opsArray = this.operationsMap.get(base);
