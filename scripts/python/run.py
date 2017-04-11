@@ -37,7 +37,7 @@ RESULT_GROUPS = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--single-graph',
+            # '--single-graph',
             '--operations', 'concat', 'delete', 'replace-char', 'contains',
             'equals'
         ],
@@ -55,8 +55,8 @@ RESULT_GROUPS = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABC',
-            '--single-graph',
+            '--inputs', 'ABCDABCDABCD',
+            # '--single-graph',
             '--operations', 'concat', 'contains', 'equals'
         ],
         'solve': [
@@ -73,8 +73,8 @@ RESULT_GROUPS = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABC',
-            '--single-graph',
+            '--inputs', 'ABCDABCDABCD',
+            # '--single-graph',
             '--operations', 'delete', 'contains', 'equals'
         ],
         'solve': [
@@ -91,8 +91,8 @@ RESULT_GROUPS = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABC',
-            '--single-graph',
+            '--inputs', 'ABCDABCDABCD',
+            # '--single-graph',
             '--operations', 'replace-char', 'contains', 'equals'
         ],
         'solve': [
@@ -109,8 +109,8 @@ RESULT_GROUPS = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABC',
-            '--single-graph',
+            '--inputs', 'ABCDABCDABCD',
+            # '--single-graph',
             '--operations', 'reverse', 'contains', 'equals'
         ],
         'solve': [
@@ -238,7 +238,7 @@ def main(arguments):
                     args.append('--length')
                     args.append(str(i))
                     args.append('--graph-file')
-                    args.append('{0}{1:02d}'.format(group, i))
+                    args.append('{0}-{1:02d}'.format(group, i))
                     if options.debug:
                         args.append('--debug')
                     log.debug('%s args: %s', group, ' '.join(args))
@@ -258,7 +258,7 @@ def main(arguments):
                     args.append('--length')
                     args.append(str(i))
                     args.append('--graph-files')
-                    args.append('{0}{1:02d}*.json'.format(group, i))
+                    args.append('{0}-{1:02d}*.json'.format(group, i))
                     if options.debug:
                         args.append('--debug')
                     log.debug('%s args: %s', group, ' '.join(args))

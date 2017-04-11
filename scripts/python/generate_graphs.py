@@ -157,7 +157,11 @@ class Settings:
             log.debug('Args: %s', options)
 
         # initialize inputs
-        self.inputs = options.inputs
+        self.inputs = list()
+        for in_str in options.inputs:
+            if len(in_str) > self.max_initial_length:
+                in_str = in_str[:self.max_initial_length]
+            self.inputs.append(in_str)
         if options.empty_string:
             self.inputs.append('')
         self.non_uniform = False
@@ -1623,7 +1627,7 @@ def main(arguments):
         }
 
         # write out update graph file
-        gfname = '{0}{1:02d}.json'.format(gen_globals['settings'].graph_name, j + 1)
+        gfname = '{0}-{1:02d}.json'.format(gen_globals['settings'].graph_name, j + 1)
         if gen_globals['settings'].depth == 1 \
                 or gen_globals['settings'].single_graph:
             gfname = gen_globals['settings'].graph_name + '.json'

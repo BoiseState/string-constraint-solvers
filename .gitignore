@@ -277,10 +277,7 @@ release.properties
 
 graphs/dot/
 graphs/png/
-graphs/concat*
-graphs/delete*
-graphs/gen*
-graphs/replace*
+graphs/synthetic/
 results/
 traceFile
 /SolverInterface/
