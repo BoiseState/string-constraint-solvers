@@ -29,7 +29,6 @@ ch.setFormatter(formatter)
 log.addHandler(ch)
 
 # initialize settings and matricies variables
-SETTINGS = None
 VERIFICATION_MATRICIES = {
     'concat': (('-', '-', '>', '>', '='),
                ('-', '-', '>', '>', '-'),
@@ -124,6 +123,7 @@ OP_GROUPS = {
         'isEmpty'
     ]
 }
+
 INPUT_TYPES = (
     'Concrete',
     'Uniform',
@@ -163,6 +163,8 @@ REGEX['arg_str_known'] = re.compile('^\\\\"(?P<string>\w*)\\\\"$')
 REGEX['arg_str_unknown'] = re.compile('^<(S|CS):(?P<id>\d+)>$')
 REGEX['arg_char'] = re.compile('^\'(?P<char>\w)\'$')
 REGEX['arg_num'] = re.compile('^(?P<num>\d+)$')
+
+SETTINGS = None
 
 
 class Settings:
@@ -413,10 +415,11 @@ def get_result_file_sets():
     # for all items in reporter results directory
     for d in os.listdir(result_dir):
         # if item is a directory and not analysis
-        if os.path.isdir(os.path.join(result_dir, d)) and d != 'analysis':
+        test_dir = os.path.join(result_dir, d)
+        if os.path.isdir(test_dir) and d != 'analysis':
             # get file set
             log.debug('getting result files for %s solver', d)
-            result_files = get_result_files(os.path.join(result_dir, d),
+            result_files = get_result_files(test_dir,
                                             SETTINGS.result_file_pattern)
 
             # add file set to result file map
@@ -514,44 +517,22 @@ def produce_mc_csv_data(data_map, solvers):
     mc_rows = list()
 
     # for each operation id
-    for op_id in data_map.get(next(iter(solvers))).keys():
+    for op_id in data_map.get('concrete').keys():
         # initialize row
         row = dict()
         # add operation
         operations = data_map.get('unbounded').get(op_id).get('PREV OPS')
-        ops_list = get_operations(operations)
-
         operations = re.sub('{\d+}', '', operations)
         operations = re.sub('\[\d+\]', '', operations)
         operations = operations.replace('\\"', '"')
         row['Operation'] = operations
         row['Id'] = op_id
-        c_info = data_map.get('concrete').get(op_id)
-        c_in_cnt = float(c_info.get('IN COUNT'))
-        c_t_cnt = float(c_info.get('T COUNT'))
-        c_t_per = 0
-        if c_in_cnt != 0:
-            c_t_per = c_t_cnt / c_in_cnt
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)
             prefix = solver.upper()[0]
-            in_cnt = data_row.get('IN COUNT')
-            t_cnt = data_row.get('T COUNT')
-            f_cnt = data_row.get('F COUNT')
-            t_per = 0
-            f_per = 0
-            if in_cnt != '0':
-                t_per = float(t_cnt) / float(in_cnt)
-                f_per = float(f_cnt) / float(in_cnt)
-            row[prefix + ' IN MC'] = in_cnt
-            row[prefix + ' T MC'] = t_cnt
-            row[prefix + ' F MC'] = f_cnt
-            row[prefix + ' T %'] = t_per
-            row[prefix + ' F %'] = f_per
-            if solver != 'concrete':
-                row[prefix + ' Agrees'] = (c_t_per < .5 and t_per < .5) \
-                                          or (c_t_per > .5 and t_per > .5)
-                row[prefix + ' Diff'] = t_per - c_t_per
+            row[prefix + ' IN MC'] = data_row.get('IN COUNT')
+            row[prefix + ' T MC'] = data_row.get('T COUNT')
+            row[prefix + ' F MC'] = data_row.get('F COUNT')
 
         # add row to output rows
         mc_rows.append(row)
@@ -570,7 +551,6 @@ def produce_mc_time_csv_data(data_map, solvers):
         row = dict()
         # add operation
         operations = data_map.get('unbounded').get(op_id).get('PREV OPS')
-
         operations = re.sub('{\d+}', '', operations)
         operations = re.sub('\[\d+\]', '', operations)
         operations = operations.replace('\\"', '"')

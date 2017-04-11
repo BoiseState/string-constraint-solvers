@@ -375,11 +375,8 @@ def run_solver(solver, files, class_path, settings):
             with open(result_filepath, 'w') as out_file:
                 sp1 = subprocess.Popen(cmd,
                                        stderr=subprocess.STDOUT,
-                                       stdout=subprocess.PIPE,
+                                       stdout=out_file,
                                        shell=platform.system() == 'Windows')
-                for line in sp1.stdout:
-                    out_file.write(line)
-                    # log.debug('<%s>: %s', result_filename,line[:20])
                 sp1.wait()
         except OSError as os_e:
             log.debug('OSError while running solver framework.')

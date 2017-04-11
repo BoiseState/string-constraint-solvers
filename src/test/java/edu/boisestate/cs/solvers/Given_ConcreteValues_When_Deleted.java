@@ -108,7 +108,7 @@ public class Given_ConcreteValues_When_Deleted {
     @Test
     public void it_should_have_the_correct_number_of_accepted_strings() {
         // *** act ***
-        int modelCount = resultValues.getValues().size();
+        int modelCount = (int)resultValues.modelCount();
 
         // *** assert ***
         String reason = String.format("<%s Values>.delete(%d, %d)", description, start, end);

@@ -30,7 +30,7 @@ ch.setFormatter(formatter)
 log.addHandler(ch)
 
 # globals
-result_groups = {
+RESULT_GROUPS = {
     'all': {
         'generate': [
             '--ops-depth', '2',
@@ -38,19 +38,15 @@ result_groups = {
             '--unknown-string',
             '--non-uniform',
             '--single-graph',
-            '--operations', 'concat', 'delete', 'replace-char', 'contains', 'equals'
+            '--operations', 'concat', 'delete', 'replace-char', 'contains',
+            'equals'
         ],
         'solve': [
-            '--concrete-solver',
-            '--unbounded-solver',
-            '--bounded-solver',
-            '--aggregate-solver',
-            '--weighted-solver',
             '--mc-reporter'
         ],
         'gather': [
             '--result-files', 'all*',
-            '--mc-reporter'
+            '--single-out-file'
         ]
     },
     'concat': {
@@ -64,16 +60,11 @@ result_groups = {
             '--operations', 'concat', 'contains', 'equals'
         ],
         'solve': [
-            '--concrete-solver',
-            '--unbounded-solver',
-            '--bounded-solver',
-            '--aggregate-solver',
-            '--weighted-solver',
             '--mc-reporter'
         ],
         'gather': [
             '--result-files', 'concat*',
-            '--mc-reporter'
+            '--single-out-file'
         ]
     },
     'delete': {
@@ -87,16 +78,11 @@ result_groups = {
             '--operations', 'delete', 'contains', 'equals'
         ],
         'solve': [
-            '--concrete-solver',
-            '--unbounded-solver',
-            '--bounded-solver',
-            '--aggregate-solver',
-            '--weighted-solver',
             '--mc-reporter'
         ],
         'gather': [
             '--result-files', 'delete*',
-            '--mc-reporter'
+            '--single-out-file'
         ]
     },
     'replace': {
@@ -110,16 +96,11 @@ result_groups = {
             '--operations', 'replace-char', 'contains', 'equals'
         ],
         'solve': [
-            '--concrete-solver',
-            '--unbounded-solver',
-            '--bounded-solver',
-            '--aggregate-solver',
-            '--weighted-solver',
             '--mc-reporter'
         ],
         'gather': [
             '--result-files', 'replace*',
-            '--mc-reporter'
+            '--single-out-file'
         ]
     },
     'reverse': {
@@ -133,18 +114,21 @@ result_groups = {
             '--operations', 'reverse', 'contains', 'equals'
         ],
         'solve': [
-            '--concrete-solver',
-            '--unbounded-solver',
-            '--bounded-solver',
-            '--aggregate-solver',
-            '--weighted-solver',
             '--mc-reporter'
         ],
         'gather': [
             '--result-files', 'reverse*',
-            '--mc-reporter'
+            '--single-out-file'
         ]
     }
+}
+
+SOLVERS = {
+    'concrete': '--concrete-solver',
+    'unbounded': '--unbounded-solver',
+    'bounded': '--bounded-solver',
+    'aggregate': '--aggregate-solver',
+    'weighted': '--weighted-solver'
 }
 
 
@@ -194,7 +178,8 @@ def get_options(arguments):
                             '--groups',
                             nargs='+',
                             default=list(),
-                            help='List of result groups to gather results for.')
+                            help='List of result groups to gather results: '
+                                 'all, concat, delete, replace, reverse')
 
     run_parser.add_argument('-l',
                             '--min-length',
@@ -210,12 +195,23 @@ def get_options(arguments):
                             help='The maximum length of strings for '
                                  'generated graphs.')
 
+    run_parser.add_argument('-r',
+                            '--solvers',
+                            nargs='+',
+                            default=list(),
+                            help='List of solvers to run: concrete, unbounded,'
+                                 ' bounded, aggregate, weighted')
+
     run_parser.add_argument('-s',
                             '--steps',
                             nargs='+',
                             default=list(),
                             help='List of steps to run: generate, solve, '
-                                 'gather.')
+                                 'gather')
+    run_parser.add_argument('-t',
+                            '--test-run',
+                            help="Test run script.",
+                            action="store_true")
 
     return run_parser.parse_args(arguments)
 
@@ -235,10 +231,10 @@ def main(arguments):
     # run generate graph script
     if not options.steps or 'generate' in options.steps:
         log.debug('Running Scripts: generate_graphs.py')
-        for group in sorted(result_groups.keys()):
+        for group in sorted(RESULT_GROUPS.keys()):
             if not options.groups or group in options.groups:
                 for i in range(options.min_length, options.max_length + 1):
-                    args = list(result_groups[group]['generate'])
+                    args = list(RESULT_GROUPS[group]['generate'])
                     args.append('--length')
                     args.append(str(i))
                     args.append('--graph-file')
@@ -246,15 +242,19 @@ def main(arguments):
                     if options.debug:
                         args.append('--debug')
                     log.debug('%s args: %s', group, ' '.join(args))
-                    generate_graphs.main(args)
+                    if not options.test_run:
+                        generate_graphs.main(args)
 
     # run solvers via script
     if not options.steps or 'solve' in options.steps:
         log.debug('Running Scripts: run_solvers_on_graphs.py')
-        for group in sorted(result_groups.keys()):
+        for group in sorted(RESULT_GROUPS.keys()):
             if not options.groups or group in options.groups:
                 for i in range(options.min_length, options.max_length + 1):
-                    args = list(result_groups[group]['solve'])
+                    args = list(RESULT_GROUPS[group]['solve'])
+                    for solver in SOLVERS.keys():
+                        if not options.solvers or solver in options.solvers:
+                            args.append(SOLVERS.get(solver))
                     args.append('--length')
                     args.append(str(i))
                     args.append('--graph-files')
@@ -262,18 +262,20 @@ def main(arguments):
                     if options.debug:
                         args.append('--debug')
                     log.debug('%s args: %s', group, ' '.join(args))
-                    run_solvers_on_graphs.main(args)
+                    if not options.test_run:
+                        run_solvers_on_graphs.main(args)
 
     # run analyze results script
     if not options.steps or 'gather' in options.steps:
         log.debug('Running Scripts: analyze_results.py')
-        for group in sorted(result_groups.keys()):
+        for group in sorted(RESULT_GROUPS.keys()):
             if not options.groups or group in options.groups:
-                args = result_groups[group]['gather']
+                args = RESULT_GROUPS[group]['gather']
                 if options.debug:
                     args.append('--debug')
                 log.debug('%s args: %s', group, ' '.join(args))
-                gather_results.main(args)
+                if not options.test_run:
+                    gather_results.main(args)
 
 
 if __name__ == '__main__':

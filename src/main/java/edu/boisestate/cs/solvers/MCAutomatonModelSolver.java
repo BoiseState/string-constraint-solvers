@@ -48,7 +48,7 @@ public class MCAutomatonModelSolver
      * @return number of solutions for a given node in the graph
      */
     @Override
-    public int getModelCount(int id) {
+    public long getModelCount(int id) {
 
         // get model from id
         AutomatonModel model = this.symbolicStringMap.get(id);
@@ -63,6 +63,6 @@ public class MCAutomatonModelSolver
         BasicTimer.stop();
 
         // return model count as integer
-        return count.intValue();
+        return count.longValue();
     }
 }

@@ -299,16 +299,16 @@ public class StaticConcreteSolver
         ConcreteValues values = this.symbolicStringMap.get(id);
 
         // set created from string values
-        return new HashSet<>(values.getValues());
+        return values.getValues();
     }
 
     @Override
-    public int getModelCount(int id) {
+    public long getModelCount(int id) {
         // get values
         ConcreteValues values = this.symbolicStringMap.get(id);
 
         // return size of string values list
-        return values.getValues().size();
+        return values.modelCount();
     }
 
     @Override
@@ -317,7 +317,7 @@ public class StaticConcreteSolver
         ConcreteValues values = this.symbolicStringMap.get(id);
 
         //return first string value from the string value list
-        return values.getValues().get(0);
+        return values.getValues().iterator().next();
     }
 
     @Override
@@ -404,7 +404,7 @@ public class StaticConcreteSolver
         ConcreteValues values = symbolicStringMap.get(id);
 
         // satisfiable if string values list is not null and not empty
-        return values != null && values.getValues().size() != 0;
+        return values != null && !values.getValues().isEmpty();
     }
 
     @Override
@@ -413,7 +413,7 @@ public class StaticConcreteSolver
         ConcreteValues values = symbolicStringMap.get(id);
 
         // satisfiable if string values list is not null and only one string
-        return values != null && new TreeSet<>(values.getValues()).size() == 1;
+        return values != null && values.getValues().size() == 1;
     }
 
     @Override
@@ -425,7 +425,7 @@ public class StaticConcreteSolver
         // and strings are equal
         return values != null &&
                values.getValues().size() == 1 &&
-               values.getValues().get(0).equals(actualValue);
+               values.getValues().iterator().next().equals(actualValue);
     }
 
     @Override

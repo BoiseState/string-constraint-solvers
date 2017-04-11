@@ -61,7 +61,7 @@ public class MCReporter
 
 //        System.out.printf("Calculating IN MC for Constraint %d\n", base);
 
-        int initialCount = this.modelCountSolver.getModelCount(base);
+        long initialCount = this.modelCountSolver.getModelCount(base);
         inMCTime = BasicTimer.getRunTime();
 
         // store symbolic string values
@@ -78,7 +78,7 @@ public class MCReporter
 
 //        System.out.printf("Calculating T MC for Constraint %d\n", base);
 
-        int trueModelCount = this.modelCountSolver.getModelCount(base);
+        long trueModelCount = this.modelCountSolver.getModelCount(base);
         tMCTime = BasicTimer.getRunTime();
 
         // revert symbolic string values
@@ -98,7 +98,7 @@ public class MCReporter
 
 //        System.out.printf("Calculating F MC for Constraint %d\n", base);
 
-        int falseModelCount = this.modelCountSolver.getModelCount(base);
+        long falseModelCount = this.modelCountSolver.getModelCount(base);
         fMCTime = BasicTimer.getRunTime();
 
         // revert symbolic string values
@@ -154,7 +154,7 @@ public class MCReporter
 //        System.out.printf("Calculating Disjoint MC for Constraint %d\n", base);
 
         // set yes or no for disjoint branches
-        int overlap = this.modelCountSolver.getModelCount(base);
+        long overlap = this.modelCountSolver.getModelCount(base);
 
         // revert symbolic string values
         solver.revertLastPredicate();

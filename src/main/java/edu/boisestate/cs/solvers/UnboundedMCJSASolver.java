@@ -136,7 +136,7 @@ public class UnboundedMCJSASolver
     }
 
     @Override
-    public int getModelCount(int id) {
+    public long getModelCount(int id) {
 
         // get automaton
         Automaton automaton = this.symbolicStringMap.get(id);

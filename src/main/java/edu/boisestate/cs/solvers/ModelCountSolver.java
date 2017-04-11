@@ -12,7 +12,7 @@ public interface ModelCountSolver {
      *
      * @return number of solutions for a given node in the graph
      */
-    int getModelCount(int id);
+    long getModelCount(int id);
 
 //    /**
 //     * Get a single string value if it exists from the solutions represented by
