@@ -602,7 +602,7 @@ def random_string(length=None):
     if length is None:
         length = gen_globals['settings'].max_initial_length
     chars = list()
-    for num in range(1, length):
+    for num in range(0, length):
         chars.append(random_char())
     return ''.join(chars)
 
@@ -900,7 +900,7 @@ def perform_trim(string):
 def perform_contains(string, pred):
     if pred.result:
         is_unknown = pred.args_known[pred.op_args[0]]
-        contained_strings = [x for x in get_all_strings(1) if x in string]
+        contained_strings = [x for x in get_all_strings(1) if x in string and len(x) > 0]
         if contained_strings:
             del pred.args_known[pred.op_args[0]]
             contained_string = random.choice(contained_strings)
@@ -908,11 +908,12 @@ def perform_contains(string, pred):
             pred.args_known[pred.op_args[0]] = is_unknown
         else:
             pred.op_args[0] = string
+            pred.args_known[pred.op_args[0]] = is_unknown
     else:
         # randomize arg value if unknown
         if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
                 or pred.op_args[0] in string:
-            is_uknown = len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0
+            is_uknown = pred.args_known[pred.op_args[0]]
             not_contained_strings = [x for x in get_all_strings(len(string)) if x not in string]
             if not_contained_strings:
                 not_contained_string = random.choice(not_contained_strings)
@@ -952,7 +953,7 @@ def perform_equals(string, pred):
         # randomize arg value if unknown
         if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
                 or pred.op_args[0] == string:
-            is_uknown = len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0
+            is_uknown = pred.args_known.pop(pred.op_args[0])
             not_contained_strings = [x for x in get_all_strings(len(string)) if x != string]
             if not_contained_strings:
                 not_contained_string = random.choice(not_contained_strings)
@@ -979,7 +980,7 @@ def perform_equals_ignore_case(string, pred):
         # randomize arg value if unknown
         if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
                 or pred.op_args[0] == string:
-            is_uknown = len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0
+            is_uknown = pred.args_known.pop(pred.op_args[0])
             not_contained_strings = [x for x in get_all_strings(len(string)) if x.lower() != string.lower()]
             if not_contained_strings:
                 not_contained_string = random.choice(not_contained_strings)
@@ -1120,6 +1121,23 @@ def add_operation(t, countdown, v_list=None):
         # get actual value resulting from op
         actual_val = perform_op(t.actual_value, op)
 
+        # for each operation argument
+        arg_ids = list()
+        for j, arg in enumerate(op.op_args):
+            # create root value for arg
+            if not op.args_known[arg]:
+                arg_value = RootValue(False, method="getStringValue!!")
+            else:
+                arg_value = RootValue(True, arg, "init")
+
+            # create vertex
+            arg_val = arg_value.get_value()
+            arg_vertex = Vertex(arg_val, arg, generate_id(arg_val))
+            arg_ids.append(arg_vertex.node_id)
+
+            # add arg vertices list
+            v_list.append(arg_vertex)
+
         # create vertex for operation
         value = op.get_value()
         op_vertex = Vertex(value, actual_val, generate_id(value))
@@ -1132,23 +1150,11 @@ def add_operation(t, countdown, v_list=None):
         op_vertex.incoming_edges.append(edge)
 
         # for each operation argument
-        for j, arg in enumerate(op.op_args):
-            # create root value for arg
-            if not op.args_known[arg]:
-                arg_value = RootValue(False, method="getStringValue!!")
-            else:
-                arg_value = RootValue(True, arg, "init")
-
-            # create vertex
-            arg_val = arg_value.get_value()
-            arg_vertex = Vertex(arg_val, arg, generate_id(arg_val))
-
-            # add arg vertices list
-            v_list.append(arg_vertex)
+        for j, arg_id in enumerate(arg_ids):
 
             # add edge to collection
             edge_type = 's{0}'.format(j + 1)
-            arg_edge = Edge(arg_vertex.node_id, op_vertex.node_id, edge_type)
+            arg_edge = Edge(arg_id, op_vertex.node_id, edge_type)
             op_vertex.incoming_edges.append(arg_edge)
 
         # if countdown not reached
@@ -1175,18 +1181,8 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
         # get actual value resulting from op
         actual_val = perform_predicate(t.actual_value, pred)
 
-        # create vertex for operation
-        value = pred.get_value()
-        const_vertex = Vertex(value, actual_val, generate_id(value))
-
-        # add operation vertex to collection
-        v_list.append(const_vertex)
-
-        # add edge to collection
-        edge = Edge(t.node_id, const_vertex.node_id, 't')
-        const_vertex.incoming_edges.append(edge)
-
         # for each operation argument
+        arg_ids = list()
         for k, arg in enumerate(pred.op_args):
             # create root value for arg
             if not pred.args_known[arg]:
@@ -1197,27 +1193,36 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
             # create vertex
             arg_val = arg_value.get_value()
             do_force = not gen_globals['settings'].allow_duplicates
-            arg_vertex = Vertex(arg_val,
-                                arg,
-                                generate_id(arg_val, force=do_force))
+            arg_vertex = Vertex(arg_val, arg, generate_id(arg_val, force=do_force))
+            arg_ids.append(arg_vertex.node_id)
 
             # make argument non uniform
-            if not pred.args_known and pred.non_uniform:
+            if pred.non_uniform:
                 contains_predicates = list()
                 add_contains_predicates(contains_predicates)
                 contains_predicates = contains_predicates[:1]
-                add_bool_constraint(arg_vertex,
-                                    v_list,
-                                    allow_duplicates=True,
-                                    predicate_list=contains_predicates)
+                add_bool_constraint(arg_vertex, v_list, allow_duplicates=True, predicate_list=contains_predicates)
 
             # add arg vertex to collection
             v_list.append(arg_vertex)
 
+        # create vertex for operation
+        value = pred.get_value()
+        pred_vertex = Vertex(value, actual_val, generate_id(value))
+
+        # add operation vertex to collection
+        v_list.append(pred_vertex)
+
+        # add edge to collection
+        edge = Edge(t.node_id, pred_vertex.node_id, 't')
+        pred_vertex.incoming_edges.append(edge)
+
+        # for each operation argument
+        for k, arg_id in enumerate(arg_ids):
             # add edge to collection
             edge_type = 's{0}'.format(k + 1)
-            arg_edge = Edge(arg_vertex.node_id, const_vertex.node_id, edge_type)
-            const_vertex.incoming_edges.append(arg_edge)
+            arg_edge = Edge(arg_id, pred_vertex.node_id, edge_type)
+            pred_vertex.incoming_edges.append(arg_edge)
 
 
 # main function
