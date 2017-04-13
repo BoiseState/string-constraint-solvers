@@ -84,7 +84,7 @@ class OperationValue:
 
         self.args_known = dict()
         for x in self.op_args:
-            self.args_known[x] = True
+            self.args_known[x] = x != chr(0)
 
     def get_value(self):
         return '{0.op}!:!{0.num}'.format(self)
@@ -101,7 +101,7 @@ class PredicateValue:
 
         self.args_known = dict()
         for x in op_args:
-            self.args_known[x] = True
+            self.args_known[x] = x != chr(0)
 
     def get_value(self):
         return '{0.op}!:!{0.num}'.format(self)
@@ -900,13 +900,14 @@ def perform_trim(string):
 def perform_contains(string, pred):
     if pred.result:
         is_unknown = pred.args_known[pred.op_args[0]]
-        contained_strings = [x for x in gen_globals['settings'].alphabet
-                             if x in string]
+        contained_strings = [x for x in get_all_strings(1) if x in string]
         if contained_strings:
             del pred.args_known[pred.op_args[0]]
             contained_string = random.choice(contained_strings)
             pred.op_args[0] = contained_string
             pred.args_known[pred.op_args[0]] = is_unknown
+        else:
+            pred.op_args[0] = string
     else:
         # randomize arg value if unknown
         if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \

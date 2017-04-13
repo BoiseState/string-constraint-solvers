@@ -512,6 +512,46 @@ def verify_data(data_map, solvers):
             verify_matrix('trim', data_map, solvers, op_id)
 
 
+def get_op_string(ops_list, op_num, d_map):
+    op_str = ''
+    op_arg_str = ''
+    op = None
+    if ops_list[1].op == 'contains' and len(ops_list) > (2 + op_num):
+        op = ops_list[(1 + op_num)]
+    elif len(ops_list) > (1 + op_num):
+        op = ops_list[op_num]
+
+    if op is not None:
+        op_str = op.op
+        op_str_args = [x for x in op.args if x.arg_type == 'str']
+
+        # arg 1
+        if len(op_str_args) > 0:
+            if op_str_args[0].value is not None:
+                op_arg_str = "Concrete"
+            elif op_str_args[0].arg_id in d_map:
+                op_arg_str = "Non-Uniform"
+            else:
+                op_arg_str = "Uniform"
+
+    return op_str, op_arg_str
+
+
+def get_predicate(ops_list, d_map):
+    pred_str = ops_list[-1].op
+    pred_arg_str = ''
+    pred_args = ops_list[-1].args
+    if len(pred_args) > 0:
+        if pred_args[0].value is not None:
+            pred_arg_str = "Concrete"
+        elif pred_args[0].arg_id in d_map:
+            pred_arg_str = "Non-Uniform"
+        else:
+            pred_arg_str = "Uniform"
+
+    return pred_str, pred_arg_str
+
+
 def produce_mc_csv_data(data_map, solvers):
     # initialize output row list
     mc_rows = list()
@@ -522,11 +562,22 @@ def produce_mc_csv_data(data_map, solvers):
         row = dict()
         # add operation
         operations = data_map.get('unbounded').get(op_id).get('PREV OPS')
+        ops_list = get_operations(operations)
         operations = re.sub('{\d+}', '', operations)
         operations = re.sub('\[\d+\]', '', operations)
         operations = operations.replace('\\"', '"')
+        op1, op1_arg = get_op_string(ops_list, 1, data_map.get('unbounded'))
+        op2, op2_arg = get_op_string(ops_list, 2, data_map.get('unbounded'))
+        pred, pred_arg = get_predicate(ops_list, data_map.get('unbounded'))
         row['Operation'] = operations
         row['Id'] = op_id
+        row['Input Type'] = ops_list[-1].input_type
+        row['Op 1'] = op1
+        row['Op 1 Arg'] = op1_arg
+        row['Op 2'] = op2
+        row['Op 2 Arg'] = op2_arg
+        row['Pred'] = pred
+        row['Pred Arg'] = pred_arg
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)
             prefix = solver.upper()[0]
@@ -560,8 +611,8 @@ def produce_mc_time_csv_data(data_map, solvers):
             data_row = data_map.get(solver).get(op_id)
             prefix = solver.upper()[0]
             row[prefix + ' Acc Time'] = data_row.get('ACC TIME')
-            row[prefix + ' T MC Time'] = data_row.get('T Time')
-            row[prefix + ' F MC Time'] = data_row.get('F Time')
+            row[prefix + ' T MC Time'] = data_row.get('T TIME')
+            row[prefix + ' F MC Time'] = data_row.get('F TIME')
 
         # add row to output rows
         output_rows.append(row)
@@ -616,28 +667,22 @@ def get_mc_field_names(solvers):
     in_fields = list()
     t_fields = list()
     f_fields = list()
-    t_p_fields = list()
-    f_p_fields = list()
-    agree_fields = list()
-    diff_fields = list()
     for solver in sorted_solvers:
         prefix = solver.upper()[0]
         in_fields.append(prefix + ' IN MC')
         t_fields.append(prefix + ' T MC')
         f_fields.append(prefix + ' F MC')
-        t_p_fields.append(prefix + ' T %')
-        f_p_fields.append(prefix + ' F %')
-        agree_fields.append(prefix + ' Agrees')
-        diff_fields.append(prefix + ' Diff')
     field_names.extend(in_fields)
     field_names.extend(t_fields)
     field_names.extend(f_fields)
-    field_names.extend(t_p_fields)
-    field_names.extend(f_p_fields)
-    agree_fields.remove('C Agrees')
-    field_names.extend(agree_fields)
-    diff_fields.remove('C Diff')
-    field_names.extend(diff_fields)
+
+    field_names.append('Input Type')
+    field_names.append('Op 1')
+    field_names.append('Op 1 Arg')
+    field_names.append('Op 2')
+    field_names.append('Op 2 Arg')
+    field_names.append('Pred')
+    field_names.append('Pred Arg')
 
     return field_names
 
@@ -735,7 +780,7 @@ def output_csv_file(output_rows, field_names, f_name):
     # get output file path
     out_f_name = f_name
     if SETTINGS.single_file:
-        out_f_name = re.sub('\d+', '', f_name)
+        out_f_name = re.sub('-\d+', '', f_name)
     csv_file_path = os.path.join(project_dir,
                                  'results',
                                  'model-count',

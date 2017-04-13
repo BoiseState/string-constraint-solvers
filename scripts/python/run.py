@@ -37,7 +37,7 @@ RESULT_GROUPS = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            # '--single-graph',
+            '--single-graph',
             '--operations', 'concat', 'delete', 'replace-char', 'contains',
             'equals'
         ],
@@ -56,7 +56,7 @@ RESULT_GROUPS = {
             '--unknown-string',
             '--non-uniform',
             '--inputs', 'ABCDABCDABCD',
-            # '--single-graph',
+            '--single-graph',
             '--operations', 'concat', 'contains', 'equals'
         ],
         'solve': [
@@ -74,7 +74,7 @@ RESULT_GROUPS = {
             '--unknown-string',
             '--non-uniform',
             '--inputs', 'ABCDABCDABCD',
-            # '--single-graph',
+            '--single-graph',
             '--operations', 'delete', 'contains', 'equals'
         ],
         'solve': [
@@ -110,7 +110,7 @@ RESULT_GROUPS = {
             '--unknown-string',
             '--non-uniform',
             '--inputs', 'ABCDABCDABCD',
-            # '--single-graph',
+            '--single-graph',
             '--operations', 'reverse', 'contains', 'equals'
         ],
         'solve': [
