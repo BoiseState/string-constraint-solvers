@@ -37,9 +37,10 @@ RESULT_GROUPS = {
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
+            '--inputs', 'ABCDABCDABCD',
             '--single-graph',
-            '--operations', 'concat', 'delete', 'replace-char', 'contains',
-            'equals'
+            '--operations', 'concat', 'delete', 'replace-char', 'reverse',
+            'contains', 'equals'
         ],
         'solve': [
             '--mc-reporter'
@@ -92,7 +93,7 @@ RESULT_GROUPS = {
             '--unknown-string',
             '--non-uniform',
             '--inputs', 'ABCDABCDABCD',
-            # '--single-graph',
+            '--single-graph',
             '--operations', 'replace-char', 'contains', 'equals'
         ],
         'solve': [
