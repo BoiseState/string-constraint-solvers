@@ -26,8 +26,6 @@ log.addHandler(ch)
 # initialize special character list
 SPECIAL_CHARS = [u'\b', u'\f', u'\n', u'\r', u'\t', u'\'', u'\"', u'\\\\']
 
-MAX_LENGTH = 0
-
 
 def display_special_char(character):
     # return display equivalent for each character
@@ -61,37 +59,48 @@ def replace_special_chars_to_display(string):
 
 
 def analyze_graph(vertices):
-    # initialize return set of characters
+    # initialize return structures
     alphabet = set()
+    max_length = 0
+    concrete_strings = set()
+    unknown_strings = 0
 
     # process each vertex
     for vertex in vertices:
         log.debug('*** Vertex {0:4d} ***'.format(vertex['id']))
 
         # get string value for analysis
-        value = vertex['actualValue']
+        actual_value = vertex['actualValue']
+        value = vertex['value']
+
+        # if root node
+        if len(vertex['incomingEdges']) == 0:
+            # if unknown string
+            if value.startswith('r') or value.startswith('$r'):
+                unknown_strings += 1
+            else:
+                concrete_strings.add(actual_value)
 
         # determine if value is None/null
-        if value is None:
+        if actual_value is None:
             log.debug(u'String Value : None')
         else:
             log.debug(u'String Value : "{0}"'.format(
-                replace_special_chars_to_display(value)))
+                replace_special_chars_to_display(actual_value)))
 
             # extract and store control characters
             for special_c in SPECIAL_CHARS:
-                if special_c in value:
+                if special_c in actual_value:
                     log.debug(u'Special Character Found: {0}'.format(
                         display_special_char(special_c)))
                     if special_c == '\\\\':
                         alphabet.add(92)
                     else:
                         alphabet.add(ord(special_c))
-                    value = value.replace(special_c,
-                                          display_special_char(special_c))
+                    actual_value = actual_value.replace(special_c, display_special_char(special_c))
 
             # process each char and its index
-            for i, c in enumerate(value):
+            for i, c in enumerate(actual_value):
                 log.debug(u'Index {0:3d}: \'{1}\''.format(i, c))
                 alphabet.add(ord(c))
 
@@ -104,9 +113,8 @@ def analyze_graph(vertices):
                     alphabet.add(ord(c.upper()))
 
             # check max length
-            if len(value) > MAX_LENGTH:
-                global MAX_LENGTH
-                MAX_LENGTH = len(value)
+            if len(actual_value) > max_length:
+                max_length = len(actual_value)
 
     # log alphabet information
     for sym in alphabet:
@@ -114,7 +122,7 @@ def analyze_graph(vertices):
         log.debug(u'Alphabet Symbol: {0:d} = {1}'.format(sym, dc))
 
     # return alphabet set
-    return sorted(alphabet)
+    return sorted(alphabet), max_length, concrete_strings, unknown_strings
 
 
 def create_alphabet_declaration(alphabet):
@@ -199,7 +207,7 @@ def main(arguments):
             vertices = data
 
     # analyze graph vertices for alphabet
-    alphabet = analyze_graph(vertices)
+    alphabet, max_length, c_strings, u_strings = analyze_graph(vertices)
 
     # create alphabet declaration from set
     declaration = create_alphabet_declaration(alphabet)
@@ -208,9 +216,11 @@ def main(arguments):
     graph = {
         'vertices': vertices,
         'alphabet': {
+            'concrete_strings': len(c_strings),
             'declaration': declaration,
+            'max': max_length,
             'size': len(alphabet),
-            'max': MAX_LENGTH
+            'unknown_strings': u_strings
         }
     }
 

@@ -4,11 +4,10 @@ import argparse
 import csv
 import fnmatch
 import logging
-import os
-import platform
 import re
 import sys
 
+import os
 
 # set relevent path and file variables
 file_name = os.path.basename(__file__).replace('.py', '')
@@ -129,7 +128,6 @@ INPUT_TYPES = (
     'Uniform',
     'Non-Uniform'
 )
-
 
 OP_TYPES = (
     'Injective(<Concrete>)',
@@ -339,7 +337,8 @@ def get_all_op_data(data_map, solvers):
             #     log.debug('*** operation %s ***', op_id)
             #     log.debug('operation %s - op: %s', op_id, op.op)
             #     log.debug('operation %s - time: %s', op_id, op.time)
-            #     log.debug('operation %s - input_type: %s', op_id, op.input_type)
+            #     log.debug('operation %s - input_type: %s', op_id,
+            # op.input_type)
             #     log.debug('operation %s - base_id: %s', op_id, op.base_id)
             #     log.debug('operation %s - op_group: %s', op_id, op.op_group)
             #     for i, arg in enumerate(op.args):
@@ -578,12 +577,40 @@ def produce_mc_csv_data(data_map, solvers):
         row['Op 2 Arg'] = op2_arg
         row['Pred'] = pred
         row['Pred Arg'] = pred_arg
+        c_row = data_map.get('concrete').get(op_id)
+        c_in_mc = float(c_row.get('IN COUNT'))
+        c_t_mc = int(c_row.get('T COUNT'))
+        c_f_mc = int(c_row.get('F COUNT'))
+        c_t_per = 0
+        c_f_per = 0
+        if c_in_mc > 0:
+            c_t_per = c_t_mc / c_in_mc
+            c_f_per = c_t_mc / c_in_mc
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)
             prefix = solver.upper()[0]
-            row[prefix + ' IN MC'] = data_row.get('IN COUNT')
-            row[prefix + ' T MC'] = data_row.get('T COUNT')
-            row[prefix + ' F MC'] = data_row.get('F COUNT')
+
+            in_mc = float(data_row.get('IN COUNT'))
+            t_mc = int(data_row.get('T COUNT'))
+            f_mc = int(data_row.get('F COUNT'))
+            row[prefix + ' IN MC'] = in_mc
+            row[prefix + ' T MC'] = t_mc
+            row[prefix + ' F MC'] = f_mc
+
+            t_per = 0
+            f_per = 0
+            if in_mc > 0:
+                t_per = t_mc / in_mc
+                f_per = f_mc / in_mc
+            row[prefix + ' T %'] = t_per
+            row[prefix + ' F %'] = f_per
+
+            if solver != 'concrete':
+                row[prefix + ' T DIFF'] = abs(c_t_per - t_per)
+                row[prefix + ' F DIFF'] = abs(c_f_per - f_per)
+                agree = (c_t_per >= c_f_per and t_per >= f_per) or \
+                        (c_t_per < c_f_per and t_per < f_per)
+                row[prefix + ' AGREE'] = agree
 
         # add row to output rows
         mc_rows.append(row)
@@ -667,14 +694,30 @@ def get_mc_field_names(solvers):
     in_fields = list()
     t_fields = list()
     f_fields = list()
+    t_p_fields = list()
+    f_p_fields = list()
+    t_diff_fields = list()
+    f_diff_fields = list()
+    agree_fields = list()
     for solver in sorted_solvers:
         prefix = solver.upper()[0]
         in_fields.append(prefix + ' IN MC')
         t_fields.append(prefix + ' T MC')
         f_fields.append(prefix + ' F MC')
+        t_p_fields.append(prefix + ' T %')
+        f_p_fields.append(prefix + ' F %')
+        if solver != 'concrete':
+            t_diff_fields.append(prefix + ' T DIFF')
+            f_diff_fields.append(prefix + ' F DIFF')
+            agree_fields.append(prefix + ' AGREE')
     field_names.extend(in_fields)
     field_names.extend(t_fields)
     field_names.extend(f_fields)
+    field_names.extend(t_p_fields)
+    field_names.extend(f_p_fields)
+    field_names.extend(t_diff_fields)
+    field_names.extend(f_diff_fields)
+    field_names.extend(agree_fields)
 
     field_names.append('Input Type')
     field_names.append('Op 1')
@@ -776,7 +819,6 @@ def gather_result_sets(result_file_sets):
 
 
 def output_csv_file(output_rows, field_names, f_name):
-
     # get output file path
     out_f_name = f_name
     if SETTINGS.single_file:
@@ -834,8 +876,10 @@ def output_csv_files(csv_data, solvers):
             mc_time_rows = csv_data.get(f_name).get('mc-time')
             op_time_rows = csv_data.get(f_name).get('op-time')
             output_csv_file(mc_rows, mc_field_names, 'mc-' + f_name)
-            output_csv_file(mc_time_rows, mc_time_field_names, 'mc-time-' + f_name)
-            output_csv_file(op_time_rows, op_time_field_names, 'op-time-' + f_name)
+            output_csv_file(mc_time_rows, mc_time_field_names,
+                            'mc-time-' + f_name)
+            output_csv_file(op_time_rows, op_time_field_names,
+                            'op-time-' + f_name)
 
 
 def main(arguments):

@@ -74,9 +74,10 @@ class RootValue:
 
 # operation node
 class OperationValue:
-    def __init__(self, op, op_args=None, num=0):
+    def __init__(self, op, op_args=None, num=0, non_uniform=False):
         self.op = op
         self.num = num
+        self.non_uniform = non_uniform
 
         self.op_args = list()
         if op_args is not None:
@@ -214,16 +215,22 @@ def add_append_operations(ops):
         ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)]))
 
 
-def add_concat_operations(ops):
+def add_concat_operations(ops, needed_ops):
     # sb.concat(string)
-    # args = my_globals['settings'].alphabet
-    args = sorted(gen_globals['settings'].alphabet)[:2]
-    for c in args:
-        ops.append(OperationValue('concat!!Ljava/lang/String;', [c]))
-
-    # add unknown string concatenation for non-uniform inputs
-    if gen_globals['settings'].non_uniform:
-        ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)]))
+    num_ops = needed_ops
+    create_ops = (
+        lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [random_char()])),
+        lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)])),
+        lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)], non_uniform=True))
+    )
+    while num_ops > 0:
+        if num_ops >= 3:
+            for op in create_ops:
+                op()
+        else:
+            for op in random.sample(create_ops, num_ops):
+                op()
+        num_ops = num_ops - 3
 
 
 def add_delete_char_at_operations(ops):
@@ -232,11 +239,22 @@ def add_delete_char_at_operations(ops):
         ops.append(OperationValue('deleteCharAt!!I', [str(i)]))
 
 
-def add_delete_operations(ops):
+def add_delete_operations(ops, needed_ops):
     # sb.delete(start, end)
+    indices = list()
     for i in range(0, gen_globals['settings'].max_initial_length + 1):
         for j in range(i, gen_globals['settings'].max_initial_length + 1):
-            ops.append(OperationValue('delete!!II', [str(i), str(j)]))
+            indices.append((i, j))
+
+    num_ops = needed_ops
+    while num_ops > 0:
+        if num_ops >= len(indices):
+            for s, e in indices:
+                ops.append(OperationValue('delete!!II', [str(s), str(e)]))
+        else:
+            for s, e in random.sample(indices, num_ops):
+                ops.append(OperationValue('delete!!II', [str(s), str(e)]))
+        num_ops = num_ops - len(indices)
 
 
 def add_insert_char_operations(ops):
@@ -281,16 +299,26 @@ def add_insert_substring_operations(ops):
                                       [str(i), symbol_string, str(j), str(j + 1)]))
 
 
-def add_replace_char_operations(ops):
+def add_replace_char_operations(ops, needed_ops):
     # s.replace(old, new)
-    # args = my_globals['settings'].alphabet
-    args = sorted(gen_globals['settings'].alphabet)[:2]
+    pairs = list()
+
+    args = sorted(gen_globals['settings'].alphabet)
+    pairs.append((args[0], args[0]))
     for c1 in args:
         for c2 in args:
             if c1 != c2:
-                ops.append(OperationValue('replace!!CC', [c1, c2]))
+                pairs.append((c1, c2))
 
-    ops.append(OperationValue('replace!!CC', [args[0], args[0]]))
+    num_ops = needed_ops
+    while num_ops > 0:
+        if num_ops >= len(pairs):
+            for f, r in random.sample(pairs, num_ops):
+                ops.append(OperationValue('replace!!CC', [f, r]))
+        else:
+            for f, r in random.sample(pairs, num_ops):
+                ops.append(OperationValue('replace!!CC', [f, r]))
+        num_ops = num_ops - len(pairs)
 
 
 def add_replace_string_operations(ops):
@@ -338,9 +366,10 @@ def add_replace_substring_operations(ops):
                                       [str(i), str(j), string]))
 
 
-def add_reverse_operations(ops):
+def add_reverse_operations(ops, needed_ops):
     # s.reverse()
-    ops.append(OperationValue('reverse!!'))
+    for i in range(0, needed_ops):
+        ops.append(OperationValue('reverse!!'))
 
 
 def add_substring_operations(ops):
@@ -378,9 +407,8 @@ def add_trim_operations(ops):
 def add_contains_predicates(constraints, length=None):
     # s.contains(substr)
     # concrete args
-    for c in gen_globals['settings'].alphabet:
-        constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [c], result=True))
-        constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [c], result=False))
+    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [random_char()], result=True))
+    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [random_char()], result=False))
 
     # uniform args
     constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=True))
@@ -471,6 +499,87 @@ def add_starts_with_offset_predicates(constraints):
                                [c, str(i)]))
 
 
+def get_max_num_ops():
+    max_ops = 0
+
+    if 'append-substring' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'append' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'concat' in gen_globals['settings'].operations:
+        ops = 3
+        if ops > max_ops:
+            max_ops = ops
+    if 'delete-char-at' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'delete' in gen_globals['settings'].operations:
+        ops = 0
+        for i in range(0, gen_globals['settings'].max_initial_length + 1):
+            ops = ops + i + 1
+        if ops > max_ops:
+            max_ops = ops
+    if 'insert-char' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'insert-string' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'insert-substring' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'replace-char' in gen_globals['settings'].operations:
+        ops = (len(gen_globals['settings'].alphabet) - 1) * (len(gen_globals['settings'].alphabet) - 1) + 1
+        if ops > max_ops:
+            max_ops = ops
+    if 'replace-string' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'replace-regex-string' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'replace-substring' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'reverse' in gen_globals['settings'].operations:
+        ops = 1
+        if ops > max_ops:
+            max_ops = ops
+    if 'substring' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'to-lower-case' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'to-string' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'to-upper-case' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+    if 'trim' in gen_globals['settings'].operations:
+        ops = 0
+        if ops > max_ops:
+            max_ops = ops
+
+    return max_ops
+
+
 def get_operations():
     # check for existing operations value
     operations = gen_globals['operations']
@@ -480,6 +589,9 @@ def get_operations():
     # initialize operations list
     ops_list = list()
 
+    # get max number of ops required of all types
+    needed_ops = get_max_num_ops()
+
     # === Operations ===
     # appendSubstring
     if 'append-substring' in gen_globals['settings'].operations:
@@ -487,11 +599,11 @@ def get_operations():
     if 'append' in gen_globals['settings'].operations:
         add_append_operations(ops_list)
     if 'concat' in gen_globals['settings'].operations:
-        add_concat_operations(ops_list)
+        add_concat_operations(ops_list, needed_ops)
     if 'delete-char-at' in gen_globals['settings'].operations:
         add_delete_char_at_operations(ops_list)
     if 'delete' in gen_globals['settings'].operations:
-        add_delete_operations(ops_list)
+        add_delete_operations(ops_list, needed_ops)
     if 'insert-char' in gen_globals['settings'].operations:
         add_insert_char_operations(ops_list)
     if 'insert-string' in gen_globals['settings'].operations:
@@ -499,7 +611,7 @@ def get_operations():
     if 'insert-substring' in gen_globals['settings'].operations:
         add_insert_substring_operations(ops_list)
     if 'replace-char' in gen_globals['settings'].operations:
-        add_replace_char_operations(ops_list)
+        add_replace_char_operations(ops_list, needed_ops)
     if 'replace-string' in gen_globals['settings'].operations:
         add_replace_string_operations(ops_list)
     if 'replace-regex-string' in gen_globals['settings'].operations:
@@ -507,7 +619,7 @@ def get_operations():
     if 'replace-substring' in gen_globals['settings'].operations:
         add_replace_substring_operations(ops_list)
     if 'reverse' in gen_globals['settings'].operations:
-        add_reverse_operations(ops_list)
+        add_reverse_operations(ops_list, needed_ops)
     if 'substring' in gen_globals['settings'].operations:
         add_substring_operations(ops_list)
     if 'to-lower-case' in gen_globals['settings'].operations:
@@ -930,12 +1042,29 @@ def perform_contains(string, pred):
 
 
 def perform_ends_with(string, pred):
-    # randomize arg value if unknown
-    if len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0:
-        max_len = gen_globals['settings'].max_initial_length
-        str_len = random_length(0, max_len)
-        pred.op_args[0] = random_string(str_len)
-        pred.args_known[pred.op_args[0]] = False
+    if pred.result:
+        is_unknown = pred.args_known[pred.op_args[0]]
+        contained_strings = [x for x in get_all_strings(1) if string.endswith(x) and len(x) > 0]
+        if contained_strings:
+            del pred.args_known[pred.op_args[0]]
+            contained_string = random.choice(contained_strings)
+            pred.op_args[0] = contained_string
+            pred.args_known[pred.op_args[0]] = is_unknown
+        else:
+            pred.op_args[0] = string
+            pred.args_known[pred.op_args[0]] = is_unknown
+    else:
+        # randomize arg value if unknown
+        if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
+                or pred.op_args[0] in string:
+            is_uknown = pred.args_known[pred.op_args[0]]
+            not_contained_strings = [x for x in get_all_strings(len(string)) if not string.endswith(x)]
+            if not_contained_strings:
+                not_contained_string = random.choice(not_contained_strings)
+                pred.op_args[0] = not_contained_string
+            else:
+                pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
+            pred.args_known[pred.op_args[0]] = is_uknown
 
     # return true or false for boolean constraint
     if string.endswith(pred.op_args[0]):
@@ -1005,12 +1134,29 @@ def perform_is_empty(string):
 
 
 def perform_starts_with(string, pred):
-    # randomize arg value if unknown
-    if len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0:
-        max_len = gen_globals['settings'].max_initial_length
-        str_len = random_length(0, max_len)
-        pred.op_args[0] = random_string(str_len)
-        pred.args_known[pred.op_args[0]] = False
+    if pred.result:
+        is_unknown = pred.args_known[pred.op_args[0]]
+        contained_strings = [x for x in get_all_strings(1) if string.startswith(x) and len(x) > 0]
+        if contained_strings:
+            del pred.args_known[pred.op_args[0]]
+            contained_string = random.choice(contained_strings)
+            pred.op_args[0] = contained_string
+            pred.args_known[pred.op_args[0]] = is_unknown
+        else:
+            pred.op_args[0] = string
+            pred.args_known[pred.op_args[0]] = is_unknown
+    else:
+        # randomize arg value if unknown
+        if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
+                or pred.op_args[0] in string:
+            is_uknown = pred.args_known[pred.op_args[0]]
+            not_contained_strings = [x for x in get_all_strings(len(string)) if not string.startswith(x)]
+            if not_contained_strings:
+                not_contained_string = random.choice(not_contained_strings)
+                pred.op_args[0] = not_contained_string
+            else:
+                pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
+            pred.args_known[pred.op_args[0]] = is_uknown
 
     # return true or false for boolean constraint
     if string.startswith(pred.op_args[0]):
@@ -1020,21 +1166,12 @@ def perform_starts_with(string, pred):
 
 
 def perform_starts_with_offset(string, pred):
-    # randomize arg value if unknown
-    if len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0:
-        max_len = gen_globals['settings'].max_initial_length
-        str_len = random_length(0, max_len)
-        pred.op_args[0] = random_string(str_len)
-        pred.args_known[pred.op_args[0]] = False
     # randomize offset if unknown
     if len(pred.op_args[1]) == 1 and ord(pred.op_args[1]) == 0:
         pred.op_args[1] = random_length(max_length=len(string))
 
-    # return true or false for boolean constraint
-    if string[pred.op_args[1]:].startswith(pred.op_args[0]):
-        return 'true'
-    else:
-        return 'false'
+    substring = string[pred.op_args[1]:]
+    return perform_starts_with(substring, pred)
 
 
 def perform_op(original_value, op):

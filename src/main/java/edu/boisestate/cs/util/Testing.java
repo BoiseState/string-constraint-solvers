@@ -13,8 +13,8 @@ import java.util.*;
 public class Testing {
 
     public static void main(String[] args) {
-//        automatonTesting();
-        automatonOperationTesting();
+        automatonTesting();
+//        aggregateAutomatonOperationTesting();
 //        stringTesting();
 
 //        String s1 = "a";
@@ -25,57 +25,25 @@ public class Testing {
     private static void automatonTesting() {
 
         Alphabet alphabet = new Alphabet("A-D");
+        int boundingLength = 3;
+        Automaton anyChar = BasicAutomata.makeCharSet(alphabet.getCharSet());
+        anyChar.minimize();
 
-        // crete states
-        WeightedState q0 = new WeightedState();
-        WeightedState q1 = new WeightedState();
-        WeightedState q2 = new WeightedState();
-        WeightedState q3 = new WeightedState();
+        Automaton uniform = anyChar.repeat(0,boundingLength);
+        uniform.minimize();
 
-        // set accept state
-        q0.setAccept(true);
-        q1.setAccept(true);
-        q2.setAccept(true);
-        q3.setAccept(true);
+        Automaton x1 = BasicAutomata.makeChar('A').concatenate(anyChar.repeat());
+        Automaton x2 = anyChar.repeat().concatenate(BasicAutomata.makeChar('A'));
 
-        // add transitions
-        q0.addTransition(new WeightedTransition('A', q1, 1));
-        q0.addTransition(new WeightedTransition('A', 'B', q1, 1));
-        q0.addTransition(new WeightedTransition('A', 'C', q1, 1));
-        q0.addTransition(new WeightedTransition('A', 'D', q1, 1));
-        q0.addTransition(new WeightedTransition('B', q1, 1));
-        q0.addTransition(new WeightedTransition('C', q1, 1));
-        q0.addTransition(new WeightedTransition('D', q1, 1));
-        q1.addTransition(new WeightedTransition('A', 'D', q2, 1));
-        q1.addTransition(new WeightedTransition('C', q2, 1));
-        q2.addTransition(new WeightedTransition('A', 'D', q3, 1));
-        q2.addTransition(new WeightedTransition('A', q3, 1));
-        q2.addTransition(new WeightedTransition('D', q3, 1));
+        Automaton startsWith = uniform.intersection(x1);
+        startsWith.minimize();
+        DotToGraph.outputDotFileAndPng(startsWith.toDot(), "starts-with");
 
-        // create automaton
-        WeightedAutomaton automaton = new WeightedAutomaton();
-        automaton.setInitialState(q0);
+        Automaton endsWith = uniform.intersection(x2);
+        endsWith.minimize();
+        DotToGraph.outputDotFileAndPng(endsWith.toDot(), "ends-with");
 
-        for (WeightedTransition t : q0.getSortedTransitions(true)) {
-            if (t.getMin() == t.getMax()) {
-                System.out.printf("('%c', %d) -> %d\n",
-                                  t.getMin(),
-                                  t.getWeight(),
-                                  t.getDest().getNumber());
-            } else {
-                System.out.printf("('%c'-'%c', %d) -> %d\n",
-                                  t.getMin(),
-                                  t.getMax(),
-                                  t.getWeight(),
-                                  t.getDest().getNumber());
-            }
-        }
 
-        DotToGraph.outputDotFileAndPng(automaton.toDot(), "before");
-
-        automaton.reduce();
-
-        DotToGraph.outputDotFileAndPng(automaton.toDot(), "after");
     }
 
     private static void stringTesting() {
@@ -159,7 +127,7 @@ public class Testing {
         }
     }
 
-    private static void automatonOperationTesting() {
+    private static void aggregateAutomatonOperationTesting() {
 
         int boundingLength = 3;
         Automaton anyChar = BasicAutomata.makeCharSet("ABCD");

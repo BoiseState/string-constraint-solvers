@@ -1,11 +1,11 @@
 #! /usr/bin/env python
-import fnmatch
-
 import argparse
 import csv
+import fnmatch
 import logging
-import os
 import sys
+
+import os
 
 # set relevent path and file variables
 file_name = os.path.basename(__file__).replace('.py', '')
@@ -40,27 +40,24 @@ class Settings:
             log.debug('Args: %s', options)
 
         # initialize result file pattern
-        self.file_pattern = options.result_files
+        self.file_pattern = options.data_files
 
 
 def set_options(arguments):
     # process command line args
-    gather_parser = argparse.ArgumentParser(prog=__doc__,
-                                            description='Analyze results.')
+    analyze_parser = argparse.ArgumentParser(prog=__doc__,
+                                             description='Analyze results.')
 
-    gather_parser.add_argument('-d',
-                               '--debug',
-                               help='Display debug messages for this script.',
-                               action="store_true")
+    analyze_parser.add_argument('-d',
+                                '--debug',
+                                help='Display debug messages for this script.',
+                                action="store_true")
 
-    gather_parser.add_argument('-f',
-                               '--data-files',
-                               default='*',
-                               help='A Unix shell-style pattern which is '
-                                    'used to '
-                                    'match a set of result files.')
+    analyze_parser.add_argument('data_files',
+                                help="A Unix shell-style pattern which is "
+                                     "used to match a set of result files.")
 
-    GLOB['Settings'] = Settings(gather_parser.parse_args(arguments))
+    GLOB['Settings'] = Settings(analyze_parser.parse_args(arguments))
 
 
 def read_csv_data(file_path):
@@ -68,13 +65,14 @@ def read_csv_data(file_path):
     rows = list()
 
     # read csv rows
+    log.debug('Reading in data from %s', file_path)
     with open(file_path, 'r') as csv_file:
-        reader = csv.DictReader(csv_file,
-                                delimiter='\t',
-                                quoting=csv.QUOTE_NONE,
-                                quotechar='|',
+        reader = csv.DictReader(csv_file, delimiter='\t',
+                                quoting=csv.QUOTE_NONE, quotechar='|',
                                 lineterminator='\n')
         for row in reader:
+            n_row = list(row)
+            n_row.insert(0, os.path.basename(file_path))
             rows.append(row)
 
     # return rows data
@@ -88,8 +86,8 @@ def read_data_files(file_pattern):
     # check for matching files and read csv data
     for f in os.listdir(data_dir):
         test_path = os.path.join(data_dir, f)
-        if os.path.isfiles(test_path) and fnmatch.fnmatch(f, file_pattern):
-            return_data[f] = read_csv_data(test_path)
+        if os.path.isfile(test_path) and fnmatch.fnmatch(f, file_pattern):
+            return_data.extend(read_csv_data(test_path))
 
     return return_data
 
@@ -97,15 +95,25 @@ def read_data_files(file_pattern):
 def get_data():
     # get lists of data files
     mc_data = read_data_files('mc-' + GLOB['Settings'].file_pattern)
-    mc_time_data = read_data_files('mc-time' + GLOB['Settings'].file_pattern)
-    op_time_data = read_data_files('op-time' + GLOB['Settings'].file_pattern)
+    mc_time_data = read_data_files('mc-time-' + GLOB['Settings'].file_pattern)
+    op_time_data = read_data_files('op-time-' + GLOB['Settings'].file_pattern)
 
     # return data
     return mc_data, mc_time_data, op_time_data
 
 
-def perform_analysis(mcs, mc_times, op_times):
-    pass
+def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
+    log.debug('*** mc data ***')
+    for row in mc_rows:
+        log.debug(row)
+
+    log.debug('*** mc-time data ***')
+    for row in mc_time_rows:
+        log.debug(row)
+
+    log.debug('*** op-time data ***')
+    for row in op_time_rows:
+        log.debug(row)
 
 
 def main(arguments):
