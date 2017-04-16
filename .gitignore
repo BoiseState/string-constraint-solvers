@@ -275,6 +275,7 @@ release.properties
 
 ### Project Specfic Ignores
 
+data/tables.*
 graphs/dot/
 graphs/png/
 graphs/synthetic/

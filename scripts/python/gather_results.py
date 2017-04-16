@@ -585,7 +585,7 @@ def produce_mc_csv_data(data_map, solvers):
         c_f_per = 0
         if c_in_mc > 0:
             c_t_per = c_t_mc / c_in_mc
-            c_f_per = c_t_mc / c_in_mc
+            c_f_per = c_f_mc / c_in_mc
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)
             prefix = solver.upper()[0]
@@ -593,7 +593,7 @@ def produce_mc_csv_data(data_map, solvers):
             in_mc = float(data_row.get('IN COUNT'))
             t_mc = int(data_row.get('T COUNT'))
             f_mc = int(data_row.get('F COUNT'))
-            row[prefix + ' IN MC'] = in_mc
+            row[prefix + ' In MC'] = in_mc
             row[prefix + ' T MC'] = t_mc
             row[prefix + ' F MC'] = f_mc
 
@@ -606,11 +606,11 @@ def produce_mc_csv_data(data_map, solvers):
             row[prefix + ' F %'] = f_per
 
             if solver != 'concrete':
-                row[prefix + ' T DIFF'] = abs(c_t_per - t_per)
-                row[prefix + ' F DIFF'] = abs(c_f_per - f_per)
+                row[prefix + ' T Diff'] = abs(c_t_per - t_per)
+                row[prefix + ' F Diff'] = abs(c_f_per - f_per)
                 agree = (c_t_per >= c_f_per and t_per >= f_per) or \
                         (c_t_per < c_f_per and t_per < f_per)
-                row[prefix + ' AGREE'] = agree
+                row[prefix + ' Agree'] = agree
 
         # add row to output rows
         mc_rows.append(row)
@@ -662,7 +662,6 @@ def produce_op_time_csv_data(data_map, solvers):
         # initialize row
         row = dict()
         row['Op Id'] = op_id
-        row['Const Ids'] = ', '.join(op_map.get('const_ids'))
         row['Op'] = op_map.get('op')
         row['Op Group'] = op_map.get('op_group')
         row['In Type'] = op_map.get('input_type')
@@ -701,15 +700,15 @@ def get_mc_field_names(solvers):
     agree_fields = list()
     for solver in sorted_solvers:
         prefix = solver.upper()[0]
-        in_fields.append(prefix + ' IN MC')
+        in_fields.append(prefix + ' In MC')
         t_fields.append(prefix + ' T MC')
         f_fields.append(prefix + ' F MC')
         t_p_fields.append(prefix + ' T %')
         f_p_fields.append(prefix + ' F %')
         if solver != 'concrete':
-            t_diff_fields.append(prefix + ' T DIFF')
-            f_diff_fields.append(prefix + ' F DIFF')
-            agree_fields.append(prefix + ' AGREE')
+            t_diff_fields.append(prefix + ' T Diff')
+            f_diff_fields.append(prefix + ' F Diff')
+            agree_fields.append(prefix + ' Agree')
     field_names.extend(in_fields)
     field_names.extend(t_fields)
     field_names.extend(f_fields)
@@ -765,7 +764,6 @@ def get_op_time_field_names(solvers):
         field_names.append('File')
 
     field_names.append('Op Id')
-    field_names.append('Const Ids')
     field_names.append('Op')
     field_names.append('Op Group')
     field_names.append('In Type')
