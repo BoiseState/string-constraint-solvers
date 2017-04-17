@@ -196,7 +196,8 @@ abstract public class Reporter {
     protected void addBooleanOperation(int base,
                                        int arg,
                                        String constName,
-                                       int const_id) {
+                                       int const_id,
+                                       boolean argWasSingleton) {
 
         long accTime = 0;
         if (timerMap.containsKey(base)) {
@@ -223,7 +224,7 @@ abstract public class Reporter {
 
             // create ops array for base operation
             String[] newBaseOps = Arrays.copyOf(baseOps, baseOps.length + 1);
-            if (solver.isSingleton(arg)) {
+            if (argWasSingleton) {
                 newBaseOps[newBaseOps.length - 1] =
                         String.format("[%d]<S:%d>.%s(\\\"%s\\\"){%d}",
                                       const_id,

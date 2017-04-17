@@ -60,9 +60,9 @@ public class SATReporter extends Reporter {
         boolean falseSat = false;
 
         // determine if symbolic strings are singletons
+        boolean argIsSingleton = solver.isSingleton(sourceMap.get("s1"));
         if (solver.isSingleton(base, actualVal) &&
-            (sourceMap.get("s1") == null ||
-             solver.isSingleton(sourceMap.get("s1"), actualVal))) {
+            (sourceMap.get("s1") == null || argIsSingleton)) {
             isSingleton = true;
         }
 
@@ -125,7 +125,7 @@ public class SATReporter extends Reporter {
         String constName = constraint.getSplitValue().split("!!")[0];
 
         // add boolean operation to operation list
-        addBooleanOperation(base, arg, constName, constraint.getId());
+        addBooleanOperation(base, arg, constName, constraint.getId(), argIsSingleton);
 
         // get operations
         String[] opsArray = this.operationsMap.get(base);

@@ -1025,14 +1025,14 @@ def perform_contains(string, pred):
         # randomize arg value if unknown
         if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
                 or pred.op_args[0] in string:
-            is_uknown = pred.args_known[pred.op_args[0]]
+            is_unknown = pred.args_known[pred.op_args[0]]
             not_contained_strings = [x for x in get_all_strings(len(string)) if x not in string]
             if not_contained_strings:
                 not_contained_string = random.choice(not_contained_strings)
                 pred.op_args[0] = not_contained_string
             else:
                 pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
-            pred.args_known[pred.op_args[0]] = is_uknown
+            pred.args_known[pred.op_args[0]] = is_unknown
 
     # return true or false for boolean constraint
     if pred.op_args[0] in string:
@@ -1057,14 +1057,14 @@ def perform_ends_with(string, pred):
         # randomize arg value if unknown
         if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
                 or pred.op_args[0] in string:
-            is_uknown = pred.args_known[pred.op_args[0]]
+            is_unknown = pred.args_known[pred.op_args[0]]
             not_contained_strings = [x for x in get_all_strings(len(string)) if not string.endswith(x)]
             if not_contained_strings:
                 not_contained_string = random.choice(not_contained_strings)
                 pred.op_args[0] = not_contained_string
             else:
                 pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
-            pred.args_known[pred.op_args[0]] = is_uknown
+            pred.args_known[pred.op_args[0]] = is_unknown
 
     # return true or false for boolean constraint
     if string.endswith(pred.op_args[0]):
@@ -1082,14 +1082,14 @@ def perform_equals(string, pred):
         # randomize arg value if unknown
         if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
                 or pred.op_args[0] == string:
-            is_uknown = pred.args_known.pop(pred.op_args[0])
+            is_unknown = pred.args_known.pop(pred.op_args[0])
             not_contained_strings = [x for x in get_all_strings(len(string)) if x != string]
             if not_contained_strings:
                 not_contained_string = random.choice(not_contained_strings)
                 pred.op_args[0] = not_contained_string
             else:
                 pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
-            pred.args_known[pred.op_args[0]] = is_uknown
+            pred.args_known[pred.op_args[0]] = is_unknown
 
     # return true or false for boolean constraint
     if string == pred.op_args[0]:
@@ -1109,14 +1109,14 @@ def perform_equals_ignore_case(string, pred):
         # randomize arg value if unknown
         if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
                 or pred.op_args[0] == string:
-            is_uknown = pred.args_known.pop(pred.op_args[0])
+            is_unknown = pred.args_known.pop(pred.op_args[0])
             not_contained_strings = [x for x in get_all_strings(len(string)) if x.lower() != string.lower()]
             if not_contained_strings:
                 not_contained_string = random.choice(not_contained_strings)
                 pred.op_args[0] = not_contained_string
             else:
                 pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
-            pred.args_known[pred.op_args[0]] = is_uknown
+            pred.args_known[pred.op_args[0]] = is_unknown
 
 # return true or false for boolean constraint
     if string.lower() == pred.op_args[0].lower():
@@ -1149,14 +1149,14 @@ def perform_starts_with(string, pred):
         # randomize arg value if unknown
         if (len(pred.op_args[0]) == 1 and ord(pred.op_args[0]) == 0) \
                 or pred.op_args[0] in string:
-            is_uknown = pred.args_known[pred.op_args[0]]
+            is_unknown = pred.args_known[pred.op_args[0]]
             not_contained_strings = [x for x in get_all_strings(len(string)) if not string.startswith(x)]
             if not_contained_strings:
                 not_contained_string = random.choice(not_contained_strings)
                 pred.op_args[0] = not_contained_string
             else:
                 pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
-            pred.args_known[pred.op_args[0]] = is_uknown
+            pred.args_known[pred.op_args[0]] = is_unknown
 
     # return true or false for boolean constraint
     if string.startswith(pred.op_args[0]):
