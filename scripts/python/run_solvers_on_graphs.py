@@ -21,7 +21,7 @@ ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(logging.ERROR)
 
 formatter = logging.Formatter(
-    u'[%(name)s:%(levelname)s] %(message)s')
+    u'[%(asctime)s|%(name)s:%(levelname)s] %(message)s')
 ch.setFormatter(formatter)
 
 log.addHandler(ch)
@@ -356,7 +356,7 @@ def run_solver(solver, files, class_path, settings):
         cmd = ['java',
                '-cp',
                class_path,
-               '-Xmx2g',
+               '-Xmx6g',
                'edu.boisestate.cs.SolveMain',
                gf]
         # include solver args
