@@ -374,150 +374,180 @@ def analyze_accuracy(mc_rows):
 
     log.debug('Calculating Model Count Accuracy')
 
-    log.debug('Calculating Percent Differences')
+    log.debug('Calculating Percent Differences - acc_diff_All')
     tables.append((get_percent_differences(mc_rows),
                    'Frequency of Accuracy Difference for All Constraints',
                    'acc_diff_All'))
+    log.debug('Calculating Percent Differences - acc_diff_True')
     tables.append((get_percent_differences(mc_rows, branch=True),
                    'Frequency of Accuracy Difference for True Branch '
                    'Constraints',
                    'acc_diff_True'))
+    log.debug('Calculating Percent Differences - acc_diff_False')
     tables.append((get_percent_differences(mc_rows, branch=False),
                    'Frequency of Accuracy Difference for False Branch '
                    'Constraints',
                    'acc_diff_False'))
 
+    log.debug('Calculating Percent Differences - acc_diff_concrete')
     tables.append((get_percent_differences(mc_rows, input_type="Concrete"),
                    'Frequency of Accuracy Difference for Constraints Following'
                    ' a Concrete Input String',
                    'acc_diff_concrete'))
+    log.debug('Calculating Percent Differences - acc_diff_simple_unknown')
     tables.append((get_percent_differences(mc_rows, input_type="Simple"),
                    'Frequency of Accuracy Difference for Constraints Following'
                    ' a Simple Unknown Input String',
                    'acc_diff_simple_unknown'))
+    log.debug('Calculating Percent Differences - acc_diff_branch_unknown')
     tables.append((get_percent_differences(mc_rows, input_type="Branching"),
                    'Frequency of Accuracy Difference for Constraints Following'
                    ' a Branching Unknown Input String',
                    'acc_diff_branch_unknown'))
 
+    log.debug('Calculating Percent Differences - acc_diff_1')
     tables.append((get_percent_differences(mc_rows, length=1),
                    'Frequency of Accuracy Difference for Constraints '
                    'Following an Input String of Length 1',
                    'acc_diff_1'))
+    log.debug('Calculating Percent Differences - acc_diff_2')
     tables.append((get_percent_differences(mc_rows, length=2),
                    'Frequency of Accuracy Difference for Constraints '
                    'Following an Input String of Length 2',
                    'acc_diff_2'))
+    log.debug('Calculating Percent Differences - acc_diff_3')
     tables.append((get_percent_differences(mc_rows, length=3),
                    'Frequency of Accuracy Difference for Constraints '
                    'Following an Input String of Length 3',
                    'acc_diff_3'))
 
+    log.debug('Calculating Percent Differences - acc_diff_incl_concat_all')
     tables.append((get_percent_differences(mc_rows, operation="concat"),
                    'Frequency of Accuracy Difference for Constraints Including'
                    ' \\texttt{concat} Operations for All Args',
                    'acc_diff_incl_concat_all'))
+    log.debug('Calculating Percent Differences - acc_diff_incl_concat_con')
     tables.append((get_percent_differences(mc_rows, operation="concat",
                                            op_arg_type="Concrete"),
                    'Frequency of Accuracy Difference for Constraints Including'
                    ' \\texttt{concat} Operations for Concrete Args',
                    'acc_diff_incl_concat_con'))
+    log.debug('Calculating Percent Differences - acc_diff_incl_concat_simp')
     tables.append((get_percent_differences(mc_rows, operation="concat",
                                            op_arg_type="Simple"),
                    'Frequency of Accuracy Difference for Constraints Including'
                    ' \\texttt{concat} Operations for Simple Unknown Args',
                    'acc_diff_incl_concat_simp'))
+    # log.debug('Calculating Percent Differences - acc_diff_incl_concat_branch')
     # tables.append((get_percent_differences(mc_rows, operation="concat",
     #                                        op_arg_type="Branching"),
     #                'Frequency of Accuracy Difference for Constraints Including'
     #                ' \\texttt{concat} Operations for Branching Unknown Args',
     #                'acc_diff_incl_concat_branch'))
+    log.debug('Calculating Percent Differences - acc_diff_incl_delete')
     tables.append((get_percent_differences(mc_rows, operation="delete"),
                    'Frequency of Accuracy Difference for Constraints Including'
                    ' \\texttt{delete} Operations',
                    'acc_diff_incl_delete'))
+    log.debug('Calculating Percent Differences - acc_diff_incl_replace')
     tables.append((get_percent_differences(mc_rows, operation="replace"),
                    'Frequency of Accuracy Difference for Constraints Including'
                    ' \\texttt{replace} Operations',
                    'acc_diff_incl_replace'))
+    log.debug('Calculating Percent Differences - acc_diff_incl_reverse')
     tables.append((get_percent_differences(mc_rows, operation="reverse"),
                    'Frequency of Accuracy Difference for Constraints Including'
                    ' \\texttt{reverse} Operations',
                    'acc_diff_incl_reverse'))
 
+    log.debug('Calculating Percent Differences - acc_diff_excl_concat_all')
     tables.append((get_percent_differences(mc_rows, operation="concat",
                                            exclusive_op=True),
                    'Frequency of Accuracy Difference for Constraints of Only'
                    ' \\texttt{concat} Operations for All Args',
                    'acc_diff_excl_concat_all'))
+    log.debug('Calculating Percent Differences - acc_diff_excl_concat_con')
     tables.append((get_percent_differences(mc_rows, operation="concat",
                                            op_arg_type="Concrete",
                                            exclusive_op=True),
                    'Frequency of Accuracy Difference for Constraints of Only'
                    ' \\texttt{concat} Operations for Concrete Args',
                    'acc_diff_excl_concat_con'))
+    log.debug('Calculating Percent Differences - acc_diff_excl_concat_simp')
     tables.append((get_percent_differences(mc_rows, operation="concat",
                                            op_arg_type="Simple",
                                            exclusive_op=True),
                    'Frequency of Accuracy Difference for Constraints of Only'
                    ' \\texttt{concat} Operations for Simple Unknown Args',
                    'acc_diff_excl_concat_simp'))
+    log.debug('Calculating Percent Differences - acc_diff_excl_concat_branch')
     # tables.append((get_percent_differences(mc_rows, operation="concat",
     #                                        op_arg_type="Branching",
     #                                        exclusive_op=True),
     #                'Frequency of Accuracy Difference for Constraints of Only'
     #                ' \\texttt{concat} Operations for Branching Unknown Args',
     #                'acc_diff_excl_concat_branch'))
+    log.debug('Calculating Percent Differences - acc_diff_excl_delete')
     tables.append((get_percent_differences(mc_rows, operation="delete",
                                            exclusive_op=True),
                    'Frequency of Accuracy Difference for Constraints of Only'
                    ' \\texttt{delete} Operations',
                    'acc_diff_excl_delete'))
+    log.debug('Calculating Percent Differences - acc_diff_excl_replace')
     tables.append((get_percent_differences(mc_rows, operation="replace",
                                            exclusive_op=True),
                    'Frequency of Accuracy Difference for Constraints of Only'
                    ' \\texttt{replace} Operations',
                    'acc_diff_excl_replace'))
+    log.debug('Calculating Percent Differences - acc_diff_excl_reverse')
     tables.append((get_percent_differences(mc_rows, operation="reverse",
                                            exclusive_op=True),
                    'Frequency of Accuracy Difference for Constraints of Only'
                    ' \\texttt{reverse} Operations',
                    'acc_diff_excl_reverse'))
 
+    log.debug('Calculating Percent Differences - acc_diff_contains_all')
     tables.append((get_percent_differences(mc_rows, predicate="contains"),
                    'Frequency of Accuracy Difference for Constraints Containing'
                    ' a \\texttt{contains} Predicates for All Args',
                    'acc_diff_contains_all'))
+    log.debug('Calculating Percent Differences - acc_diff_contains_con')
     tables.append((get_percent_differences(mc_rows, predicate="contains",
                                            pred_arg_type="Concrete"),
                    'Frequency of Accuracy Difference for Constraints Containing'
                    ' a \\texttt{contains} Predicates for Concrete Args',
                    'acc_diff_contains_con'))
+    log.debug('Calculating Percent Differences - acc_diff_contains_simp')
     tables.append((get_percent_differences(mc_rows, predicate="contains",
                                            pred_arg_type="Simple"),
                    'Frequency of Accuracy Difference for Constraints Containing'
                    ' a \\texttt{contains} Predicates for Simple Unknown Args',
                    'acc_diff_contains_simp'))
+    log.debug('Calculating Percent Differences - acc_diff_contains_branch')
     tables.append((get_percent_differences(mc_rows, predicate="contains",
                                            pred_arg_type="Branching"),
                    'Frequency of Accuracy Difference for Constraints Containing'
                    ' a \\texttt{contains} Predicates for Branching Unknown '
                    'Args',
                    'acc_diff_contains_branch'))
+    log.debug('Calculating Percent Differences - acc_diff_equals_all')
     tables.append((get_percent_differences(mc_rows, predicate="equals"),
                    'Frequency of Accuracy Difference for Constraints Containing'
                    ' a \\texttt{equals} Predicates for All Args',
                    'acc_diff_equals_all'))
+    log.debug('Calculating Percent Differences - acc_diff_equals_con')
     tables.append((get_percent_differences(mc_rows, predicate="equals",
                                            pred_arg_type="Concrete"),
                    'Frequency of Accuracy Difference for Constraints Containing'
                    ' a \\texttt{equals} Predicates for Concrete Args',
                    'acc_diff_equals_con'))
+    log.debug('Calculating Percent Differences - acc_diff_equals_simp')
     tables.append((get_percent_differences(mc_rows, predicate="equals",
                                            pred_arg_type="Simple"),
                    'Frequency of Accuracy Difference for Constraints Containing'
                    ' a \\texttt{equals} Predicates for Simple Unknown Args',
                    'acc_diff_equals_simp'))
+    log.debug('Calculating Percent Differences - acc_diff_equals_branch')
     tables.append((get_percent_differences(mc_rows, predicate="equals",
                                            pred_arg_type="Branching"),
                    'Frequency of Accuracy Difference for Constraints Containing'
@@ -535,111 +565,143 @@ def analyze_accuracy(mc_rows):
         'Weighted': ''
     }
 
-    log.debug('Getting Agreements')
-
+    log.debug('Getting Agreements - All')
     temp = get_agreement(mc_rows)
     temp['Selection'] = 'All'
     agree_list.append(temp)
 
     agree_list.append(blank_row)
 
+    log.debug('Getting Agreements - Concrete')
     temp = get_agreement(mc_rows, input_type="Concrete")
     temp['Selection'] = 'Concrete'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Simple')
     temp = get_agreement(mc_rows, input_type="Simple")
     temp['Selection'] = 'Simple'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Branching')
     temp = get_agreement(mc_rows, input_type="Branching")
     temp['Selection'] = 'Branching'
     agree_list.append(temp)
 
     agree_list.append(blank_row)
 
+    log.debug('Getting Agreements - Length 1')
     temp = get_agreement(mc_rows, length=1)
     temp['Selection'] = 'Length 1'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Length 2')
     temp = get_agreement(mc_rows, length=2)
     temp['Selection'] = 'Length 2'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Length 3')
     temp = get_agreement(mc_rows, length=3)
     temp['Selection'] = 'Length 3'
     agree_list.append(temp)
 
     agree_list.append(blank_row)
 
+    log.debug('Getting Agreements - Includes \\texttt{concat} for All Args')
     temp = get_agreement(mc_rows, operation="concat")
     temp['Selection'] = 'Includes \\texttt{concat} for All Args'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Includes \\texttt{concat} for Concrete Args')
     temp = get_agreement(mc_rows, operation="concat", op_arg_type="Concrete")
     temp['Selection'] = 'Includes \\texttt{concat} for Concrete Args'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Includes \\texttt{concat} for Simple'
+              ' Unknown Args')
     temp = get_agreement(mc_rows, operation="concat", op_arg_type="Simple")
     temp['Selection'] = 'Includes \\texttt{concat} for Simple Unknown Args'
     agree_list.append(temp)
+    # log.debug('Getting Agreements - Includes \\texttt{concat} for Branching '
+    #           'Unknown Args')
     # temp = get_agreement(mc_rows, operation="concat", op_arg_type="Branching")
     # temp['Selection'] = 'Includes \\texttt{concat} for Branching Unknown Args'
     # agree_list.append(temp)
+    log.debug('Getting Agreements - Includes \\texttt{delete}')
     temp = get_agreement(mc_rows, operation="delete")
     temp['Selection'] = 'Includes \\texttt{delete}'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Includes \\texttt{replace}')
     temp = get_agreement(mc_rows, operation="replace")
     temp['Selection'] = 'Includes \\texttt{replace}'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Includes \\texttt{reverse}')
     temp = get_agreement(mc_rows, operation="reverse")
     temp['Selection'] = 'Includes \\texttt{reverse}'
     agree_list.append(temp)
 
     agree_list.append(blank_row)
 
+    log.debug('Getting Agreements - Only \\texttt{concat} for All Args')
     temp = get_agreement(mc_rows, operation="concat", exclusive_op=True)
     temp['Selection'] = 'Only \\texttt{concat} for All Args'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Only \\texttt{concat} for Concrete Args')
     temp = get_agreement(mc_rows, operation="concat", op_arg_type="Concrete",
                          exclusive_op=True)
     temp['Selection'] = 'Only \\texttt{concat} for Concrete Args'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Only \\texttt{concat} for Simple '
+              'Unknown Args')
     temp = get_agreement(mc_rows, operation="concat", op_arg_type="Simple",
                          exclusive_op=True)
     temp['Selection'] = 'Only \\texttt{concat} for Simple Unknown Args'
     agree_list.append(temp)
+    # log.debug('Getting Agreements - Only \\texttt{concat} for Branching '
+    #           'Unknown Args')
     # temp = get_agreement(mc_rows, operation="concat", op_arg_type="Branching",
     #                      exclusive_op=True)
     # temp['Selection'] = 'Only \\texttt{concat} for Branching Unknown Args'
     # agree_list.append(temp)
+    log.debug('Getting Agreements - Only \\texttt{delete}')
     temp = get_agreement(mc_rows, operation="delete", exclusive_op=True)
     temp['Selection'] = 'Only \\texttt{delete}'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Only \\texttt{replace}')
     temp = get_agreement(mc_rows, operation="replace", exclusive_op=True)
     temp['Selection'] = 'Only \\texttt{replace}'
     agree_list.append(temp)
+    log.debug('Getting Agreements - Only \\texttt{reverse}')
     temp = get_agreement(mc_rows, operation="reverse", exclusive_op=True)
     temp['Selection'] = 'Only \\texttt{reverse}'
     agree_list.append(temp)
 
     agree_list.append(blank_row)
 
+    log.debug('Getting Agreements - \\texttt{contains} for All Args')
     temp = get_agreement(mc_rows, predicate="contains")
     temp['Selection'] = '\\texttt{contains} for All Args'
     agree_list.append(temp)
-    temp = get_agreement(mc_rows, predicate="contains", pred_arg_type="Concrete")
+    log.debug('Getting Agreements - \\texttt{contains} for Concrete Args')
+    temp = get_agreement(mc_rows, predicate="contains",
+                         pred_arg_type="Concrete")
     temp['Selection'] = '\\texttt{contains} for Concrete Args'
     agree_list.append(temp)
+    log.debug('Getting Agreements - \\texttt{contains} for Simple Args')
     temp = get_agreement(mc_rows, predicate="contains", pred_arg_type="Simple")
     temp['Selection'] = '\\texttt{contains} for Simple Args'
     agree_list.append(temp)
+    log.debug('Getting Agreements - \\texttt{contains} for Branching Args')
     temp = get_agreement(mc_rows, predicate="contains",
                          pred_arg_type="Branching")
     temp['Selection'] = '\\texttt{contains} for Branching Args'
     agree_list.append(temp)
+    log.debug('Getting Agreements - \\texttt{equals} for All Args')
     temp = get_agreement(mc_rows, predicate="equals")
     temp['Selection'] = '\\texttt{equals} for All Args'
     agree_list.append(temp)
+    log.debug('Getting Agreements - \\texttt{equals} for Concrete Args')
     temp = get_agreement(mc_rows, predicate="equals", pred_arg_type="Concrete")
     temp['Selection'] = '\\texttt{equals} for Concrete Args'
     agree_list.append(temp)
+    log.debug('Getting Agreements - \\texttt{equals} for Simple Args')
     temp = get_agreement(mc_rows, predicate="equals", pred_arg_type="Simple")
     temp['Selection'] = '\\texttt{equals} for Simple Args'
     agree_list.append(temp)
+    log.debug('Getting Agreements - \\texttt{equals} for Branching Args')
     temp = get_agreement(mc_rows, predicate="equals", pred_arg_type="Branching")
     temp['Selection'] = '\\texttt{equals} for Branching Args'
     agree_list.append(temp)
@@ -678,8 +740,6 @@ def get_perf_metrics(rows, column_suffixes, input_type=None, length=None,
             return values
 
         return reduction
-
-    valid_rows = list()
 
     u_columns = list()
     b_columns = list()
@@ -749,7 +809,7 @@ def get_perf_metrics(rows, column_suffixes, input_type=None, length=None,
     return avg_results, median_results, range_results, std_dev_results
 
 
-def analyze_mc_performance(mc_rows, mc_time_rows):
+def analyze_mc_performance(mc_time_rows):
     # initialize tables list
     tables = list()
 
@@ -769,7 +829,8 @@ def analyze_mc_performance(mc_rows, mc_time_rows):
         'Weighted': ''
     }
 
-    results = get_perf_metrics(mc_rows, ['T MC Time', 'F MC Time'])
+    log.debug('Getting MC Timings - All Constraints')
+    results = get_perf_metrics(mc_time_rows, ['T MC Time', 'F MC Time'])
     results[0]['Selection'] = 'All Constraints'
     results[1]['Selection'] = 'All Constraints'
     results[2]['Selection'] = 'All Constraints'
@@ -784,7 +845,8 @@ def analyze_mc_performance(mc_rows, mc_time_rows):
     range_list.append(blank_row)
     std_dev_list.append(blank_row)
 
-    results = get_perf_metrics(mc_rows, ['T MC Time'])
+    log.debug('Getting MC Timings - True Branch Constraints')
+    results = get_perf_metrics(mc_time_rows, ['T MC Time'])
     results[0]['Selection'] = 'True Branch Constraints'
     results[1]['Selection'] = 'True Branch Constraints'
     results[2]['Selection'] = 'True Branch Constraints'
@@ -794,7 +856,8 @@ def analyze_mc_performance(mc_rows, mc_time_rows):
     range_list.append(results[2])
     std_dev_list.append(results[3])
 
-    results = get_perf_metrics(mc_rows, ['F MC Time'])
+    log.debug('Getting MC Timings - False Branch Constraints')
+    results = get_perf_metrics(mc_time_rows, ['F MC Time'])
     results[0]['Selection'] = 'False Branch Constraints'
     results[1]['Selection'] = 'False Branch Constraints'
     results[2]['Selection'] = 'False Branch Constraints'
@@ -809,7 +872,9 @@ def analyze_mc_performance(mc_rows, mc_time_rows):
     range_list.append(blank_row)
     std_dev_list.append(blank_row)
 
-    results = get_perf_metrics(mc_rows, ['T MC Time', 'F MC Time'], length=1)
+    log.debug('Getting MC Timings - Constraints for Input Strings of Length 1')
+    results = get_perf_metrics(mc_time_rows, ['T MC Time', 'F MC Time'],
+                               length=1)
     results[0]['Selection'] = 'Constraints for Input Strings of Length 1'
     results[1]['Selection'] = 'Constraints for Input Strings of Length 1'
     results[2]['Selection'] = 'Constraints for Input Strings of Length 1'
@@ -819,7 +884,9 @@ def analyze_mc_performance(mc_rows, mc_time_rows):
     range_list.append(results[2])
     std_dev_list.append(results[3])
 
-    results = get_perf_metrics(mc_rows, ['T MC Time', 'F MC Time'], length=2)
+    log.debug('Getting MC Timings - Constraints for Input Strings of Length 2')
+    results = get_perf_metrics(mc_time_rows, ['T MC Time', 'F MC Time'],
+                               length=2)
     results[0]['Selection'] = 'Constraints for Input Strings of Length 2'
     results[1]['Selection'] = 'Constraints for Input Strings of Length 2'
     results[2]['Selection'] = 'Constraints for Input Strings of Length 2'
@@ -829,7 +896,9 @@ def analyze_mc_performance(mc_rows, mc_time_rows):
     range_list.append(results[2])
     std_dev_list.append(results[3])
 
-    results = get_perf_metrics(mc_rows, ['T MC Time', 'F MC Time'], length=3)
+    log.debug('Getting MC Timings - Constraints for Input Strings of Length 3')
+    results = get_perf_metrics(mc_time_rows, ['T MC Time', 'F MC Time'],
+                               length=3)
     results[0]['Selection'] = 'Constraints for Input Strings of Length 3'
     results[1]['Selection'] = 'Constraints for Input Strings of Length 3'
     results[2]['Selection'] = 'Constraints for Input Strings of Length 3'
@@ -839,10 +908,14 @@ def analyze_mc_performance(mc_rows, mc_time_rows):
     range_list.append(results[2])
     std_dev_list.append(results[3])
 
-    tables.append(avg_list)
-    tables.append(median_list)
-    tables.append(range_list)
-    tables.append(std_dev_list)
+    tables.append((avg_list, 'Average Model Counting Times',
+                   'mc_perf_avg'))
+    tables.append((median_list, 'Median Model Counting Times',
+                   'mc_perf_median'))
+    tables.append((range_list, 'Model Counting Time Ranges',
+                   'mc_perf_range'))
+    tables.append((std_dev_list, 'Standard Deviation for Model Counting Times',
+                   'mc_perf_std_dev'))
 
     return tables
 
@@ -861,12 +934,12 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
 
     log.debug('Calculating Constraint Solving Performance')
 
-    log.debug('Calculating Cumulative Solving Performance')
     acc_avg_list = list()
     acc_median_list = list()
     acc_range_list = list()
     acc_std_dev_list = list()
 
+    log.debug('Getting Cumulative Solving Performance - All Constraints')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'])
     results[0]['Selection'] = 'All Constraints'
     results[1]['Selection'] = 'All Constraints'
@@ -882,6 +955,7 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(blank_row)
     acc_std_dev_list.append(blank_row)
 
+    log.debug('Getting Cumulative Solving Performance - Concrete Input Strings')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'],
                                input_type="Concrete")
     results[0]['Selection'] = 'Concrete Input Strings'
@@ -893,6 +967,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Simple Unknown '
+              'Input Strings')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'],
                                input_type="Simple")
     results[0]['Selection'] = 'Simple Unknown Input Strings'
@@ -904,6 +980,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Branching Unknown '
+              'Input Strings')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'],
                                input_type="Branching")
     results[0]['Selection'] = 'Branching Unknown Input Strings'
@@ -920,6 +998,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(blank_row)
     acc_std_dev_list.append(blank_row)
 
+    log.debug('Getting Cumulative Solving Performance - Input Strings of'
+              ' Length 1')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], length=1)
     results[0]['Selection'] = 'Input Strings of Length 1'
     results[1]['Selection'] = 'Input Strings of Length 1'
@@ -930,6 +1010,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Input Strings of'
+              ' Length 2')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], length=2)
     results[0]['Selection'] = 'Input Strings of Length 2'
     results[1]['Selection'] = 'Input Strings of Length 2'
@@ -940,6 +1022,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Input Strings of'
+              ' Length 3')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], length=3)
     results[0]['Selection'] = 'Input Strings of Length 3'
     results[1]['Selection'] = 'Input Strings of Length 3'
@@ -955,6 +1039,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(blank_row)
     acc_std_dev_list.append(blank_row)
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{concat} for All Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat")
     results[0]['Selection'] = 'Includes \\texttt{concat} for All Args'
     results[1]['Selection'] = 'Includes \\texttt{concat} for All Args'
@@ -965,6 +1051,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{concat} for Concrete Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
                                op_arg_type="Concrete")
     results[0]['Selection'] = 'Includes \\texttt{concat} for Concrete Args'
@@ -976,6 +1064,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{concat} for Simple Unknown Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
                                op_arg_type="Simple")
     results[0]['Selection'] = 'Includes \\texttt{concat} for Simple Unknown' \
@@ -991,6 +1081,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{concat} for Branching Unknown Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
                                op_arg_type="Branching")
     results[0]['Selection'] = 'Includes \\texttt{concat} for Branching ' \
@@ -1006,6 +1098,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{delete}')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="delete")
     results[0]['Selection'] = 'Includes \\texttt{delete}'
     results[1]['Selection'] = 'Includes \\texttt{delete}'
@@ -1016,6 +1110,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{replace}')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="replace")
     results[0]['Selection'] = 'Includes \\texttt{replace}'
     results[1]['Selection'] = 'Includes \\texttt{replace}'
@@ -1026,6 +1122,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{reverse}')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="reverse")
     results[0]['Selection'] = 'Includes \\texttt{reverse}'
     results[1]['Selection'] = 'Includes \\texttt{reverse}'
@@ -1041,6 +1139,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(blank_row)
     acc_std_dev_list.append(blank_row)
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{concat} for All Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
                                exclusive_op=True)
     results[0]['Selection'] = 'Includes \\texttt{concat} for All Args'
@@ -1052,6 +1152,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{concat} for Concrete Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
                                op_arg_type="Concrete", exclusive_op=True)
     results[0]['Selection'] = 'Includes \\texttt{concat} for Concrete Args'
@@ -1063,6 +1165,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{concat} for Simple Unknown Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
                                op_arg_type="Simple", exclusive_op=True)
     results[0]['Selection'] = 'Includes \\texttt{concat} for Simple Unknown' \
@@ -1078,6 +1182,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{concat} for Branching Unknown Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
                                op_arg_type="Branching", exclusive_op=True)
     results[0]['Selection'] = 'Includes \\texttt{concat} for Branching ' \
@@ -1093,6 +1199,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{delete}')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="delete",
                                exclusive_op=True)
     results[0]['Selection'] = 'Includes \\texttt{delete}'
@@ -1104,6 +1212,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{replace}')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="replace",
                                exclusive_op=True)
     results[0]['Selection'] = 'Includes \\texttt{replace}'
@@ -1115,6 +1225,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - Includes '
+              '\\texttt{reverse}')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="reverse",
                                exclusive_op=True)
     results[0]['Selection'] = 'Includes \\texttt{reverse}'
@@ -1131,6 +1243,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     tables.append(acc_range_list)
     tables.append(acc_std_dev_list)
 
+    log.debug('Getting Cumulative Solving Performance - \\texttt{contains} for'
+              ' All Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="contains")
     results[0]['Selection'] = '\\texttt{contains} for All Args'
     results[1]['Selection'] = '\\texttt{contains} for All Args'
@@ -1141,6 +1255,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - \\texttt{contains} for'
+              ' Concrete Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="contains",
                                pred_arg_type="Concrete")
     results[0]['Selection'] = '\\texttt{contains} for Concrete Args'
@@ -1152,6 +1268,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - \\texttt{contains} for'
+              ' Simple Unknown Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="contains",
                                pred_arg_type="Simple")
     results[0]['Selection'] = '\\texttt{contains} for Simple Unknown Args'
@@ -1163,6 +1281,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - \\texttt{contains} for'
+              ' Branching Unknown Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="contains",
                                pred_arg_type="Branching")
     results[0]['Selection'] = '\\texttt{contains} for Branching Unknown Args'
@@ -1174,6 +1294,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - \\texttt{equals} for'
+              ' All Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="equals")
     results[0]['Selection'] = '\\texttt{equals} for All Args'
     results[1]['Selection'] = '\\texttt{equals} for All Args'
@@ -1184,6 +1306,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - \\texttt{equals} for'
+              ' Concrete Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="equals",
                                pred_arg_type="Concrete")
     results[0]['Selection'] = '\\texttt{equals} for Concrete Args'
@@ -1195,6 +1319,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - \\texttt{equals} for'
+              ' Simple Unknown Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="equals",
                                pred_arg_type="Simple")
     results[0]['Selection'] = '\\texttt{equals} for Simple Unknown Args'
@@ -1206,6 +1332,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
+    log.debug('Getting Cumulative Solving Performance - \\texttt{equals} for'
+              ' Branching Unknown Args')
     results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="equals",
                                pred_arg_type="Branching")
     results[0]['Selection'] = '\\texttt{equals} for Branching Unknown Args'
@@ -1217,12 +1345,23 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     acc_range_list.append(results[2])
     acc_std_dev_list.append(results[3])
 
-    log.debug('Calculating Operation and Predicate Performance')
+    tables.append((acc_avg_list, 'Average Constraint Solving Times',
+                   'solve_perf_acc_avg'))
+    tables.append((acc_median_list, 'Median Constraint Solving Times',
+                   'solve_perf_acc_median'))
+    tables.append((acc_range_list, 'Constraint Solving Time Ranges',
+                   'solve_perf_acc_range'))
+    tables.append((acc_std_dev_list, 'Standard Deviation for Constraint '
+                                     'Solving Times',
+                   'solve_perf_acc_std_dev'))
+
     op_avg_list = list()
     op_median_list = list()
     op_range_list = list()
     op_std_dev_list = list()
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{concat}')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="concat")
     results[0]['Selection'] = '\\texttt{concat}'
     results[1]['Selection'] = '\\texttt{concat}'
@@ -1233,6 +1372,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{concat} for Input Strings of Length 1')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="concat",
                                length=1)
     results[0]['Selection'] = '\\texttt{concat} for Input Strings of Length 1'
@@ -1244,6 +1385,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{concat} for Input Strings of Length 2')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="concat",
                                length=2)
     results[0]['Selection'] = '\\texttt{concat} for Input Strings of Length 2'
@@ -1255,6 +1398,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{concat} for Input Strings of Length 3')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="concat",
                                length=3)
     results[0]['Selection'] = '\\texttt{concat} for Input Strings of Length 3'
@@ -1271,6 +1416,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(blank_row)
     op_std_dev_list.append(blank_row)
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{delete}')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="delete")
     results[0]['Selection'] = '\\texttt{delete}'
     results[1]['Selection'] = '\\texttt{delete}'
@@ -1281,6 +1428,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{delete} for Input Strings of Length 1')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="delete",
                                length=1)
     results[0]['Selection'] = '\\texttt{delete} for Input Strings of Length 1'
@@ -1292,6 +1441,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{delete} for Input Strings of Length 2')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="delete",
                                length=2)
     results[0]['Selection'] = '\\texttt{delete} for Input Strings of Length 2'
@@ -1303,6 +1454,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{delete} for Input Strings of Length 3')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="delete",
                                length=3)
     results[0]['Selection'] = '\\texttt{delete} for Input Strings of Length 3'
@@ -1319,6 +1472,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(blank_row)
     op_std_dev_list.append(blank_row)
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{replace}')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="replace")
     results[0]['Selection'] = '\\texttt{replace}'
     results[1]['Selection'] = '\\texttt{replace}'
@@ -1329,6 +1484,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{replace} for Input Strings of Length 1')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="replace",
                                length=1)
     results[0]['Selection'] = '\\texttt{replace} for Input Strings of Length 1'
@@ -1340,6 +1497,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{replace} for Input Strings of Length 2')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="replace",
                                length=2)
     results[0]['Selection'] = '\\texttt{replace} for Input Strings of Length 2'
@@ -1351,6 +1510,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{replace} for Input Strings of Length 3')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="replace",
                                length=3)
     results[0]['Selection'] = '\\texttt{replace} for Input Strings of Length 3'
@@ -1367,6 +1528,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(blank_row)
     op_std_dev_list.append(blank_row)
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{reverse}')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="reverse")
     results[0]['Selection'] = '\\texttt{reverse}'
     results[1]['Selection'] = '\\texttt{reverse}'
@@ -1377,6 +1540,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{reverse} for Input Strings of Length 1')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="reverse",
                                length=1)
     results[0]['Selection'] = '\\texttt{reverse} for Input Strings of Length 1'
@@ -1388,6 +1553,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{reverse} for Input Strings of Length 2')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="reverse",
                                length=2)
     results[0]['Selection'] = '\\texttt{reverse} for Input Strings of Length 2'
@@ -1399,6 +1566,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{reverse} for Input Strings of Length 3')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="reverse",
                                length=3)
     results[0]['Selection'] = '\\texttt{reverse} for Input Strings of Length 3'
@@ -1415,6 +1584,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(blank_row)
     op_std_dev_list.append(blank_row)
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{contains}')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="contains")
     results[0]['Selection'] = '\\texttt{contains}'
     results[1]['Selection'] = '\\texttt{contains}'
@@ -1425,6 +1596,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{contains} for Input Strings of Length 1')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="contains",
                                length=1)
     results[0]['Selection'] = '\\texttt{contains} for Input Strings of Length 1'
@@ -1436,6 +1609,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{contains} for Input Strings of Length 2')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="contains",
                                length=2)
     results[0]['Selection'] = '\\texttt{contains} for Input Strings of Length 2'
@@ -1447,6 +1622,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{contains} for Input Strings of Length 3')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="contains",
                                length=3)
     results[0]['Selection'] = '\\texttt{contains} for Input Strings of Length 3'
@@ -1463,6 +1640,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(blank_row)
     op_std_dev_list.append(blank_row)
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{equals}')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="equals")
     results[0]['Selection'] = '\\texttt{equals}'
     results[1]['Selection'] = '\\texttt{equals}'
@@ -1473,6 +1652,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{equals} for Input Strings of Length 1')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="equals",
                                length=1)
     results[0]['Selection'] = '\\texttt{equals} for Input Strings of Length 1'
@@ -1484,6 +1665,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{equals} for Input Strings of Length 2')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="equals",
                                length=2)
     results[0]['Selection'] = '\\texttt{equals} for Input Strings of Length 2'
@@ -1495,6 +1678,8 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
+    log.debug('Getting Operation and Predicate Performance - '
+              '\\texttt{equals} for Input Strings of Length 3')
     results = get_perf_metrics(op_time_rows, ['Op Time'], operation="equals",
                                length=3)
     results[0]['Selection'] = '\\texttt{equals} for Input Strings of Length 3'
@@ -1506,10 +1691,15 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     op_range_list.append(results[2])
     op_std_dev_list.append(results[3])
 
-    tables.append(op_avg_list)
-    tables.append(op_median_list)
-    tables.append(op_range_list)
-    tables.append(op_std_dev_list)
+    tables.append((op_avg_list, 'Average Operation and Predicate Times',
+                   'solve_perf_op_avg'))
+    tables.append((op_median_list, 'Median Operation and Predicate Times',
+                   'solve_perf_op_median'))
+    tables.append((op_range_list, 'Operation and Predicate Time Ranges',
+                   'solve_perf_op_range'))
+    tables.append((op_std_dev_list, 'Standard Deviation for Operation and '
+                                    'Predicate Times',
+                   'solve_perf_op_std_dev'))
 
     return tables
 
@@ -1561,9 +1751,11 @@ def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
 
     # tables.extend(analyze_acc_vs_mc_perf(mc_rows, mc_time_rows))
 
-    # tables.extend(analyze_acc_vs_solve_perf(mc_rows, mc_time_rows, op_time_rows))
+    # tables.extend(analyze_acc_vs_solve_perf(mc_rows, mc_time_rows,
+    #                                         op_time_rows))
 
-    # tables.extend(analyze_acc_vs_comb_perf(mc_rows, mc_time_rows, op_time_rows))
+    # tables.extend(analyze_acc_vs_comb_perf(mc_rows, mc_time_rows,
+    #                                        op_time_rows))
 
     output_latex_tables(tables)
 
