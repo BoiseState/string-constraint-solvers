@@ -27,7 +27,11 @@ ch.setFormatter(formatter)
 
 log.addHandler(ch)
 
-# initialize settings and matricies variables
+# Global Values
+GLOB = dict()
+GLOB['Settings'] = None
+GLOB['branching-ids'] = set()
+
 VERIFICATION_MATRICIES = {
     'concat': (('-', '-', '>', '>', '='),
                ('-', '-', '>', '>', '-'),
@@ -125,29 +129,29 @@ OP_GROUPS = {
 
 INPUT_TYPES = (
     'Concrete',
-    'Uniform',
-    'Non-Uniform'
+    'Simple',
+    'Branching'
 )
 
 OP_TYPES = (
     'Injective(<Concrete>)',
-    'Injective(<Uniform>)',
-    'Injective(<Non-Uniform>)',
+    'Injective(<Simple>)',
+    'Injective(<Branching>)',
     'P_Struct_Alt(<Concrete>,<Concrete>)',
-    'P_Struct_Alt(<Concrete>,<Uniform>)',
-    'P_Struct_Alt(<Concrete>,<Non-Uniform>)',
-    'P_Struct_Alt(<Uniform>,<Concrete>)',
-    'P_Struct_Alt(<Uniform>,<Uniform>)',
-    'P_Struct_Alt(<Uniform>,<Non-Uniform>)',
-    'P_Struct_Alt(<Non-Uniform>,<Concrete>)',
-    'P_Struct_Alt(<Non-Uniform>,<Uniform>)',
-    'P_Struct_Alt(<Non-Uniform>,<Non-Uniform>)',
+    'P_Struct_Alt(<Concrete>,<Simple>)',
+    'P_Struct_Alt(<Concrete>,<Branching>)',
+    'P_Struct_Alt(<Simple>,<Concrete>)',
+    'P_Struct_Alt(<Simple>,<Simple>)',
+    'P_Struct_Alt(<Simple>,<Branching>)',
+    'P_Struct_Alt(<Branching>,<Concrete>)',
+    'P_Struct_Alt(<Branching>,<Simple>)',
+    'P_Struct_Alt(<Branching>,<Branching>)',
     'N_Struct_Alt(<Concrete>)',
-    'N_Struct_Alt(<Uniform>)',
-    'N_Struct_Alt(<Non-Uniform>)',
+    'N_Struct_Alt(<Simple>)',
+    'N_Struct_Alt(<Branching>)',
     'Substitution(<Concrete>)',
-    'Substitution(<Uniform>)',
-    'Substitution(<Non-Uniform>)'
+    'Substitution(<Simple>)',
+    'Substitution(<Branching>)'
 )
 
 REGEX = dict()
@@ -161,8 +165,6 @@ REGEX['arg_str_known'] = re.compile('^\\\\"(?P<string>\w*)\\\\"$')
 REGEX['arg_str_unknown'] = re.compile('^<(S|CS):(?P<id>\d+)>$')
 REGEX['arg_char'] = re.compile('^\'(?P<char>\w)\'$')
 REGEX['arg_num'] = re.compile('^(?P<num>\d+)$')
-
-SETTINGS = None
 
 
 class Settings:
@@ -204,10 +206,11 @@ class Operation:
 
 
 class OperationArgument:
-    def __init__(self, arg_type, arg_id=None, value=None):
+    def __init__(self, arg_type, arg_id=None, value=None, branching=None):
         self.arg_id = arg_id
         self.arg_type = arg_type
         self.value = value
+        self.branching = branching
 
     def get_string(self):
         val = self.value if self.value is not None else self.arg_id
@@ -241,8 +244,7 @@ def set_options(arguments):
                                     'match a set of result files.')
 
     # set settings variable from parsed options
-    global SETTINGS
-    SETTINGS = Settings(gather_parser.parse_args(arguments))
+    GLOB['Settings'] = Settings(gather_parser.parse_args(arguments))
 
 
 def get_solver_key(x):
@@ -264,6 +266,46 @@ def get_last_operation(x):
     return op_match.group['op']
 
 
+def get_op_string(ops_list, op_num):
+    op_str = ''
+    op_arg_str = ''
+    op = None
+    if ops_list[1].op == 'contains' and len(ops_list) > (2 + op_num):
+        op = ops_list[(1 + op_num)]
+    elif len(ops_list) > (1 + op_num):
+        op = ops_list[op_num]
+
+    if op is not None:
+        op_str = op.op
+        op_str_args = [x for x in op.args if x.arg_type == 'str']
+
+        # arg 1
+        if len(op_str_args) > 0:
+            if op_str_args[0].value is not None:
+                op_arg_str = "Concrete"
+            elif op_str_args[0].arg_id in GLOB['branching-ids']:
+                op_arg_str = "Branching"
+            else:
+                op_arg_str = "Simple"
+
+    return op_str, op_arg_str
+
+
+def get_predicate(ops_list):
+    pred_str = ops_list[-1].op
+    pred_arg_str = ''
+    pred_args = ops_list[-1].args
+    if len(pred_args) > 0:
+        if pred_args[0].value is not None:
+            pred_arg_str = "Concrete"
+        elif pred_args[0].arg_id in GLOB['branching-ids']:
+            pred_arg_str = "Branching"
+        else:
+            pred_arg_str = "Simple"
+
+    return pred_str, pred_arg_str
+
+
 def get_operations(x):
     # initialize operations list
     ops_list = list()
@@ -274,7 +316,7 @@ def get_operations(x):
     match_init = REGEX['init_known'].match(op_strings[0].strip())
     if not match_init:
         match_init = REGEX['init_unknown'].match(op_strings[0].strip())
-        input_type = 'Uniform'
+        input_type = 'Simple'
     base_id = match_init.group('id')
     time = match_init.group('time')
     ops_list.append(Operation(base_id, 'init', time, input_type))
@@ -310,7 +352,7 @@ def get_operations(x):
                 arg_list.append(OperationArgument('num', value=value))
 
         if i == 0 and op == 'contains':
-            input_type = 'Non-Uniform'
+            input_type = 'Branching'
 
         ops_list.append(Operation(const_id,
                                   op,
@@ -333,27 +375,6 @@ def get_all_op_data(data_map, solvers):
         for solver in solvers:
             prev_ops = data_map.get(solver).get(const_id).get('PREV OPS')
             ops_lists[solver] = get_operations(prev_ops)
-            # for op in ops_lists['unbounded']:
-            #     log.debug('*** operation %s ***', op_id)
-            #     log.debug('operation %s - op: %s', op_id, op.op)
-            #     log.debug('operation %s - time: %s', op_id, op.time)
-            #     log.debug('operation %s - input_type: %s', op_id,
-            # op.input_type)
-            #     log.debug('operation %s - base_id: %s', op_id, op.base_id)
-            #     log.debug('operation %s - op_group: %s', op_id, op.op_group)
-            #     for i, arg in enumerate(op.args):
-            #         log.debug('operation %s - arg %d - arg_id: %s',
-            #                   op_id,
-            #                   i,
-            #                   arg.arg_id)
-            #         log.debug('operation %s - arg %d - arg_type: %s',
-            #                   op_id,
-            #                   i,
-            #                   arg.arg_type)
-            #         log.debug('operation %s - arg %d - arg_value: %s',
-            #                   op_id,
-            #                   i,
-            #                   arg.value)
 
         # for each op info in unbounded ops list
         for i, op_info in enumerate(ops_lists.get('unbounded')):
@@ -385,6 +406,16 @@ def get_all_op_data(data_map, solvers):
 
     # return data
     return return_data
+
+
+def identify_branching_args(data_map):
+    # for each constraint id
+    for const_id in data_map.get('unbounded').keys():
+        prev_ops = data_map.get('unbounded').get(const_id).get('PREV OPS')
+        ops_list = get_operations(prev_ops)
+
+        if len(ops_list) == 2 and ops_list[1].op == 'contains':
+            GLOB['branching-ids'].add(ops_list[0].op_id)
 
 
 def get_result_files(dir_path, file_pattern):
@@ -419,7 +450,7 @@ def get_result_file_sets():
             # get file set
             log.debug('getting result files for %s solver', d)
             result_files = get_result_files(test_dir,
-                                            SETTINGS.result_file_pattern)
+                                            GLOB['Settings'].result_file_pattern)
 
             # add file set to result file map
             solver_file_sets[d] = result_files
@@ -511,46 +542,6 @@ def verify_data(data_map, solvers):
             verify_matrix('trim', data_map, solvers, op_id)
 
 
-def get_op_string(ops_list, op_num, d_map):
-    op_str = ''
-    op_arg_str = ''
-    op = None
-    if ops_list[1].op == 'contains' and len(ops_list) > (2 + op_num):
-        op = ops_list[(1 + op_num)]
-    elif len(ops_list) > (1 + op_num):
-        op = ops_list[op_num]
-
-    if op is not None:
-        op_str = op.op
-        op_str_args = [x for x in op.args if x.arg_type == 'str']
-
-        # arg 1
-        if len(op_str_args) > 0:
-            if op_str_args[0].value is not None:
-                op_arg_str = "Concrete"
-            elif op_str_args[0].arg_id in d_map:
-                op_arg_str = "Non-Uniform"
-            else:
-                op_arg_str = "Uniform"
-
-    return op_str, op_arg_str
-
-
-def get_predicate(ops_list, d_map):
-    pred_str = ops_list[-1].op
-    pred_arg_str = ''
-    pred_args = ops_list[-1].args
-    if len(pred_args) > 0:
-        if pred_args[0].value is not None:
-            pred_arg_str = "Concrete"
-        elif pred_args[0].arg_id in d_map:
-            pred_arg_str = "Non-Uniform"
-        else:
-            pred_arg_str = "Uniform"
-
-    return pred_str, pred_arg_str
-
-
 def produce_mc_csv_data(data_map, solvers):
     # initialize output row list
     mc_rows = list()
@@ -565,9 +556,9 @@ def produce_mc_csv_data(data_map, solvers):
         operations = re.sub('{\d+}', '', operations)
         operations = re.sub('\[\d+\]', '', operations)
         operations = operations.replace('\\"', '"')
-        op1, op1_arg = get_op_string(ops_list, 1, data_map.get('unbounded'))
-        op2, op2_arg = get_op_string(ops_list, 2, data_map.get('unbounded'))
-        pred, pred_arg = get_predicate(ops_list, data_map.get('unbounded'))
+        op1, op1_arg = get_op_string(ops_list, 1)
+        op2, op2_arg = get_op_string(ops_list, 2)
+        pred, pred_arg = get_predicate(ops_list)
         row['Operation'] = operations
         row['Id'] = op_id
         row['Input Type'] = ops_list[-1].input_type
@@ -629,11 +620,22 @@ def produce_mc_time_csv_data(data_map, solvers):
         row = dict()
         # add operation
         operations = data_map.get('unbounded').get(op_id).get('PREV OPS')
+        ops_list = get_operations(operations)
         operations = re.sub('{\d+}', '', operations)
         operations = re.sub('\[\d+\]', '', operations)
         operations = operations.replace('\\"', '"')
+        op1, op1_arg = get_op_string(ops_list, 1)
+        op2, op2_arg = get_op_string(ops_list, 2)
+        pred, pred_arg = get_predicate(ops_list)
         row['Operation'] = operations
         row['Id'] = op_id
+        row['Input Type'] = ops_list[-1].input_type
+        row['Op 1'] = op1
+        row['Op 1 Arg'] = op1_arg
+        row['Op 2'] = op2
+        row['Op 2 Arg'] = op2_arg
+        row['Pred'] = pred
+        row['Pred Arg'] = pred_arg
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)
             prefix = solver.upper()[0]
@@ -682,7 +684,7 @@ def get_mc_field_names(solvers):
     # initialize csv field names
     field_names = list()
 
-    if SETTINGS.single_file:
+    if GLOB['Settings'].single_file:
         field_names.append('File')
 
     field_names.append('Id')
@@ -733,7 +735,7 @@ def get_mc_time_field_names(solvers):
     # initialize csv field names
     field_names = list()
 
-    if SETTINGS.single_file:
+    if GLOB['Settings'].single_file:
         field_names.append('File')
 
     field_names.append('Id')
@@ -753,6 +755,14 @@ def get_mc_time_field_names(solvers):
     field_names.extend(t_fields)
     field_names.extend(f_fields)
 
+    field_names.append('Input Type')
+    field_names.append('Op 1')
+    field_names.append('Op 1 Arg')
+    field_names.append('Op 2')
+    field_names.append('Op 2 Arg')
+    field_names.append('Pred')
+    field_names.append('Pred Arg')
+
     return field_names
 
 
@@ -760,7 +770,7 @@ def get_op_time_field_names(solvers):
     # initialize csv field names
     field_names = list()
 
-    if SETTINGS.single_file:
+    if GLOB['Settings'].single_file:
         field_names.append('File')
 
     field_names.append('Op Id')
@@ -788,6 +798,8 @@ def gather_results(f_name, file_set):
 
     # verify data
     # verify_data(data_map, solvers, f_name)
+
+    identify_branching_args(data_map)
 
     csv_rows = dict()
 
@@ -819,8 +831,10 @@ def gather_result_sets(result_file_sets):
 def output_csv_file(output_rows, field_names, f_name):
     # get output file path
     out_f_name = f_name
-    if SETTINGS.single_file:
-        out_f_name = re.sub('-\d+', '', f_name)
+    if GLOB['Settings'].single_file:
+        out_f_name = re.sub('(?P<pre>.*)-\d+(?P<suf>.csv)',
+                            '\g<pre>\g<suf>',
+                            f_name)
     csv_file_path = os.path.join(project_dir,
                                  'results',
                                  'model-count',
@@ -847,7 +861,7 @@ def output_csv_files(csv_data, solvers):
     mc_time_field_names = get_mc_time_field_names(solvers)
     op_time_field_names = get_op_time_field_names(solvers)
 
-    if SETTINGS.single_file:
+    if GLOB['Settings'].single_file:
         mc_rows = list()
         mc_time_rows = list()
         op_time_rows = list()

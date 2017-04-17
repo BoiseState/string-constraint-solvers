@@ -1272,6 +1272,13 @@ def add_operation(t, countdown, v_list=None):
             arg_vertex = Vertex(arg_val, arg, generate_id(arg_val))
             arg_ids.append(arg_vertex.node_id)
 
+            # make argument non uniform
+            if op.non_uniform:
+                contains_predicates = list()
+                add_contains_predicates(contains_predicates)
+                contains_predicates = contains_predicates[:1]
+                add_bool_constraint(arg_vertex, v_list, allow_duplicates=True, predicate_list=contains_predicates)
+
             # add arg vertices list
             v_list.append(arg_vertex)
 
