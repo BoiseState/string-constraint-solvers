@@ -4,8 +4,10 @@ import logging
 import argparse
 import csv
 import fnmatch
+import numpy
 import os
 import re
+import scipy
 import sys
 
 # set relevent path and file variables
@@ -213,6 +215,7 @@ def filter_length(row, length=None):
 
 def filter_operation(row, operation=None, exclusive=False, arg_type=None, ):
     return operation is None \
+           or ('Op' in row and row.get('Op') == operation) \
            or (exclusive
                and ((row.get('Op 1') == operation
                      and row.get('Op 2') == operation
@@ -424,11 +427,11 @@ def analyze_accuracy(mc_rows):
                    'Frequency of Accuracy Difference for Constraints Including'
                    ' \\texttt{concat} Operations for Simple Unknown Args',
                    'acc_diff_incl_concat_simp'))
-    tables.append((get_percent_differences(mc_rows, operation="concat",
-                                           op_arg_type="Branching"),
-                   'Frequency of Accuracy Difference for Constraints Including'
-                   ' \\texttt{concat} Operations for Branching Unknown Args',
-                   'acc_diff_incl_concat_branch'))
+    # tables.append((get_percent_differences(mc_rows, operation="concat",
+    #                                        op_arg_type="Branching"),
+    #                'Frequency of Accuracy Difference for Constraints Including'
+    #                ' \\texttt{concat} Operations for Branching Unknown Args',
+    #                'acc_diff_incl_concat_branch'))
     tables.append((get_percent_differences(mc_rows, operation="delete"),
                    'Frequency of Accuracy Difference for Constraints Including'
                    ' \\texttt{delete} Operations',
@@ -459,12 +462,12 @@ def analyze_accuracy(mc_rows):
                    'Frequency of Accuracy Difference for Constraints of Only'
                    ' \\texttt{concat} Operations for Simple Unknown Args',
                    'acc_diff_excl_concat_simp'))
-    tables.append((get_percent_differences(mc_rows, operation="concat",
-                                           op_arg_type="Branching",
-                                           exclusive_op=True),
-                   'Frequency of Accuracy Difference for Constraints of Only'
-                   ' \\texttt{concat} Operations for Branching Unknown Args',
-                   'acc_diff_excl_concat_branch'))
+    # tables.append((get_percent_differences(mc_rows, operation="concat",
+    #                                        op_arg_type="Branching",
+    #                                        exclusive_op=True),
+    #                'Frequency of Accuracy Difference for Constraints of Only'
+    #                ' \\texttt{concat} Operations for Branching Unknown Args',
+    #                'acc_diff_excl_concat_branch'))
     tables.append((get_percent_differences(mc_rows, operation="delete",
                                            exclusive_op=True),
                    'Frequency of Accuracy Difference for Constraints of Only'
@@ -573,9 +576,9 @@ def analyze_accuracy(mc_rows):
     temp = get_agreement(mc_rows, operation="concat", op_arg_type="Simple")
     temp['Selection'] = 'Includes \\texttt{concat} for Simple Unknown Args'
     agree_list.append(temp)
-    temp = get_agreement(mc_rows, operation="concat", op_arg_type="Branching")
-    temp['Selection'] = 'Includes \\texttt{concat} for Branching Unknown Args'
-    agree_list.append(temp)
+    # temp = get_agreement(mc_rows, operation="concat", op_arg_type="Branching")
+    # temp['Selection'] = 'Includes \\texttt{concat} for Branching Unknown Args'
+    # agree_list.append(temp)
     temp = get_agreement(mc_rows, operation="delete")
     temp['Selection'] = 'Includes \\texttt{delete}'
     agree_list.append(temp)
@@ -599,10 +602,10 @@ def analyze_accuracy(mc_rows):
                          exclusive_op=True)
     temp['Selection'] = 'Only \\texttt{concat} for Simple Unknown Args'
     agree_list.append(temp)
-    temp = get_agreement(mc_rows, operation="concat", op_arg_type="Branching",
-                         exclusive_op=True)
-    temp['Selection'] = 'Only \\texttt{concat} for Branching Unknown Args'
-    agree_list.append(temp)
+    # temp = get_agreement(mc_rows, operation="concat", op_arg_type="Branching",
+    #                      exclusive_op=True)
+    # temp['Selection'] = 'Only \\texttt{concat} for Branching Unknown Args'
+    # agree_list.append(temp)
     temp = get_agreement(mc_rows, operation="delete", exclusive_op=True)
     temp['Selection'] = 'Only \\texttt{delete}'
     agree_list.append(temp)
@@ -648,7 +651,7 @@ def analyze_accuracy(mc_rows):
     return tables
 
 
-def get_perf_metrics(rows, column_suffix, input_type=None, length=None,
+def get_perf_metrics(rows, column_suffixes, input_type=None, length=None,
                      operation=None, exclusive_op=None, op_arg_type=None,
                      predicate=None, pred_arg_type=None):
     avg_results = dict()
@@ -662,7 +665,7 @@ def get_perf_metrics(rows, column_suffix, input_type=None, length=None,
     a_times = list()
     w_times = list()
 
-    def get_reduction(column):
+    def get_reduction(columns):
         def reduction(values, row):
             if row.get('Op 1') != '' \
                     and filter_input_type(row, input_type) \
@@ -670,57 +673,78 @@ def get_perf_metrics(rows, column_suffix, input_type=None, length=None,
                     and filter_operation(row, operation, exclusive_op,
                                          op_arg_type) \
                     and filter_predicate(row, predicate, pred_arg_type):
-                values.append(int(row.get(column)))
+                for column in columns:
+                    values.append(int(row.get(column)))
             return values
 
         return reduction
 
     valid_rows = list()
 
-    u_times = reduce(get_reduction('U ' + column_suffix), rows, u_times)
-    b_times = reduce(get_reduction('B ' + column_suffix), rows, b_times)
-    a_times = reduce(get_reduction('A ' + column_suffix), rows, a_times)
-    w_times = reduce(get_reduction('W ' + column_suffix), rows, w_times)
+    u_columns = list()
+    b_columns = list()
+    a_columns = list()
+    w_columns = list()
 
-    u_avg = sum(u_times) / float(len(u_times))
-    b_avg = sum(b_times) / float(len(b_times))
-    a_avg = sum(a_times) / float(len(a_times))
-    w_avg = sum(w_times) / float(len(w_times))
+    for suffix in column_suffixes:
+        u_columns.append('U ' + suffix)
+        b_columns.append('B ' + suffix)
+        a_columns.append('A ' + suffix)
+        w_columns.append('W ' + suffix)
 
-    avg_results['Unbounded'] = '{0:.1f}\\%'.format(u_avg)
-    avg_results['Bounded'] = '{0:.1f}\\%'.format(b_avg)
-    avg_results['Aggregate'] = '{0:.1f}\\%'.format(a_avg)
-    avg_results['Weighted'] = '{0:.1f}\\%'.format(w_avg)
+    u_times = reduce(get_reduction(u_columns), rows, u_times)
+    b_times = reduce(get_reduction(b_columns), rows, b_times)
+    a_times = reduce(get_reduction(a_columns), rows, a_times)
+    w_times = reduce(get_reduction(w_columns), rows, w_times)
 
-    u_median = 0
-    b_median = 0
-    a_median = 0
-    w_median = 0
+    u_times_np = numpy.asarray(u_times)
+    b_times_np = numpy.asarray(b_times)
+    a_times_np = numpy.asarray(a_times)
+    w_times_np = numpy.asarray(w_times)
 
-    median_results['Unbounded'] = '{0:.1f}\\%'.format(u_median)
-    median_results['Bounded'] = '{0:.1f}\\%'.format(b_median)
-    median_results['Aggregate'] = '{0:.1f}\\%'.format(a_median)
-    median_results['Weighted'] = '{0:.1f}\\%'.format(w_median)
+    u_avg = numpy.mean(u_times_np)
+    b_avg = numpy.mean(b_times_np)
+    a_avg = numpy.mean(a_times_np)
+    w_avg = numpy.mean(w_times_np)
 
-    u_range = 0
-    b_range = 0
-    a_range = 0
-    w_range = 0
+    avg_results['Unbounded'] = '{0:.1f}'.format(u_avg)
+    avg_results['Bounded'] = '{0:.1f}'.format(b_avg)
+    avg_results['Aggregate'] = '{0:.1f}'.format(a_avg)
+    avg_results['Weighted'] = '{0:.1f}'.format(w_avg)
 
-    range_results['Unbounded'] = '{0:.1f}\\%'.format(u_range)
-    range_results['Bounded'] = '{0:.1f}\\%'.format(b_range)
-    range_results['Aggregate'] = '{0:.1f}\\%'.format(a_range)
-    range_results['Weighted'] = '{0:.1f}\\%'.format(w_range)
+    u_median = numpy.median(u_times_np)
+    b_median = numpy.median(b_times_np)
+    a_median = numpy.median(a_times_np)
+    w_median = numpy.median(w_times_np)
 
-    u_std_dev = 0
-    b_std_dev = 0
-    a_std_dev = 0
-    w_std_dev = 0
+    median_results['Unbounded'] = '{0:.1f}'.format(u_median)
+    median_results['Bounded'] = '{0:.1f}'.format(b_median)
+    median_results['Aggregate'] = '{0:.1f}'.format(a_median)
+    median_results['Weighted'] = '{0:.1f}'.format(w_median)
 
-    std_dev_results['Unbounded'] = '{0:.1f}\\%'.format(u_std_dev)
-    std_dev_results['Bounded'] = '{0:.1f}\\%'.format(b_std_dev)
-    std_dev_results['Aggregate'] = '{0:.1f}\\%'.format(a_std_dev)
-    std_dev_results['Weighted'] = '{0:.1f}\\%'.format(w_std_dev)
+    u_range = (numpy.amin(u_times_np), numpy.amax(u_times_np))
+    b_range = (numpy.amin(b_times_np), numpy.amax(b_times_np))
+    a_range = (numpy.amin(a_times_np), numpy.amax(a_times_np))
+    w_range = (numpy.amin(w_times_np), numpy.amax(w_times_np))
+
+    range_results['Unbounded'] = '{0:.1f} - {1:.1f}'.format(u_range[0],
+                                                            u_range[1])
+    range_results['Bounded'] = '{0:.1f} - {1:.1f}'.format(b_range[0],
+                                                          b_range[1])
+    range_results['Aggregate'] = '{0:.1f} - {1:.1f}'.format(a_range[0],
+                                                            a_range[1])
+    range_results['Weighted'] = '{0:.1f} - {1:.1f}'.format(w_range[0],
+                                                           w_range[1])
+
+    u_std_dev = numpy.std(u_times_np)
+    b_std_dev = numpy.std(b_times_np)
+    a_std_dev = numpy.std(a_times_np)
+    w_std_dev = numpy.std(w_times_np)
+
+    std_dev_results['Unbounded'] = '{0:.1f}'.format(u_std_dev)
+    std_dev_results['Bounded'] = '{0:.1f}'.format(b_std_dev)
+    std_dev_results['Aggregate'] = '{0:.1f}'.format(a_std_dev)
+    std_dev_results['Weighted'] = '{0:.1f}'.format(w_std_dev)
 
     return avg_results, median_results, range_results, std_dev_results
 
@@ -745,6 +769,81 @@ def analyze_mc_performance(mc_rows, mc_time_rows):
         'Weighted': ''
     }
 
+    results = get_perf_metrics(mc_rows, ['T MC Time', 'F MC Time'])
+    results[0]['Selection'] = 'All Constraints'
+    results[1]['Selection'] = 'All Constraints'
+    results[2]['Selection'] = 'All Constraints'
+    results[3]['Selection'] = 'All Constraints'
+    avg_list.append(results[0])
+    median_list.append(results[1])
+    range_list.append(results[2])
+    std_dev_list.append(results[3])
+
+    avg_list.append(blank_row)
+    median_list.append(blank_row)
+    range_list.append(blank_row)
+    std_dev_list.append(blank_row)
+
+    results = get_perf_metrics(mc_rows, ['T MC Time'])
+    results[0]['Selection'] = 'True Branch Constraints'
+    results[1]['Selection'] = 'True Branch Constraints'
+    results[2]['Selection'] = 'True Branch Constraints'
+    results[3]['Selection'] = 'True Branch Constraints'
+    avg_list.append(results[0])
+    median_list.append(results[1])
+    range_list.append(results[2])
+    std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_rows, ['F MC Time'])
+    results[0]['Selection'] = 'False Branch Constraints'
+    results[1]['Selection'] = 'False Branch Constraints'
+    results[2]['Selection'] = 'False Branch Constraints'
+    results[3]['Selection'] = 'False Branch Constraints'
+    avg_list.append(results[0])
+    median_list.append(results[1])
+    range_list.append(results[2])
+    std_dev_list.append(results[3])
+
+    avg_list.append(blank_row)
+    median_list.append(blank_row)
+    range_list.append(blank_row)
+    std_dev_list.append(blank_row)
+
+    results = get_perf_metrics(mc_rows, ['T MC Time', 'F MC Time'], length=1)
+    results[0]['Selection'] = 'Constraints for Input Strings of Length 1'
+    results[1]['Selection'] = 'Constraints for Input Strings of Length 1'
+    results[2]['Selection'] = 'Constraints for Input Strings of Length 1'
+    results[3]['Selection'] = 'Constraints for Input Strings of Length 1'
+    avg_list.append(results[0])
+    median_list.append(results[1])
+    range_list.append(results[2])
+    std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_rows, ['T MC Time', 'F MC Time'], length=2)
+    results[0]['Selection'] = 'Constraints for Input Strings of Length 2'
+    results[1]['Selection'] = 'Constraints for Input Strings of Length 2'
+    results[2]['Selection'] = 'Constraints for Input Strings of Length 2'
+    results[3]['Selection'] = 'Constraints for Input Strings of Length 2'
+    avg_list.append(results[0])
+    median_list.append(results[1])
+    range_list.append(results[2])
+    std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_rows, ['T MC Time', 'F MC Time'], length=3)
+    results[0]['Selection'] = 'Constraints for Input Strings of Length 3'
+    results[1]['Selection'] = 'Constraints for Input Strings of Length 3'
+    results[2]['Selection'] = 'Constraints for Input Strings of Length 3'
+    results[3]['Selection'] = 'Constraints for Input Strings of Length 3'
+    avg_list.append(results[0])
+    median_list.append(results[1])
+    range_list.append(results[2])
+    std_dev_list.append(results[3])
+
+    tables.append(avg_list)
+    tables.append(median_list)
+    tables.append(range_list)
+    tables.append(std_dev_list)
+
     return tables
 
 
@@ -752,7 +851,665 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     # initialize tables list
     tables = list()
 
+    blank_row = {
+        'Selection': '',
+        'Unbounded': '',
+        'Bounded': '',
+        'Aggregate': '',
+        'Weighted': ''
+    }
+
     log.debug('Calculating Constraint Solving Performance')
+
+    log.debug('Calculating Cumulative Solving Performance')
+    acc_avg_list = list()
+    acc_median_list = list()
+    acc_range_list = list()
+    acc_std_dev_list = list()
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'])
+    results[0]['Selection'] = 'All Constraints'
+    results[1]['Selection'] = 'All Constraints'
+    results[2]['Selection'] = 'All Constraints'
+    results[3]['Selection'] = 'All Constraints'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    acc_avg_list.append(blank_row)
+    acc_median_list.append(blank_row)
+    acc_range_list.append(blank_row)
+    acc_std_dev_list.append(blank_row)
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'],
+                               input_type="Concrete")
+    results[0]['Selection'] = 'Concrete Input Strings'
+    results[1]['Selection'] = 'Concrete Input Strings'
+    results[2]['Selection'] = 'Concrete Input Strings'
+    results[3]['Selection'] = 'Concrete Input Strings'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'],
+                               input_type="Simple")
+    results[0]['Selection'] = 'Simple Unknown Input Strings'
+    results[1]['Selection'] = 'Simple Unknown Input Strings'
+    results[2]['Selection'] = 'Simple Unknown Input Strings'
+    results[3]['Selection'] = 'Simple Unknown Input Strings'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'],
+                               input_type="Branching")
+    results[0]['Selection'] = 'Branching Unknown Input Strings'
+    results[1]['Selection'] = 'Branching Unknown Input Strings'
+    results[2]['Selection'] = 'Branching Unknown Input Strings'
+    results[3]['Selection'] = 'Branching Unknown Input Strings'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    acc_avg_list.append(blank_row)
+    acc_median_list.append(blank_row)
+    acc_range_list.append(blank_row)
+    acc_std_dev_list.append(blank_row)
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], length=1)
+    results[0]['Selection'] = 'Input Strings of Length 1'
+    results[1]['Selection'] = 'Input Strings of Length 1'
+    results[2]['Selection'] = 'Input Strings of Length 1'
+    results[3]['Selection'] = 'Input Strings of Length 1'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], length=2)
+    results[0]['Selection'] = 'Input Strings of Length 2'
+    results[1]['Selection'] = 'Input Strings of Length 2'
+    results[2]['Selection'] = 'Input Strings of Length 2'
+    results[3]['Selection'] = 'Input Strings of Length 2'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], length=3)
+    results[0]['Selection'] = 'Input Strings of Length 3'
+    results[1]['Selection'] = 'Input Strings of Length 3'
+    results[2]['Selection'] = 'Input Strings of Length 3'
+    results[3]['Selection'] = 'Input Strings of Length 3'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    acc_avg_list.append(blank_row)
+    acc_median_list.append(blank_row)
+    acc_range_list.append(blank_row)
+    acc_std_dev_list.append(blank_row)
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat")
+    results[0]['Selection'] = 'Includes \\texttt{concat} for All Args'
+    results[1]['Selection'] = 'Includes \\texttt{concat} for All Args'
+    results[2]['Selection'] = 'Includes \\texttt{concat} for All Args'
+    results[3]['Selection'] = 'Includes \\texttt{concat} for All Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
+                               op_arg_type="Concrete")
+    results[0]['Selection'] = 'Includes \\texttt{concat} for Concrete Args'
+    results[1]['Selection'] = 'Includes \\texttt{concat} for Concrete Args'
+    results[2]['Selection'] = 'Includes \\texttt{concat} for Concrete Args'
+    results[3]['Selection'] = 'Includes \\texttt{concat} for Concrete Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
+                               op_arg_type="Simple")
+    results[0]['Selection'] = 'Includes \\texttt{concat} for Simple Unknown' \
+                              ' Args'
+    results[1]['Selection'] = 'Includes \\texttt{concat} for Simple Unknown' \
+                              ' Args'
+    results[2]['Selection'] = 'Includes \\texttt{concat} for Simple Unknown' \
+                              ' Args'
+    results[3]['Selection'] = 'Includes \\texttt{concat} for Simple Unknown' \
+                              ' Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
+                               op_arg_type="Branching")
+    results[0]['Selection'] = 'Includes \\texttt{concat} for Branching ' \
+                              'Unknown Args'
+    results[1]['Selection'] = 'Includes \\texttt{concat} for Branching ' \
+                              'Unknown Args'
+    results[2]['Selection'] = 'Includes \\texttt{concat} for Branching ' \
+                              'Unknown Args'
+    results[3]['Selection'] = 'Includes \\texttt{concat} for Branching ' \
+                              'Unknown Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="delete")
+    results[0]['Selection'] = 'Includes \\texttt{delete}'
+    results[1]['Selection'] = 'Includes \\texttt{delete}'
+    results[2]['Selection'] = 'Includes \\texttt{delete}'
+    results[3]['Selection'] = 'Includes \\texttt{delete}'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="replace")
+    results[0]['Selection'] = 'Includes \\texttt{replace}'
+    results[1]['Selection'] = 'Includes \\texttt{replace}'
+    results[2]['Selection'] = 'Includes \\texttt{replace}'
+    results[3]['Selection'] = 'Includes \\texttt{replace}'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="reverse")
+    results[0]['Selection'] = 'Includes \\texttt{reverse}'
+    results[1]['Selection'] = 'Includes \\texttt{reverse}'
+    results[2]['Selection'] = 'Includes \\texttt{reverse}'
+    results[3]['Selection'] = 'Includes \\texttt{reverse}'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    acc_avg_list.append(blank_row)
+    acc_median_list.append(blank_row)
+    acc_range_list.append(blank_row)
+    acc_std_dev_list.append(blank_row)
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
+                               exclusive_op=True)
+    results[0]['Selection'] = 'Includes \\texttt{concat} for All Args'
+    results[1]['Selection'] = 'Includes \\texttt{concat} for All Args'
+    results[2]['Selection'] = 'Includes \\texttt{concat} for All Args'
+    results[3]['Selection'] = 'Includes \\texttt{concat} for All Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
+                               op_arg_type="Concrete", exclusive_op=True)
+    results[0]['Selection'] = 'Includes \\texttt{concat} for Concrete Args'
+    results[1]['Selection'] = 'Includes \\texttt{concat} for Concrete Args'
+    results[2]['Selection'] = 'Includes \\texttt{concat} for Concrete Args'
+    results[3]['Selection'] = 'Includes \\texttt{concat} for Concrete Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
+                               op_arg_type="Simple", exclusive_op=True)
+    results[0]['Selection'] = 'Includes \\texttt{concat} for Simple Unknown' \
+                              ' Args'
+    results[1]['Selection'] = 'Includes \\texttt{concat} for Simple Unknown' \
+                              ' Args'
+    results[2]['Selection'] = 'Includes \\texttt{concat} for Simple Unknown' \
+                              ' Args'
+    results[3]['Selection'] = 'Includes \\texttt{concat} for Simple Unknown' \
+                              ' Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="concat",
+                               op_arg_type="Branching", exclusive_op=True)
+    results[0]['Selection'] = 'Includes \\texttt{concat} for Branching ' \
+                              'Unknown Args'
+    results[1]['Selection'] = 'Includes \\texttt{concat} for Branching ' \
+                              'Unknown Args'
+    results[2]['Selection'] = 'Includes \\texttt{concat} for Branching ' \
+                              'Unknown Args'
+    results[3]['Selection'] = 'Includes \\texttt{concat} for Branching ' \
+                              'Unknown Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="delete",
+                               exclusive_op=True)
+    results[0]['Selection'] = 'Includes \\texttt{delete}'
+    results[1]['Selection'] = 'Includes \\texttt{delete}'
+    results[2]['Selection'] = 'Includes \\texttt{delete}'
+    results[3]['Selection'] = 'Includes \\texttt{delete}'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="replace",
+                               exclusive_op=True)
+    results[0]['Selection'] = 'Includes \\texttt{replace}'
+    results[1]['Selection'] = 'Includes \\texttt{replace}'
+    results[2]['Selection'] = 'Includes \\texttt{replace}'
+    results[3]['Selection'] = 'Includes \\texttt{replace}'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], operation="reverse",
+                               exclusive_op=True)
+    results[0]['Selection'] = 'Includes \\texttt{reverse}'
+    results[1]['Selection'] = 'Includes \\texttt{reverse}'
+    results[2]['Selection'] = 'Includes \\texttt{reverse}'
+    results[3]['Selection'] = 'Includes \\texttt{reverse}'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    tables.append(acc_avg_list)
+    tables.append(acc_median_list)
+    tables.append(acc_range_list)
+    tables.append(acc_std_dev_list)
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="contains")
+    results[0]['Selection'] = '\\texttt{contains} for All Args'
+    results[1]['Selection'] = '\\texttt{contains} for All Args'
+    results[2]['Selection'] = '\\texttt{contains} for All Args'
+    results[3]['Selection'] = '\\texttt{contains} for All Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="contains",
+                               pred_arg_type="Concrete")
+    results[0]['Selection'] = '\\texttt{contains} for Concrete Args'
+    results[1]['Selection'] = '\\texttt{contains} for Concrete Args'
+    results[2]['Selection'] = '\\texttt{contains} for Concrete Args'
+    results[3]['Selection'] = '\\texttt{contains} for Concrete Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="contains",
+                               pred_arg_type="Simple")
+    results[0]['Selection'] = '\\texttt{contains} for Simple Unknown Args'
+    results[1]['Selection'] = '\\texttt{contains} for Simple Unknown Args'
+    results[2]['Selection'] = '\\texttt{contains} for Simple Unknown Args'
+    results[3]['Selection'] = '\\texttt{contains} for Simple Unknown Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="contains",
+                               pred_arg_type="Branching")
+    results[0]['Selection'] = '\\texttt{contains} for Branching Unknown Args'
+    results[1]['Selection'] = '\\texttt{contains} for Branching Unknown Args'
+    results[2]['Selection'] = '\\texttt{contains} for Branching Unknown Args'
+    results[3]['Selection'] = '\\texttt{contains} for Branching Unknown Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="equals")
+    results[0]['Selection'] = '\\texttt{equals} for All Args'
+    results[1]['Selection'] = '\\texttt{equals} for All Args'
+    results[2]['Selection'] = '\\texttt{equals} for All Args'
+    results[3]['Selection'] = '\\texttt{equals} for All Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="equals",
+                               pred_arg_type="Concrete")
+    results[0]['Selection'] = '\\texttt{equals} for Concrete Args'
+    results[1]['Selection'] = '\\texttt{equals} for Concrete Args'
+    results[2]['Selection'] = '\\texttt{equals} for Concrete Args'
+    results[3]['Selection'] = '\\texttt{equals} for Concrete Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="equals",
+                               pred_arg_type="Simple")
+    results[0]['Selection'] = '\\texttt{equals} for Simple Unknown Args'
+    results[1]['Selection'] = '\\texttt{equals} for Simple Unknown Args'
+    results[2]['Selection'] = '\\texttt{equals} for Simple Unknown Args'
+    results[3]['Selection'] = '\\texttt{equals} for Simple Unknown Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(mc_time_rows, ['Acc Time'], predicate="equals",
+                               pred_arg_type="Branching")
+    results[0]['Selection'] = '\\texttt{equals} for Branching Unknown Args'
+    results[1]['Selection'] = '\\texttt{equals} for Branching Unknown Args'
+    results[2]['Selection'] = '\\texttt{equals} for Branching Unknown Args'
+    results[3]['Selection'] = '\\texttt{equals} for Branching Unknown Args'
+    acc_avg_list.append(results[0])
+    acc_median_list.append(results[1])
+    acc_range_list.append(results[2])
+    acc_std_dev_list.append(results[3])
+
+    log.debug('Calculating Operation and Predicate Performance')
+    op_avg_list = list()
+    op_median_list = list()
+    op_range_list = list()
+    op_std_dev_list = list()
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="concat")
+    results[0]['Selection'] = '\\texttt{concat}'
+    results[1]['Selection'] = '\\texttt{concat}'
+    results[2]['Selection'] = '\\texttt{concat}'
+    results[3]['Selection'] = '\\texttt{concat}'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="concat",
+                               length=1)
+    results[0]['Selection'] = '\\texttt{concat} for Input Strings of Length 1'
+    results[1]['Selection'] = '\\texttt{concat} for Input Strings of Length 1'
+    results[2]['Selection'] = '\\texttt{concat} for Input Strings of Length 1'
+    results[3]['Selection'] = '\\texttt{concat} for Input Strings of Length 1'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="concat",
+                               length=2)
+    results[0]['Selection'] = '\\texttt{concat} for Input Strings of Length 2'
+    results[1]['Selection'] = '\\texttt{concat} for Input Strings of Length 2'
+    results[2]['Selection'] = '\\texttt{concat} for Input Strings of Length 2'
+    results[3]['Selection'] = '\\texttt{concat} for Input Strings of Length 2'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="concat",
+                               length=3)
+    results[0]['Selection'] = '\\texttt{concat} for Input Strings of Length 3'
+    results[1]['Selection'] = '\\texttt{concat} for Input Strings of Length 3'
+    results[2]['Selection'] = '\\texttt{concat} for Input Strings of Length 3'
+    results[3]['Selection'] = '\\texttt{concat} for Input Strings of Length 3'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    op_avg_list.append(blank_row)
+    op_median_list.append(blank_row)
+    op_range_list.append(blank_row)
+    op_std_dev_list.append(blank_row)
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="delete")
+    results[0]['Selection'] = '\\texttt{delete}'
+    results[1]['Selection'] = '\\texttt{delete}'
+    results[2]['Selection'] = '\\texttt{delete}'
+    results[3]['Selection'] = '\\texttt{delete}'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="delete",
+                               length=1)
+    results[0]['Selection'] = '\\texttt{delete} for Input Strings of Length 1'
+    results[1]['Selection'] = '\\texttt{delete} for Input Strings of Length 1'
+    results[2]['Selection'] = '\\texttt{delete} for Input Strings of Length 1'
+    results[3]['Selection'] = '\\texttt{delete} for Input Strings of Length 1'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="delete",
+                               length=2)
+    results[0]['Selection'] = '\\texttt{delete} for Input Strings of Length 2'
+    results[1]['Selection'] = '\\texttt{delete} for Input Strings of Length 2'
+    results[2]['Selection'] = '\\texttt{delete} for Input Strings of Length 2'
+    results[3]['Selection'] = '\\texttt{delete} for Input Strings of Length 2'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="delete",
+                               length=3)
+    results[0]['Selection'] = '\\texttt{delete} for Input Strings of Length 3'
+    results[1]['Selection'] = '\\texttt{delete} for Input Strings of Length 3'
+    results[2]['Selection'] = '\\texttt{delete} for Input Strings of Length 3'
+    results[3]['Selection'] = '\\texttt{delete} for Input Strings of Length 3'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    op_avg_list.append(blank_row)
+    op_median_list.append(blank_row)
+    op_range_list.append(blank_row)
+    op_std_dev_list.append(blank_row)
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="replace")
+    results[0]['Selection'] = '\\texttt{replace}'
+    results[1]['Selection'] = '\\texttt{replace}'
+    results[2]['Selection'] = '\\texttt{replace}'
+    results[3]['Selection'] = '\\texttt{replace}'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="replace",
+                               length=1)
+    results[0]['Selection'] = '\\texttt{replace} for Input Strings of Length 1'
+    results[1]['Selection'] = '\\texttt{replace} for Input Strings of Length 1'
+    results[2]['Selection'] = '\\texttt{replace} for Input Strings of Length 1'
+    results[3]['Selection'] = '\\texttt{replace} for Input Strings of Length 1'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="replace",
+                               length=2)
+    results[0]['Selection'] = '\\texttt{replace} for Input Strings of Length 2'
+    results[1]['Selection'] = '\\texttt{replace} for Input Strings of Length 2'
+    results[2]['Selection'] = '\\texttt{replace} for Input Strings of Length 2'
+    results[3]['Selection'] = '\\texttt{replace} for Input Strings of Length 2'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="replace",
+                               length=3)
+    results[0]['Selection'] = '\\texttt{replace} for Input Strings of Length 3'
+    results[1]['Selection'] = '\\texttt{replace} for Input Strings of Length 3'
+    results[2]['Selection'] = '\\texttt{replace} for Input Strings of Length 3'
+    results[3]['Selection'] = '\\texttt{replace} for Input Strings of Length 3'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    op_avg_list.append(blank_row)
+    op_median_list.append(blank_row)
+    op_range_list.append(blank_row)
+    op_std_dev_list.append(blank_row)
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="reverse")
+    results[0]['Selection'] = '\\texttt{reverse}'
+    results[1]['Selection'] = '\\texttt{reverse}'
+    results[2]['Selection'] = '\\texttt{reverse}'
+    results[3]['Selection'] = '\\texttt{reverse}'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="reverse",
+                               length=1)
+    results[0]['Selection'] = '\\texttt{reverse} for Input Strings of Length 1'
+    results[1]['Selection'] = '\\texttt{reverse} for Input Strings of Length 1'
+    results[2]['Selection'] = '\\texttt{reverse} for Input Strings of Length 1'
+    results[3]['Selection'] = '\\texttt{reverse} for Input Strings of Length 1'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="reverse",
+                               length=2)
+    results[0]['Selection'] = '\\texttt{reverse} for Input Strings of Length 2'
+    results[1]['Selection'] = '\\texttt{reverse} for Input Strings of Length 2'
+    results[2]['Selection'] = '\\texttt{reverse} for Input Strings of Length 2'
+    results[3]['Selection'] = '\\texttt{reverse} for Input Strings of Length 2'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="reverse",
+                               length=3)
+    results[0]['Selection'] = '\\texttt{reverse} for Input Strings of Length 3'
+    results[1]['Selection'] = '\\texttt{reverse} for Input Strings of Length 3'
+    results[2]['Selection'] = '\\texttt{reverse} for Input Strings of Length 3'
+    results[3]['Selection'] = '\\texttt{reverse} for Input Strings of Length 3'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    op_avg_list.append(blank_row)
+    op_median_list.append(blank_row)
+    op_range_list.append(blank_row)
+    op_std_dev_list.append(blank_row)
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="contains")
+    results[0]['Selection'] = '\\texttt{contains}'
+    results[1]['Selection'] = '\\texttt{contains}'
+    results[2]['Selection'] = '\\texttt{contains}'
+    results[3]['Selection'] = '\\texttt{contains}'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="contains",
+                               length=1)
+    results[0]['Selection'] = '\\texttt{contains} for Input Strings of Length 1'
+    results[1]['Selection'] = '\\texttt{contains} for Input Strings of Length 1'
+    results[2]['Selection'] = '\\texttt{contains} for Input Strings of Length 1'
+    results[3]['Selection'] = '\\texttt{contains} for Input Strings of Length 1'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="contains",
+                               length=2)
+    results[0]['Selection'] = '\\texttt{contains} for Input Strings of Length 2'
+    results[1]['Selection'] = '\\texttt{contains} for Input Strings of Length 2'
+    results[2]['Selection'] = '\\texttt{contains} for Input Strings of Length 2'
+    results[3]['Selection'] = '\\texttt{contains} for Input Strings of Length 2'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="contains",
+                               length=3)
+    results[0]['Selection'] = '\\texttt{contains} for Input Strings of Length 3'
+    results[1]['Selection'] = '\\texttt{contains} for Input Strings of Length 3'
+    results[2]['Selection'] = '\\texttt{contains} for Input Strings of Length 3'
+    results[3]['Selection'] = '\\texttt{contains} for Input Strings of Length 3'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    op_avg_list.append(blank_row)
+    op_median_list.append(blank_row)
+    op_range_list.append(blank_row)
+    op_std_dev_list.append(blank_row)
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="equals")
+    results[0]['Selection'] = '\\texttt{equals}'
+    results[1]['Selection'] = '\\texttt{equals}'
+    results[2]['Selection'] = '\\texttt{equals}'
+    results[3]['Selection'] = '\\texttt{equals}'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="equals",
+                               length=1)
+    results[0]['Selection'] = '\\texttt{equals} for Input Strings of Length 1'
+    results[1]['Selection'] = '\\texttt{equals} for Input Strings of Length 1'
+    results[2]['Selection'] = '\\texttt{equals} for Input Strings of Length 1'
+    results[3]['Selection'] = '\\texttt{equals} for Input Strings of Length 1'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="equals",
+                               length=2)
+    results[0]['Selection'] = '\\texttt{equals} for Input Strings of Length 2'
+    results[1]['Selection'] = '\\texttt{equals} for Input Strings of Length 2'
+    results[2]['Selection'] = '\\texttt{equals} for Input Strings of Length 2'
+    results[3]['Selection'] = '\\texttt{equals} for Input Strings of Length 2'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    results = get_perf_metrics(op_time_rows, ['Op Time'], operation="equals",
+                               length=3)
+    results[0]['Selection'] = '\\texttt{equals} for Input Strings of Length 3'
+    results[1]['Selection'] = '\\texttt{equals} for Input Strings of Length 3'
+    results[2]['Selection'] = '\\texttt{equals} for Input Strings of Length 3'
+    results[3]['Selection'] = '\\texttt{equals} for Input Strings of Length 3'
+    op_avg_list.append(results[0])
+    op_median_list.append(results[1])
+    op_range_list.append(results[2])
+    op_std_dev_list.append(results[3])
+
+    tables.append(op_avg_list)
+    tables.append(op_median_list)
+    tables.append(op_range_list)
+    tables.append(op_std_dev_list)
 
     return tables
 
@@ -796,9 +1553,9 @@ def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
     tables = list()
     tables.extend(analyze_accuracy(mc_rows))
 
-    # tables.extend(analyze_mc_performance(mc_time_rows))
+    tables.extend(analyze_mc_performance(mc_time_rows))
 
-    # tables.extend(analyze_solve_performance(mc_time_rows, op_time_rows))
+    tables.extend(analyze_solve_performance(mc_time_rows, op_time_rows))
 
     # tables.extend(analyze_comb_perf(mc_time_rows, op_time_rows))
 
