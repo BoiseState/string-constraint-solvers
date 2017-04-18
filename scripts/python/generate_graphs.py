@@ -74,10 +74,10 @@ class RootValue:
 
 # operation node
 class OperationValue:
-    def __init__(self, op, op_args=None, num=0, non_uniform=False):
+    def __init__(self, op, op_args=None, num=0, uneven=False):
         self.op = op
         self.num = num
-        self.non_uniform = non_uniform
+        self.uneven = uneven
 
         self.op_args = list()
         if op_args is not None:
@@ -93,12 +93,12 @@ class OperationValue:
 
 # boolean constraint node
 class PredicateValue:
-    def __init__(self, op, op_args=None, num=0, result=False, non_uniform=False):
+    def __init__(self, op, op_args=None, num=0, result=False, uneven=False):
         self.op = op
         self.op_args = list() if op_args is None else op_args
         self.num = num
         self.result = result
-        self.non_uniform = non_uniform
+        self.uneven = uneven
 
         self.args_known = dict()
         for x in op_args:
@@ -165,9 +165,9 @@ class Settings:
             self.inputs.append(in_str)
         if options.empty_string:
             self.inputs.append('')
-        self.non_uniform = False
-        if options.non_uniform:
-            self.non_uniform = True
+        self.uneven = False
+        if options.uneven:
+            self.uneven = True
             self.inputs.append(chr(0))
         # use unknown string if no other inputs specified
         if len(self.inputs) == 0 or options.unknown_string:
@@ -210,8 +210,8 @@ def add_append_operations(ops):
     for c in args:
         ops.append(OperationValue('append!!Ljava/lang/String;', [c]))
 
-    # add unknown string concatenation for non-uniform inputs
-    if gen_globals['settings'].non_uniform:
+    # add unknown string concatenation for uneven inputs
+    if gen_globals['settings'].uneven:
         ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)]))
 
 
@@ -221,7 +221,7 @@ def add_concat_operations(ops, needed_ops):
     create_ops = (
         lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [random_char()])),
         lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)])),
-        lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)], non_uniform=True))
+        lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)], uneven=True))
     )
     while num_ops > 0:
         if num_ops >= 3:
@@ -410,13 +410,13 @@ def add_contains_predicates(constraints, length=None):
     constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [random_char()], result=True))
     constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [random_char()], result=False))
 
-    # uniform args
+    # simple unknown args
     constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=True))
     constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=False))
 
-    # non uniform args
-    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=True, non_uniform=True))
-    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=False, non_uniform=True))
+    # uneven unknown args
+    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=True, uneven=True))
+    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=False, uneven=True))
 
 
 def add_ends_with_predicates(constraints):
@@ -441,13 +441,13 @@ def add_equals_predicates(constraints):
     constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [string], result=True))
     constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [string], result=False))
 
-    # uniform args
+    # simple unknown args
     constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=True))
     constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=False))
 
-    # non uniform args
-    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=True, non_uniform=True))
-    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=False, non_uniform=True))
+    # uneven unknown args
+    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=True, uneven=True))
+    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=False, uneven=True))
 
 
 def add_equals_ignore_case_predicates(constraints):
@@ -1276,8 +1276,8 @@ def add_operation(t, countdown, v_list):
             arg_vertex = Vertex(arg_val, arg, generate_id(arg_val))
             arg_ids.append(arg_vertex.node_id)
 
-            # make argument non uniform
-            if op.non_uniform:
+            # make argument uneven unknown
+            if op.uneven:
                 contains_predicates = list()
                 add_contains_predicates(contains_predicates)
                 contains_predicates = contains_predicates[:1]
@@ -1344,8 +1344,8 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
             arg_vertex = Vertex(arg_val, arg, generate_id(arg_val, force=do_force))
             arg_ids.append(arg_vertex.node_id)
 
-            # make argument non uniform
-            if pred.non_uniform:
+            # make argument uneven unknown
+            if pred.uneven:
                 contains_predicates = list()
                 add_contains_predicates(contains_predicates)
                 contains_predicates = contains_predicates[:1]
@@ -1414,9 +1414,10 @@ def get_options(arguments):
                                  help='The name of the generated graph file.')
 
     generate_parser.add_argument('-c',
-                                 '--non-uniform',
-                                 help='Include non-uniform string before all '
-                                      'subsequent string operations.',
+                                 '--uneven',
+                                 help='Include uneven string before all '
+                                      'subsequent string operations '
+                                      '(contains predicate).',
                                  action='store_true')
 
     generate_parser.add_argument('-i',
@@ -1638,7 +1639,7 @@ def get_root_verticies(settings_inst):
         val = root_value.get_value()
         vertex = Vertex(val, root_value.string, generate_id(val))
         gen_globals['vertices'].append(vertex)
-    # TODO: Add contains vertex for non-uniform initial string
+    # TODO: Add contains vertex for uneven initial string
 
 
 def main(arguments):
@@ -1687,7 +1688,7 @@ def main(arguments):
         init_v_list = list()
         gen_globals['vertices'].append(init_v_list)
 
-        if gen_globals['settings'].non_uniform \
+        if gen_globals['settings'].uneven \
                 and len(value) == 1 \
                 and ord(value) == 0:
             contains_predicates = list()
@@ -1702,10 +1703,10 @@ def main(arguments):
         add_operation(root_vertex, gen_globals['settings'].depth, init_v_list)
 
         # add bool contraints for initial string
-        if gen_globals['settings'].non_uniform \
+        if gen_globals['settings'].uneven \
                 and len(value) == 1 \
                 and ord(value) == 0:
-            gen_globals['settings'].non_uniform = False
+            gen_globals['settings'].uneven = False
 
         log.debug('*** {0} Operations Added ***'.format(gen_globals['settings'].op_counter))
         num_v = 0

@@ -30,7 +30,7 @@ log.addHandler(ch)
 # Global Values
 GLOB = dict()
 GLOB['Settings'] = None
-GLOB['branching-ids'] = set()
+GLOB['uneven-ids'] = set()
 
 VERIFICATION_MATRICIES = {
     'concat': (('-', '-', '>', '>', '='),
@@ -130,28 +130,28 @@ OP_GROUPS = {
 INPUT_TYPES = (
     'Concrete',
     'Simple',
-    'Branching'
+    'Uneven'
 )
 
 OP_TYPES = (
     'Injective(<Concrete>)',
     'Injective(<Simple>)',
-    'Injective(<Branching>)',
+    'Injective(<Uneven>)',
     'P_Struct_Alt(<Concrete>,<Concrete>)',
     'P_Struct_Alt(<Concrete>,<Simple>)',
-    'P_Struct_Alt(<Concrete>,<Branching>)',
+    'P_Struct_Alt(<Concrete>,<Uneven>)',
     'P_Struct_Alt(<Simple>,<Concrete>)',
     'P_Struct_Alt(<Simple>,<Simple>)',
-    'P_Struct_Alt(<Simple>,<Branching>)',
-    'P_Struct_Alt(<Branching>,<Concrete>)',
-    'P_Struct_Alt(<Branching>,<Simple>)',
-    'P_Struct_Alt(<Branching>,<Branching>)',
+    'P_Struct_Alt(<Simple>,<Uneven>)',
+    'P_Struct_Alt(<Uneven>,<Concrete>)',
+    'P_Struct_Alt(<Uneven>,<Simple>)',
+    'P_Struct_Alt(<Uneven>,<Uneven>)',
     'N_Struct_Alt(<Concrete>)',
     'N_Struct_Alt(<Simple>)',
-    'N_Struct_Alt(<Branching>)',
+    'N_Struct_Alt(<Uneven>)',
     'Substitution(<Concrete>)',
     'Substitution(<Simple>)',
-    'Substitution(<Branching>)'
+    'Substitution(<Uneven>)'
 )
 
 REGEX = dict()
@@ -206,11 +206,11 @@ class Operation:
 
 
 class OperationArgument:
-    def __init__(self, arg_type, arg_id=None, value=None, branching=None):
+    def __init__(self, arg_type, arg_id=None, value=None, uneven=None):
         self.arg_id = arg_id
         self.arg_type = arg_type
         self.value = value
-        self.branching = branching
+        self.uneven = uneven
 
     def get_string(self):
         val = self.value if self.value is not None else self.arg_id
@@ -283,8 +283,8 @@ def get_op_string(ops_list, op_num):
         if len(op_str_args) > 0:
             if op_str_args[0].value is not None:
                 op_arg_str = "Concrete"
-            elif op_str_args[0].arg_id in GLOB['branching-ids']:
-                op_arg_str = "Branching"
+            elif op_str_args[0].arg_id in GLOB['uneven-ids']:
+                op_arg_str = "Uneven"
             else:
                 op_arg_str = "Simple"
 
@@ -298,8 +298,8 @@ def get_predicate(ops_list):
     if len(pred_args) > 0:
         if pred_args[0].value is not None:
             pred_arg_str = "Concrete"
-        elif pred_args[0].arg_id in GLOB['branching-ids']:
-            pred_arg_str = "Branching"
+        elif pred_args[0].arg_id in GLOB['uneven-ids']:
+            pred_arg_str = "Uneven"
         else:
             pred_arg_str = "Simple"
 
@@ -352,7 +352,7 @@ def get_operations(x):
                 arg_list.append(OperationArgument('num', value=value))
 
         if i == 0 and op == 'contains':
-            input_type = 'Branching'
+            input_type = 'Uneven'
 
         ops_list.append(Operation(const_id,
                                   op,
@@ -408,14 +408,14 @@ def get_all_op_data(data_map, solvers):
     return return_data
 
 
-def identify_branching_args(data_map):
+def identify_uneven_args(data_map):
     # for each constraint id
     for const_id in data_map.get('unbounded').keys():
         prev_ops = data_map.get('unbounded').get(const_id).get('PREV OPS')
         ops_list = get_operations(prev_ops)
 
         if len(ops_list) == 2 and ops_list[1].op == 'contains':
-            GLOB['branching-ids'].add(ops_list[0].op_id)
+            GLOB['uneven-ids'].add(ops_list[0].op_id)
 
 
 def get_result_files(dir_path, file_pattern):
@@ -568,40 +568,12 @@ def produce_mc_csv_data(data_map, solvers):
         row['Op 2 Arg'] = op2_arg
         row['Pred'] = pred
         row['Pred Arg'] = pred_arg
-        c_row = data_map.get('concrete').get(op_id)
-        c_in_mc = float(c_row.get('IN COUNT'))
-        c_t_mc = int(c_row.get('T COUNT'))
-        c_f_mc = int(c_row.get('F COUNT'))
-        c_t_per = 0
-        c_f_per = 0
-        if c_in_mc > 0:
-            c_t_per = c_t_mc / c_in_mc
-            c_f_per = c_f_mc / c_in_mc
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)
             prefix = solver.upper()[0]
-
-            in_mc = float(data_row.get('IN COUNT'))
-            t_mc = int(data_row.get('T COUNT'))
-            f_mc = int(data_row.get('F COUNT'))
-            row[prefix + ' In MC'] = in_mc
-            row[prefix + ' T MC'] = t_mc
-            row[prefix + ' F MC'] = f_mc
-
-            t_per = 0
-            f_per = 0
-            if in_mc > 0:
-                t_per = t_mc / in_mc
-                f_per = f_mc / in_mc
-            row[prefix + ' T %'] = t_per
-            row[prefix + ' F %'] = f_per
-
-            if solver != 'concrete':
-                row[prefix + ' T Diff'] = abs(c_t_per - t_per)
-                row[prefix + ' F Diff'] = abs(c_f_per - f_per)
-                agree = (c_t_per >= c_f_per and t_per >= f_per) or \
-                        (c_t_per < c_f_per and t_per < f_per)
-                row[prefix + ' Agree'] = agree
+            row[prefix + ' In MC'] = data_row.get('IN COUNT')
+            row[prefix + ' T MC'] = data_row.get('T COUNT')
+            row[prefix + ' F MC'] = data_row.get('F COUNT')
 
         # add row to output rows
         mc_rows.append(row)
@@ -799,7 +771,7 @@ def gather_results(f_name, file_set):
     # verify data
     # verify_data(data_map, solvers, f_name)
 
-    identify_branching_args(data_map)
+    identify_uneven_args(data_map)
 
     csv_rows = dict()
 
