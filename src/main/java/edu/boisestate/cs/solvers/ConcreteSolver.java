@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
-public class StaticConcreteSolver
+public class ConcreteSolver
         extends ExtendedSolver<ConcreteValues>
         implements ModelCountSolver {
 
@@ -35,7 +35,7 @@ public class StaticConcreteSolver
     public static boolean DEBUG = true;
     private final Alphabet alphabet;
 
-    public StaticConcreteSolver(Alphabet alphabet, int setBound) {
+    public ConcreteSolver(Alphabet alphabet, int setBound) {
         super(setBound);
 
         this.alphabet = alphabet;

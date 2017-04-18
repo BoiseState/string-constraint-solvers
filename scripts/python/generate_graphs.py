@@ -313,7 +313,7 @@ def add_replace_char_operations(ops, needed_ops):
     num_ops = needed_ops
     while num_ops > 0:
         if num_ops >= len(pairs):
-            for f, r in random.sample(pairs, num_ops):
+            for f, r in pairs:
                 ops.append(OperationValue('replace!!CC', [f, r]))
         else:
             for f, r in random.sample(pairs, num_ops):
@@ -500,7 +500,7 @@ def add_starts_with_offset_predicates(constraints):
 
 
 def get_max_num_ops():
-    max_ops = 0
+    max_ops = 10
 
     if 'append-substring' in gen_globals['settings'].operations:
         ops = 0
@@ -1235,8 +1235,12 @@ def perform_predicate(value, const):
         return perform_starts_with_offset(value, const)
 
 
-def add_operation(t, countdown, v_list=None):
-    new_v_list = v_list is None
+def add_operation(t, countdown, v_list):
+    prev_v_list = v_list
+    new_v_list = countdown > 1
+    if new_v_list:
+        gen_globals['vertices'].remove(v_list)
+
 
     # for each operation
     ops_collection = get_operations()
@@ -1244,7 +1248,7 @@ def add_operation(t, countdown, v_list=None):
 
         # check and create vertices list
         if new_v_list:
-            v_list = list()
+            v_list = list(prev_v_list)
             gen_globals['vertices'].append(v_list)
             v_list.append(t)
 
@@ -1681,6 +1685,7 @@ def main(arguments):
         root_vertex = Vertex(val, root_value.string, generate_id(val))
 
         init_v_list = list()
+        gen_globals['vertices'].append(init_v_list)
 
         if gen_globals['settings'].non_uniform \
                 and len(value) == 1 \
@@ -1688,23 +1693,19 @@ def main(arguments):
             contains_predicates = list()
             add_contains_predicates(contains_predicates)
             contains_predicates = contains_predicates[:1]
-            gen_globals['vertices'].append(init_v_list)
             add_bool_constraint(root_vertex,
                                 init_v_list,
                                 allow_duplicates=True,
                                 predicate_list=contains_predicates)
 
         # add operations to the vertex
-        add_operation(root_vertex, gen_globals['settings'].depth)
+        add_operation(root_vertex, gen_globals['settings'].depth, init_v_list)
 
         # add bool contraints for initial string
         if gen_globals['settings'].non_uniform \
                 and len(value) == 1 \
                 and ord(value) == 0:
             gen_globals['settings'].non_uniform = False
-        else:
-            gen_globals['vertices'].append(init_v_list)
-            add_bool_constraint(root_vertex, init_v_list)
 
         log.debug('*** {0} Operations Added ***'.format(gen_globals['settings'].op_counter))
         num_v = 0
@@ -1712,59 +1713,64 @@ def main(arguments):
             num_v += len(v_list)
         v_counter = 0
 
-        vertices_collection = list()
+    vertices_collection = list()
 
-        for v_list in gen_globals['vertices']:
+    for v_list in gen_globals['vertices']:
 
-            # initialize vertex list
-            vertex_list = list()
+        # initialize vertex list
+        vertex_list = list()
 
-            # for each vertex
-            for v in v_list:
+        # for each vertex
+        for v in v_list:
 
-                v_counter += 1
-                # if num_v > 100 and v_counter % (num_v / 100) == 0:
-                #     percent = v_counter * 100 / num_v
-                #     log.debug('Vertex Creation Progress: {0}%'.format(percent))
+            v_counter += 1
+            # if num_v > 100 and v_counter % (num_v / 100) == 0:
+            #     percent = v_counter * 100 / num_v
+            #     log.debug('Vertex Creation Progress: {0}%'.format(percent))
 
-                # initialize vertex
-                vertex = {
-                    'incomingEdges': list(),
-                    'sourceConstraints': list(),
-                    'timeStamp': int(time.time()),
-                    'value': v.value,
-                    'actualValue': v.actual_value,
-                    'num': 0,
-                    'type': 0,
-                    'id': v.node_id
+            # initialize vertex
+            vertex = {
+                'incomingEdges': list(),
+                'sourceConstraints': list(),
+                'timeStamp': int(time.time()),
+                'value': v.value,
+                'actualValue': v.actual_value,
+                'num': 0,
+                'type': 0,
+                'id': v.node_id
+            }
+
+            # for each edge
+            for edge in v.incoming_edges:
+                # create incoming edge
+                inc_edge = {
+                    'source': edge.source_id,
+                    'type': edge.edge_type
                 }
 
-                # for each edge
-                for edge in v.incoming_edges:
-                    # create incoming edge
-                    inc_edge = {
-                        'source': edge.source_id,
-                        'type': edge.edge_type
-                    }
+                # add the incoming edge to the vertex
+                vertex['incomingEdges'].append(inc_edge)
 
-                    # add the incoming edge to the vertex
-                    vertex['incomingEdges'].append(inc_edge)
+            vertex_list.append(vertex)
 
-                vertex_list.append(vertex)
+        # add current vertex list to collection
+        vertices_collection.append(vertex_list)
 
-            # add current vertex list to collection
-            vertices_collection.append(vertex_list)
+    # flatten vertices collection into single nested list if simple
+    if gen_globals['settings'].depth == 1 \
+            or gen_globals['settings'].single_graph:
+        # get collection of verticies
+        v_collection = list()
+        for v_list in vertices_collection:
+            for v in v_list:
+                v_collection.append(v)
+        vertices_collection = [v_collection]
 
-        # flatten vertices collection into single nested list if simple
-        if gen_globals['settings'].depth == 1 \
-                or gen_globals['settings'].single_graph:
-            # get collection of verticies
-            v_collection = list()
-            for v_list in vertices_collection:
-                for v in v_list:
-                    v_collection.append(v)
-            vertices_collection = [v_collection]
-
+    gfname_format = '{0}-{1:02d}.json'
+    if len(vertices_collection) > 99:
+        gfname_format = '{0}-{1:03d}.json'
+    if len(vertices_collection) > 999:
+        gfname_format = '{0}-{1:04d}.json'
     for j, v_list in enumerate(vertices_collection):
         # create graph dictionary
         graph = {
@@ -1777,7 +1783,7 @@ def main(arguments):
         }
 
         # write out update graph file
-        gfname = '{0}-{1:02d}.json'.format(gen_globals['settings'].graph_name, j + 1)
+        gfname = gfname_format.format(gen_globals['settings'].graph_name, j + 1)
         if gen_globals['settings'].depth == 1 \
                 or gen_globals['settings'].single_graph:
             gfname = gen_globals['settings'].graph_name + '.json'

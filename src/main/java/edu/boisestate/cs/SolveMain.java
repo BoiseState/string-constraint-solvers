@@ -293,7 +293,7 @@ public class SolveMain {
 
         } else if (selectedSolver == Settings.SolverType.CONCRETE) {
 
-            solver = new StaticConcreteSolver(alphabet, boundingLength);
+            solver = new ConcreteSolver(alphabet, boundingLength);
 
         } else if (selectedSolver == Settings.SolverType.STRANGER) {
 

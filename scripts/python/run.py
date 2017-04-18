@@ -31,14 +31,15 @@ log.addHandler(ch)
 
 # globals
 RESULT_GROUPS = {
-    'all': {
+    'all_02': {
         'generate': [
             '--ops-depth', '2',
+            '--alphabet', 'A-B',
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABCDABCDABCD',
-            '--single-graph',
+            '--inputs', 'ABABABABAB',
+            # '--single-graph',
             '--operations', 'concat', 'delete', 'replace-char', 'reverse',
             'contains', 'equals'
         ],
@@ -50,75 +51,43 @@ RESULT_GROUPS = {
             '--single-out-file'
         ]
     },
-    'concat': {
+    'all_03': {
         'generate': [
-            '--ops-depth', '1',
+            '--ops-depth', '2',
+            '--alphabet', 'A-C',
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABCDABCDABCD',
-            '--single-graph',
-            '--operations', 'concat', 'contains', 'equals'
+            '--inputs', 'ABCABCABCA',
+            # '--single-graph',
+            '--operations', 'concat', 'delete', 'replace-char', 'reverse',
+            'contains', 'equals'
         ],
         'solve': [
             '--mc-reporter'
         ],
         'gather': [
-            '--result-files', 'concat*',
+            '--result-files', 'all*',
             '--single-out-file'
         ]
     },
-    'delete': {
+    'all_04': {
         'generate': [
-            '--ops-depth', '1',
+            '--ops-depth', '2',
+            '--alphabet', 'A-D',
             '--no-duplicates',
             '--unknown-string',
             '--non-uniform',
-            '--inputs', 'ABCDABCDABCD',
-            '--single-graph',
-            '--operations', 'delete', 'contains', 'equals'
+            '--inputs', 'ABCDABCDAB',
+            # '--single-graph',
+            '--operations', 'concat', 'delete', 'replace-char', 'reverse',
+            'contains', 'equals'
         ],
         'solve': [
             '--mc-reporter'
         ],
         'gather': [
-            '--result-files', 'delete*',
-            '--single-out-file'
-        ]
-    },
-    'replace': {
-        'generate': [
-            '--ops-depth', '1',
-            '--no-duplicates',
-            '--unknown-string',
-            '--non-uniform',
-            '--inputs', 'ABCDABCDABCD',
-            '--single-graph',
-            '--operations', 'replace-char', 'contains', 'equals'
-        ],
-        'solve': [
-            '--mc-reporter'
-        ],
-        'gather': [
-            '--result-files', 'replace*',
-            '--single-out-file'
-        ]
-    },
-    'reverse': {
-        'generate': [
-            '--ops-depth', '1',
-            '--no-duplicates',
-            '--unknown-string',
-            '--non-uniform',
-            '--inputs', 'ABCDABCDABCD',
-            '--single-graph',
-            '--operations', 'reverse', 'contains', 'equals'
-        ],
-        'solve': [
-            '--mc-reporter'
-        ],
-        'gather': [
-            '--result-files', 'reverse*',
+            '--result-files', 'all*',
             '--single-out-file'
         ]
     }
@@ -180,7 +149,7 @@ def get_options(arguments):
                             nargs='+',
                             default=list(),
                             help='List of result groups to gather results: '
-                                 'all, concat, delete, replace, reverse')
+                                 'all_03, all_04, all_05')
 
     run_parser.add_argument('-l',
                             '--min-length',
