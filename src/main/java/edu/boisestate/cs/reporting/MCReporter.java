@@ -205,10 +205,14 @@ public class MCReporter
         columns.add(String.valueOf(trueModelCount));
         // true model count time
         columns.add(String.valueOf(tMCTime));
+        // true predicate time
+        columns.add(String.valueOf(tTime));
         // false model count
         columns.add(String.valueOf(falseModelCount));
         // false model count time
         columns.add(String.valueOf(fMCTime));
+        // false predicate time
+        columns.add(String.valueOf(fTime));
         // overlap count
         columns.add(String.valueOf(overlap));
         // previous operations
@@ -232,14 +236,16 @@ public class MCReporter
         headers.add("TSAT");
         headers.add("FSAT");
         headers.add("DISJOINT");
-        headers.add("ACC TIME");
+        headers.add("ACC IN TIME");
         headers.add("IN ID");
         headers.add("IN COUNT");
         headers.add("IN TIME");
         headers.add("T COUNT");
-        headers.add("T TIME");
+        headers.add("T MC TIME");
+        headers.add("T PRED TIME");
         headers.add("F COUNT");
-        headers.add("F TIME");
+        headers.add("F MC TIME");
+        headers.add("F PRED TIME");
         headers.add("OVERLAP");
         headers.add("PREV OPS");
 

@@ -611,9 +611,11 @@ def produce_mc_time_csv_data(data_map, solvers):
         for solver in solvers:
             data_row = data_map.get(solver).get(op_id)
             prefix = solver.upper()[0]
-            row[prefix + ' Acc Time'] = data_row.get('ACC TIME')
-            row[prefix + ' T MC Time'] = data_row.get('T TIME')
-            row[prefix + ' F MC Time'] = data_row.get('F TIME')
+            row[prefix + ' Acc Time'] = data_row.get('ACC IN TIME')
+            row[prefix + ' T MC Time'] = data_row.get('T MC TIME')
+            row[prefix + ' F MC Time'] = data_row.get('F MC TIME')
+            row[prefix + ' T Pred Time'] = data_row.get('T PRED TIME')
+            row[prefix + ' F Pred Time'] = data_row.get('F PRED TIME')
 
         # add row to output rows
         output_rows.append(row)
@@ -717,6 +719,8 @@ def get_mc_time_field_names(solvers):
         in_fields.append(prefix + ' Acc Time')
         t_fields.append(prefix + ' T MC Time')
         f_fields.append(prefix + ' F MC Time')
+        t_fields.append(prefix + ' T Pred Time')
+        f_fields.append(prefix + ' F Pred Time')
     field_names.extend(in_fields)
     field_names.extend(t_fields)
     field_names.extend(f_fields)
