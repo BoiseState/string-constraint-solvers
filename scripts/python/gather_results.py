@@ -677,12 +677,6 @@ def get_mc_field_names(solvers):
         in_fields.append(prefix + ' In MC')
         t_fields.append(prefix + ' T MC')
         f_fields.append(prefix + ' F MC')
-        t_p_fields.append(prefix + ' T %')
-        f_p_fields.append(prefix + ' F %')
-        if solver != 'concrete':
-            t_diff_fields.append(prefix + ' T Diff')
-            f_diff_fields.append(prefix + ' F Diff')
-            agree_fields.append(prefix + ' Agree')
     field_names.extend(in_fields)
     field_names.extend(t_fields)
     field_names.extend(f_fields)

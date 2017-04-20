@@ -31,9 +31,13 @@ log.addHandler(ch)
 # globals
 GLOB = dict()
 GLOB['len-match'] = dict()
-GLOB['len-match'][1] = re.compile('.*-01.csv')
-GLOB['len-match'][2] = re.compile('.*-02.csv')
-GLOB['len-match'][3] = re.compile('.*-03.csv')
+GLOB['len-match'][1] = re.compile('.*-01(-\d{2})?.csv')
+GLOB['len-match'][2] = re.compile('.*-02(-\d{2})?.csv')
+GLOB['len-match'][3] = re.compile('.*-03(-\d{2})?.csv')
+GLOB['alphabet-size-match'] = dict()
+GLOB['alphabet-size-match'][2] = re.compile('.*_02-\d{2}(-\d{2})?.csv')
+GLOB['alphabet-size-match'][3] = re.compile('.*_03-\d{2}(-\d{2})?.csv')
+GLOB['alphabet-size-match'][4] = re.compile('.*_04-\d{2}(-\d{2})?.csv')
 
 SOLVERS = (
     'Concrete',
@@ -46,19 +50,19 @@ SOLVERS = (
 PER_DIFF_ENTRIES = (
     {
         'caption': 'Frequency of Accuracy Difference for All Constraints',
-        'label': 'acc_diff_All'
+        'label': 'acc_diff_all'
     },
     {
         'branch': True,
         'caption': 'Frequency of Accuracy Difference for True Branch '
                    'Constraints',
-        'label': 'acc_diff_True'
+        'label': 'acc_diff_true'
     },
     {
         'branch': False,
         'caption': 'Frequency of Accuracy Difference for False Branch '
                    'Constraints',
-        'label': 'acc_diff_False'
+        'label': 'acc_diff_false'
     },
     {
         'input_type': 'Concrete',
@@ -70,185 +74,199 @@ PER_DIFF_ENTRIES = (
         'input_type': 'Simple',
         'caption': 'Frequency of Accuracy Difference for Constraints Following'
                    ' a Simple Unknown Input String',
-        'label': 'acc_diff_simple_unknown'
+        'label': 'acc_diff_simple'
     },
     {
         'input_type': 'Uneven',
         'caption': 'Frequency of Accuracy Difference for Constraints Following'
                    ' a Uneven Unknown Input String',
-        'label': 'acc_diff_branch_unknown'
+        'label': 'acc_diff_branch'
     },
-
+    {
+        'alphabet-size': 2,
+        'caption': 'Frequency of Accuracy Difference for Constraints With a 2'
+                   ' Character Alphabet',
+        'label': 'acc_diff_alph_2'
+    },
+    {
+        'alphabet-size': 3,
+        'caption': 'Frequency of Accuracy Difference for Constraints With a 3'
+                   ' Character Alphabet',
+        'label': 'acc_diff_alph_3'
+    },
+    {
+        'alphabet-size': 4,
+        'caption': 'Frequency of Accuracy Difference for Constraints With a 4'
+                   ' Character Alphabet',
+        'label': 'acc_diff_alph_4'
+    },
     {
         'length': 1,
         'caption': 'Frequency of Accuracy Difference for Constraints Following'
                    ' an Input String of Length 1',
-        'label': 'acc_diff_1'
+        'label': 'acc_diff_len_1'
     },
     {
         'length': 2,
         'caption': 'Frequency of Accuracy Difference for Constraints Following'
                    ' an Input String of Length 2',
-        'label': 'acc_diff_2'
+        'label': 'acc_diff_len_2'
     },
     {
         'length': 3,
         'caption': 'Frequency of Accuracy Difference for Constraints Following'
                    ' an Input String of Length 3',
-        'label': 'acc_diff_3'
+        'label': 'acc_diff_len_3'
     },
-
     {
         'operation': 'concat',
-        'caption': 'Frequency of Accuracy Difference for Constraints Including'
-                   ' \\texttt{concat} Operations for All Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{concat}$ Operations',
         'label': 'acc_diff_incl_concat_all'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Concrete',
-        'caption': 'Frequency of Accuracy Difference for Constraints Including'
-                   ' \\texttt{concat} Operations for Concrete Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{concat}\\langle Concrete \\rangle$ Operations',
         'label': 'acc_diff_incl_concat_con'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Simple',
-        'caption': 'Frequency of Accuracy Difference for Constraints Including'
-                   ' \\texttt{concat} Operations for Simple Unknown Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{concat}\\langle Simple \\rangle$ Operations',
         'label': 'acc_diff_incl_concat_simp'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Uneven',
-        'caption': 'Frequency of Accuracy Difference for Constraints Including'
-                   ' \\texttt{concat} Operations for Uneven Unknown Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{concat}\\langle Uneven \\rangle$ Operations',
         'label': 'acc_diff_incl_concat_branch'
     },
     {
         'operation': 'delete',
-        'caption': 'Frequency of Accuracy Difference for Constraints Including'
-                   ' \\texttt{delete} Operations',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{delete}$ Operations',
         'label': 'acc_diff_incl_delete'
     },
     {
         'operation': 'replace',
-        'caption': 'Frequency of Accuracy Difference for Constraints Including'
-                   ' \\texttt{replace} Operations',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{replace}$ Operations',
         'label': 'acc_diff_incl_replace'
     },
     {
         'operation': 'reverse',
-        'caption': 'Frequency of Accuracy Difference for Constraints Including'
-                   ' \\texttt{reverse} Operations',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{reverse}$ Operations',
         'label': 'acc_diff_incl_reverse'
     },
-
     {
         'operation': 'concat',
         'exclusive_op': True,
-        'caption': 'Frequency of Accuracy Difference for Constraints of Only'
-                   ' \\texttt{concat} Operations for All Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{concat}$ Operations',
         'label': 'acc_diff_excl_concat_all'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Concrete',
         'exclusive_op': True,
-        'caption': 'Frequency of Accuracy Difference for Constraints of Only'
-                   ' \\texttt{concat} Operations for Concrete Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{concat}\\langle Concrete \\rangle$ Operations',
         'label': 'acc_diff_excl_concat_con'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Simple',
         'exclusive_op': True,
-        'caption': 'Frequency of Accuracy Difference for Constraints of Only'
-                   ' \\texttt{concat} Operations for Simple Unknown Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{concat}\\langle Simple \\rangle$ Operations',
         'label': 'acc_diff_excl_concat_simp'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Uneven',
         'exclusive_op': True,
-        'caption': 'Frequency of Accuracy Difference for Constraints of Only'
-                   ' \\texttt{concat} Operations for Uneven Unknown Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{concat}\\langle Uneven \\rangle$ Operations',
         'label': 'acc_diff_excl_concat_branch'
     },
     {
         'operation': 'delete',
         'exclusive_op': True,
-        'caption': 'Frequency of Accuracy Difference for Constraints of Only'
-                   ' \\texttt{delete} Operations',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{delete}$ Operations',
         'label': 'acc_diff_excl_delete'
     },
     {
         'operation': 'replace',
         'exclusive_op': True,
-        'caption': 'Frequency of Accuracy Difference for Constraints of Only'
-                   ' \\texttt{replace} Operations',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{replace}$ Operations',
         'label': 'acc_diff_excl_replace'
     },
     {
         'operation': 'reverse',
         'exclusive_op': True,
-        'caption': 'Frequency of Accuracy Difference for Constraints of Only'
-                   ' \\texttt{reverse} Operations',
+        'caption': 'Frequency of Accuracy Difference for Constraints $\\forall'
+                   ' \\mathtt{reverse}$ Operations',
         'label': 'acc_diff_excl_reverse'
     },
-
     {
         'predicate': 'contains',
-        'caption': 'Frequency of Accuracy Difference for Constraints Containing'
-                   ' a \\texttt{contains} Predicates for All Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints Ending in'
+                   ' \\texttt{contains} Predicates',
         'label': 'acc_diff_contains_all'
     },
     {
         'predicate': 'contains',
         'pred_arg_type': 'Concrete',
-        'caption': 'Frequency of Accuracy Difference for Constraints Containing'
-                   ' a \\texttt{contains} Predicates for Concrete Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints Ending in'
+                   ' $\\mathtt{contains}\\langle Concrete \\rangle$ Predicates',
         'label': 'acc_diff_contains_con'
     },
     {
         'predicate': 'contains',
         'pred_arg_type': 'Simple',
-        'caption': 'Frequency of Accuracy Difference for Constraints Containing'
-                   ' a \\texttt{contains} Predicates for Simple Unknown Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints Ending in'
+                   ' $\\mathtt{contains}\\langle Simple \\rangle$ Predicates',
         'label': 'acc_diff_contains_simp'
     },
     {
         'predicate': 'contains',
         'pred_arg_type': 'Uneven',
-        'caption': 'Frequency of Accuracy Difference for Constraints Containing'
-                   ' a \\texttt{contains} Predicates for Uneven Unknown Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints Ending in'
+                   ' $\\mathtt{contains}\\langle Uneven \\rangle$ Predicates',
         'label': 'acc_diff_contains_branch'
     },
     {
         'predicate': 'equals',
-        'caption': 'Frequency of Accuracy Difference for Constraints Containing'
-                   ' a \\texttt{equals} Predicates for All Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints Ending in'
+                   ' \\texttt{equals} Predicates',
         'label': 'acc_diff_equals_all'
     },
     {
         'predicate': 'equals',
         'pred_arg_type': 'Concrete',
-        'caption': 'Frequency of Accuracy Difference for Constraints Containing'
-                   ' a \\texttt{equals} Predicates for Concrete Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints Ending in'
+                   ' $\\mathtt{equals}\\langle Concrete \\rangle$ Predicates',
         'label': 'acc_diff_equals_con'
     },
     {
         'predicate': 'equals',
         'pred_arg_type': 'Simple',
-        'caption': 'Frequency of Accuracy Difference for Constraints Containing'
-                   ' a \\texttt{equals} Predicates for Simple Unknown Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints Ending in'
+                   ' $\\mathtt{equals}\\langle Simple \\rangle$ Predicates',
         'label': 'acc_diff_equals_simp'
     },
     {
         'predicate': 'equals',
         'pred_arg_type': 'Uneven',
-        'caption': 'Frequency of Accuracy Difference for Constraints Containing'
-                   ' a \\texttt{equals} Predicates for Uneven Unknown Args',
+        'caption': 'Frequency of Accuracy Difference for Constraints Ending in'
+                   ' $\\mathtt{equals}\\langle Uneven \\rangle$ Predicates',
         'label': 'acc_diff_equals_branch'
     }
 )
@@ -272,6 +290,19 @@ AGREE_ENTRIES = (
     },
     {'is_blank': True},
     {
+        'alphabet-size': 2,
+        'Selection': '2 Character Alphabet'
+    },
+    {
+        'alphabet-size': 3,
+        'Selection': '3 Character Alphabet'
+    },
+    {
+        'alphabet-size': 4,
+        'Selection': '4 Character Alphabet'
+    },
+    {'is_blank': True},
+    {
         'length': 1,
         'Selection': 'Length 1'
     },
@@ -286,78 +317,78 @@ AGREE_ENTRIES = (
     {'is_blank': True},
     {
         'operation': 'concat',
-        'Selection': 'Includes \\texttt{concat} for All Args'
+        'Selection': '\\exists \\texttt{concat}'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Concrete',
-        'Selection': 'Includes \\texttt{concat} for Concrete Args'
+        'Selection': '$\\exists \\texttt{concat}\\langle Concrete \\rangle$'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Simple',
-        'Selection': 'Includes \\texttt{concat} for Simple Unknown Args'
+        'Selection': '\\exists \\texttt{concat} for Simple Unknown Args'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Uneven',
-        'Selection': 'Includes \\texttt{concat} for Uneven Unknown Args'
+        'Selection': '\\exists \\texttt{concat} for Uneven Unknown Args'
     },
     {
         'operation': 'delete',
-        'Selection': 'Includes \\texttt{delete}'
+        'Selection': '\\exists \\texttt{delete}'
     },
     {
         'operation': 'replace',
-        'Selection': 'Includes \\texttt{replace}'
+        'Selection': '\\exists \\texttt{replace}'
     },
     {
         'operation': 'reverse',
-        'Selection': 'Includes \\texttt{reverse}'
+        'Selection': '\\exists \\texttt{reverse}'
     },
     {'is_blank': True},
     {
         'operation': 'concat',
         'exclusive_op': True,
-        'Selection': 'Only \\texttt{concat} for All Args'
+        'Selection': '\\forall \\texttt{concat}'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Concrete',
         'exclusive_op': True,
-        'Selection': 'Only \\texttt{concat} for Concrete Args'
+        'Selection': '\\forall \\texttt{concat} for Concrete Args'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Simple',
         'exclusive_op': True,
-        'Selection': 'Only \\texttt{concat} for Simple Unknown Args'
+        'Selection': '\\forall \\texttt{concat} for Simple Unknown Args'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Uneven',
         'exclusive_op': True,
-        'Selection': 'Only \\texttt{concat} for Uneven Unknown Args'
+        'Selection': '\\forall \\texttt{concat} for Uneven Unknown Args'
     },
     {
         'operation': 'delete',
         'exclusive_op': True,
-        'Selection': 'Only \\texttt{delete}'
+        'Selection': '\\forall \\texttt{delete}'
     },
     {
         'operation': 'replace',
         'exclusive_op': True,
-        'Selection': 'Only \\texttt{replace}'
+        'Selection': '\\forall \\texttt{replace}'
     },
     {
         'operation': 'reverse',
         'exclusive_op': True,
-        'Selection': 'Only \\texttt{reverse}'
+        'Selection': '\\forall \\texttt{reverse}'
     },
     {'is_blank': True},
     {
         'predicate': 'contains',
-        'Selection': '\\texttt{contains} for All Args'
+        'Selection': '\\texttt{contains}'
     },
     {
         'predicate': 'contains',
@@ -376,7 +407,7 @@ AGREE_ENTRIES = (
     },
     {
         'predicate': 'equals',
-        'Selection': '\\texttt{equals} for All Args'
+        'Selection': '\\texttt{equals}'
     },
     {
         'predicate': 'equals',
@@ -408,6 +439,22 @@ MC_TIME_ENTRIES = (
     {
         'columns': ['F MC Time'],
         'Selection': 'False Branch Constraints'
+    },
+    {'is_blank': True},
+    {
+        'columns': ['T MC Time', 'F MC Time'],
+        'alphabet-size': 2,
+        'Selection': 'Constraints for 2 Character Alphabet'
+    },
+    {
+        'columns': ['T MC Time', 'F MC Time'],
+        'alphabet-size': 3,
+        'Selection': 'Constraints for 3 Character Alphabet'
+    },
+    {
+        'columns': ['T MC Time', 'F MC Time'],
+        'alphabet-size': 4,
+        'Selection': 'Constraints for 4 Character Alphabet'
     },
     {'is_blank': True},
     {
@@ -460,77 +507,77 @@ SOLVE_TIME_ENTRIES = (
     {'is_blank': True},
     {
         'operation': 'concat',
-        'Selection': 'Includes \\texttt{concat} for All Args'
+        'Selection': '\\exists \\texttt{concat}'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Concrete',
-        'Selection': 'Includes \\texttt{concat} for Concrete Args'
+        'Selection': '\\exists \\texttt{concat} for Concrete Args'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Simple',
-        'Selection': 'Includes \\texttt{concat} for Simple Unknown Args'
+        'Selection': '\\exists \\texttt{concat} for Simple Unknown Args'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Uneven',
-        'Selection': 'Includes \\texttt{concat} for Uneven Unknown Args'
+        'Selection': '\\exists \\texttt{concat} for Uneven Unknown Args'
     },
     {
         'operation': 'delete',
-        'Selection': 'Includes \\texttt{delete}'
+        'Selection': '\\exists \\texttt{delete}'
     },
     {
         'operation': 'replace',
-        'Selection': 'Includes \\texttt{replace}'
+        'Selection': '\\exists \\texttt{replace}'
     },
     {
         'operation': 'reverse',
-        'Selection': 'Includes \\texttt{reverse}'
+        'Selection': '\\exists \\texttt{reverse}'
     },
     {'is_blank': True},
     {
         'operation': 'concat',
         'exclusive_op': True,
-        'Selection': 'Includes \\texttt{concat} for All Args'
+        'Selection': '\\exists \\texttt{concat}'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Concrete',
         'exclusive_op': True,
-        'Selection': 'Includes \\texttt{concat} for Concrete Args'
+        'Selection': '\\exists \\texttt{concat} for Concrete Args'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Simple',
         'exclusive_op': True,
-        'Selection': 'Includes \\texttt{concat} for Simple Unknown Args'
+        'Selection': '\\exists \\texttt{concat} for Simple Unknown Args'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Uneven',
         'exclusive_op': True,
-        'Selection': 'Includes \\texttt{concat} for Uneven Unknown Args'
+        'Selection': '\\exists \\texttt{concat} for Uneven Unknown Args'
     },
     {
         'operation': 'delete',
         'exclusive_op': True,
-        'Selection': 'Includes \\texttt{delete}'
+        'Selection': '\\exists \\texttt{delete}'
     },
     {
         'operation': 'replace',
         'exclusive_op': True,
-        'Selection': 'Includes \\texttt{replace}'
+        'Selection': '\\exists \\texttt{replace}'
     },
     {
         'operation': 'reverse',
         'exclusive_op': True,
-        'Selection': 'Includes \\texttt{reverse}'
+        'Selection': '\\exists \\texttt{reverse}'
     },
     {
         'predicate': 'contains',
-        'Selection': '\\texttt{contains} for All Args'
+        'Selection': '\\texttt{contains}'
     },
     {
         'predicate': 'contains',
@@ -549,7 +596,7 @@ SOLVE_TIME_ENTRIES = (
     },
     {
         'predicate': 'equals',
-        'Selection': '\\texttt{equals} for All Args'
+        'Selection': '\\texttt{equals}'
     },
     {
         'predicate': 'equals',
@@ -690,6 +737,9 @@ OP_TIME_ENTRIES = (
     }
 )
 
+PER_DIFF_VS_MC_TIME_ENTRIES = (
+)
+
 ORDER_COLUMNS = {
     'Bin': 1,
     'Selection': 2,
@@ -822,11 +872,7 @@ def get_latex_table(table, caption, label):
     return lines
 
 
-def output_latex_tables(tables):
-    table_list = list()
-
-    for table, caption, label in tables:
-        table_list.append(get_latex_table(table, caption, label))
+def output_latex(tables, plot_files):
 
     before_lines = list()
     before_lines.append('\\documentclass [11pt]{article}\n')
@@ -838,6 +884,14 @@ def output_latex_tables(tables):
     before_lines.append('\n')
     before_lines.append('\\begin{document}\n')
     before_lines.append('\n')
+
+    table_list = list()
+    for table, caption, label in tables:
+        table_list.append(get_latex_table(table, caption, label))
+
+    figure_list = list()
+    for file in plot_files:
+        figure_list.append(get_latex_plot_figure())
 
     after_lines = list()
     after_lines.append('\\end{document}\n')
@@ -855,11 +909,11 @@ def output_latex_tables(tables):
         out_file.writelines(after_lines)
 
 
-def output_gnuplot_raw_data(rows):
+def output_plot_file(rows):
     pass
 
 
-def output_gnuplot_files(files):
+def output_plot_files(files):
     pass
 
 
@@ -874,6 +928,11 @@ def filter_input_type(row, input_type=None):
 def filter_length(row, length=None):
     return length is None \
            or GLOB.get('len-match').get(length).match(row.get('File'))
+
+
+def filter_alphabet_size(row, alphabet_size=None):
+    return alphabet_size is None \
+           or GLOB.get('alphabet-size-match').get(alphabet_size).match(row.get('File'))
 
 
 def filter_operation(row, operation=None, exclusive=False, arg_type=None, ):
@@ -946,8 +1005,8 @@ def compute_agreement(row, prefix):
 
 
 def get_per_diffs(rows, disagree=True, bins=None, branch=None,
-                  input_type=None, length=None, operation=None,
-                  exclusive_op=None, op_arg_type=None,
+                  input_type=None, alphabet_size=None, length=None,
+                  operation=None, exclusive_op=None, op_arg_type=None,
                   predicate=None, pred_arg_type=None):
     # initialize structures
     if bins is None:
@@ -962,6 +1021,7 @@ def get_per_diffs(rows, disagree=True, bins=None, branch=None,
         def per_diff_filter(row):
             return row.get('Op 1') != '' \
                     and filter_input_type(row, input_type) \
+                    and filter_alphabet_size(row, alphabet_size) \
                     and filter_length(row, length) \
                     and filter_operation(row, operation, exclusive_op,
                                          op_arg_type) \
@@ -972,7 +1032,7 @@ def get_per_diffs(rows, disagree=True, bins=None, branch=None,
 
     for solver in solvers:
         diffs[solver] = list()
-        filtered = filter(get_filter(solver[0]))
+        filtered = filter(get_filter(solver[0]), rows)
         if branch is None or branch:
             diffs[solver].extend(map(lambda x: compute_per_diff(x, solver[0]), filtered))
 
@@ -982,7 +1042,7 @@ def get_per_diffs(rows, disagree=True, bins=None, branch=None,
     hist_map = dict()
     for solver in solvers:
         diffs_np = numpy.asarray(diffs.get(solver))
-        hist_map[solver] = numpy.histogram(diffs_np, bins)
+        hist_map[solver] = numpy.histogram(diffs_np, bins=bins)
 
     for i, p in enumerate(bins):
         result = dict()
@@ -995,8 +1055,8 @@ def get_per_diffs(rows, disagree=True, bins=None, branch=None,
     return results
 
 
-def get_agreement(rows, input_type=None, length=None, operation=None,
-                  exclusive_op=None, op_arg_type=None,
+def get_agreement(rows, input_type=None, length=None, alphabet_size=None,
+                  operation=None, exclusive_op=None, op_arg_type=None,
                   predicate=None, pred_arg_type=None):
     # initialize result dictionary
     results = dict()
@@ -1006,6 +1066,7 @@ def get_agreement(rows, input_type=None, length=None, operation=None,
         def agree_filter(count, row):
             return row.get('Op 1') != '' \
                     and filter_input_type(row, input_type) \
+                    and filter_alphabet_size(row, alphabet_size) \
                     and filter_length(row, length) \
                     and filter_operation(row, operation, exclusive_op,
                                          op_arg_type) \
@@ -1035,6 +1096,7 @@ def analyze_accuracy(mc_rows):
                               disagree=entry.get('disagree'),
                               branch=entry.get('branch'),
                               input_type=entry.get('input_type'),
+                              alphabet_size=entry.get('alphabet-size'),
                               length=entry.get('length'),
                               operation=entry.get('operation'),
                               exclusive_op=entry.get('exclusive_op'),
@@ -1060,6 +1122,7 @@ def analyze_accuracy(mc_rows):
         else:
             row = get_agreement(mc_rows,
                                 input_type=entry.get('input_type'),
+                                alphabet_size=entry.get('alphabet-size'),
                                 length=entry.get('length'),
                                 operation=entry.get('operation'),
                                 exclusive_op=entry.get('exclusive_op'),
@@ -1077,8 +1140,9 @@ def analyze_accuracy(mc_rows):
 
 
 def get_perf_metrics(rows, column_suffixes, sum_cols=False, input_type=None,
-                     length=None, operation=None, exclusive_op=None,
-                     op_arg_type=None, predicate=None, pred_arg_type=None):
+                     length=None, alphabet_size=None, operation=None,
+                     exclusive_op=None, op_arg_type=None, predicate=None,
+                     pred_arg_type=None):
     avg_results = dict()
     median_results = dict()
     range_results = dict()
@@ -1088,7 +1152,8 @@ def get_perf_metrics(rows, column_suffixes, sum_cols=False, input_type=None,
 
     def perf_metric_filter(values, row):
         return row.get('Op 1') != '' \
-               and filter_input_type(row, input_type)\
+               and filter_input_type(row, input_type) \
+               and filter_alphabet_size(row, alphabet_size) \
                and filter_length(row, length)\
                and filter_operation(row, operation, exclusive_op, op_arg_type)\
                and filter_predicate(row, predicate, pred_arg_type)
@@ -1152,6 +1217,7 @@ def process_perf_entries(rows, entries, column_suffixes=None):
             results = get_perf_metrics(rows,
                                        column_suffixes,
                                        input_type=entry.get('input_type'),
+                                       alphabet_size=entry.get('alphabet-size'),
                                        length=entry.get('length'),
                                        operation=entry.get('operation'),
                                        exclusive_op=entry.get('exclusive_op'),
@@ -1262,6 +1328,7 @@ def analyze_comb_perf(mc_time_rows):
             results = get_perf_metrics(mc_time_rows,
                                        [['T MC Time', 'F MC Time'], 'Acc Time'],
                                        input_type=entry.get('input_type'),
+                                       alphabet_size=entry.get('alphabet-size'),
                                        length=entry.get('length'),
                                        operation=entry.get('operation'),
                                        exclusive_op=entry.get('exclusive_op'),
@@ -1300,6 +1367,24 @@ def analyze_acc_vs_mc_perf(mc_rows, mc_time_rows):
     # initialize file list
     files = list()
 
+    log.debug('Gathering Model Count Accuracy vs Model Count Performance')
+
+    for entry in MC_TIME_ENTRIES:
+        table = get_per_diffs(mc_rows,
+                              disagree=entry.get('disagree'),
+                              branch=entry.get('branch'),
+                              input_type=entry.get('input_type'),
+                              alphabet_size=entry.get('alphabet-size'),
+                              length=entry.get('length'),
+                              operation=entry.get('operation'),
+                              exclusive_op=entry.get('exclusive_op'),
+                              op_arg_type=entry.get('op_arg_type'),
+                              predicate=entry.get('predicate'),
+                              pred_arg_type=entry.get('pred_arg_type'))
+        files.append((table, entry.get('caption'), entry.get('label')))
+
+    get_per_diff_and_mc_time(mc_rows, mc_time_rows)
+
     return files
 
 
@@ -1329,18 +1414,18 @@ def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
 
     tables.extend(analyze_comb_perf(mc_time_rows))
 
-    output_latex_tables(tables)
-
     # create gnuplot graphs
-    # files = list()
-    #
+    files = list()
+
     # files.extend(analyze_acc_vs_mc_perf(mc_rows, mc_time_rows))
     #
     # files.extend(analyze_acc_vs_solve_perf(mc_rows, mc_time_rows))
     #
     # files.extend(analyze_acc_vs_comb_perf(mc_rows, mc_time_rows))
     #
-    # output_gnuplot_files(files)
+    # output_plot_files(files)
+
+    output_latex(tables, files)
 
 
 def main(arguments):
