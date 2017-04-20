@@ -31,13 +31,13 @@ log.addHandler(ch)
 
 # globals
 RESULT_GROUPS = {
-    'all_02': {
+    'all-AB': {
         'generate': [
             '--ops-depth', '2',
             '--alphabet', 'A-B',
             '--no-duplicates',
             '--unknown-string',
-            '--non-uniform',
+            '--uneven',
             '--inputs', 'ABABABABAB',
             # '--single-graph',
             '--operations', 'concat', 'delete', 'replace-char', 'reverse',
@@ -51,13 +51,13 @@ RESULT_GROUPS = {
             '--single-out-file'
         ]
     },
-    'all_03': {
+    'all-AC': {
         'generate': [
             '--ops-depth', '2',
             '--alphabet', 'A-C',
             '--no-duplicates',
             '--unknown-string',
-            '--non-uniform',
+            '--uneven',
             '--inputs', 'ABCABCABCA',
             # '--single-graph',
             '--operations', 'concat', 'delete', 'replace-char', 'reverse',
@@ -71,13 +71,13 @@ RESULT_GROUPS = {
             '--single-out-file'
         ]
     },
-    'all_04': {
+    'all-AD': {
         'generate': [
             '--ops-depth', '2',
             '--alphabet', 'A-D',
             '--no-duplicates',
             '--unknown-string',
-            '--non-uniform',
+            '--uneven',
             '--inputs', 'ABCDABCDAB',
             # '--single-graph',
             '--operations', 'concat', 'delete', 'replace-char', 'reverse',

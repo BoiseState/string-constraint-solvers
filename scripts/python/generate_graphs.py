@@ -42,18 +42,18 @@ predicates = [
 ]
 
 # Global values
-gen_globals = dict()
+GLOB = dict()
 
 
 def reset_globals():
-    gen_globals['boolean_constraints'] = None
-    gen_globals['has_lower_case_op'] = False
-    gen_globals['has_upper_case_op'] = False
-    gen_globals['operations'] = None
-    gen_globals['rand_seed'] = 1
-    gen_globals['settings'] = None
-    gen_globals['value_id_map'] = dict()
-    gen_globals['vertices'] = list()
+    GLOB['boolean_constraints'] = None
+    GLOB['has_lower_case_op'] = False
+    GLOB['has_upper_case_op'] = False
+    GLOB['operations'] = None
+    GLOB['rand_seed'] = 1
+    GLOB['settings'] = None
+    GLOB['value_id_map'] = dict()
+    GLOB['vertices'] = list()
 
 
 # Data Classes
@@ -61,8 +61,10 @@ def reset_globals():
 class RootValue:
     def __init__(self, has_string, string=None, method=''):
         self.has_string = has_string
-        self.string = string if string is not None else random_string(
-            gen_globals['settings'].max_initial_length)
+        if string is not None:
+            self.string = string[:GLOB['settings'].max_initial_length]
+        else:
+            self.string = random_string(GLOB['settings'].max_initial_length)
         self.method = method
 
     def get_value(self):
@@ -150,6 +152,7 @@ class Settings:
         self.op_total = 1
         self.operations = options.operations
 
+
         # set debug
         self.debug = options.debug
         if self.debug:
@@ -178,6 +181,11 @@ class Settings:
         if options.single_graph:
             self.single_graph = True
 
+        # set nomrmalize option
+        self.normalize = False
+        if options.normalize:
+            self.normalize = True
+
     def get_ops_total(self):
         for i in range(0, self.depth + 2):
             self.op_total += (len(get_operations()) ** i)
@@ -189,7 +197,7 @@ class Settings:
 # operations array
 def add_append_substring_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(gen_globals['settings'].alphabet)
+    symbol_string = ''.join(GLOB['settings'].alphabet)
 
     # sb.append(string , offset , length )
     # sb.append(string , start , end )
@@ -206,74 +214,86 @@ def add_append_substring_operations(ops):
 def add_append_operations(ops):
     # sb.append(string)
     # args = my_globals['settings'].alphabet
-    args = sorted(gen_globals['settings'].alphabet)[:2]
+    args = sorted(GLOB['settings'].alphabet)[:2]
     for c in args:
         ops.append(OperationValue('append!!Ljava/lang/String;', [c]))
 
     # add unknown string concatenation for uneven inputs
-    if gen_globals['settings'].uneven:
+    if GLOB['settings'].uneven:
         ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)]))
 
 
 def add_concat_operations(ops, needed_ops):
     # sb.concat(string)
-    num_ops = needed_ops
-    create_ops = (
-        lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [random_char()])),
-        lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)])),
-        lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)], uneven=True))
-    )
-    while num_ops > 0:
-        if num_ops >= 3:
-            for op in create_ops:
-                op()
-        else:
-            for op in random.sample(create_ops, num_ops):
-                op()
-        num_ops = num_ops - 3
+    if GLOB['settings'].normalize:
+        num_ops = needed_ops
+        create_ops = (
+            lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [random_char()])),
+            lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)])),
+            lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)], uneven=True))
+        )
+        while num_ops > 0:
+            if num_ops >= 3:
+                for op in create_ops:
+                    op()
+            else:
+                for op in random.sample(create_ops, num_ops):
+                    op()
+            num_ops = num_ops - 3
+    else:
+        for c in GLOB['settings'].alphabet:
+            ops.append(OperationValue('concat!!Ljava/lang/String;', [c]))
+        ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)])),
+        ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)],
+                                  uneven=True))
 
 
 def add_delete_char_at_operations(ops):
     # sb.deleteCharAt(index)
-    for i in range(0, gen_globals['settings'].max_initial_length):
+    for i in range(0, GLOB['settings'].max_initial_length):
         ops.append(OperationValue('deleteCharAt!!I', [str(i)]))
 
 
 def add_delete_operations(ops, needed_ops):
     # sb.delete(start, end)
-    indices = list()
-    for i in range(0, gen_globals['settings'].max_initial_length + 1):
-        for j in range(i, gen_globals['settings'].max_initial_length + 1):
-            indices.append((i, j))
+    if GLOB['settings'].normalize:
+        indices = list()
+        for i in range(0, GLOB['settings'].max_initial_length + 1):
+            for j in range(i, GLOB['settings'].max_initial_length + 1):
+                indices.append((i, j))
 
-    num_ops = needed_ops
-    while num_ops > 0:
-        if num_ops >= len(indices):
-            for s, e in indices:
-                ops.append(OperationValue('delete!!II', [str(s), str(e)]))
-        else:
-            for s, e in random.sample(indices, num_ops):
-                ops.append(OperationValue('delete!!II', [str(s), str(e)]))
-        num_ops = num_ops - len(indices)
+        num_ops = needed_ops
+        while num_ops > 0:
+            if num_ops >= len(indices):
+                for s, e in indices:
+                    ops.append(OperationValue('delete!!II', [str(s), str(e)]))
+            else:
+                for s, e in random.sample(indices, num_ops):
+                    ops.append(OperationValue('delete!!II', [str(s), str(e)]))
+            num_ops = num_ops - len(indices)
+    else:
+        for i in range(0, GLOB['settings'].max_initial_length + 1):
+            for j in range(i, GLOB['settings'].max_initial_length + 1):
+                ops.append(OperationValue('delete!!II', [str(i), str(j)]))
 
 
 def add_insert_char_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(gen_globals['settings'].alphabet)
+    symbol_string = ''.join(GLOB['settings'].alphabet)
 
     # sb.insert(index, string)
     for i in range(0, len(symbol_string) - 1):
-        for c in gen_globals['settings'].alphabet:
+        for c in GLOB['settings'].alphabet:
             ops.append(OperationValue('insert!!IC', [str(i), c]))
 
 
 def add_insert_string_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(gen_globals['settings'].alphabet)
+    symbol_string = ''.join(GLOB['settings'].alphabet)
 
     # sb.insert(index, string)
     for i in range(0, len(symbol_string) - 1):
-        for c in gen_globals['settings'].alphabet:
+        for c in GLOB['settings'].alphabet:
             # add insert for char array
             ops.append(OperationValue('insert!!I[C', [str(i), c]))
 
@@ -284,11 +304,11 @@ def add_insert_string_operations(ops):
 
 def add_insert_substring_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(gen_globals['settings'].alphabet)
+    symbol_string = ''.join(GLOB['settings'].alphabet)
 
     # sb.insert(index, string, offset, length)
     # sb.insert(index, string, start, end)
-    for i in range(0, gen_globals['settings'].max_initial_length - 1):
+    for i in range(0, GLOB['settings'].max_initial_length - 1):
         for j in range(0, len(symbol_string) - 1):
             # add insert substring for char array
             ops.append(OperationValue('insert!!I[CII',
@@ -303,27 +323,32 @@ def add_replace_char_operations(ops, needed_ops):
     # s.replace(old, new)
     pairs = list()
 
-    args = sorted(gen_globals['settings'].alphabet)
-    pairs.append((args[0], args[0]))
-    for c1 in args:
-        for c2 in args:
-            if c1 != c2:
-                pairs.append((c1, c2))
+    args = sorted(GLOB['settings'].alphabet)
+    if GLOB['settings'].normalize:
+        pairs.append((args[0], args[0]))
+        for c1 in args:
+            for c2 in args:
+                if c1 != c2:
+                    pairs.append((c1, c2))
 
-    num_ops = needed_ops
-    while num_ops > 0:
-        if num_ops >= len(pairs):
-            for f, r in pairs:
-                ops.append(OperationValue('replace!!CC', [f, r]))
-        else:
-            for f, r in random.sample(pairs, num_ops):
-                ops.append(OperationValue('replace!!CC', [f, r]))
-        num_ops = num_ops - len(pairs)
+        num_ops = needed_ops
+        while num_ops > 0:
+            if num_ops >= len(pairs):
+                for f, r in pairs:
+                    ops.append(OperationValue('replace!!CC', [f, r]))
+            else:
+                for f, r in random.sample(pairs, num_ops):
+                    ops.append(OperationValue('replace!!CC', [f, r]))
+            num_ops = num_ops - len(pairs)
+    else:
+        for c1 in args:
+            for c2 in args:
+                ops.append(OperationValue('replace!!CC', [c1, c2]))
 
 
 def add_replace_string_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(gen_globals['settings'].alphabet)
+    symbol_string = ''.join(GLOB['settings'].alphabet)
     # get target from first 2 symbols
     target = symbol_string[0:2]
     # get replacement from last 2 symbols
@@ -337,7 +362,7 @@ def add_replace_string_operations(ops):
 
 def add_replace_regex_string_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(gen_globals['settings'].alphabet)
+    symbol_string = ''.join(GLOB['settings'].alphabet)
     # get regex from first symbol
     regex = symbol_string[0:1] + '+'
     # get replacement from last 2 symbols
@@ -355,31 +380,34 @@ def add_replace_regex_string_operations(ops):
 
 def add_replace_substring_operations(ops):
     # join all symbols from alphabet
-    symbol_string = ''.join(gen_globals['settings'].alphabet)
+    symbol_string = ''.join(GLOB['settings'].alphabet)
     # get string from first 2 symbols
     string = symbol_string[0:2]
 
     # replace(start, end, string)
-    for i in range(0, gen_globals['settings'].max_initial_length - 1):
-        for j in range(i, gen_globals['settings'].max_initial_length):
+    for i in range(0, GLOB['settings'].max_initial_length - 1):
+        for j in range(i, GLOB['settings'].max_initial_length):
             ops.append(OperationValue('replace!!IILjava/lang/String;',
                                       [str(i), str(j), string]))
 
 
 def add_reverse_operations(ops, needed_ops):
     # s.reverse()
-    for i in range(0, needed_ops):
+    if GLOB['settings'].normalize:
+        for i in range(0, needed_ops):
+            ops.append(OperationValue('reverse!!'))
+    else:
         ops.append(OperationValue('reverse!!'))
 
 
 def add_substring_operations(ops):
     # s.substring(start)
-    for i in range(0, gen_globals['settings'].max_initial_length - 1):
+    for i in range(0, GLOB['settings'].max_initial_length - 1):
         ops.append(OperationValue('substring!!I', [str(i)]))
 
     # s.substring(start, end)
-    for i in range(0, gen_globals['settings'].max_initial_length - 1):
-        for j in range(i, gen_globals['settings'].max_initial_length):
+    for i in range(0, GLOB['settings'].max_initial_length - 1):
+        for j in range(i, GLOB['settings'].max_initial_length):
             ops.append(OperationValue('substring!!II', [str(i), str(j)]))
 
 
@@ -421,14 +449,14 @@ def add_contains_predicates(constraints, length=None):
 
 def add_ends_with_predicates(constraints):
     # s.endsWith(suffix)
-    for c in gen_globals['settings'].alphabet:
+    for c in GLOB['settings'].alphabet:
         constraints.append(
             PredicateValue('endsWith!!Ljava/lang/String;', [c]))
 
 
 def add_equals_predicates(constraints):
     # join all symbols from alphabet
-    symbol_string = ''.join(gen_globals['settings'].alphabet)
+    symbol_string = ''.join(GLOB['settings'].alphabet)
     # get string from first 2 symbols
     string = symbol_string[0:2]
 
@@ -452,7 +480,7 @@ def add_equals_predicates(constraints):
 
 def add_equals_ignore_case_predicates(constraints):
     # join all symbols from alphabet
-    symbol_string = ''.join(gen_globals['settings'].alphabet)
+    symbol_string = ''.join(GLOB['settings'].alphabet)
     # get string from first 2 symbols
     string = symbol_string[0:2]
 
@@ -468,32 +496,32 @@ def add_is_empty_predicates(constraints):
 
 def add_matches_predicates(constraints):
     # s.matches(regex known)
-    for c in gen_globals['settings'].alphabet:
+    for c in GLOB['settings'].alphabet:
         constraints.append(PredicateValue('matches!!Ljava/lang/String;'), [c])
 
 
 def add_region_matches_predicates(constraints):
     # join all symbols from alphabet
-    symbol_string = ''.join(gen_globals['settings'].alphabet)
+    symbol_string = ''.join(GLOB['settings'].alphabet)
 
     # s.regionMatches(toffset, other, ooffset, length)
-    for i in range(0, gen_globals['settings'].max_initial_length):
+    for i in range(0, GLOB['settings'].max_initial_length):
         for j in range(0, len(symbol_string)):
-            for k in range(1, min(gen_globals['settings'].max_initial_length - i, len(symbol_string) - j)):
+            for k in range(1, min(GLOB['settings'].max_initial_length - i, len(symbol_string) - j)):
                 constraints.append(PredicateValue('regionMatches!!ILjava/lang/String;II'), [str(i), symbol_string, str(j), str(k)])
 
 
 def add_starts_with_predicates(constraints):
     # s.startsWith(prefix)
-    for c in gen_globals['settings'].alphabet:
+    for c in GLOB['settings'].alphabet:
         constraints.append(
             PredicateValue('startsWith!!Ljava/lang/String;', [c]))
 
 
 def add_starts_with_offset_predicates(constraints):
     # s.startsWith(prefix, offset)
-    for c in gen_globals['settings'].alphabet:
-        for i in range(0, gen_globals['settings'].max_initial_length):
+    for c in GLOB['settings'].alphabet:
+        for i in range(0, GLOB['settings'].max_initial_length):
             constraints.append(
                 PredicateValue('startsWith!!Ljava/lang/String;I',
                                [c, str(i)]))
@@ -502,77 +530,77 @@ def add_starts_with_offset_predicates(constraints):
 def get_max_num_ops():
     max_ops = 10
 
-    if 'append-substring' in gen_globals['settings'].operations:
+    if 'append-substring' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'append' in gen_globals['settings'].operations:
+    if 'append' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'concat' in gen_globals['settings'].operations:
+    if 'concat' in GLOB['settings'].operations:
         ops = 3
         if ops > max_ops:
             max_ops = ops
-    if 'delete-char-at' in gen_globals['settings'].operations:
+    if 'delete-char-at' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'delete' in gen_globals['settings'].operations:
+    if 'delete' in GLOB['settings'].operations:
         ops = 0
-        for i in range(0, gen_globals['settings'].max_initial_length + 1):
+        for i in range(0, GLOB['settings'].max_initial_length + 1):
             ops = ops + i + 1
         if ops > max_ops:
             max_ops = ops
-    if 'insert-char' in gen_globals['settings'].operations:
+    if 'insert-char' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'insert-string' in gen_globals['settings'].operations:
+    if 'insert-string' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'insert-substring' in gen_globals['settings'].operations:
+    if 'insert-substring' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'replace-char' in gen_globals['settings'].operations:
-        ops = (len(gen_globals['settings'].alphabet) - 1) * (len(gen_globals['settings'].alphabet) - 1) + 1
+    if 'replace-char' in GLOB['settings'].operations:
+        ops = (len(GLOB['settings'].alphabet) - 1) * (len(GLOB['settings'].alphabet) - 1) + 1
         if ops > max_ops:
             max_ops = ops
-    if 'replace-string' in gen_globals['settings'].operations:
+    if 'replace-string' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'replace-regex-string' in gen_globals['settings'].operations:
+    if 'replace-regex-string' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'replace-substring' in gen_globals['settings'].operations:
+    if 'replace-substring' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'reverse' in gen_globals['settings'].operations:
+    if 'reverse' in GLOB['settings'].operations:
         ops = 1
         if ops > max_ops:
             max_ops = ops
-    if 'substring' in gen_globals['settings'].operations:
+    if 'substring' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'to-lower-case' in gen_globals['settings'].operations:
+    if 'to-lower-case' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'to-string' in gen_globals['settings'].operations:
+    if 'to-string' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'to-upper-case' in gen_globals['settings'].operations:
+    if 'to-upper-case' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
-    if 'trim' in gen_globals['settings'].operations:
+    if 'trim' in GLOB['settings'].operations:
         ops = 0
         if ops > max_ops:
             max_ops = ops
@@ -582,7 +610,7 @@ def get_max_num_ops():
 
 def get_operations():
     # check for existing operations value
-    operations = gen_globals['operations']
+    operations = GLOB['operations']
     if operations is not None:
         return operations
 
@@ -594,45 +622,45 @@ def get_operations():
 
     # === Operations ===
     # appendSubstring
-    if 'append-substring' in gen_globals['settings'].operations:
+    if 'append-substring' in GLOB['settings'].operations:
         add_append_substring_operations(ops_list)
-    if 'append' in gen_globals['settings'].operations:
+    if 'append' in GLOB['settings'].operations:
         add_append_operations(ops_list)
-    if 'concat' in gen_globals['settings'].operations:
+    if 'concat' in GLOB['settings'].operations:
         add_concat_operations(ops_list, needed_ops)
-    if 'delete-char-at' in gen_globals['settings'].operations:
+    if 'delete-char-at' in GLOB['settings'].operations:
         add_delete_char_at_operations(ops_list)
-    if 'delete' in gen_globals['settings'].operations:
+    if 'delete' in GLOB['settings'].operations:
         add_delete_operations(ops_list, needed_ops)
-    if 'insert-char' in gen_globals['settings'].operations:
+    if 'insert-char' in GLOB['settings'].operations:
         add_insert_char_operations(ops_list)
-    if 'insert-string' in gen_globals['settings'].operations:
+    if 'insert-string' in GLOB['settings'].operations:
         add_insert_string_operations(ops_list)
-    if 'insert-substring' in gen_globals['settings'].operations:
+    if 'insert-substring' in GLOB['settings'].operations:
         add_insert_substring_operations(ops_list)
-    if 'replace-char' in gen_globals['settings'].operations:
+    if 'replace-char' in GLOB['settings'].operations:
         add_replace_char_operations(ops_list, needed_ops)
-    if 'replace-string' in gen_globals['settings'].operations:
+    if 'replace-string' in GLOB['settings'].operations:
         add_replace_string_operations(ops_list)
-    if 'replace-regex-string' in gen_globals['settings'].operations:
+    if 'replace-regex-string' in GLOB['settings'].operations:
         add_replace_regex_string_operations(ops_list)
-    if 'replace-substring' in gen_globals['settings'].operations:
+    if 'replace-substring' in GLOB['settings'].operations:
         add_replace_substring_operations(ops_list)
-    if 'reverse' in gen_globals['settings'].operations:
+    if 'reverse' in GLOB['settings'].operations:
         add_reverse_operations(ops_list, needed_ops)
-    if 'substring' in gen_globals['settings'].operations:
+    if 'substring' in GLOB['settings'].operations:
         add_substring_operations(ops_list)
-    if 'to-lower-case' in gen_globals['settings'].operations:
+    if 'to-lower-case' in GLOB['settings'].operations:
         add_to_lower_case_operations(ops_list)
-    if 'to-string' in gen_globals['settings'].operations:
+    if 'to-string' in GLOB['settings'].operations:
         add_to_string_operations(ops_list)
-    if 'to-upper-case' in gen_globals['settings'].operations:
+    if 'to-upper-case' in GLOB['settings'].operations:
         add_to_upper_case_operations(ops_list)
-    if 'trim' in gen_globals['settings'].operations:
+    if 'trim' in GLOB['settings'].operations:
         add_trim_operations(ops_list)
 
     # set global operations from ops_list
-    gen_globals['operations'] = ops_list
+    GLOB['operations'] = ops_list
 
     # return operations array
     return ops_list
@@ -640,7 +668,7 @@ def get_operations():
 
 def get_boolean_constraints():
     # check for existing boolean constraints value
-    boolean_constraints = gen_globals['boolean_constraints']
+    boolean_constraints = GLOB['boolean_constraints']
     if boolean_constraints is not None:
         return boolean_constraints
 
@@ -648,27 +676,27 @@ def get_boolean_constraints():
     constraints_list = list()
 
     # add boolean constraint instances
-    if 'contains' in gen_globals['settings'].operations:
+    if 'contains' in GLOB['settings'].operations:
         add_contains_predicates(constraints_list)
-    if 'ends-with' in gen_globals['settings'].operations:
+    if 'ends-with' in GLOB['settings'].operations:
         add_ends_with_predicates(constraints_list)
-    if 'equals' in gen_globals['settings'].operations:
+    if 'equals' in GLOB['settings'].operations:
         add_equals_predicates(constraints_list)
-    if 'equals-ignore-case' in gen_globals['settings'].operations:
+    if 'equals-ignore-case' in GLOB['settings'].operations:
         add_equals_ignore_case_predicates(constraints_list)
-    if 'is-empty' in gen_globals['settings'].operations:
+    if 'is-empty' in GLOB['settings'].operations:
         add_is_empty_predicates(constraints_list)
-    if 'matches' in gen_globals['settings'].operations:
+    if 'matches' in GLOB['settings'].operations:
         add_matches_predicates(constraints_list)
-    if 'region-matches' in gen_globals['settings'].operations:
+    if 'region-matches' in GLOB['settings'].operations:
         add_region_matches_predicates(constraints_list)
-    if 'starts-with' in gen_globals['settings'].operations:
+    if 'starts-with' in GLOB['settings'].operations:
         add_starts_with_predicates(constraints_list)
-    if 'starts-with-offset' in gen_globals['settings'].operations:
+    if 'starts-with-offset' in GLOB['settings'].operations:
         add_starts_with_offset_predicates(constraints_list)
 
     # set global operations from ops_list
-    gen_globals['boolean_constraints'] = constraints_list
+    GLOB['boolean_constraints'] = constraints_list
 
     # return operations array
     return constraints_list
@@ -679,40 +707,40 @@ def generate_id(value, force=False):
     # specify id_counter is the global variable
 
     # if id already generated for value
-    if not force and value in gen_globals['value_id_map']:
+    if not force and value in GLOB['value_id_map']:
         # return that value
-        return gen_globals['value_id_map'].get(value)
+        return GLOB['value_id_map'].get(value)
 
     # generate new id from id counter
-    new_id = gen_globals['settings'].id_counter
+    new_id = GLOB['settings'].id_counter
 
     # increment id counter
-    gen_globals['settings'].id_counter += 1
+    GLOB['settings'].id_counter += 1
 
     # return new id
     return new_id
 
 
 def random_length(min_length=None, max_length=None):
-    random.seed(gen_globals['rand_seed'])
-    gen_globals['rand_seed'] += 1
+    random.seed(GLOB['rand_seed'])
+    GLOB['rand_seed'] += 1
     if min_length is None:
         min_length = 0
     if max_length is None:
-        max_length = gen_globals['settings'].max_initial_length
+        max_length = GLOB['settings'].max_initial_length
     return random.randint(min_length, max_length)
 
 
 def random_char():
-    random.seed(gen_globals['rand_seed'])
-    gen_globals['rand_seed'] += 1
-    alpha_list = list(gen_globals['settings'].alphabet)
+    random.seed(GLOB['rand_seed'])
+    GLOB['rand_seed'] += 1
+    alpha_list = list(GLOB['settings'].alphabet)
     return random.choice(alpha_list).upper()
 
 
 def random_string(length=None):
     if length is None:
-        length = gen_globals['settings'].max_initial_length
+        length = GLOB['settings'].max_initial_length
     chars = list()
     for num in range(0, length):
         chars.append(random_char())
@@ -727,7 +755,7 @@ def get_all_strings(max_length):
     for i in range(0, max_length):
         next_set = set()
         for prev in prev_set:
-            for c in gen_globals['settings'].alphabet:
+            for c in GLOB['settings'].alphabet:
                 new_str = prev + c
                 strings.add(new_str)
                 next_set.add(new_str)
@@ -739,7 +767,7 @@ def get_all_strings(max_length):
 def perform_concat(string, op):
     # randomize arg value if unknown
     if len(op.op_args[0]) == 1 and ord(op.op_args[0]) == 0:
-        max_len = gen_globals['settings'].max_initial_length
+        max_len = GLOB['settings'].max_initial_length
         str_len = random_length(0, max_len)
         op.op_args[0] = random_string(str_len)
         op.args_known[op.op_args[0]] = False
@@ -1031,7 +1059,7 @@ def perform_contains(string, pred):
                 not_contained_string = random.choice(not_contained_strings)
                 pred.op_args[0] = not_contained_string
             else:
-                pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
+                pred.op_args[0] = random_string(random_length(0, GLOB['settings'].max_initial_length))
             pred.args_known[pred.op_args[0]] = is_unknown
 
     # return true or false for boolean constraint
@@ -1063,7 +1091,7 @@ def perform_ends_with(string, pred):
                 not_contained_string = random.choice(not_contained_strings)
                 pred.op_args[0] = not_contained_string
             else:
-                pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
+                pred.op_args[0] = random_string(random_length(0, GLOB['settings'].max_initial_length))
             pred.args_known[pred.op_args[0]] = is_unknown
 
     # return true or false for boolean constraint
@@ -1088,7 +1116,7 @@ def perform_equals(string, pred):
                 not_contained_string = random.choice(not_contained_strings)
                 pred.op_args[0] = not_contained_string
             else:
-                pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
+                pred.op_args[0] = random_string(random_length(0, GLOB['settings'].max_initial_length))
             pred.args_known[pred.op_args[0]] = is_unknown
 
     # return true or false for boolean constraint
@@ -1115,7 +1143,7 @@ def perform_equals_ignore_case(string, pred):
                 not_contained_string = random.choice(not_contained_strings)
                 pred.op_args[0] = not_contained_string
             else:
-                pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
+                pred.op_args[0] = random_string(random_length(0, GLOB['settings'].max_initial_length))
             pred.args_known[pred.op_args[0]] = is_unknown
 
 # return true or false for boolean constraint
@@ -1155,7 +1183,7 @@ def perform_starts_with(string, pred):
                 not_contained_string = random.choice(not_contained_strings)
                 pred.op_args[0] = not_contained_string
             else:
-                pred.op_args[0] = random_string(random_length(0, gen_globals['settings'].max_initial_length))
+                pred.op_args[0] = random_string(random_length(0, GLOB['settings'].max_initial_length))
             pred.args_known[pred.op_args[0]] = is_unknown
 
     # return true or false for boolean constraint
@@ -1239,7 +1267,7 @@ def add_operation(t, countdown, v_list):
     prev_v_list = v_list
     new_v_list = countdown > 1
     if new_v_list:
-        gen_globals['vertices'].remove(v_list)
+        GLOB['vertices'].remove(v_list)
 
 
     # for each operation
@@ -1249,10 +1277,10 @@ def add_operation(t, countdown, v_list):
         # check and create vertices list
         if new_v_list:
             v_list = list(prev_v_list)
-            gen_globals['vertices'].append(v_list)
+            GLOB['vertices'].append(v_list)
             v_list.append(t)
 
-        gen_globals['settings'].op_counter += 1
+        GLOB['settings'].op_counter += 1
 
         # if my_globals['settings'].op_total > 100 and my_globals['settings'].op_counter % (
         #             my_globals['settings'].op_total / 100) == 0:
@@ -1322,7 +1350,7 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
     for pred in predicate_list:
 
         # if no duplicates allowed
-        if not gen_globals['settings'].allow_duplicates and not allow_duplicates:
+        if not GLOB['settings'].allow_duplicates and not allow_duplicates:
             t = t.clone()
             v_list.append(t)
 
@@ -1340,7 +1368,7 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
 
             # create vertex
             arg_val = arg_value.get_value()
-            do_force = not gen_globals['settings'].allow_duplicates
+            do_force = not GLOB['settings'].allow_duplicates
             arg_vertex = Vertex(arg_val, arg, generate_id(arg_val, force=do_force))
             arg_ids.append(arg_vertex.node_id)
 
@@ -1396,6 +1424,13 @@ def get_options(arguments):
                                       'character as '
                                       'in "A-D".')
 
+    generate_parser.add_argument('-c',
+                                 '--uneven',
+                                 help='Include uneven string before all '
+                                      'subsequent string operations '
+                                      '(contains predicate).',
+                                 action='store_true')
+
     generate_parser.add_argument('-d',
                                  '--debug',
                                  help="Display debug messages for script.",
@@ -1412,13 +1447,6 @@ def get_options(arguments):
                                  '--graph-file',
                                  default='gen',
                                  help='The name of the generated graph file.')
-
-    generate_parser.add_argument('-c',
-                                 '--uneven',
-                                 help='Include uneven string before all '
-                                      'subsequent string operations '
-                                      '(contains predicate).',
-                                 action='store_true')
 
     generate_parser.add_argument('-i',
                                  '--inputs',
@@ -1489,6 +1517,11 @@ def get_options(arguments):
                                       'performed in sequence before a '
                                       'constraint is '
                                       'reached in the generated graph.')
+
+    generate_parser.add_argument('-r',
+                                 '--normalize',
+                                 help='Normalize the distribution',
+                                 action='store_true')
 
     generate_parser.add_argument('-s',
                                  '--single-graph',
@@ -1566,7 +1599,7 @@ def parse_alphabet_declaration(alphabet_declaration):
     to_add = set()
 
     # ensure correct lower case letters are included in alphabet
-    if gen_globals['has_lower_case_op']:
+    if GLOB['has_lower_case_op']:
         for c in symbol_set:
             c_lower = c.lower()
             # if lower equivilant
@@ -1574,7 +1607,7 @@ def parse_alphabet_declaration(alphabet_declaration):
                 to_add.add(c_lower)
 
     # ensure correct upper case letters are included in alphabet
-    if gen_globals['has_upper_case_op']:
+    if GLOB['has_upper_case_op']:
         for c in symbol_set:
             c_upper = c.upper()
             # if lower equivilant
@@ -1638,7 +1671,7 @@ def get_root_verticies(settings_inst):
         # create vertex from root node
         val = root_value.get_value()
         vertex = Vertex(val, root_value.string, generate_id(val))
-        gen_globals['vertices'].append(vertex)
+        GLOB['vertices'].append(vertex)
     # TODO: Add contains vertex for uneven initial string
 
 
@@ -1649,7 +1682,7 @@ def main(arguments):
     options = get_options(arguments)
 
     # get settings
-    gen_globals['settings'] = Settings(options)
+    GLOB['settings'] = Settings(options)
 
     # clean existing files
     dir_path = os.path.join(project_dir, 'graphs', 'synthetic')
@@ -1657,23 +1690,23 @@ def main(arguments):
         log.debug('creating output dir: %s', dir_path)
         os.makedirs(dir_path)
 
-    if gen_globals['settings'].depth == 1 \
-            or gen_globals['settings'].single_graph:
-        prev_file = gen_globals['settings'].graph_name + '.json'
+    if GLOB['settings'].depth == 1 \
+            or GLOB['settings'].single_graph:
+        prev_file = GLOB['settings'].graph_name + '.json'
         try:
             os.remove(os.path.join(dir_path, prev_file))
         except OSError:
             pass
     else:
         for f in os.listdir(dir_path):
-            if re.search(gen_globals['settings'].graph_name + '.*\.json', f):
+            if re.search(GLOB['settings'].graph_name + '.*\.json', f):
                 remove_file = os.path.join(dir_path, f)
                 log.debug('Removing Previous Graph File: %s', remove_file)
                 os.remove(remove_file)
 
     # for each input value
     vertices_collection = []
-    for value in gen_globals['settings'].inputs:
+    for value in GLOB['settings'].inputs:
 
         # create root node value
         if len(value) == 1 and ord(value) == 0:
@@ -1686,9 +1719,9 @@ def main(arguments):
         root_vertex = Vertex(val, root_value.string, generate_id(val))
 
         init_v_list = list()
-        gen_globals['vertices'].append(init_v_list)
+        GLOB['vertices'].append(init_v_list)
 
-        if gen_globals['settings'].uneven \
+        if GLOB['settings'].uneven \
                 and len(value) == 1 \
                 and ord(value) == 0:
             contains_predicates = list()
@@ -1700,23 +1733,23 @@ def main(arguments):
                                 predicate_list=contains_predicates)
 
         # add operations to the vertex
-        add_operation(root_vertex, gen_globals['settings'].depth, init_v_list)
+        add_operation(root_vertex, GLOB['settings'].depth, init_v_list)
 
         # add bool contraints for initial string
-        if gen_globals['settings'].uneven \
+        if GLOB['settings'].uneven \
                 and len(value) == 1 \
                 and ord(value) == 0:
-            gen_globals['settings'].uneven = False
+            GLOB['settings'].uneven = False
 
-        log.debug('*** {0} Operations Added ***'.format(gen_globals['settings'].op_counter))
+        log.debug('*** {0} Operations Added ***'.format(GLOB['settings'].op_counter))
         num_v = 0
-        for v_list in gen_globals['vertices']:
+        for v_list in GLOB['vertices']:
             num_v += len(v_list)
         v_counter = 0
 
     vertices_collection = list()
 
-    for v_list in gen_globals['vertices']:
+    for v_list in GLOB['vertices']:
 
         # initialize vertex list
         vertex_list = list()
@@ -1758,8 +1791,8 @@ def main(arguments):
         vertices_collection.append(vertex_list)
 
     # flatten vertices collection into single nested list if simple
-    if gen_globals['settings'].depth == 1 \
-            or gen_globals['settings'].single_graph:
+    if GLOB['settings'].depth == 1 \
+            or GLOB['settings'].single_graph:
         # get collection of verticies
         v_collection = list()
         for v_list in vertices_collection:
@@ -1778,16 +1811,16 @@ def main(arguments):
             'vertices': v_list,
             'alphabet': {
                 'declaration': create_alphabet_declaration(
-                    gen_globals['settings'].alphabet),
-                'size': len(gen_globals['settings'].alphabet)
+                    GLOB['settings'].alphabet),
+                'size': len(GLOB['settings'].alphabet)
             }
         }
 
         # write out update graph file
-        gfname = gfname_format.format(gen_globals['settings'].graph_name, j + 1)
-        if gen_globals['settings'].depth == 1 \
-                or gen_globals['settings'].single_graph:
-            gfname = gen_globals['settings'].graph_name + '.json'
+        gfname = gfname_format.format(GLOB['settings'].graph_name, j + 1)
+        if GLOB['settings'].depth == 1 \
+                or GLOB['settings'].single_graph:
+            gfname = GLOB['settings'].graph_name + '.json'
 
         file_path = os.path.join(dir_path, gfname)
         with open(file_path, 'w') as graph_file:

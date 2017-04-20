@@ -34,10 +34,10 @@ GLOB['len-match'] = dict()
 GLOB['len-match'][1] = re.compile('.*-01(-\d{2})?.csv')
 GLOB['len-match'][2] = re.compile('.*-02(-\d{2})?.csv')
 GLOB['len-match'][3] = re.compile('.*-03(-\d{2})?.csv')
-GLOB['alphabet-size-match'] = dict()
-GLOB['alphabet-size-match'][2] = re.compile('.*_02-\d{2}(-\d{2})?.csv')
-GLOB['alphabet-size-match'][3] = re.compile('.*_03-\d{2}(-\d{2})?.csv')
-GLOB['alphabet-size-match'][4] = re.compile('.*_04-\d{2}(-\d{2})?.csv')
+GLOB['alphabet-match'] = dict()
+GLOB['alphabet-match']['AB'] = re.compile('.*-AB-\d{2}(-\d{2})?.csv')
+GLOB['alphabet-match']['AC'] = re.compile('.*-AC-\d{2}(-\d{2})?.csv')
+GLOB['alphabet-match']['AD'] = re.compile('.*-AD-\d{2}(-\d{2})?.csv')
 
 SOLVERS = (
     'Concrete',
@@ -46,6 +46,55 @@ SOLVERS = (
     'Aggregate',
     'Weighted'
 )
+
+OP_NORMS = {
+    'concat': {
+        'Simple': {
+            'AB': {1: 6, 2: 6, 3: 6},
+            'AC': {1: 4, 2: 4, 3: 4},
+            'AD': {1: 3, 2: 3, 3: 3}
+        },
+        'Even': {
+            'AB': {1: 12, 2: 12, 3: 12},
+            'AC': {1: 12, 2: 12, 3: 12},
+            'AD': {1: 12, 2: 12, 3: 12}
+        },
+        'Uneven': {
+            'AB': {1: 12, 2: 12, 3: 12},
+            'AC': {1: 12, 2: 12, 3: 12},
+            'AD': {1: 12, 2: 12, 3: 12}
+        }
+    },
+    'delete': {
+        'same': {
+            'AB': {1: 6, 2: 4, 3: 3},
+            'AC': {1: 6, 2: 4, 3: 3},
+            'AD': {1: 6, 2: 4, 3: 3}
+        },
+        'different': {
+            'AB': {1: 12, 2: 4, 3: 2},
+            'AC': {1: 12, 2: 4, 3: 2},
+            'AD': {1: 12, 2: 4, 3: 2}
+        }
+    },
+    'replace': {
+        'same': {
+            'AB': {1: 6, 2: 6, 3: 6},
+            'AC': {1: 4, 2: 4, 3: 4},
+            'AD': {1: 3, 2: 3, 3: 3}
+        },
+        'different': {
+            'AB': {1: 6, 2: 6, 3: 6},
+            'AC': {1: 2, 2: 2, 3: 2},
+            'AD': {1: 1, 2: 1, 3: 1}
+        }
+    },
+    'reverse': {
+        'AB': {1: 12, 2: 12, 3: 12},
+        'AC': {1: 12, 2: 12, 3: 12},
+        'AD': {1: 12, 2: 12, 3: 12}
+    }
+}
 
 PER_DIFF_ENTRIES = (
     {
@@ -740,6 +789,12 @@ OP_TIME_ENTRIES = (
 PER_DIFF_VS_MC_TIME_ENTRIES = (
 )
 
+PER_DIFF_VS_SOLVE_TIME_ENTRIES = (
+)
+
+PER_DIFF_VS_COMB_TIME_ENTRIES = (
+)
+
 ORDER_COLUMNS = {
     'Bin': 1,
     'Selection': 2,
@@ -812,13 +867,39 @@ def read_data_files(file_pattern):
     return return_data
 
 
+def normalize_data(rows):
+    for row in rows:
+        f_name = row.get('File')
+        for a in ('AB', 'AC', 'AD'):
+            if GLOB.get('alphabet-match').get(a).match(f_name):
+                for i in range(1, 4):
+                    if GLOB.get('len-match').get(i).match(f_name):
+                        op_1 = row.get('Op 1')
+                        op_2 = row.get('Op 2')
+                        if op_1 and op_2:
+                            norm_1 = OP_NORMS.get(op_1).get(a).get(i)
+                            norm_2 = OP_NORMS.get(op_2).get(a).get(i)
+                            norm = norm_1 * norm_2
+                        elif op_1:
+                            norm = OP_NORMS.get(op_1).get(a).get(i)
+                        else:
+                            norm = 1
+                        row['Norm'] = norm
+                        break
+
+
 def get_data():
     # get lists of data files
     mc_data = read_data_files('mc-' + GLOB['Settings'].file_pattern)
     mc_time_data = read_data_files('mc-time-' + GLOB['Settings'].file_pattern)
     op_time_data = read_data_files('op-time-' + GLOB['Settings'].file_pattern)
 
-    # return data
+    # normalize data across operations
+    normalize_data(mc_data)
+    normalize_data(mc_time_data)
+    normalize_data(op_time_data)
+
+# return data
     return mc_data, mc_time_data, op_time_data
 
 
@@ -872,7 +953,11 @@ def get_latex_table(table, caption, label):
     return lines
 
 
-def output_latex(tables, plot_files):
+def get_latex_plot_figure(fig):
+    pass
+
+
+def output_latex(tables, plots):
 
     before_lines = list()
     before_lines.append('\\documentclass [11pt]{article}\n')
@@ -890,8 +975,8 @@ def output_latex(tables, plot_files):
         table_list.append(get_latex_table(table, caption, label))
 
     figure_list = list()
-    for file in plot_files:
-        figure_list.append(get_latex_plot_figure())
+    for fig in plots:
+        figure_list.append(get_latex_plot_figure(fig))
 
     after_lines = list()
     after_lines.append('\\end{document}\n')
@@ -932,7 +1017,7 @@ def filter_length(row, length=None):
 
 def filter_alphabet_size(row, alphabet_size=None):
     return alphabet_size is None \
-           or GLOB.get('alphabet-size-match').get(alphabet_size).match(row.get('File'))
+           or GLOB.get('alphabet-match').get(alphabet_size).match(row.get('File'))
 
 
 def filter_operation(row, operation=None, exclusive=False, arg_type=None, ):
@@ -1383,7 +1468,7 @@ def analyze_acc_vs_mc_perf(mc_rows, mc_time_rows):
                               pred_arg_type=entry.get('pred_arg_type'))
         files.append((table, entry.get('caption'), entry.get('label')))
 
-    get_per_diff_and_mc_time(mc_rows, mc_time_rows)
+    # get_per_diff_and_mc_time(mc_rows, mc_time_rows)
 
     return files
 
@@ -1415,17 +1500,17 @@ def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
     tables.extend(analyze_comb_perf(mc_time_rows))
 
     # create gnuplot graphs
-    files = list()
+    figures = list()
 
-    # files.extend(analyze_acc_vs_mc_perf(mc_rows, mc_time_rows))
+    # figures.extend(analyze_acc_vs_mc_perf(mc_rows, mc_time_rows))
     #
-    # files.extend(analyze_acc_vs_solve_perf(mc_rows, mc_time_rows))
+    # figures.extend(analyze_acc_vs_solve_perf(mc_rows, mc_time_rows))
     #
-    # files.extend(analyze_acc_vs_comb_perf(mc_rows, mc_time_rows))
+    # figures.extend(analyze_acc_vs_comb_perf(mc_rows, mc_time_rows))
     #
-    # output_plot_files(files)
+    # output_plot_files(figures)
 
-    output_latex(tables, files)
+    output_latex(tables, figures)
 
 
 def main(arguments):
