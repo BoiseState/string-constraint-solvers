@@ -132,19 +132,19 @@ PER_DIFF_ENTRIES = (
         'label': 'acc_diff_branch'
     },
     {
-        'alphabet-size': 2,
+        'alphabet': 2,
         'caption': 'Frequency of Accuracy Difference for Constraints With a 2'
                    ' Character Alphabet',
         'label': 'acc_diff_alph_2'
     },
     {
-        'alphabet-size': 3,
+        'alphabet': 3,
         'caption': 'Frequency of Accuracy Difference for Constraints With a 3'
                    ' Character Alphabet',
         'label': 'acc_diff_alph_3'
     },
     {
-        'alphabet-size': 4,
+        'alphabet': 4,
         'caption': 'Frequency of Accuracy Difference for Constraints With a 4'
                    ' Character Alphabet',
         'label': 'acc_diff_alph_4'
@@ -339,15 +339,15 @@ AGREE_ENTRIES = (
     },
     {'is_blank': True},
     {
-        'alphabet-size': 2,
+        'alphabet': 2,
         'Selection': '2 Character Alphabet'
     },
     {
-        'alphabet-size': 3,
+        'alphabet': 3,
         'Selection': '3 Character Alphabet'
     },
     {
-        'alphabet-size': 4,
+        'alphabet': 4,
         'Selection': '4 Character Alphabet'
     },
     {'is_blank': True},
@@ -492,17 +492,17 @@ MC_TIME_ENTRIES = (
     {'is_blank': True},
     {
         'columns': ['T MC Time', 'F MC Time'],
-        'alphabet-size': 2,
+        'alphabet': 2,
         'Selection': 'Constraints for 2 Character Alphabet'
     },
     {
         'columns': ['T MC Time', 'F MC Time'],
-        'alphabet-size': 3,
+        'alphabet': 3,
         'Selection': 'Constraints for 3 Character Alphabet'
     },
     {
         'columns': ['T MC Time', 'F MC Time'],
-        'alphabet-size': 4,
+        'alphabet': 4,
         'Selection': 'Constraints for 4 Character Alphabet'
     },
     {'is_blank': True},
@@ -842,8 +842,10 @@ def read_csv_data(file_path):
     # read csv rows
     log.debug('Reading in data from %s', file_path)
     with open(file_path, 'r') as csv_file:
-        reader = csv.DictReader(csv_file, delimiter='\t',
-                                quoting=csv.QUOTE_NONE, quotechar='|',
+        reader = csv.DictReader(csv_file,
+                                delimiter='\t',
+                                quoting=csv.QUOTE_NONE,
+                                quotechar='|',
                                 lineterminator='\n')
         for row in reader:
             n_row = list(row)
@@ -1015,9 +1017,9 @@ def filter_length(row, length=None):
            or GLOB.get('len-match').get(length).match(row.get('File'))
 
 
-def filter_alphabet_size(row, alphabet_size=None):
-    return alphabet_size is None \
-           or GLOB.get('alphabet-match').get(alphabet_size).match(row.get('File'))
+def filter_alphabet(row, alphabet=None):
+    return alphabet is None \
+           or GLOB.get('alphabet-match').get(alphabet).match(row.get('File'))
 
 
 def filter_operation(row, operation=None, exclusive=False, arg_type=None, ):
@@ -1090,7 +1092,7 @@ def compute_agreement(row, prefix):
 
 
 def get_per_diffs(rows, disagree=True, bins=None, branch=None,
-                  input_type=None, alphabet_size=None, length=None,
+                  input_type=None, alphabet=None, length=None,
                   operation=None, exclusive_op=None, op_arg_type=None,
                   predicate=None, pred_arg_type=None):
     # initialize structures
@@ -1106,7 +1108,7 @@ def get_per_diffs(rows, disagree=True, bins=None, branch=None,
         def per_diff_filter(row):
             return row.get('Op 1') != '' \
                     and filter_input_type(row, input_type) \
-                    and filter_alphabet_size(row, alphabet_size) \
+                   and filter_alphabet(row, alphabet) \
                     and filter_length(row, length) \
                     and filter_operation(row, operation, exclusive_op,
                                          op_arg_type) \
@@ -1140,7 +1142,7 @@ def get_per_diffs(rows, disagree=True, bins=None, branch=None,
     return results
 
 
-def get_agreement(rows, input_type=None, length=None, alphabet_size=None,
+def get_agreement(rows, input_type=None, length=None, alphabet=None,
                   operation=None, exclusive_op=None, op_arg_type=None,
                   predicate=None, pred_arg_type=None):
     # initialize result dictionary
@@ -1151,7 +1153,7 @@ def get_agreement(rows, input_type=None, length=None, alphabet_size=None,
         def agree_filter(count, row):
             return row.get('Op 1') != '' \
                     and filter_input_type(row, input_type) \
-                    and filter_alphabet_size(row, alphabet_size) \
+                   and filter_alphabet(row, alphabet) \
                     and filter_length(row, length) \
                     and filter_operation(row, operation, exclusive_op,
                                          op_arg_type) \
@@ -1181,7 +1183,7 @@ def analyze_accuracy(mc_rows):
                               disagree=entry.get('disagree'),
                               branch=entry.get('branch'),
                               input_type=entry.get('input_type'),
-                              alphabet_size=entry.get('alphabet-size'),
+                              alphabet=entry.get('alphabet'),
                               length=entry.get('length'),
                               operation=entry.get('operation'),
                               exclusive_op=entry.get('exclusive_op'),
@@ -1207,7 +1209,7 @@ def analyze_accuracy(mc_rows):
         else:
             row = get_agreement(mc_rows,
                                 input_type=entry.get('input_type'),
-                                alphabet_size=entry.get('alphabet-size'),
+                                alphabet=entry.get('alphabet'),
                                 length=entry.get('length'),
                                 operation=entry.get('operation'),
                                 exclusive_op=entry.get('exclusive_op'),
@@ -1225,7 +1227,7 @@ def analyze_accuracy(mc_rows):
 
 
 def get_perf_metrics(rows, column_suffixes, sum_cols=False, input_type=None,
-                     length=None, alphabet_size=None, operation=None,
+                     length=None, alphabet=None, operation=None,
                      exclusive_op=None, op_arg_type=None, predicate=None,
                      pred_arg_type=None):
     avg_results = dict()
@@ -1238,7 +1240,7 @@ def get_perf_metrics(rows, column_suffixes, sum_cols=False, input_type=None,
     def perf_metric_filter(values, row):
         return row.get('Op 1') != '' \
                and filter_input_type(row, input_type) \
-               and filter_alphabet_size(row, alphabet_size) \
+               and filter_alphabet(row, alphabet) \
                and filter_length(row, length)\
                and filter_operation(row, operation, exclusive_op, op_arg_type)\
                and filter_predicate(row, predicate, pred_arg_type)
@@ -1302,7 +1304,7 @@ def process_perf_entries(rows, entries, column_suffixes=None):
             results = get_perf_metrics(rows,
                                        column_suffixes,
                                        input_type=entry.get('input_type'),
-                                       alphabet_size=entry.get('alphabet-size'),
+                                       alphabet=entry.get('alphabet'),
                                        length=entry.get('length'),
                                        operation=entry.get('operation'),
                                        exclusive_op=entry.get('exclusive_op'),
@@ -1413,7 +1415,7 @@ def analyze_comb_perf(mc_time_rows):
             results = get_perf_metrics(mc_time_rows,
                                        [['T MC Time', 'F MC Time'], 'Acc Time'],
                                        input_type=entry.get('input_type'),
-                                       alphabet_size=entry.get('alphabet-size'),
+                                       alphabet=entry.get('alphabet'),
                                        length=entry.get('length'),
                                        operation=entry.get('operation'),
                                        exclusive_op=entry.get('exclusive_op'),
@@ -1459,7 +1461,7 @@ def analyze_acc_vs_mc_perf(mc_rows, mc_time_rows):
                               disagree=entry.get('disagree'),
                               branch=entry.get('branch'),
                               input_type=entry.get('input_type'),
-                              alphabet_size=entry.get('alphabet-size'),
+                              alphabet=entry.get('alphabet'),
                               length=entry.get('length'),
                               operation=entry.get('operation'),
                               exclusive_op=entry.get('exclusive_op'),
