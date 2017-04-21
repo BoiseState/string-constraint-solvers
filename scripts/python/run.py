@@ -90,6 +90,26 @@ RESULT_GROUPS = {
             '--result-files', 'all*',
             '--single-out-file'
         ]
+    },
+    'all-AE': {
+        'generate': [
+            '--ops-depth', '2',
+            '--alphabet', 'A-E',
+            '--no-duplicates',
+            '--unknown-string',
+            '--uneven',
+            '--inputs', 'ABCDABCDAB',
+            # '--single-graph',
+            '--operations', 'concat', 'delete', 'replace-char', 'reverse',
+            'contains', 'equals'
+        ],
+        'solve': [
+            '--mc-reporter'
+        ],
+        'gather': [
+            '--result-files', 'all*',
+            '--single-out-file'
+        ]
     }
 }
 
@@ -149,7 +169,7 @@ def get_options(arguments):
                             nargs='+',
                             default=list(),
                             help='List of result groups to gather results: '
-                                 'all_03, all_04, all_05')
+                                 'all_AB, all_AC, all_AD, all_AE')
 
     run_parser.add_argument('-l',
                             '--min-length',
