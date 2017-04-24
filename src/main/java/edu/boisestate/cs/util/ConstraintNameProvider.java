@@ -1,4 +1,4 @@
-package edu.boisestate.cs.old;
+package edu.boisestate.cs.util;
 
 import edu.boisestate.cs.graph.PrintConstraint;
 import org.jgrapht.ext.VertexNameProvider;

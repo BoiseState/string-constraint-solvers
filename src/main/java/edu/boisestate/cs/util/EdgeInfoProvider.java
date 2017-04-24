@@ -1,4 +1,4 @@
-package edu.boisestate.cs.old;
+package edu.boisestate.cs.util;
 
 import org.jgrapht.ext.EdgeNameProvider;
 import edu.boisestate.cs.graph.SymbolicEdge;
