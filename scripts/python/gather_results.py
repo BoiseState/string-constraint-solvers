@@ -95,12 +95,12 @@ OP_GROUPS = {
         'toString',
         'trimToSize'
     ],
-    '+ Struct Alt': [
+    'Addative': [
         'append',
         'concat',
         'insert'
     ],
-    '- Struct Alt': [
+    'Substractive': [
         'delete',
         'deleteCharAt',
         'setLength',
@@ -108,18 +108,18 @@ OP_GROUPS = {
         'substring',
         'trim'
     ],
-    'Substitution': [
+    'Substitutive': [
         'replace',
         'setCharAt',
         'toLowerCase',
         'toUpperCase'
     ],
-    'Contains Predicate': [
+    'Partial Match': [
         'contains',
         'endsWith',
         'startsWith'
     ],
-    'Equals Predicate': [
+    'Full Match': [
         'equals',
         'contentEquals',
         'equalsIgnoreCase',
@@ -254,14 +254,14 @@ def get_solver_key(x):
         return 6
 
 
-def get_op_string(ops_list, op_num):
+def get_op_string(ops_list=None, op_num=None, op=None):
     op_str = ''
     op_arg_str = ''
-    op = None
-    if ops_list[1].op == 'contains' and len(ops_list) > (2 + op_num):
-        op = ops_list[(1 + op_num)]
-    elif len(ops_list) > (1 + op_num):
-        op = ops_list[op_num]
+    if op is None:
+        if ops_list[1].op == 'contains' and len(ops_list) > (2 + op_num):
+            op = ops_list[(1 + op_num)]
+        elif len(ops_list) > (1 + op_num):
+            op = ops_list[op_num]
 
     if op is not None:
         op_str = op.op
@@ -378,7 +378,7 @@ def get_all_op_data(data_map, solvers):
         # for each op info in unbounded ops list
         for i, op_info in enumerate(ops_lists.get('unbounded')):
             if op_info.op_id in return_data:
-                op_map = return_data.get(op_info.op_id)
+                op_map = return_data.get(op_info.op_id)[0]
                 op_map.get('const_ids').add(const_id)
             else:
                 # add op info data to new op map
@@ -401,7 +401,7 @@ def get_all_op_data(data_map, solvers):
                     op_map['time'][solver] = ops_lists.get(solver)[i].time
 
                 # add op map to solver op data
-                return_data[op_info.op_id] = op_map
+                return_data[op_info.op_id] = (op_map, op_info)
 
     # return data
     return return_data
@@ -593,7 +593,8 @@ def produce_op_time_csv_data(data_map, solvers):
     # for each operation id
     for op_id in op_data.keys():
         # get op map
-        op_map = op_data[op_id]
+        op_map, op_info = op_data[op_id]
+        op_str, op_arg = get_op_string(op=op_info)
         # initialize row
         row = dict()
         row['Op Id'] = op_id
@@ -601,7 +602,7 @@ def produce_op_time_csv_data(data_map, solvers):
         row['Op Group'] = op_map.get('op_group')
         row['In Type'] = op_map.get('input_type')
         row['Base Id'] = op_map.get('base_id')
-        row['Args'] = ', '.join(op_map.get('args'))
+        row['Args'] = op_arg
         for solver in solvers:
             prefix = solver.upper()[0]
             row[prefix + ' Op Time'] = op_map.get('time').get(solver)

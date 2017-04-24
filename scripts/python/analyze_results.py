@@ -212,33 +212,61 @@ PER_DIFF_ENTRIES = (
         'op_arg_type': 'Simple',
         'caption': 'Frequency of Accuracy Difference for Constraints Including'
                    ' $\\mathtt{concat}(Simple)$ Operations',
-        'label': 'acc_diff_incl_concat_con'
+        'label': 'acc_diff_incl_concat_simp'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Even',
         'caption': 'Frequency of Accuracy Difference for Constraints Including'
                    ' $\\mathtt{concat}(Even)$ Operations',
-        'label': 'acc_diff_incl_concat_simp'
+        'label': 'acc_diff_incl_concat_even'
     },
     {
         'operation': 'concat',
         'op_arg_type': 'Uneven',
         'caption': 'Frequency of Accuracy Difference for Constraints Including'
                    ' $\\mathtt{concat}(Uneven)$ Operations',
-        'label': 'acc_diff_incl_concat_branch'
+        'label': 'acc_diff_incl_concat_uneven'
     },
     {
         'operation': 'delete',
         'caption': 'Frequency of Accuracy Difference for Constraints Including'
                    ' $\\mathtt{delete}$ Operations',
-        'label': 'acc_diff_incl_delete'
+        'label': 'acc_diff_incl_delete_all'
+    },
+    {
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'caption': 'Frequency of Accuracy Difference for Constraints Including'
+                   ' $\\mathtt{delete}(same)$ Operations',
+        'label': 'acc_diff_incl_delete_same'
+    },
+    {
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'caption': 'Frequency of Accuracy Difference for Constraints Including'
+                   ' $\\mathtt{delete}(diff)$ Operations',
+        'label': 'acc_diff_incl_delete_diff'
     },
     {
         'operation': 'replace',
         'caption': 'Frequency of Accuracy Difference for Constraints Including'
                    ' $\\mathtt{replace}$ Operations',
-        'label': 'acc_diff_incl_replace'
+        'label': 'acc_diff_incl_replace_all'
+    },
+    {
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'caption': 'Frequency of Accuracy Difference for Constraints Including'
+                   ' $\\mathtt{replace}(same)$ Operations',
+        'label': 'acc_diff_incl_replace_same'
+    },
+    {
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'caption': 'Frequency of Accuracy Difference for Constraints Including'
+                   ' $\\mathtt{replace}(diff)$ Operations',
+        'label': 'acc_diff_incl_replace_diff'
     },
     {
         'operation': 'reverse',
@@ -282,14 +310,46 @@ PER_DIFF_ENTRIES = (
         'exclusive_op': True,
         'caption': 'Frequency of Accuracy Difference for Constraints Only'
                    ' $\\mathtt{delete}$ Operations',
-        'label': 'acc_diff_excl_delete'
+        'label': 'acc_diff_excl_delete_all'
+    },
+    {
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'exclusive_op': True,
+        'caption': 'Frequency of Accuracy Difference for Constraints Only'
+                   ' $\\mathtt{delete}(same)$ Operations',
+        'label': 'acc_diff_excl_delete_same'
+    },
+    {
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'exclusive_op': True,
+        'caption': 'Frequency of Accuracy Difference for Constraints Only'
+                   ' $\\mathtt{delete}(diff)$ Operations',
+        'label': 'acc_diff_excl_delete_diff'
     },
     {
         'operation': 'replace',
         'exclusive_op': True,
         'caption': 'Frequency of Accuracy Difference for Constraints Only'
                    ' $\\mathtt{replace}$ Operations',
-        'label': 'acc_diff_excl_replace'
+        'label': 'acc_diff_excl_replace_all'
+    },
+    {
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'exclusive_op': True,
+        'caption': 'Frequency of Accuracy Difference for Constraints Only'
+                   ' $\\mathtt{replace}(same)$ Operations',
+        'label': 'acc_diff_excl_replace_same'
+    },
+    {
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'exclusive_op': True,
+        'caption': 'Frequency of Accuracy Difference for Constraints Only'
+                   ' $\\mathtt{replace}(diff)$ Operations',
+        'label': 'acc_diff_excl_replace_diff'
     },
     {
         'operation': 'reverse',
@@ -430,8 +490,28 @@ AGREE_ENTRIES = (
         'Selection': 'Includes $\\mathtt{delete}$'
     },
     {
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'Selection': 'Includes $\\mathtt{delete}(same)$'
+    },
+    {
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'Selection': 'Includes $\\mathtt{delete}(diff)$'
+    },
+    {
         'operation': 'replace',
         'Selection': 'Includes $\\mathtt{replace}$'
+    },
+    {
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'Selection': 'Includes $\\mathtt{replace}(same)$'
+    },
+    {
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'Selection': 'Includes $\\mathtt{replace}(diff)$'
     },
     {
         'operation': 'reverse',
@@ -467,9 +547,33 @@ AGREE_ENTRIES = (
         'Selection': 'Only $\\mathtt{delete}$'
     },
     {
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'exclusive_op': True,
+        'Selection': 'Only $\\mathtt{delete}(same)$'
+    },
+    {
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'exclusive_op': True,
+        'Selection': 'Only $\\mathtt{delete}(diff)$'
+    },
+    {
         'operation': 'replace',
         'exclusive_op': True,
         'Selection': 'Only $\\mathtt{replace}$'
+    },
+    {
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'exclusive_op': True,
+        'Selection': 'Only $\\mathtt{replace}(same)$'
+    },
+    {
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'exclusive_op': True,
+        'Selection': 'Only $\\mathtt{replace}(diff)$'
     },
     {
         'operation': 'reverse',
@@ -522,52 +626,52 @@ MC_TIME_ENTRIES = (
         'mc_time_branch': Branches.BOTH,
         'Selection': 'All Constraints'
     },
-    # {'is_blank': True},
-    # {
-    #     'mc_time_branch': Branches.TRUE,
-    #     'Selection': '\\textit{true} Branches'
-    # },
-    # {
-    #     'mc_time_branch': Branches.FALSE,
-    #     'Selection': '\\textit{false} Branches'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'alphabet': 'AB',
-    #     'Selection': '$|\\Sigma| = 2$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'alphabet': 'AC',
-    #     'Selection': '$|\\Sigma| = 3$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'alphabet': 'AE',
-    #     'Selection': '$|\\Sigma| = 5$'
-    # },
+    {'is_blank': True},
+    {
+        'mc_time_branch': Branches.TRUE,
+        'Selection': '\\textit{true} Branches'
+    },
+    {
+        'mc_time_branch': Branches.FALSE,
+        'Selection': '\\textit{false} Branches'
+    },
+    {'is_blank': True},
+    {
+        'mc_time_branch': Branches.BOTH,
+        'alphabet': 'AB',
+        'Selection': '$|\\Sigma| = 2$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'alphabet': 'AC',
+        'Selection': '$|\\Sigma| = 3$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'alphabet': 'AE',
+        'Selection': '$|\\Sigma| = 5$'
+    },
     # {
     #     'mc_time_branch': Branches.BOTH,
     #     'alphabet': 'AB',
     #     'Selection': '$|\\Sigma| = 4$'
     # },
-    # {'is_blank': True},
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'length': 1,
-    #     'Selection': 'Length 1'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'length': 2,
-    #     'Selection': 'Length 2'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'length': 3,
-    #     'Selection': 'Length 3'
-    # },
+    {'is_blank': True},
+    {
+        'mc_time_branch': Branches.BOTH,
+        'length': 1,
+        'Selection': 'Length 1'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'length': 2,
+        'Selection': 'Length 2'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'length': 3,
+        'Selection': 'Length 3'
+    },
     # {
     #     'mc_time_branch': Branches.BOTH,
     #     'length': 4,
@@ -581,238 +685,298 @@ SOLVE_TIME_ENTRIES = (
         'pred_time_branch': Branches.BOTH,
         'Selection': 'All'
     },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.TRUE,
-    #     'Selection': '\\textit{true} Branches'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.FALSE,
-    #     'Selection': '\\textit{false} Branches'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AB',
-    #     'Selection': '$|\\Sigma| = 2$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AC',
-    #     'Selection': '$|\\Sigma| = 3$'
-    # },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.TRUE,
+        'Selection': '\\textit{true} Branches'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.FALSE,
+        'Selection': '\\textit{false} Branches'
+    },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'alphabet': 'AB',
+        'Selection': '$|\\Sigma| = 2$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'alphabet': 'AC',
+        'Selection': '$|\\Sigma| = 3$'
+    },
     # {
     #     'acc_time': True,
     #     'pred_time_branch': Branches.BOTH,
     #     'alphabet': 'AD',
     #     'Selection': '$|\\Sigma| = 4$'
     # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AE',
-    #     'Selection': '$|\\Sigma| = 5$'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'length': 1,
-    #     'Selection': 'Length 1'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'length': 2,
-    #     'Selection': 'Length 2'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'length': 3,
-    #     'Selection': 'Length 3'
-    # },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'alphabet': 'AE',
+        'Selection': '$|\\Sigma| = 5$'
+    },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'length': 1,
+        'Selection': 'Length 1'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'length': 2,
+        'Selection': 'Length 2'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'length': 3,
+        'Selection': 'Length 3'
+    },
     # {
     #     'acc_time': True,
     #     'pred_time_branch': Branches.BOTH,
     #     'length': 4,
     #     'Selection': 'Length 4'
     # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'input_type': 'Simple',
-    #     'Selection': '\\textit{Simple}'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'input_type': 'Even',
-    #     'Selection': '\\textit{Even}'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'input_type': 'Uneven',
-    #     'Selection': '\\textit{Uneven}'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'Selection': 'Includes $\\mathtt{concat}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Simple',
-    #     'Selection': 'Includes $\\mathtt{concat}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Even',
-    #     'Selection': 'Includes $\\mathtt{concat}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Uneven',
-    #     'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'delete',
-    #     'Selection': 'Includes $\\mathtt{delete}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'replace',
-    #     'Selection': 'Includes $\\mathtt{replace}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'reverse',
-    #     'Selection': 'Includes $\\mathtt{reverse}$'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Simple',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Even',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Uneven',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'delete',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{delete}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'replace',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{replace}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'reverse',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{reverse}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'Selection': '$\\mathtt{contains}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Simple',
-    #     'Selection': '$\\mathtt{contains}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Even',
-    #     'Selection': '$\\mathtt{contains}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Uneven',
-    #     'Selection': '$\\mathtt{contains}(Uneven)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'Selection': '$\\mathtt{equals}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Simple',
-    #     'Selection': '$\\mathtt{equals}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Even',
-    #     'Selection': '$\\mathtt{equals}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Uneven',
-    #     'Selection': '$\\mathtt{equals}(Uneven)$'
-    # }
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'input_type': 'Simple',
+        'Selection': '\\textit{Simple}'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'input_type': 'Even',
+        'Selection': '\\textit{Even}'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'input_type': 'Uneven',
+        'Selection': '\\textit{Uneven}'
+    },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'Selection': 'Includes $\\mathtt{concat}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'Selection': 'Includes $\\mathtt{concat}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'Selection': 'Includes $\\mathtt{concat}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'Selection': 'Includes $\\mathtt{delete}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'Selection': 'Includes $\\mathtt{delete}(same)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'Selection': 'Includes $\\mathtt{delete}(diff)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'Selection': 'Includes $\\mathtt{replace}(same)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'Selection': 'Includes $\\mathtt{replace}(diff)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'Selection': 'Includes $\\mathtt{replace}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'reverse',
+        'Selection': 'Includes $\\mathtt{reverse}$'
+    },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{delete}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'exclusive_op': True,
+        'Selection': 'Only $\\mathtt{delete}(same)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'exclusive_op': True,
+        'Selection': 'Only $\\mathtt{delete}(diff)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{replace}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'exclusive_op': True,
+        'Selection': 'Only $\\mathtt{replace}(same)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'exclusive_op': True,
+        'Selection': 'Only $\\mathtt{replace}(diff)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'reverse',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{reverse}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'Selection': '$\\mathtt{contains}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Simple',
+        'Selection': '$\\mathtt{contains}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Even',
+        'Selection': '$\\mathtt{contains}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Uneven',
+        'Selection': '$\\mathtt{contains}(Uneven)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'Selection': '$\\mathtt{equals}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Simple',
+        'Selection': '$\\mathtt{equals}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Even',
+        'Selection': '$\\mathtt{equals}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Uneven',
+        'Selection': '$\\mathtt{equals}(Uneven)$'
+    }
 )
 
 OP_TIME_ENTRIES = (
@@ -872,6 +1036,195 @@ OP_TIME_ENTRIES = (
     {'is_blank': True},
     {
         'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'Selection': '$\\mathtt{concat}(Simple)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{concat}(Simple)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{concat}(Simple)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{concat}(Simple)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'concat',
+    #     'op_arg_type': 'Simple',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{concat}(Simple)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'length': 1,
+        'Selection': '$\\mathtt{concat}(Simple)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'length': 2,
+        'Selection': '$\\mathtt{concat}(Simple)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'length': 3,
+        'Selection': '$\\mathtt{concat}(Simple)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'concat',
+    #     'op_arg_type': 'Simple',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{concat}(Simple)$ for Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'Selection': '$\\mathtt{concat}(Even)$'
+    },
+    {
+        '(Even)op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{concat}(Even)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{concat}(Even)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{concat}(Even)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'concat',
+    #     'op_arg_type': 'Even',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{concat}(Even)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'length': 1,
+        'Selection': '$\\mathtt{concat}(Even)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'length': 2,
+        'Selection': '$\\mathtt{concat}(Even)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'length': 3,
+        'Selection': '$\\mathtt{concat}(Even)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'concat',
+    #     'op_arg_type': 'Even',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{concat}(Even)$ for Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'Selection': '$\\mathtt{concat}(Uneven)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{concat}(Uneven)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{concat}(Uneven)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{concat}(Uneven)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'concat',
+    #     'op_arg_type': 'Uneven',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{concat}(Uneven)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'length': 1,
+        'Selection': '$\\mathtt{concat}(Uneven)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'length': 2,
+        'Selection': '$\\mathtt{concat}(Uneven)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'length': 3,
+        'Selection': '$\\mathtt{concat}(Uneven)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'concat',
+    #     'op_arg_type': 'Uneven',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{concat}(Uneven)$ for Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'op_time': True,
         'operation': 'delete',
         'Selection': '$\\mathtt{delete}$'
     },
@@ -926,6 +1279,132 @@ OP_TIME_ENTRIES = (
     {'is_blank': True},
     {
         'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'Selection': '$\\mathtt{delete}(same)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{delete}(same)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{delete}(same)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{delete}(same)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'delete',
+    #     'op_arg_type': 'same',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{delete}(same)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'length': 1,
+        'Selection': '$\\mathtt{delete}(same)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'length': 2,
+        'Selection': '$\\mathtt{delete}(same)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'length': 3,
+        'Selection': '$\\mathtt{delete}(same)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'delete',
+    #     'op_arg_type': 'same',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{delete}(same)$ for Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'Selection': '$\\mathtt{delete}(diff)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{delete}(diff)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{delete}(diff)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{delete}(diff)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'delete',
+    #     'op_arg_type': 'diff',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{delete}(diff)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'length': 1,
+        'Selection': '$\\mathtt{delete}(diff)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'length': 2,
+        'Selection': '$\\mathtt{delete}(diff)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'length': 3,
+        'Selection': '$\\mathtt{delete}(diff)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'delete',
+    #     'op_arg_type': 'diff',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{delete}(diff)$ for Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'op_time': True,
         'operation': 'replace',
         'Selection': '$\\mathtt{replace}$'
     },
@@ -976,6 +1455,132 @@ OP_TIME_ENTRIES = (
     #     'operation': 'replace',
     #     'length': 4,
     #     'Selection': '$\\mathtt{replace}$ for Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'Selection': '$\\mathtt{replace}(same)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{replace}(same)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{replace}(same)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{replace}(same)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'replace',
+    #     'op_arg_type': 'same',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{replace}(same)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'length': 1,
+        'Selection': '$\\mathtt{replace}(same)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'length': 2,
+        'Selection': '$\\mathtt{replace}(same)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'length': 3,
+        'Selection': '$\\mathtt{replace}(same)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'replace',
+    #     'op_arg_type': 'same',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{replace}(same)$ for Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'Selection': '$\\mathtt{replace}(diff)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{replace}(diff)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{replace}(diff)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{replace}(diff)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'replace',
+    #     'op_arg_type': 'diff',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{replace}(diff)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'length': 1,
+        'Selection': '$\\mathtt{replace}(diff)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'length': 2,
+        'Selection': '$\\mathtt{replace}(diff)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'length': 3,
+        'Selection': '$\\mathtt{replace}(diff)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'replace',
+    #     'op_arg_type': 'diff',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{replace}(diff)$ for Length 4'
     # },
     {'is_blank': True},
     {
@@ -1088,6 +1693,195 @@ OP_TIME_ENTRIES = (
     {'is_blank': True},
     {
         'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Simple',
+        'Selection': '$\\mathtt{contains}(Simple)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Simple',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{contains}(Simple)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Simple',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{contains}(Simple)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Simple',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{contains}(Simple)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'contains',
+    #     'op_arg_type': 'Simple',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{contains}(Simple)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Simple',
+        'length': 1,
+        'Selection': '$\\mathtt{contains}(Simple)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Simple',
+        'length': 2,
+        'Selection': '$\\mathtt{contains}(Simple)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Simple',
+        'length': 3,
+        'Selection': '$\\mathtt{contains}(Simple)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'contains',
+    #     'op_arg_type': 'Simple',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{contains}(Simple)$ for Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Even',
+        'Selection': '$\\mathtt{contains}(Even)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Even',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{contains}(Even)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Even',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{contains}(Even)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Even',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{contains}(Even)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'contains',
+    #     'op_arg_type': 'Even',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{contains}(Even)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Even',
+        'length': 1,
+        'Selection': '$\\mathtt{contains}(Even)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Even',
+        'length': 2,
+        'Selection': '$\\mathtt{contains}(Even)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Even',
+        'length': 3,
+        'Selection': '$\\mathtt{contains}(Even)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'contains',
+    #     'op_arg_type': 'Even',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{contains}(Even)$ for Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Uneven',
+        'Selection': '$\\mathtt{contains}(Uneven)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Uneven',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{contains}(Uneven)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Uneven',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{contains}(Uneven)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Uneven',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{contains}(Uneven)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'contains',
+    #     'op_arg_type': 'Uneven',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{contains}(Uneven)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Uneven',
+        'length': 1,
+        'Selection': '$\\mathtt{contains}(Uneven)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Uneven',
+        'length': 2,
+        'Selection': '$\\mathtt{contains}(Uneven)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'contains',
+        'op_arg_type': 'Uneven',
+        'length': 3,
+        'Selection': '$\\mathtt{contains}(Uneven)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'contains',
+    #     'op_arg_type': 'Uneven',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{contains}(Uneven)$ for Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'op_time': True,
         'operation': 'equals',
         'Selection': '$\\mathtt{equals}$'
     },
@@ -1139,9 +1933,1038 @@ OP_TIME_ENTRIES = (
     #     'length': 4,
     #     'Selection': '$\\mathtt{equals}$ for Length 4'
     # }
+    {'is_blank': True},
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Simple',
+        'Selection': '$\\mathtt{equals}(Simple)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Simple',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{equals}(Simple)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Simple',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{equals}(Simple)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Simple',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{equals}(Simple)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'equals',
+    #     'op_arg_type': 'Simple',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{equals}(Simple)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Simple',
+        'length': 1,
+        'Selection': '$\\mathtt{equals}(Simple)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Simple',
+        'length': 2,
+        'Selection': '$\\mathtt{equals}(Simple)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Simple',
+        'length': 3,
+        'Selection': '$\\mathtt{equals}(Simple)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'equals',
+    #     'op_arg_type': 'Simple',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{equals}(Simple)$ for Length 4'
+    # }
+    {'is_blank': True},
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Even',
+        'Selection': '$\\mathtt{equals}(Even)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Even',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{equals}(Even)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Even',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{equals}(Even)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Even',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{equals}(Even)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'equals',
+    #     'op_arg_type': 'Even',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{equals}(Even)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Even',
+        'length': 1,
+        'Selection': '$\\mathtt{equals}(Even)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Even',
+        'length': 2,
+        'Selection': '$\\mathtt{equals}(Even)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Even',
+        'length': 3,
+        'Selection': '$\\mathtt{equals}(Even)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'equals',
+    #     'op_arg_type': 'Even',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{equals}(Even)$ for Length 4'
+    # }
+    {'is_blank': True},
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Uneven',
+        'Selection': '$\\mathtt{equals}(Uneven)$'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Uneven',
+        'alphabet': 'AB',
+        'Selection': '$\\mathtt{equals}(Uneven)$ where $|\\Sigma| = 2$'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Uneven',
+        'alphabet': 'AC',
+        'Selection': '$\\mathtt{equals}(Uneven)$ where $|\\Sigma| = 3$'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Uneven',
+        'alphabet': 'AD',
+        'Selection': '$\\mathtt{equals}(Uneven)$ where $|\\Sigma| = 4$'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'equals',
+    #     'op_arg_type': 'Uneven',
+    #     'alphabet': 'AE',
+    #     'Selection': '$\\mathtt{equals}(Uneven)$ where $|\\Sigma| = 5$'
+    # },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Uneven',
+        'length': 1,
+        'Selection': '$\\mathtt{equals}(Uneven)$ for Length 1'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Uneven',
+        'length': 2,
+        'Selection': '$\\mathtt{equals}(Uneven)$ for Length 2'
+    },
+    {
+        'op_time': True,
+        'operation': 'equals',
+        'op_arg_type': 'Uneven',
+        'length': 3,
+        'Selection': '$\\mathtt{equals}(Uneven)$ for Length 3'
+    },
+    # {
+    #     'op_time': True,
+    #     'operation': 'equals',
+    #     'op_arg_type': 'Uneven',
+    #     'length': 4,
+    #     'Selection': '$\\mathtt{equals}(Uneven)$ for Length 4'
+    # }
 )
 
 COMB_TIME_ENTRIES = (
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'Selection': 'All'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.TRUE,
+        'pred_time_branch': Branches.TRUE,
+        'Selection': '\\textit{true} Branches'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.FALSE,
+        'pred_time_branch': Branches.FALSE,
+        'Selection': '\\textit{false} Branches'
+    },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'alphabet': 'AB',
+        'Selection': '$|\\Sigma| = 2$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'alphabet': 'AC',
+        'Selection': '$|\\Sigma| = 3$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'alphabet': 'AD',
+        'Selection': '$|\\Sigma| = 4$'
+    },
+    # {
+    #     'acc_time': True,
+    #     'mc_time_branch': Branches.BOTH,
+    #     'pred_time_branch': Branches.BOTH,
+    #     'alphabet': 'AE',
+    #     'Selection': '$|\\Sigma| = 5$'
+    # },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'length': 1,
+        'Selection': 'Length 1'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'length': 2,
+        'Selection': 'Length 2'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'length': 3,
+        'Selection': 'Length 3'
+    },
+    # {
+    #     'acc_time': True,
+    #     'mc_time_branch': Branches.BOTH,
+    #     'pred_time_branch': Branches.BOTH,
+    #     'length': 4,
+    #     'Selection': 'Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'input_type': 'Simple',
+        'Selection': '\\textit{Simple}'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'input_type': 'Even',
+        'Selection': '\\textit{Even}'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'input_type': 'Uneven',
+        'Selection': '\\textit{Uneven}'
+    },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'Selection': 'Includes $\\mathtt{concat}$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'Selection': 'Includes $\\mathtt{concat}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'Selection': 'Includes $\\mathtt{concat}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'Selection': 'Includes $\\mathtt{delete}$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'Selection': 'Includes $\\mathtt{delete}(same)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'Selection': 'Includes $\\mathtt{delete}(diff)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'Selection': 'Includes $\\mathtt{replace}$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'Selection': 'Includes $\\mathtt{replace}(same)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'Selection': 'Includes $\\mathtt{replace}(diff)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'reverse',
+        'Selection': 'Includes $\\mathtt{reverse}$'
+    },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{delete}$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{delete}(same)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{delete}(diff)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{replace}$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{replace}(same)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{replace}(diff)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'reverse',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{reverse}$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'Selection': '$\\mathtt{contains}$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Simple',
+        'Selection': '$\\mathtt{contains}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Even',
+        'Selection': '$\\mathtt{contains}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Uneven',
+        'Selection': '$\\mathtt{contains}(Uneven)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'Selection': '$\\mathtt{equals}$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Simple',
+        'Selection': '$\\mathtt{equals}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Even',
+        'Selection': '$\\mathtt{equals}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'mc_time_branch': Branches.BOTH,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Uneven',
+        'Selection': '$\\mathtt{equals}(Uneven)$'
+    }
+)
+
+PER_DIFF_VS_MC_TIME_ENTRIES = (
+    {
+        'mc_time_branch': Branches.BOTH,
+        'Selection': 'All'
+    },
+    {
+        'mc_time_branch': Branches.TRUE,
+        'Selection': '\\textit{true} Branches'
+    },
+    {
+        'mc_time_branch': Branches.FALSE,
+        'Selection': '\\textit{false} Branches'
+    },
+    {'is_blank': True},
+    {
+        'mc_time_branch': Branches.BOTH,
+        'alphabet': 'AB',
+        'Selection': '$|\\Sigma| = 2$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'alphabet': 'AC',
+        'Selection': '$|\\Sigma| = 3$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'alphabet': 'AD',
+        'Selection': '$|\\Sigma| = 4$'
+    },
+    # {
+    #     'mc_time_branch': Branches.BOTH,
+    #     'alphabet': 'AE',
+    #     'Selection': '$|\\Sigma| = 5$'
+    # },
+    {'is_blank': True},
+    {
+        'mc_time_branch': Branches.BOTH,
+        'length': 1,
+        'Selection': 'Length 1'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'length': 2,
+        'Selection': 'Length 2'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'length': 3,
+        'Selection': 'Length 3'
+    },
+    # {
+    #     'mc_time_branch': Branches.BOTH,
+    #     'length': 4,
+    #     'Selection': 'Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'mc_time_branch': Branches.BOTH,
+        'input_type': 'Simple',
+        'Selection': '\\textit{Simple}'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'input_type': 'Even',
+        'Selection': '\\textit{Even}'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'input_type': 'Uneven',
+        'Selection': '\\textit{Uneven}'
+    },
+    {'is_blank': True},
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'Selection': 'Includes $\\mathtt{concat}$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'Selection': 'Includes $\\mathtt{concat}(Simple)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'Selection': 'Includes $\\mathtt{concat}(Even)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'Selection': 'Includes $\\mathtt{delete}$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'Selection': 'Includes $\\mathtt{delete}(same)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'Selection': 'Includes $\\mathtt{delete}(diff)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'Selection': 'Includes $\\mathtt{replace}$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'Selection': 'Includes $\\mathtt{replace}(same)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'Selection': 'Includes $\\mathtt{replace}(diff)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'reverse',
+        'Selection': 'Includes $\\mathtt{reverse}$'
+    },
+    {'is_blank': True},
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Simple)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Even)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{delete}$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{replace}$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'operation': 'reverse',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{reverse}$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'Selection': '$\\mathtt{contains}$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Simple',
+        'Selection': '$\\mathtt{contains}(Simple)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Even',
+        'Selection': '$\\mathtt{contains}(Even)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Uneven',
+        'Selection': '$\\mathtt{contains}(Uneven)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'Selection': '$\\mathtt{equals}$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Simple',
+        'Selection': '$\\mathtt{equals}(Simple)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Even',
+        'Selection': '$\\mathtt{equals}(Even)$'
+    },
+    {
+        'mc_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Uneven',
+        'Selection': '$\\mathtt{equals}(Uneven)$'
+    }
+)
+
+PER_DIFF_VS_SOLVE_TIME_ENTRIES = (
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'Selection': 'All'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.TRUE,
+        'Selection': '\\textit{true} Branches'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.FALSE,
+        'Selection': '\\textit{false} Branches'
+    },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'alphabet': 'AB',
+        'Selection': '$|\\Sigma| = 2$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'alphabet': 'AC',
+        'Selection': '$|\\Sigma| = 3$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'alphabet': 'AD',
+        'Selection': '$|\\Sigma| = 4$'
+    },
+    # {
+    #     'acc_time': True,
+    #     'pred_time_branch': Branches.BOTH,
+    #     'alphabet': 'AE',
+    #     'Selection': '$|\\Sigma| = 5$'
+    # },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'length': 1,
+        'Selection': 'Length 1'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'length': 2,
+        'Selection': 'Length 2'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'length': 3,
+        'Selection': 'Length 3'
+    },
+    # {
+    #     'acc_time': True,
+    #     'pred_time_branch': Branches.BOTH,
+    #     'length': 4,
+    #     'Selection': 'Length 4'
+    # },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'input_type': 'Simple',
+        'Selection': '\\textit{Simple}'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'input_type': 'Even',
+        'Selection': '\\textit{Even}'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'input_type': 'Uneven',
+        'Selection': '\\textit{Uneven}'
+    },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'Selection': 'Includes $\\mathtt{concat}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'Selection': 'Includes $\\mathtt{concat}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'Selection': 'Includes $\\mathtt{concat}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'Selection': 'Includes $\\mathtt{delete}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'same',
+        'Selection': 'Includes $\\mathtt{delete}(same)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'op_arg_type': 'diff',
+        'Selection': 'Includes $\\mathtt{delete}(diff)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'Selection': 'Includes $\\mathtt{replace}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'same',
+        'Selection': 'Includes $\\mathtt{replace}(same)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'op_arg_type': 'diff',
+        'Selection': 'Includes $\\mathtt{replace}(diff)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'reverse',
+        'Selection': 'Includes $\\mathtt{reverse}$'
+    },
+    {'is_blank': True},
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Simple',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Even',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'concat',
+        'op_arg_type': 'Uneven',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'delete',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{delete}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'replace',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{replace}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'operation': 'reverse',
+        'exclusive_op': True,
+        'Selection': 'Includes $\\mathtt{reverse}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'Selection': '$\\mathtt{contains}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Simple',
+        'Selection': '$\\mathtt{contains}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Even',
+        'Selection': '$\\mathtt{contains}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'contains',
+        'pred_arg_type': 'Uneven',
+        'Selection': '$\\mathtt{contains}(Uneven)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'Selection': '$\\mathtt{equals}$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Simple',
+        'Selection': '$\\mathtt{equals}(Simple)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Even',
+        'Selection': '$\\mathtt{equals}(Even)$'
+    },
+    {
+        'acc_time': True,
+        'pred_time_branch': Branches.BOTH,
+        'predicate': 'equals',
+        'pred_arg_type': 'Uneven',
+        'Selection': '$\\mathtt{equals}(Uneven)$'
+    }
+)
+
+PER_DIFF_VS_COMB_TIME_ENTRIES = (
     {
         'acc_time': True,
         'mc_time_branch': Branches.BOTH,
@@ -1175,13 +2998,13 @@ COMB_TIME_ENTRIES = (
     #     'alphabet': 'AC',
     #     'Selection': '$|\\Sigma| = 3$'
     # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AD',
-    #     'Selection': '$|\\Sigma| = 4$'
-    # },
+    # # {
+    # #     'acc_time': True,
+    # #     'mc_time_branch': Branches.BOTH,
+    # #     'pred_time_branch': Branches.BOTH,
+    # #     'alphabet': 'AD',
+    # #     'Selection': '$|\\Sigma| = 4$'
+    # # },
     # {
     #     'acc_time': True,
     #     'mc_time_branch': Branches.BOTH,
@@ -1283,721 +3106,17 @@ COMB_TIME_ENTRIES = (
     #     'acc_time': True,
     #     'mc_time_branch': Branches.BOTH,
     #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'replace',
-    #     'Selection': 'Includes $\\mathtt{replace}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'reverse',
-    #     'Selection': 'Includes $\\mathtt{reverse}$'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Simple',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Even',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Uneven',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
+    #     'operation': 'delete',
+    #     'op_arg_type': 'same',
+    #     'Selection': 'Includes $\\mathtt{delete}(same)$'
     # },
     # {
     #     'acc_time': True,
     #     'mc_time_branch': Branches.BOTH,
     #     'pred_time_branch': Branches.BOTH,
     #     'operation': 'delete',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{delete}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'replace',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{replace}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'reverse',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{reverse}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'Selection': '$\\mathtt{contains}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Simple',
-    #     'Selection': '$\\mathtt{contains}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Even',
-    #     'Selection': '$\\mathtt{contains}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Uneven',
-    #     'Selection': '$\\mathtt{contains}(Uneven)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'Selection': '$\\mathtt{equals}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Simple',
-    #     'Selection': '$\\mathtt{equals}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Even',
-    #     'Selection': '$\\mathtt{equals}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Uneven',
-    #     'Selection': '$\\mathtt{equals}(Uneven)$'
-    # }
-)
-
-PER_DIFF_VS_MC_TIME_ENTRIES = (
-    {
-        'mc_time_branch': Branches.BOTH,
-        'Selection': 'All'
-    },
-    # {
-    #     'mc_time_branch': Branches.TRUE,
-    #     'Selection': '\\textit{true} Branches'
-    # },
-    # {
-    #     'mc_time_branch': Branches.FALSE,
-    #     'Selection': '\\textit{false} Branches'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'alphabet': 'AB',
-    #     'Selection': '$|\\Sigma| = 2$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'alphabet': 'AC',
-    #     'Selection': '$|\\Sigma| = 3$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'alphabet': 'AD',
-    #     'Selection': '$|\\Sigma| = 4$'
-    # },
-    # # {
-    # #     'mc_time_branch': Branches.BOTH,
-    # #     'alphabet': 'AE',
-    # #     'Selection': '$|\\Sigma| = 5$'
-    # # },
-    # {'is_blank': True},
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'length': 1,
-    #     'Selection': 'Length 1'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'length': 2,
-    #     'Selection': 'Length 2'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'length': 3,
-    #     'Selection': 'Length 3'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'length': 4,
-    #     'Selection': 'Length 4'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'input_type': 'Simple',
-    #     'Selection': '\\textit{Simple}'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'input_type': 'Even',
-    #     'Selection': '\\textit{Even}'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'input_type': 'Uneven',
-    #     'Selection': '\\textit{Uneven}'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'Selection': 'Includes $\\mathtt{concat}$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Simple',
-    #     'Selection': 'Includes $\\mathtt{concat}(Simple)$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Even',
-    #     'Selection': 'Includes $\\mathtt{concat}(Even)$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Uneven',
-    #     'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'delete',
-    #     'Selection': 'Includes $\\mathtt{delete}$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'replace',
-    #     'Selection': 'Includes $\\mathtt{replace}$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'reverse',
-    #     'Selection': 'Includes $\\mathtt{reverse}$'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Simple',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Simple)$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Even',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Even)$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Uneven',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'delete',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{delete}$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'replace',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{replace}$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'operation': 'reverse',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{reverse}$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'Selection': '$\\mathtt{contains}$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Simple',
-    #     'Selection': '$\\mathtt{contains}(Simple)$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Even',
-    #     'Selection': '$\\mathtt{contains}(Even)$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Uneven',
-    #     'Selection': '$\\mathtt{contains}(Uneven)$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'Selection': '$\\mathtt{equals}$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Simple',
-    #     'Selection': '$\\mathtt{equals}(Simple)$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Even',
-    #     'Selection': '$\\mathtt{equals}(Even)$'
-    # },
-    # {
-    #     'mc_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Uneven',
-    #     'Selection': '$\\mathtt{equals}(Uneven)$'
-    # }
-)
-
-PER_DIFF_VS_SOLVE_TIME_ENTRIES = (
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'Selection': 'All'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.TRUE,
-    #     'Selection': '\\textit{true} Branches'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.FALSE,
-    #     'Selection': '\\textit{false} Branches'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AB',
-    #     'Selection': '$|\\Sigma| = 2$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AC',
-    #     'Selection': '$|\\Sigma| = 3$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AD',
-    #     'Selection': '$|\\Sigma| = 4$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AE',
-    #     'Selection': '$|\\Sigma| = 5$'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'length': 1,
-    #     'Selection': 'Length 1'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'length': 2,
-    #     'Selection': 'Length 2'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'length': 3,
-    #     'Selection': 'Length 3'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'length': 4,
-    #     'Selection': 'Length 4'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'input_type': 'Simple',
-    #     'Selection': '\\textit{Simple}'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'input_type': 'Even',
-    #     'Selection': '\\textit{Even}'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'input_type': 'Uneven',
-    #     'Selection': '\\textit{Uneven}'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'Selection': 'Includes $\\mathtt{concat}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Simple',
-    #     'Selection': 'Includes $\\mathtt{concat}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Even',
-    #     'Selection': 'Includes $\\mathtt{concat}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Uneven',
-    #     'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'delete',
-    #     'Selection': 'Includes $\\mathtt{delete}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'replace',
-    #     'Selection': 'Includes $\\mathtt{replace}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'reverse',
-    #     'Selection': 'Includes $\\mathtt{reverse}$'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Simple',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Even',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Uneven',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'delete',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{delete}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'replace',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{replace}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'reverse',
-    #     'exclusive_op': True,
-    #     'Selection': 'Includes $\\mathtt{reverse}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'Selection': '$\\mathtt{contains}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Simple',
-    #     'Selection': '$\\mathtt{contains}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Even',
-    #     'Selection': '$\\mathtt{contains}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'contains',
-    #     'pred_arg_type': 'Uneven',
-    #     'Selection': '$\\mathtt{contains}(Uneven)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'Selection': '$\\mathtt{equals}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Simple',
-    #     'Selection': '$\\mathtt{equals}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Even',
-    #     'Selection': '$\\mathtt{equals}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'predicate': 'equals',
-    #     'pred_arg_type': 'Uneven',
-    #     'Selection': '$\\mathtt{equals}(Uneven)$'
-    # }
-)
-
-PER_DIFF_VS_COMB_TIME_ENTRIES = (
-    {
-        'acc_time': True,
-        'mc_time_branch': Branches.BOTH,
-        'pred_time_branch': Branches.BOTH,
-        'Selection': 'All'
-    },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.TRUE,
-    #     'pred_time_branch': Branches.TRUE,
-    #     'Selection': '\\textit{true} Branches'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.FALSE,
-    #     'pred_time_branch': Branches.FALSE,
-    #     'Selection': '\\textit{false} Branches'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AB',
-    #     'Selection': '$|\\Sigma| = 2$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AC',
-    #     'Selection': '$|\\Sigma| = 3$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AD',
-    #     'Selection': '$|\\Sigma| = 4$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AE',
-    #     'Selection': '$|\\Sigma| = 5$'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'length': 1,
-    #     'Selection': 'Length 1'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'length': 2,
-    #     'Selection': 'Length 2'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'length': 3,
-    #     'Selection': 'Length 3'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'length': 4,
-    #     'Selection': 'Length 4'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'input_type': 'Simple',
-    #     'Selection': '\\textit{Simple}'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'input_type': 'Even',
-    #     'Selection': '\\textit{Even}'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'input_type': 'Uneven',
-    #     'Selection': '\\textit{Uneven}'
-    # },
-    # {'is_blank': True},
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'Selection': 'Includes $\\mathtt{concat}$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Simple',
-    #     'Selection': 'Includes $\\mathtt{concat}(Simple)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Even',
-    #     'Selection': 'Includes $\\mathtt{concat}(Even)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'concat',
-    #     'op_arg_type': 'Uneven',
-    #     'Selection': 'Includes $\\mathtt{concat}(Uneven)$'
-    # },
-    # {
-    #     'acc_time': True,
-    #     'mc_time_branch': Branches.BOTH,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'operation': 'delete',
-    #     'Selection': 'Includes $\\mathtt{delete}$'
+    #     'op_arg_type': 'diff',
+    #     'Selection': 'Includes $\\mathtt{delete}(diff)$'
     # },
     # {
     #     'acc_time': True,
@@ -2005,6 +3124,22 @@ PER_DIFF_VS_COMB_TIME_ENTRIES = (
     #     'pred_time_branch': Branches.BOTH,
     #     'operation': 'replace',
     #     'Selection': 'Includes $\\mathtt{replace}$'
+    # },
+    # {
+    #     'acc_time': True,
+    #     'mc_time_branch': Branches.BOTH,
+    #     'pred_time_branch': Branches.BOTH,
+    #     'operation': 'replace',
+    #     'op_arg_type': 'same',
+    #     'Selection': 'Includes $\\mathtt{replace}(same)$'
+    # },
+    # {
+    #     'acc_time': True,
+    #     'mc_time_branch': Branches.BOTH,
+    #     'pred_time_branch': Branches.BOTH,
+    #     'operation': 'replace',
+    #     'op_arg_type': 'diff',
+    #     'Selection': 'Includes $\\mathtt{replace}(diff)$'
     # },
     # {
     #     'acc_time': True,
@@ -2359,7 +3494,7 @@ def output_plot_script(rows, plot_type, label):
 
 def output_plot_files(files):
     for rows, plot_type, c, label in files:
-        output_plot_script(rows, plot_type, label)
+        # output_plot_script(rows, plot_type, label)
         output_plot_data_file(rows, label)
 
 
@@ -2383,7 +3518,10 @@ def filter_alphabet(row, alphabet=None):
 
 def filter_operation(row, operation=None, exclusive=False, arg_type=None, ):
     return operation is None \
-           or ('Op' in row and row.get('Op') == operation) \
+           or ('Op' in row
+               and row.get('Op') == operation
+               and (arg_type is None
+                    or row.get('Args') == arg_type)) \
            or (exclusive
                and ((row.get('Op 1') == operation
                      and row.get('Op 2') == operation
@@ -2725,6 +3863,16 @@ def get_perf_metrics(rows,
 
         log.debug('Calculating standard deviation')
         std_dev_results[solver] = '{0:.1f}'.format(numpy.std(w_times_np))
+
+    # get weighted times as list of dictionaries
+    log.debug('Transforming Weighted Times')
+    w_t_keys = w_times.keys()
+    w_times = map(lambda r: {
+                                w_t_keys[0]: r[0],
+                                w_t_keys[1]: r[1],
+                                w_t_keys[2]: r[2],
+                                w_t_keys[3]: r[3]
+                            }, w_times.values())
 
     return avg_results, median_results, variance_results, std_dev_results, w_times
 
@@ -3075,26 +4223,26 @@ def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
     tables = list()
     figures = list()
 
-    acc_tables = analyze_accuracy(mc_rows)
-    tables.extend(acc_tables)
+    # acc_tables = analyze_accuracy(mc_rows)
+    # tables.extend(acc_tables)
 
-    mc_perf_tables, mc_perf_files = analyze_mc_performance(mc_time_rows)
-    tables.extend(mc_perf_tables)
-    figures.extend(mc_perf_files)
+    # mc_perf_tables, mc_perf_files = analyze_mc_performance(mc_time_rows)
+    # tables.extend(mc_perf_tables)
+    # figures.extend(mc_perf_files)
 
     solve_perf_tables, solve_perf_files = analyze_solve_performance(mc_time_rows, op_time_rows)
     tables.extend(solve_perf_tables)
     figures.extend(solve_perf_files)
 
-    comb_perf_tables, comb_perf_files = analyze_comb_perf(mc_time_rows)
-    tables.extend(comb_perf_tables)
-    figures.extend(comb_perf_files)
+    # comb_perf_tables, comb_perf_files = analyze_comb_perf(mc_time_rows)
+    # tables.extend(comb_perf_tables)
+    # figures.extend(comb_perf_files)
 
-    figures.extend(analyze_acc_vs_mc_perf(mc_rows, mc_time_rows))
+    # figures.extend(analyze_acc_vs_mc_perf(mc_rows, mc_time_rows))
 
-    figures.extend(analyze_acc_vs_solve_perf(mc_rows, mc_time_rows))
+    # figures.extend(analyze_acc_vs_solve_perf(mc_rows, mc_time_rows))
 
-    figures.extend(analyze_acc_vs_comb_perf(mc_rows, mc_time_rows))
+    # figures.extend(analyze_acc_vs_comb_perf(mc_rows, mc_time_rows))
 
     output_plot_files(figures)
 
