@@ -167,6 +167,33 @@ def create_alphabet_declaration(alphabet):
     return ','.join(range_strings)
 
 
+def split_graph(vertices):
+    verticies_list = list()
+
+    in_edges = dict()
+    out_edges = dict()
+    v_map = dict()
+
+    # get graph data
+    for v in vertices:
+        v_map[v.get('id')] = v
+        in_set = set()
+        in_edges[v.get('id')] = in_set
+        for e in v.get('incomingEdges'):
+            # add in edges
+            in_set.add((e.get('source'), e.get('type'))
+
+            # add out edges
+            out_set = out_edges.get(e.get('source'))
+            if out_set is None:
+                out_set = set()
+                out_edges.get(e.get('source')) = out_set
+            out_set.add((v.get('id'), e.get('type'))
+
+    return verticies_list
+
+
+
 def main(arguments):
     # process command line args
     parser = argparse.ArgumentParser(prog=__doc__,
@@ -183,6 +210,11 @@ def main(arguments):
     parser.add_argument('-d',
                         '--debug',
                         help="Display debug messages for script.",
+                        action="store_true")
+
+    parser.add_argument('-s',
+                        '--split',
+                        help="Split graph into sub graphs.",
                         action="store_true")
 
     args = parser.parse_args(arguments)
@@ -211,6 +243,10 @@ def main(arguments):
 
     # create alphabet declaration from set
     declaration = create_alphabet_declaration(alphabet)
+
+    # split graph if required
+    if args.split:
+        verticies_list = split_graph(vertices)
 
     # get graph file structure
     graph = {

@@ -40,10 +40,10 @@ abstract public class Reporter {
         this.outputHeader();
 
         // initialize sets
-        Set<PrintConstraint> removeSet = new HashSet<>();
-        Set<PrintConstraint> processedSet = new HashSet<>();
         Set<PrintConstraint> ends = new HashSet<>();
         Set<PrintConstraint> roots = new HashSet<>();
+        Map<PrintConstraint, Set<PrintConstraint>> unfinishedOutEdges = new HashMap<>();
+        Map<PrintConstraint, Set<PrintConstraint>> unfinishedInEdges = new HashMap<>();
 
         int maxId = 0;
 
@@ -86,6 +86,22 @@ abstract public class Reporter {
 
 //            System.out.printf("%d: %s\n", constraintId, constraint.getValue());
 
+            // add to unfinished edges
+            Set<PrintConstraint> unfinishedOutSet = new HashSet<>();
+            for (SymbolicEdge e : graph.outgoingEdgesOf(constraint)) {
+                PrintConstraint target = (PrintConstraint) e.getATarget();
+
+                unfinishedOutSet.add(target);
+
+                Set<PrintConstraint> unfinishedInSet = unfinishedInEdges.get(target);
+                if (unfinishedInSet == null) {
+                    unfinishedInSet = new HashSet<>();
+                }
+                unfinishedInSet.add(constraint);
+                unfinishedInEdges.put(target, unfinishedInSet);
+            }
+            unfinishedOutEdges.put(constraint, unfinishedOutSet);
+
             // initialize constraint source map
             Map<String, Integer> sourceMap = new HashMap<>();
 
@@ -125,6 +141,7 @@ abstract public class Reporter {
                     this.calculateStats(constraint);
                 }
 
+                finishEdges(unfinishedInEdges, unfinishedOutEdges, constraint);
             }
             // if constraint is root node
             else if (roots.contains(constraint)) {
@@ -144,6 +161,7 @@ abstract public class Reporter {
                 // add operation time to map
                 timerMap.put(constraintId, lastTime);
 
+                finishEdges(unfinishedInEdges, unfinishedOutEdges, constraint);
             }
             // constraint is op node
             else {
@@ -175,12 +193,33 @@ abstract public class Reporter {
                 // add operation time to map
                 long currTime = lastTime + prevTime;
                 timerMap.put(constraintId, currTime);
+
+                finishEdges(unfinishedInEdges, unfinishedOutEdges, constraint);
             }
         }
 
         // shut down solver
         solver.shutDown();
+    }
 
+    private void finishEdges(Map<PrintConstraint, Set<PrintConstraint>> inEdges,
+                             Map<PrintConstraint, Set<PrintConstraint>> outEdges,
+                             PrintConstraint vertex) {
+        Set<PrintConstraint> parents = inEdges.get(vertex);
+        inEdges.remove(vertex);
+        if (parents != null) {
+            for (PrintConstraint parent : parents) {
+                Set<PrintConstraint> siblings = outEdges.get(parent);
+                if (siblings == null) {
+                    return;
+                }
+                siblings.remove(vertex);
+                if (siblings.isEmpty()) {
+                    siblings.remove(parent);
+                    solver.remove(parent.getId());
+                }
+            }
+        }
     }
 
     protected String joinStrings(Iterable<String> strings, String separator) {
