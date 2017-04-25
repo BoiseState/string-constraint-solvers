@@ -72,10 +72,7 @@ public class DotGenerator {
         Runtime rt = Runtime.getRuntime();
 
         try {
-            rt.exec("dot -Tpng " + filePath + ".dot -o " + filePath + ".png");
-
-            // trim png using imagemagik
-            rt.exec("convert " + filePath + ".png -trim " + filePath + ".png");
+            rt.exec("dot -Tsvg " + filePath + ".dot -o " + filePath + ".svg");
         } catch (IOException e) {
             e.printStackTrace();
         }

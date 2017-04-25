@@ -67,7 +67,7 @@ def analyze_graph(vertices):
 
     # process each vertex
     for vertex in vertices:
-        log.debug('*** Vertex {0:4d} ***'.format(vertex['id']))
+        # log.debug('*** Vertex {0:4d} ***'.format(vertex['id']))
 
         # get string value for analysis
         actual_value = vertex['actualValue']
@@ -82,26 +82,26 @@ def analyze_graph(vertices):
                 concrete_strings.add(actual_value)
 
         # determine if value is None/null
-        if actual_value is None:
-            log.debug(u'String Value : None')
-        else:
-            log.debug(u'String Value : "{0}"'.format(
-                replace_special_chars_to_display(actual_value)))
+        if actual_value is not None:
+            # log.debug(u'String Value : "{0}"'.format(
+            #     replace_special_chars_to_display(actual_value)))
 
             # extract and store control characters
             for special_c in SPECIAL_CHARS:
                 if special_c in actual_value:
-                    log.debug(u'Special Character Found: {0}'.format(
-                        display_special_char(special_c)))
+                    # log.debug(u'Special Character Found: {0}'.format(
+                    #     display_special_char(special_c)))
                     if special_c == '\\\\':
                         alphabet.add(92)
                     else:
                         alphabet.add(ord(special_c))
-                    actual_value = actual_value.replace(special_c, display_special_char(special_c))
+                    actual_value = \
+                        actual_value.replace(special_c,
+                                             display_special_char(special_c))
 
             # process each char and its index
             for i, c in enumerate(actual_value):
-                log.debug(u'Index {0:3d}: \'{1}\''.format(i, c))
+                # log.debug(u'Index {0:3d}: \'{1}\''.format(i, c))
                 alphabet.add(ord(c))
 
                 # ensure lower case letter in alphabet also
@@ -115,6 +115,8 @@ def analyze_graph(vertices):
             # check max length
             if len(actual_value) > max_length:
                 max_length = len(actual_value)
+        # else:
+        #     log.debug(u'String Value : None')
 
     # log alphabet information
     for sym in alphabet:
@@ -167,8 +169,25 @@ def create_alphabet_declaration(alphabet):
     return ','.join(range_strings)
 
 
+def add_subgraph_to_vertices(dest_v, sg_vertices, out_edges, v_map):
+
+    def explore_v(v):
+        sg_vertices.append(v)
+        edges = list()
+        if v.get('id') in out_edges:
+            edges.extend(out_edges.get(v.get('id')))
+        if v is not dest_v:
+            for e in v.get('incomingEdges'):
+                edges.append((e.get('source'), e.get('type')))
+        for dest_id, dest_type in edges:
+            d_v = v_map.get(dest_id)
+            if d_v not in sg_vertices:
+                explore_v(d_v)
+    explore_v(dest_v)
+
+
 def split_graph(vertices):
-    verticies_list = list()
+    vertices_list = list()
 
     in_edges = dict()
     out_edges = dict()
@@ -177,21 +196,74 @@ def split_graph(vertices):
     # get graph data
     for v in vertices:
         v_map[v.get('id')] = v
-        in_set = set()
-        in_edges[v.get('id')] = in_set
         for e in v.get('incomingEdges'):
-            # add in edges
-            in_set.add((e.get('source'), e.get('type'))
-
+            source_id = e.get('source')
             # add out edges
-            out_set = out_edges.get(e.get('source'))
+            out_set = out_edges.get(source_id)
             if out_set is None:
                 out_set = set()
-                out_edges.get(e.get('source')) = out_set
-            out_set.add((v.get('id'), e.get('type'))
+                out_edges[source_id] = out_set
+            out_set.add((v.get('id'), e.get('type')))
 
-    return verticies_list
+    def is_root(vertex):
+        return len(vertex.get('incomingEdges')) == 0 \
+               and all(y == 't' for x, y in out_edges.get(vertex.get('id')))
 
+    # get root vertex
+    cur_v = None
+    not_root = list()
+    queue = list()
+    queue.append(vertices[0])
+    while len(queue) > 0:
+        cur_v = queue.pop(0)
+        if is_root(cur_v):
+            break
+        not_root.append(cur_v)
+        if len(cur_v.get('incomingEdges')) > 0:
+            # get base incoming vertex
+            new_v = None
+            for e in cur_v.get('incomingEdges'):
+                in_v = v_map.get(e.get('source'))
+                if in_v not in not_root and in_v not in queue:
+                    queue.append(in_v)
+        else:
+            # get base outgoing vertex
+            for dest_id, dest_type in out_edges.get(cur_v.get('id')):
+                dest_v = v_map.get(dest_id)
+                if dest_v not in not_root and dest_v not in queue:
+                    queue.append(dest_v)
+    root_v = cur_v
+    log.debug('root found: %s', root_v)
+
+    # split vertices
+    non_split_vertices = list()
+    non_split_vertices.append(root_v)
+    uneven_vertex = None
+    for dest_id, dest_type in out_edges.get(root_v.get('id')):
+        dest_v = v_map.get(dest_id)
+        # check for uneven contains creation predicate
+        if dest_v.get('value').startswith('contains!!') \
+                and dest_id < root_v.get('id'):
+            uneven_vertex = dest_v
+        else:  # split into subgraph
+            sg_vertices = list()
+            sg_vertices.append(dest_v)
+            add_subgraph_to_vertices(dest_v, sg_vertices, out_edges, v_map)
+            vertices_list.append(sg_vertices)
+
+    # add any uneven vertices to unsplit vertices
+    if uneven_vertex is not None:
+        non_split_vertices.append(uneven_vertex)
+        for e in uneven_vertex.get('incomingEdges'):
+            in_v = v_map.get(e.get('source'))
+            if in_v not in non_split_vertices:
+                non_split_vertices.append(in_v)
+
+    # add non split vertices to each subgraph
+    for vl in vertices_list:
+        vl.extend(non_split_vertices)
+
+    return vertices_list
 
 
 def main(arguments):
@@ -238,31 +310,47 @@ def main(arguments):
         else:
             vertices = data
 
-    # analyze graph vertices for alphabet
-    alphabet, max_length, c_strings, u_strings = analyze_graph(vertices)
-
-    # create alphabet declaration from set
-    declaration = create_alphabet_declaration(alphabet)
+    # initialize graph and vertices lists
+    graphs = list()
+    vertices_list = list()
 
     # split graph if required
     if args.split:
-        verticies_list = split_graph(vertices)
+        vertices_list = split_graph(vertices)
+    else:
+        vertices_list.append(vertices)
 
-    # get graph file structure
-    graph = {
-        'vertices': vertices,
-        'alphabet': {
-            'concrete_strings': len(c_strings),
-            'declaration': declaration,
-            'max': max_length,
-            'size': len(alphabet),
-            'unknown_strings': u_strings
+    for i, vertex_list in enumerate(vertices_list):
+
+        # analyze graph vertices for alphabet
+        alphabet, max_length, c_strings, u_strings = analyze_graph(vertices)
+
+        # create alphabet declaration from set
+        declaration = create_alphabet_declaration(alphabet)
+
+        # get graph file structure
+        graph = {
+            'vertices': vertices,
+            'alphabet': {
+                'concrete_strings': len(c_strings),
+                'declaration': declaration,
+                'max': max_length,
+                'size': len(alphabet),
+                'unknown_strings': u_strings
+            }
         }
-    }
+        g_path = graph_path
+        if len(vertices_list) > 1:
+            graph_filename = os.path.basename(graph_path).split('.')[0]
+            graph_dir = os.path.dirname(graph_path)
+            graph_file = '{0}_{1:02d}.json'.format(graph_filename, i)
+            g_path = os.path.join(graph_dir, graph_file)
+        graphs.append((graph, g_path))
 
-    # write out update graph file
-    with open(graph_path, 'w') as graph_file:
-        json.dump(graph, graph_file)
+    # write out updated graph files
+    for g, g_path in graphs:
+        with open(g_path, 'w') as graph_file:
+            json.dump(g, graph_file)
 
 
 if __name__ == '__main__':
