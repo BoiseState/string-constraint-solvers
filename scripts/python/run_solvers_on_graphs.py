@@ -55,8 +55,9 @@ class Settings:
             log.debug('Args: %s', options)
 
         # set graph file pattern
-        self.graph_file_pattern = options.graph_files
-        log.debug('graph file pattern: "%s"', self.graph_file_pattern)
+        self.graph_file_patterns = options.graph_files
+        for pattern in self.graph_file_patterns:
+            log.debug('graph file pattern: "%s"', pattern)
 
         # initilize framework length argument
         self.length = options.length
@@ -136,7 +137,8 @@ def get_options(arguments):
 
     solver_parser.add_argument('-f',
                                '--graph-files',
-                               default='*.json',
+                               nargs='*',
+                               default=['*.json'],
                                help='A Unix shell-style pattern which is used '
                                     'to '
                                     'match a set of constraint graph files '
@@ -227,10 +229,11 @@ def get_graph_files(settings):
     # for all matching files in synthetic graph directory
     graph_dir_path = os.path.join(project_dir, 'graphs', 'synthetic')
     for f in os.listdir(graph_dir_path):
-        if os.path.isfile(os.path.join(graph_dir_path, f)) and \
-                fnmatch.fnmatch(f, settings.graph_file_pattern):
-            # add file to graph files set
-            graph_files.add(os.path.join(graph_dir_path, f))
+        for file_pattern in settings.graph_file_patterns:
+            if os.path.isfile(os.path.join(graph_dir_path, f)) and \
+                    fnmatch.fnmatch(f, file_pattern):
+                # add file to graph files set
+                graph_files.add(os.path.join(graph_dir_path, f))
 
     # return graph file set
     if settings.debug:
@@ -335,14 +338,14 @@ def run_solver(solver, files, class_path, settings):
         os.makedirs(results_dir)
 
     # clean up result directory
-    result_file_pattern = settings.graph_file_pattern
-    if len(os.path.splitext(result_file_pattern)) > 1:
-        result_file_pattern = result_file_pattern.replace('json', 'csv')
-    for f in os.listdir(results_dir):
-        file_path = os.path.join(results_dir, f)
-        if os.path.isfile(file_path) and \
-                fnmatch.fnmatch(f, result_file_pattern):
-            os.remove(file_path)
+    for result_file_pattern in settings.graph_file_patterns:
+        if len(os.path.splitext(result_file_pattern)) > 1:
+            result_file_pattern = result_file_pattern.replace('json', 'csv')
+        for f in os.listdir(results_dir):
+            file_path = os.path.join(results_dir, f)
+            if os.path.isfile(file_path) and \
+                    fnmatch.fnmatch(f, result_file_pattern):
+                os.remove(file_path)
 
     # for each graph file
     for gf in files:

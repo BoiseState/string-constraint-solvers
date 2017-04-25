@@ -70,7 +70,7 @@ public abstract class ExtendedSolver<TSymbolicString> {
 
     /**
      * Interface for the following methods: <ul> <li>{@link
-     * java.lang.StringBuffer#append(AbstractStringBuilder)}</li> <li>{@link
+     * java.lang.StringBuffer#append(StringBuffer)}</li> <li>{@link
      * java.lang.StringBuffer#append(boolean)}</li> <li>{@link
      * java.lang.StringBuffer#append(char)}</li> <li>{@link
      * java.lang.StringBuffer#append(char[])}</li> <li>{@link
@@ -84,7 +84,7 @@ public abstract class ExtendedSolver<TSymbolicString> {
      * java.lang.StringBuffer#append(Object)}</li> <li>{@link
      * java.lang.StringBuffer#append(String)}</li> <li>{@link
      * java.lang.StringBuffer#append(StringBuffer)}</li> <li>{@link
-     * java.lang.StringBuilder#append(AbstractStringBuilder)}</li> <li>{@link
+     * java.lang.StringBuilder#append(StringBuilder)}</li> <li>{@link
      * java.lang.StringBuilder#append(boolean)}</li> <li>{@link
      * java.lang.StringBuilder#append(char)}</li> <li>{@link
      * java.lang.StringBuilder#append(char[])}</li> <li>{@link
