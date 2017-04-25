@@ -267,7 +267,7 @@ def get_op_string(ops_list=None, op_num=None, op=None):
         op_str = op.op
 
         # arg
-        if op_str == 'concat':
+        if op_str in ['concat', 'contains', 'equals']:
             if op.args[0].value is not None:
                 op_arg_str = "Simple"
             elif op.args[0].arg_id in GLOB['uneven-ids']:

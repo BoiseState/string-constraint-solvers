@@ -4,6 +4,7 @@ import logging
 import argparse
 import csv
 import fnmatch
+import math
 import numpy
 import os
 import re
@@ -58,6 +59,18 @@ SOLVERS = (
     'Aggregate',
     'Weighted'
 )
+
+MC_DTYPE = {
+
+}
+
+MC_TIME_DTYPE = {
+
+}
+
+OP_TIME_DTYPE = {
+
+}
 
 OP_NORMS = {
     'concat': {
@@ -708,18 +721,18 @@ SOLVE_TIME_ENTRIES = (
         'alphabet': 'AC',
         'Selection': '$|\\Sigma| = 3$'
     },
-    # {
-    #     'acc_time': True,
-    #     'pred_time_branch': Branches.BOTH,
-    #     'alphabet': 'AD',
-    #     'Selection': '$|\\Sigma| = 4$'
-    # },
     {
         'acc_time': True,
         'pred_time_branch': Branches.BOTH,
-        'alphabet': 'AE',
-        'Selection': '$|\\Sigma| = 5$'
+        'alphabet': 'AD',
+        'Selection': '$|\\Sigma| = 4$'
     },
+    # {
+    #     'acc_time': True,
+    #     'pred_time_branch': Branches.BOTH,
+    #     'alphabet': 'AE',
+    #     'Selection': '$|\\Sigma| = 5$'
+    # },
     {'is_blank': True},
     {
         'acc_time': True,
@@ -1104,7 +1117,7 @@ OP_TIME_ENTRIES = (
         'Selection': '$\\mathtt{concat}(Even)$'
     },
     {
-        '(Even)op_time': True,
+        'op_time': True,
         'operation': 'concat',
         'op_arg_type': 'Even',
         'alphabet': 'AB',
@@ -3469,22 +3482,29 @@ def output_latex(tables, plots):
         out_file.writelines(after_lines)
 
 
-def output_plot_data_file(rows, label):
-
-    field_names = list(rows[0].keys())
+def output_plot_data_file(map, label):
 
     data_file_path = os.path.join(project_dir, 'data', label + '.csv')
     with open(data_file_path, 'w') as csv_file:
-        # create csv writer with field names
-        writer = csv.DictWriter(csv_file,
-                                field_names)
-        # output header
-        writer.writeheader()
-        # output rows
-        writer.writerows(rows)
+        # write header
+        for s in SOLVERS:
+            csv_file.write('{0}_Value'.format(s))
+            csv_file.write('\t')
+            csv_file.write('{0}_Bin'.format(s))
+            csv_file.write('\t')
+        csv_file.write('\n')
+
+        # write rows
+        for i in range(map.get(SOLVERS[0])[0].size):
+            for s in SOLVERS:
+                csv_file.write(str(map.get(s)[0][i]))
+                csv_file.write('\t')
+                csv_file.write(str(map.get(s)[1][i]))
+                csv_file.write('\t')
+            csv_file.write('\n')
 
 
-def output_plot_script(rows, plot_type, label):
+def output_plot_script(num_rows, plot_type, label):
     lines = list()
 
     out_path = os.path.join(project_dir, 'data', label + '.gnu')
@@ -3493,9 +3513,8 @@ def output_plot_script(rows, plot_type, label):
 
 
 def output_plot_files(files):
-    for rows, plot_type, c, label in files:
-        # output_plot_script(rows, plot_type, label)
-        output_plot_data_file(rows, label)
+    for num_rows, plot_type, c, label in files:
+        output_plot_script(num_rows, plot_type, label)
 
 
 def filter_disagree(row, prefix, disagree=True):
@@ -3588,6 +3607,38 @@ def compute_agreement(row, prefix):
            (c_t_per < c_f_per and t_per < f_per)
 
 
+def weighted_quantile(values, quantiles, sample_weight=None, values_sorted=False, old_style=False):
+    """ Very close to numpy.percentile, but supports weights.
+    NOTE: quantiles should be in [0, 1]!
+    :param values: numpy.array with data
+    :param quantiles: array-like with many quantiles needed
+    :param sample_weight: array-like of the same length as `array`
+    :param values_sorted: bool, if True, then will avoid sorting of initial array
+    :param old_style: if True, will correct output to be consistent with numpy.percentile.
+    :return: numpy.array with computed quantiles.
+    """
+    values = numpy.array(values)
+    quantiles = numpy.array(quantiles)
+    if sample_weight is None:
+        sample_weight = numpy.ones(len(values))
+    sample_weight = numpy.array(sample_weight)
+    assert numpy.all(quantiles >= 0) and numpy.all(quantiles <= 1), 'quantiles should be in [0, 1]'
+
+    if not values_sorted:
+        sorter = numpy.argsort(values)
+        values = values[sorter]
+        sample_weight = sample_weight[sorter]
+
+    weighted_quantiles = numpy.cumsum(sample_weight) - 0.5 * sample_weight
+    if old_style:
+        # To be convenient with numpy.percentile
+        weighted_quantiles -= weighted_quantiles[0]
+        weighted_quantiles /= weighted_quantiles[-1]
+    else:
+        weighted_quantiles /= numpy.sum(sample_weight)
+    return numpy.interp(quantiles, weighted_quantiles, values)
+
+
 def get_per_diffs(rows,
                   disagree=True,
                   bins=None,
@@ -3636,8 +3687,10 @@ def get_per_diffs(rows,
         weights_np = numpy.asarray(weights)
 
         if raw is not None:
-            weights_np = weights_np + raw
-            per_diff_map[solver] = numpy.repeat(diffs_np, weights_np)
+            if raw > 1:
+                per_diff_map[solver] = numpy.repeat(diffs_np, raw)
+            else:
+                per_diff_map[solver] = diffs_np
         else:
             per_diff_map[solver] = numpy.histogram(diffs_np, bins=bins, weights=weights_np)
 
@@ -3748,6 +3801,8 @@ def analyze_accuracy(mc_rows):
 
 
 def get_perf_metrics(rows,
+                     label,
+                     xy_plot=False,
                      mc_time_branch=None,
                      acc_time=False,
                      pred_time_branch=None,
@@ -3779,102 +3834,110 @@ def get_perf_metrics(rows,
     log.debug('Getting Weights')
 
     # get weights
-    weights = map(lambda r: int(r.get('Norm')), filtered)
+    weights_np = numpy.asarray(map(lambda r: int(r.get('Norm')), filtered))
     if mc_time_branch == Branches.BOTH or pred_time_branch == Branches.BOTH:
-        weights = reduce(lambda l, v: l + [v, v], weights, list())
+        weights_np = numpy.repeat(weights_np, 2)
 
     for solver in SOLVERS:
-        times = list()
+        times_np = numpy.empty([0, weights_np.size])
         s = solver[0].upper()
 
         log.debug('Getting Performance Times for %s', solver)
 
         # get mc times
         if mc_time_branch is not None:
-            mc_times = list()
+            mc_times_np = numpy.empty(0)
             if mc_time_branch == Branches.BOTH:
+                temp = list()
                 for row in filtered:
-                    mc_times.append(int(row.get(s + ' T MC Time')))
-                    mc_times.append(int(row.get(s + ' F MC Time')))
+                    temp.append(int(row.get(s + ' T MC Time')))
+                    temp.append(int(row.get(s + ' F MC Time')))
+                mc_times_np = numpy.asarray(temp)
             else:
                 if mc_time_branch == Branches.TRUE:
-                    mc_times = map(lambda r: int(r.get(s + ' T MC Time')), filtered)
+                    mc_times_np = numpy.asarray(map(lambda r: int(r.get(s + ' T MC Time')), filtered))
                 elif mc_time_branch == Branches.FALSE:
-                    mc_times = map(lambda r: int(r.get(s + ' F MC Time')), filtered)
+                    mc_times_np = numpy.asarray(map(lambda r: int(r.get(s + ' F MC Time')), filtered))
 
                 if pred_time_branch == Branches.BOTH:
-                    mc_times = reduce(lambda l, v: l + [v, v], mc_times, list())
+                    mc_times_np = numpy.repeat(mc_times_np, 2)
 
-            times.append(mc_times)
+            times_np = numpy.append(times_np, [mc_times_np], axis=0)
 
         # get acc times
         if acc_time:
-            acc_times = map(lambda r: int(r.get(s + ' Acc Time')), filtered)
+            acc_times_np = numpy.asarray(map(lambda r: int(r.get(s + ' Acc Time')), filtered))
 
             if mc_time_branch == Branches.BOTH or pred_time_branch == Branches.BOTH:
-                acc_times = reduce(lambda l, v: l + [v, v], acc_times, list())
+                acc_times_np = numpy.repeat(acc_times_np, 2)
 
-            times.append(acc_times)
+            times_np = numpy.append(times_np, [acc_times_np], axis=0)
 
         # get pred times
         if pred_time_branch is not None:
-            pred_times = list()
+            pred_times_np = numpy.empty(0)
             if pred_time_branch == Branches.BOTH:
+                temp = list()
                 for row in filtered:
-                    pred_times.append(int(row.get(s + ' T Pred Time')))
-                    pred_times.append(int(row.get(s + ' F Pred Time')))
+                    temp.append(int(row.get(s + ' T Pred Time')))
+                    temp.append(int(row.get(s + ' F Pred Time')))
+                pred_times_np = numpy.asarray(temp)
             else:
                 if pred_time_branch == Branches.TRUE:
-                    pred_times = map(lambda r: int(r.get(s + ' T Pred Time')), filtered)
+                    pred_times_np = numpy.asarray(map(lambda r: int(r.get(s + ' T Pred Time')), filtered))
                 elif pred_time_branch == Branches.FALSE:
-                    pred_times = map(lambda r: int(r.get(s + ' F Pred Time')), filtered)
+                    pred_times_np = numpy.asarray(map(lambda r: int(r.get(s + ' F Pred Time')), filtered))
 
-                if mc_time_branch == Branches.BOTH:
-                    pred_times = reduce(lambda l, v: l + [v, v], pred_times, list())
+                if pred_time_branch == Branches.BOTH:
+                    pred_times_np = numpy.repeat(pred_times_np, 2)
 
-            times.append(pred_times)
+            times_np = numpy.append(times_np, [pred_times_np], axis=0)
 
         # get op times
         if op_time:
-            times.append(map(lambda r: int(r.get(s + ' Op Time')), filtered))
+            times_np = numpy.asarray(map(lambda r: int(r.get(s + ' Op Time')), filtered))
 
         log.debug('Summing Times')
 
         # sum times
-        if len(times) > 1:
-            times = map(lambda x: sum(x), zip(*times))
-        else:
-            times = times[0]
-
-        log.debug('Converting times to numpy arrays')
-        times_np = numpy.asarray(times)
-        weights_np = numpy.asarray(weights)
-        w_times_np = numpy.repeat(times_np, weights_np)
-        w_times[solver] = w_times_np
+        if len(times_np.shape) == 2 and times_np.shape[0] > 1:
+            times_np = numpy.sum(times_np, axis=0)
+        elif not op_time:
+            times_np = times_np[0]
 
         log.debug('Calculating mean')
-        avg_results[solver] = '{0:.1f}'.format(numpy.mean(w_times_np))
+        mean = numpy.average(times_np, weights=weights_np)
+        avg_results[solver] = '{0:.1f}'.format(mean)
 
         log.debug('Calculating median')
-        median_results[solver] = '{0:.1f}'.format(numpy.median(w_times_np))
+        quants = weighted_quantile(times_np, [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0], sample_weight=weights_np)
+        median_results[solver] = '{0:.1f}'.format(quants[4])
+        # median_results[solver] = '{0:.1f}'.format(numpy.median(w_times_np))
 
         log.debug('Calculating variance')
-        variance_results[solver] = '{0:.1f}'.format(numpy.var(w_times_np))
+        sq_d = numpy.apply_along_axis(lambda x: (x - mean)**2, 0, times_np)
+        var_result = numpy.average(sq_d, weights=weights_np)
+        variance_results[solver] = '{0:.1f}'.format(var_result)
+        # variance_results[solver] = '{0:.1f}'.format(numpy.var(w_times_np))
 
         log.debug('Calculating standard deviation')
-        std_dev_results[solver] = '{0:.1f}'.format(numpy.std(w_times_np))
+        std_dev_results[solver] = '{0:.1f}'.format(math.sqrt(var_result))
+        # std_dev_results[solver] = '{0:.1f}'.format(numpy.std(w_times_np))
 
-    # get weighted times as list of dictionaries
+        # log.debug('Repeating times arrays per weight')
+        # w_times_np = numpy.repeat(times_np, weights_np)
+        # w_times[solver] = w_times_np
+        
+        log.debug('Get Plot Data')
+        # hist = numpy.histogram(times_np, bins=quants, weights=weights_np)
+        w_times[solver] = (times_np, weights_np)
+
+    # output weighted times to file
     log.debug('Transforming Weighted Times')
-    w_t_keys = w_times.keys()
-    w_times = map(lambda r: {
-                                w_t_keys[0]: r[0],
-                                w_t_keys[1]: r[1],
-                                w_t_keys[2]: r[2],
-                                w_t_keys[3]: r[3]
-                            }, w_times.values())
+    w_t_size = len(w_times.get(SOLVERS[0]))
+    output_plot_data_file(w_times, label)
 
-    return avg_results, median_results, variance_results, std_dev_results, w_times
+    return avg_results, median_results, variance_results, std_dev_results, w_t_size
 
 
 def process_perf_entries(rows,
@@ -3896,7 +3959,9 @@ def process_perf_entries(rows,
             results = (blank_row, blank_row, blank_row, blank_row)
         else:
             log.debug('Getting Performance Metrics - ' + entry.get('Selection'))
+            entry_label = '{0}_{1:02d}'.format(label, i)
             results = get_perf_metrics(rows,
+                                       entry_label,
                                        mc_time_branch=entry.get('mc_time_branch'),
                                        acc_time=entry.get('acc_time'),
                                        pred_time_branch=entry.get('pred_time_branch'),
@@ -3916,7 +3981,7 @@ def process_perf_entries(rows,
             lists[4].append((results[4],
                              'boxplot',
                              'Box Plot for {0} - {1}'.format(perf_type, entry.get('Selection')),
-                             '{0}_{1:02d}'.format(label, i)))
+                             entry_label))
         lists[0].append(results[0])
         lists[1].append(results[1])
         lists[2].append(results[2])
@@ -3960,27 +4025,27 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     tables = list()
     files = list()
 
-    log.debug('Calculating Constraint Solving Performance')
-
-    results = process_perf_entries(mc_time_rows,
-                                   SOLVE_TIME_ENTRIES,
-                                   'Constraint Solving Times',
-                                   'solve_perf_acc')
-
-    tables.append((results[0],
-                   'Average Constraint Solving Times',
-                   'solve_perf_acc_avg'))
-    tables.append((results[1],
-                   'Median Constraint Solving Times',
-                   'solve_perf_acc_median'))
-    tables.append((results[2],
-                   'Constraint Solving Time Variance',
-                   'solve_perf_acc_var'))
-    tables.append((results[3],
-                   'Standard Deviation for Constraint Solving Times',
-                   'solve_perf_acc_std_dev'))
-
-    files.extend(results[4])
+    # log.debug('Calculating Constraint Solving Performance')
+    #
+    # results = process_perf_entries(mc_time_rows,
+    #                                SOLVE_TIME_ENTRIES,
+    #                                'Constraint Solving Times',
+    #                                'solve_perf_acc')
+    #
+    # tables.append((results[0],
+    #                'Average Constraint Solving Times',
+    #                'solve_perf_acc_avg'))
+    # tables.append((results[1],
+    #                'Median Constraint Solving Times',
+    #                'solve_perf_acc_median'))
+    # tables.append((results[2],
+    #                'Constraint Solving Time Variance',
+    #                'solve_perf_acc_var'))
+    # tables.append((results[3],
+    #                'Standard Deviation for Constraint Solving Times',
+    #                'solve_perf_acc_std_dev'))
+    #
+    # files.extend(results[4])
 
     # Operation Times
     log.debug('Calculating Operation and Predicate Performance')
@@ -4244,7 +4309,7 @@ def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
 
     # figures.extend(analyze_acc_vs_comb_perf(mc_rows, mc_time_rows))
 
-    output_plot_files(figures)
+    # output_plot_files(figures)
 
     output_latex(tables, figures)
 
