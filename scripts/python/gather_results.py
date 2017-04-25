@@ -95,12 +95,12 @@ OP_GROUPS = {
         'toString',
         'trimToSize'
     ],
-    '+ Struct Alt': [
+    'Addative': [
         'append',
         'concat',
         'insert'
     ],
-    '- Struct Alt': [
+    'Substractive': [
         'delete',
         'deleteCharAt',
         'setLength',
@@ -108,18 +108,18 @@ OP_GROUPS = {
         'substring',
         'trim'
     ],
-    'Substitution': [
+    'Substitutive': [
         'replace',
         'setCharAt',
         'toLowerCase',
         'toUpperCase'
     ],
-    'Contains Predicate': [
+    'Partial Match': [
         'contains',
         'endsWith',
         'startsWith'
     ],
-    'Equals Predicate': [
+    'Full Match': [
         'equals',
         'contentEquals',
         'equalsIgnoreCase',
@@ -128,29 +128,29 @@ OP_GROUPS = {
 }
 
 INPUT_TYPES = (
-    'Concrete',
     'Simple',
+    'Even',
     'Uneven'
 )
 
 OP_TYPES = (
-    'Injective(<Concrete>)',
     'Injective(<Simple>)',
+    'Injective(<Even>)',
     'Injective(<Uneven>)',
-    'P_Struct_Alt(<Concrete>,<Concrete>)',
-    'P_Struct_Alt(<Concrete>,<Simple>)',
-    'P_Struct_Alt(<Concrete>,<Uneven>)',
-    'P_Struct_Alt(<Simple>,<Concrete>)',
     'P_Struct_Alt(<Simple>,<Simple>)',
+    'P_Struct_Alt(<Simple>,<Even>)',
     'P_Struct_Alt(<Simple>,<Uneven>)',
-    'P_Struct_Alt(<Uneven>,<Concrete>)',
+    'P_Struct_Alt(<Even>,<Simple>)',
+    'P_Struct_Alt(<Even>,<Even>)',
+    'P_Struct_Alt(<Even>,<Uneven>)',
     'P_Struct_Alt(<Uneven>,<Simple>)',
+    'P_Struct_Alt(<Uneven>,<Even>)',
     'P_Struct_Alt(<Uneven>,<Uneven>)',
-    'N_Struct_Alt(<Concrete>)',
     'N_Struct_Alt(<Simple>)',
+    'N_Struct_Alt(<Even>)',
     'N_Struct_Alt(<Uneven>)',
-    'Substitution(<Concrete>)',
     'Substitution(<Simple>)',
+    'Substitution(<Even>)',
     'Substitution(<Uneven>)'
 )
 
@@ -254,39 +254,38 @@ def get_solver_key(x):
         return 6
 
 
-def get_last_operation(x):
-    # extract operations using regular expression
-    regex_init = '^<S:\d+> = <init>$'
-    regex_op = '^<S:\d+>.(?P<op>\w+)\(.*\)$'
-
-    op_str = x.split('->')
-    if re.match(regex_init, op_str.strip()):
-        return 'init'
-    op_match = re.match(regex_op, op_str.strip())
-    return op_match.group['op']
-
-
-def get_op_string(ops_list, op_num):
+def get_op_string(ops_list=None, op_num=None, op=None):
     op_str = ''
     op_arg_str = ''
-    op = None
-    if ops_list[1].op == 'contains' and len(ops_list) > (2 + op_num):
-        op = ops_list[(1 + op_num)]
-    elif len(ops_list) > (1 + op_num):
-        op = ops_list[op_num]
+    if op is None:
+        if ops_list[1].op == 'contains' and len(ops_list) > (2 + op_num):
+            op = ops_list[(1 + op_num)]
+        elif len(ops_list) > (1 + op_num):
+            op = ops_list[op_num]
 
     if op is not None:
         op_str = op.op
-        op_str_args = [x for x in op.args if x.arg_type == 'str']
 
-        # arg 1
-        if len(op_str_args) > 0:
-            if op_str_args[0].value is not None:
-                op_arg_str = "Concrete"
-            elif op_str_args[0].arg_id in GLOB['uneven-ids']:
+        # arg
+        if op_str in ['concat', 'contains', 'equals']:
+            if op.args[0].value is not None:
+                op_arg_str = "Simple"
+            elif op.args[0].arg_id in GLOB['uneven-ids']:
                 op_arg_str = "Uneven"
             else:
-                op_arg_str = "Simple"
+                op_arg_str = "Even"
+        elif op_str == 'delete':
+            if op.args[0].value == op.args[1].value:
+                op_arg_str = 'same'
+            else:
+                op_arg_str = 'diff'
+        elif op_str == 'replace':
+            if op.args[0].value == op.args[1].value:
+                op_arg_str = 'same'
+            else:
+                op_arg_str = 'diff'
+        else:
+            op_arg_str = 'none'
 
     return op_str, op_arg_str
 
@@ -297,11 +296,11 @@ def get_predicate(ops_list):
     pred_args = ops_list[-1].args
     if len(pred_args) > 0:
         if pred_args[0].value is not None:
-            pred_arg_str = "Concrete"
+            pred_arg_str = "Simple"
         elif pred_args[0].arg_id in GLOB['uneven-ids']:
             pred_arg_str = "Uneven"
         else:
-            pred_arg_str = "Simple"
+            pred_arg_str = "Even"
 
     return pred_str, pred_arg_str
 
@@ -310,13 +309,13 @@ def get_operations(x):
     # initialize operations list
     ops_list = list()
 
-    input_type = 'Concrete'
+    input_type = 'Simple'
     op_strings = x.split('->')
     # parse initial operation string
     match_init = REGEX['init_known'].match(op_strings[0].strip())
     if not match_init:
         match_init = REGEX['init_unknown'].match(op_strings[0].strip())
-        input_type = 'Simple'
+        input_type = 'Even'
     base_id = match_init.group('id')
     time = match_init.group('time')
     ops_list.append(Operation(base_id, 'init', time, input_type))
@@ -379,7 +378,7 @@ def get_all_op_data(data_map, solvers):
         # for each op info in unbounded ops list
         for i, op_info in enumerate(ops_lists.get('unbounded')):
             if op_info.op_id in return_data:
-                op_map = return_data.get(op_info.op_id)
+                op_map = return_data.get(op_info.op_id)[0]
                 op_map.get('const_ids').add(const_id)
             else:
                 # add op info data to new op map
@@ -402,7 +401,7 @@ def get_all_op_data(data_map, solvers):
                     op_map['time'][solver] = ops_lists.get(solver)[i].time
 
                 # add op map to solver op data
-                return_data[op_info.op_id] = op_map
+                return_data[op_info.op_id] = (op_map, op_info)
 
     # return data
     return return_data
@@ -502,46 +501,6 @@ def get_data_map_from_csv_files(f_name, file_set):
     return data_map
 
 
-def verify_matrix(op, data_map, solvers, op_id):
-    pass
-
-
-def verify_data(data_map, solvers):
-    other_solvers = list(solvers)
-    other_solvers.remove('concrete')
-
-    # for each operation id
-    for op_id in data_map.get('concrete').keys():
-        # get operations
-        op = get_last_operation(data_map.get('concrete')
-                                .get(op_id)
-                                .get('PREV OPS'))
-
-        concat = ['append', 'concat']
-        delete = ['delete', 'deleteCharAt']
-        injective = ['reverse', 'toLowerCase', 'toUpperCase']
-        substring = ['substring', 'subsequence']
-
-        if op in concat:
-            verify_matrix('concat', data_map, solvers, op_id)
-        elif op in delete:
-            verify_matrix('delete', data_map, solvers, op_id)
-        elif op == 'insert':
-            verify_matrix('insert', data_map, solvers, op_id)
-        elif op in injective:
-            verify_matrix('injective', data_map, solvers, op_id)
-        elif op == 'replace':
-            verify_matrix('replace', data_map, solvers, op_id)
-        elif op == 'setCharAt':
-            verify_matrix('setCharAt', data_map, solvers, op_id)
-        elif op == 'setLength':
-            verify_matrix('setLength', data_map, solvers, op_id)
-        elif op in substring:
-            verify_matrix('substring', data_map, solvers, op_id)
-        elif op == 'trim':
-            verify_matrix('trim', data_map, solvers, op_id)
-
-
 def produce_mc_csv_data(data_map, solvers):
     # initialize output row list
     mc_rows = list()
@@ -634,7 +593,8 @@ def produce_op_time_csv_data(data_map, solvers):
     # for each operation id
     for op_id in op_data.keys():
         # get op map
-        op_map = op_data[op_id]
+        op_map, op_info = op_data[op_id]
+        op_str, op_arg = get_op_string(op=op_info)
         # initialize row
         row = dict()
         row['Op Id'] = op_id
@@ -642,7 +602,7 @@ def produce_op_time_csv_data(data_map, solvers):
         row['Op Group'] = op_map.get('op_group')
         row['In Type'] = op_map.get('input_type')
         row['Base Id'] = op_map.get('base_id')
-        row['Args'] = ', '.join(op_map.get('args'))
+        row['Args'] = op_arg
         for solver in solvers:
             prefix = solver.upper()[0]
             row[prefix + ' Op Time'] = op_map.get('time').get(solver)
@@ -766,9 +726,6 @@ def gather_results(f_name, file_set):
     # get data map from files
     data_map = get_data_map_from_csv_files(f_name, file_set)
 
-    # verify data
-    # verify_data(data_map, solvers, f_name)
-
     identify_uneven_args(data_map)
 
     csv_rows = dict()
@@ -802,7 +759,7 @@ def output_csv_file(output_rows, field_names, f_name):
     # get output file path
     out_f_name = f_name
     if GLOB['Settings'].single_file:
-        out_f_name = re.sub('(?P<pre>.*)-\d+(?P<suf>.csv)',
+        out_f_name = re.sub('(?P<pre>\w+)-A[BCDE]-\d+(-\d+)?(?P<suf>.csv)',
                             '\g<pre>\g<suf>',
                             f_name)
     csv_file_path = os.path.join(project_dir,

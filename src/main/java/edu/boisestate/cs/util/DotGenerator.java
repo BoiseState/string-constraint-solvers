@@ -3,9 +3,6 @@ package edu.boisestate.cs.util;
 import edu.boisestate.cs.SolveMain;
 import edu.boisestate.cs.graph.PrintConstraint;
 import edu.boisestate.cs.graph.SymbolicEdge;
-import edu.boisestate.cs.old.ConstraintIdProvider;
-import edu.boisestate.cs.old.ConstraintNameProvider;
-import edu.boisestate.cs.old.EdgeInfoProvider;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.ext.DOTExporter;
 
