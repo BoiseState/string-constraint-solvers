@@ -661,13 +661,13 @@ MC_TIME_ENTRIES = (
     },
     {
         'mc_time_branch': Branches.BOTH,
-        'alphabet': 'AE',
-        'Selection': '$|\\Sigma| = 5$'
+        'alphabet': 'AD',
+        'Selection': '$|\\Sigma| = 4$'
     },
     # {
     #     'mc_time_branch': Branches.BOTH,
-    #     'alphabet': 'AB',
-    #     'Selection': '$|\\Sigma| = 4$'
+    #     'alphabet': 'AE',
+    #     'Selection': '$|\\Sigma| = 5$'
     # },
     {'is_blank': True},
     {
@@ -4025,27 +4025,27 @@ def analyze_solve_performance(mc_time_rows, op_time_rows):
     tables = list()
     files = list()
 
-    # log.debug('Calculating Constraint Solving Performance')
-    #
-    # results = process_perf_entries(mc_time_rows,
-    #                                SOLVE_TIME_ENTRIES,
-    #                                'Constraint Solving Times',
-    #                                'solve_perf_acc')
-    #
-    # tables.append((results[0],
-    #                'Average Constraint Solving Times',
-    #                'solve_perf_acc_avg'))
-    # tables.append((results[1],
-    #                'Median Constraint Solving Times',
-    #                'solve_perf_acc_median'))
-    # tables.append((results[2],
-    #                'Constraint Solving Time Variance',
-    #                'solve_perf_acc_var'))
-    # tables.append((results[3],
-    #                'Standard Deviation for Constraint Solving Times',
-    #                'solve_perf_acc_std_dev'))
-    #
-    # files.extend(results[4])
+    log.debug('Calculating Constraint Solving Performance')
+    
+    results = process_perf_entries(mc_time_rows,
+                                   SOLVE_TIME_ENTRIES,
+                                   'Constraint Solving Times',
+                                   'solve_perf_acc')
+    
+    tables.append((results[0],
+                   'Average Constraint Solving Times',
+                   'solve_perf_acc_avg'))
+    tables.append((results[1],
+                   'Median Constraint Solving Times',
+                   'solve_perf_acc_median'))
+    tables.append((results[2],
+                   'Constraint Solving Time Variance',
+                   'solve_perf_acc_var'))
+    tables.append((results[3],
+                   'Standard Deviation for Constraint Solving Times',
+                   'solve_perf_acc_std_dev'))
+    
+    files.extend(results[4])
 
     # Operation Times
     log.debug('Calculating Operation and Predicate Performance')
@@ -4095,7 +4095,9 @@ def analyze_comb_perf(mc_time_rows):
             results = (blank_row, blank_row, blank_row, blank_row)
         else:
             log.debug('Getting Combined Performance - ' + entry.get('Selection'))
+            label = 'comb_perf_plot_{0}'.format(i)
             results = get_perf_metrics(mc_time_rows,
+                                       label,
                                        mc_time_branch=entry.get('mc_time_branch'),
                                        acc_time=entry.get('acc_time'),
                                        pred_time_branch=entry.get('pred_time_branch'),
@@ -4119,7 +4121,7 @@ def analyze_comb_perf(mc_time_rows):
         files.append((results[4],
                       'boxplot',
                       'Box Plot of Combined Model Counting and Constraint Solving Times - ' + entry.get('Selection'),
-                      'comb_perf_plot_{0}'.format(i)))
+                      label))
 
     tables.append((lists[0],
                    'Average Combined Model Counting and Constraint Solving'
@@ -4147,10 +4149,12 @@ def analyze_acc_vs_mc_perf(mc_rows, mc_time_rows):
     log.debug('Gathering Model Count Accuracy vs Model Count Performance')
 
     for i, entry in enumerate(PER_DIFF_VS_MC_TIME_ENTRIES):
+        log.debug('Getting Model Count Accuracy vs Model Count Performance - ' + entry.get('Selection'))
         repeat_per_diffs = 1
         if entry.get('mc_time_branch') is None \
                 or entry.get('pred_time_branch') is None:
             repeat_per_diffs = 2
+        label = 'acc_vs_mc_perf_plot_{0}'.format(i)
         table = get_per_diffs(mc_rows,
                               raw=repeat_per_diffs,
                               disagree=entry.get('disagree'),
@@ -4165,6 +4169,7 @@ def analyze_acc_vs_mc_perf(mc_rows, mc_time_rows):
                               pred_arg_type=entry.get('pred_arg_type'))
 
         results = get_perf_metrics(mc_time_rows,
+                                   label,
                                    mc_time_branch=entry.get('mc_time_branch'),
                                    acc_time=entry.get('acc_time'),
                                    pred_time_branch=entry.get('pred_time_branch'),
@@ -4185,7 +4190,7 @@ def analyze_acc_vs_mc_perf(mc_rows, mc_time_rows):
         files.append((table,
                       'scatter',
                       'Plot of Percent Difference vs Model Counting Time - ' + entry.get('Selection'),
-                      'acc_vs_mc_perf_plot_{0}'.format(i)))
+                      label))
 
     return files
 
@@ -4197,6 +4202,8 @@ def analyze_acc_vs_solve_perf(mc_rows, mc_time_rows):
     log.debug('Gathering Model Count Accuracy vs Constraint Solving Performance')
 
     for i, entry in enumerate(PER_DIFF_VS_SOLVE_TIME_ENTRIES):
+        log.debug('Getting Model Count Accuracy vs Constraint Solving Performance - ' + entry.get('Selection'))
+        label = 'acc_vs_solve_perf_plot_{0}'.format(i)
         table = get_per_diffs(mc_rows,
                               raw=True,
                               disagree=entry.get('disagree'),
@@ -4211,6 +4218,7 @@ def analyze_acc_vs_solve_perf(mc_rows, mc_time_rows):
                               pred_arg_type=entry.get('pred_arg_type'))
 
         results = get_perf_metrics(mc_time_rows,
+                                   label,
                                    mc_time_branch=entry.get('mc_time_branch'),
                                    acc_time=entry.get('acc_time'),
                                    pred_time_branch=entry.get('pred_time_branch'),
@@ -4231,7 +4239,7 @@ def analyze_acc_vs_solve_perf(mc_rows, mc_time_rows):
         files.append((results[4],
                       'scatter',
                       'Plot of Percent Difference vs Constraint Solving Time - ' + entry.get('Selection'),
-                      'acc_vs_solve_perf_plot_{0}'.format(i)))
+                      label))
 
     return files
 
@@ -4244,6 +4252,8 @@ def analyze_acc_vs_comb_perf(mc_rows, mc_time_rows):
               'Constraint Solving Performance')
 
     for i, entry in enumerate(PER_DIFF_VS_COMB_TIME_ENTRIES):
+        log.debug('Getting Model Count Accuracy vs Combined Model Counting and Constraint Solving Performance - ' + entry.get('Selection'))
+        label = 'acc_vs_solve_perf_plot_{0}'.format(i)
         table = get_per_diffs(mc_rows,
                               raw=True,
                               disagree=entry.get('disagree'),
@@ -4258,6 +4268,7 @@ def analyze_acc_vs_comb_perf(mc_rows, mc_time_rows):
                               pred_arg_type=entry.get('pred_arg_type'))
 
         results = get_perf_metrics(mc_time_rows,
+                                   label,
                                    mc_time_branch=entry.get('mc_time_branch'),
                                    acc_time=entry.get('acc_time'),
                                    pred_time_branch=entry.get('pred_time_branch'),
@@ -4278,7 +4289,7 @@ def analyze_acc_vs_comb_perf(mc_rows, mc_time_rows):
         files.append((results[4],
                       'scatter',
                       'Plot of Percent Difference vs Combined Model Counting and Constraint Solving Time - ' + entry.get('Selection'),
-                      'acc_vs_solve_perf_plot_{0}'.format(i)))
+                      label))
 
     return files
 
@@ -4288,26 +4299,26 @@ def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
     tables = list()
     figures = list()
 
-    # acc_tables = analyze_accuracy(mc_rows)
-    # tables.extend(acc_tables)
+    acc_tables = analyze_accuracy(mc_rows)
+    tables.extend(acc_tables)
 
-    # mc_perf_tables, mc_perf_files = analyze_mc_performance(mc_time_rows)
-    # tables.extend(mc_perf_tables)
-    # figures.extend(mc_perf_files)
+    mc_perf_tables, mc_perf_files = analyze_mc_performance(mc_time_rows)
+    tables.extend(mc_perf_tables)
+    figures.extend(mc_perf_files)
 
     solve_perf_tables, solve_perf_files = analyze_solve_performance(mc_time_rows, op_time_rows)
     tables.extend(solve_perf_tables)
     figures.extend(solve_perf_files)
 
-    # comb_perf_tables, comb_perf_files = analyze_comb_perf(mc_time_rows)
-    # tables.extend(comb_perf_tables)
-    # figures.extend(comb_perf_files)
+    comb_perf_tables, comb_perf_files = analyze_comb_perf(mc_time_rows)
+    tables.extend(comb_perf_tables)
+    figures.extend(comb_perf_files)
 
-    # figures.extend(analyze_acc_vs_mc_perf(mc_rows, mc_time_rows))
+    figures.extend(analyze_acc_vs_mc_perf(mc_rows, mc_time_rows))
 
-    # figures.extend(analyze_acc_vs_solve_perf(mc_rows, mc_time_rows))
+    figures.extend(analyze_acc_vs_solve_perf(mc_rows, mc_time_rows))
 
-    # figures.extend(analyze_acc_vs_comb_perf(mc_rows, mc_time_rows))
+    figures.extend(analyze_acc_vs_comb_perf(mc_rows, mc_time_rows))
 
     # output_plot_files(figures)
 
