@@ -395,7 +395,8 @@ def output_plot_data_file(data, plot_types, label):
         })
 
     for plot in plots:
-        data_file_path = os.path.join(project_dir, 'data', plot['label'] + '.csv')
+        data_file_path = os.path.join(project_dir, 'data',
+                                      plot['label'].format(label) + '.csv')
         with open(data_file_path, 'w') as csv_file:
             # write header
             for s in SOLVERS:
@@ -405,7 +406,7 @@ def output_plot_data_file(data, plot_types, label):
             csv_file.write('\n')
 
             # write rows
-            for i in range(map.get(SOLVERS[0])[0].size):
+            for i in range(data.get(SOLVERS[0])[0].size):
                 for s in SOLVERS:
                     for column in plot.get('columns'):
                         csv_file.write(str(data.get(s)[column[0]][i]))
@@ -413,7 +414,7 @@ def output_plot_data_file(data, plot_types, label):
                 csv_file.write('\n')
 
 
-def output_plot_script(num_rows, plot_type, label):
+def output_plot_script(data, plot_type, label):
     lines = list()
 
     out_path = os.path.join(project_dir, 'data', label + '.gnu')
@@ -750,8 +751,6 @@ def get_perf_metrics(rows,
 
     filtered = filter(perf_metric_filter, rows)
 
-    log.debug('Getting Weights')
-
     # get weights
     weights_np = numpy.asarray(map(lambda r: int(r.get('Norm')), filtered))
     if mc_time_branch == 'both' or pred_time_branch == 'both':
@@ -760,8 +759,6 @@ def get_perf_metrics(rows,
     for solver in SOLVERS:
         times_np = numpy.empty([0, weights_np.size])
         s = solver[0].upper()
-
-        log.debug('Getting Performance Times for %s', solver)
 
         # get mc times
         if mc_time_branch is not None:
@@ -819,43 +816,32 @@ def get_perf_metrics(rows,
 
         # get op times
         if op_time:
-            times_np = numpy.asarray(
-                map(lambda r: int(r.get(s + ' Op Time')), filtered))
-
-        log.debug('Summing Times')
+            op_times_np = numpy.asarray(map(lambda r: int(r.get(s + ' Op Time')), filtered))
+            times_np = numpy.append(times_np, [op_times_np], axis=0)
 
         # sum times
         if len(times_np.shape) == 2 and times_np.shape[0] > 1:
             times_np = numpy.sum(times_np, axis=0)
-        elif not op_time:
+        else:
             times_np = times_np[0]
 
-        log.debug('Calculating mean')
         mean = numpy.average(times_np, weights=weights_np)
         avg_results[solver] = '{0:.1f}'.format(mean)
 
-        log.debug('Calculating median')
         quants = weighted_quantile(times_np,
                                    [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75,
                                     0.875, 1.0], sample_weight=weights_np)
         median_results[solver] = '{0:.1f}'.format(quants[4])
         # median_results[solver] = '{0:.1f}'.format(numpy.median(w_times_np))
 
-        log.debug('Calculating variance')
         sq_d = numpy.apply_along_axis(lambda x: (x - mean) ** 2, 0, times_np)
         var_result = numpy.average(sq_d, weights=weights_np)
         variance_results[solver] = '{0:.1f}'.format(var_result)
         # variance_results[solver] = '{0:.1f}'.format(numpy.var(w_times_np))
 
-        log.debug('Calculating standard deviation')
         std_dev_results[solver] = '{0:.1f}'.format(math.sqrt(var_result))
         # std_dev_results[solver] = '{0:.1f}'.format(numpy.std(w_times_np))
 
-        # log.debug('Repeating times arrays per weight')
-        # w_times_np = numpy.repeat(times_np, weights_np)
-        # w_times[solver] = w_times_np
-
-        log.debug('Get Plot Data')
         hist = numpy.histogram(times_np, bins=20, weights=weights_np)
         w_times[solver] = (times_np, weights_np, hist[0], hist[1], quants)
 
@@ -873,18 +859,16 @@ def process_perf_entries(rows, entries, perf_type):
 
     lists = (list(), list(), list(), list(), list())
 
-    for i, entry in entries:
+    for entry in entries:
         if 'is_blank' in entry and entry.get('is_blank'):
             results = (blank_row, blank_row, blank_row, blank_row)
         else:
             log.debug('Getting Performance Metrics - ' + entry.get('Selection'))
             results = get_perf_metrics(rows,
                                        entry.get('label'),
-                                       mc_time_branch=entry.get(
-                                           'mc_time_branch'),
+                                       mc_time_branch=entry.get('mc_time_branch'),
                                        acc_time=entry.get('acc_time'),
-                                       pred_time_branch=entry.get(
-                                           'pred_time_branch'),
+                                       pred_time_branch=entry.get('pred_time_branch'),
                                        op_time=entry.get('op_time'),
                                        input_type=entry.get('input_type'),
                                        alphabet=entry.get('alphabet'),
@@ -1007,7 +991,7 @@ def analyze_comb_perf(mc_time_rows):
 
     lists = (list(), list(), list(), list(), list())
 
-    for i, entry in GLOB.get('entries').get('comb-time'):
+    for entry in GLOB.get('entries').get('comb-time'):
         if 'is_blank' in entry and entry.get('is_blank'):
             results = (blank_row, blank_row, blank_row, blank_row)
         else:
@@ -1015,11 +999,9 @@ def analyze_comb_perf(mc_time_rows):
                 'Getting Combined Performance - ' + entry.get('Selection'))
             results = get_perf_metrics(mc_time_rows,
                                        entry.get('label'),
-                                       mc_time_branch=entry.get(
-                                           'mc_time_branch'),
+                                       mc_time_branch=entry.get('mc_time_branch'),
                                        acc_time=entry.get('acc_time'),
-                                       pred_time_branch=entry.get(
-                                           'pred_time_branch'),
+                                       pred_time_branch=entry.get('pred_time_branch'),
                                        op_time=entry.get('op_time'),
                                        input_type=entry.get('input_type'),
                                        alphabet=entry.get('alphabet'),
@@ -1033,15 +1015,15 @@ def analyze_comb_perf(mc_time_rows):
             results[1]['Selection'] = entry.get('Selection')
             results[2]['Selection'] = entry.get('Selection')
             results[3]['Selection'] = entry.get('Selection')
+            files.append((results[4],
+                          ['boxplot', 'histogram'],
+                          'Box Plot of Combined Model Counting and Constraint'
+                          ' Solving Times - ' + entry.get('Selection'),
+                          entry.get('label')))
         lists[0].append(results[0])
         lists[1].append(results[1])
         lists[2].append(results[2])
         lists[3].append(results[3])
-        files.append((results[4],
-                      ['boxplot', 'histogram'],
-                      'Box Plot of Combined Model Counting and Constraint Solving Times - ' + entry.get(
-                          'Selection'),
-                      entry.get('label')))
 
     tables.append((lists[0],
                    'Average Combined Model Counting and Constraint Solving'
@@ -1068,7 +1050,7 @@ def analyze_acc_vs_mc_perf(mc_rows, mc_time_rows):
 
     log.debug('Gathering Model Count Accuracy vs Model Count Performance')
 
-    for i, entry in GLOB.get('entries').get('per-diff-vs-solve-time'):
+    for entry in GLOB.get('entries').get('per-diff-vs-solve-time'):
         log.debug(
             'Getting Model Count Accuracy vs Model Count Performance - ' + entry.get(
                 'Selection'))
@@ -1093,8 +1075,7 @@ def analyze_acc_vs_mc_perf(mc_rows, mc_time_rows):
                                    entry.get('label'),
                                    mc_time_branch=entry.get('mc_time_branch'),
                                    acc_time=entry.get('acc_time'),
-                                   pred_time_branch=entry.get(
-                                       'pred_time_branch'),
+                                   pred_time_branch=entry.get('pred_time_branch'),
                                    op_time=entry.get('op_time'),
                                    input_type=entry.get('input_type'),
                                    alphabet=entry.get('alphabet'),
@@ -1125,7 +1106,7 @@ def analyze_acc_vs_solve_perf(mc_rows, mc_time_rows):
     log.debug(
         'Gathering Model Count Accuracy vs Constraint Solving Performance')
 
-    for i, entry in GLOB.get('entries').get('per-diff-vs-mc-time'):
+    for entry in GLOB.get('entries').get('per-diff-vs-mc-time'):
         log.debug(
             'Getting Model Count Accuracy vs Constraint Solving Performance - ' + entry.get(
                 'Selection'))
@@ -1146,8 +1127,7 @@ def analyze_acc_vs_solve_perf(mc_rows, mc_time_rows):
                                    entry.get('label'),
                                    mc_time_branch=entry.get('mc_time_branch'),
                                    acc_time=entry.get('acc_time'),
-                                   pred_time_branch=entry.get(
-                                       'pred_time_branch'),
+                                   pred_time_branch=entry.get('pred_time_branch'),
                                    op_time=entry.get('op_time'),
                                    input_type=entry.get('input_type'),
                                    alphabet=entry.get('alphabet'),
@@ -1178,7 +1158,7 @@ def analyze_acc_vs_comb_perf(mc_rows, mc_time_rows):
     log.debug('Gathering Model Count Accuracy vs Combined Model Counting and '
               'Constraint Solving Performance')
 
-    for i, entry in GLOB.get('entries').get('per-diff-vs-comb-time'):
+    for entry in GLOB.get('entries').get('per-diff-vs-comb-time'):
         log.debug(
             'Getting Model Count Accuracy vs Combined Model Counting and Constraint Solving Performance - ' + entry.get(
                 'Selection'))
@@ -1199,8 +1179,7 @@ def analyze_acc_vs_comb_perf(mc_rows, mc_time_rows):
                                    entry.get('label'),
                                    mc_time_branch=entry.get('mc_time_branch'),
                                    acc_time=entry.get('acc_time'),
-                                   pred_time_branch=entry.get(
-                                       'pred_time_branch'),
+                                   pred_time_branch=entry.get('pred_time_branch'),
                                    op_time=entry.get('op_time'),
                                    input_type=entry.get('input_type'),
                                    alphabet=entry.get('alphabet'),
@@ -1264,13 +1243,19 @@ def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
 def get_entries():
     GLOB['entries'] = dict()
 
+    def filter_entries(entry):
+        return ('alphabet' not in entry or entry.get('alphabet') != 'AE') \
+               and ('length' not in entry or entry.get('length') < 4)
+
     for e in GLOB['Settings'].entries:
         entry_file_path = os.path.join(project_dir,
                                        'data',
                                        'data-analysis-entries',
                                        '{0}-entries.json'.format(e))
         with open(entry_file_path, 'r') as entry_file:
-            GLOB['entries'][e] = json.load(entry_file)
+            entries = json.load(entry_file)
+            entries = filter(filter_entries, entries)
+            GLOB['entries'][e] = entries
 
 
 def main(arguments):

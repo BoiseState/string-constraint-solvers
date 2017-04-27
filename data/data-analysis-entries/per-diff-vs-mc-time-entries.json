@@ -15,9 +15,6 @@
     "label": "per_diff_vs_mc_time_false"
   },
   {
-    "is_blank": true
-  },
-  {
     "mc_time_branch": "both",
     "alphabet": "AB",
     "Selection": "$|\\Sigma| = 2$",
@@ -40,9 +37,6 @@
     "alphabet": "AE",
     "Selection": "$|\\Sigma| = 5$",
     "label": "per_diff_vs_mc_time_alpha_AE"
-  },
-  {
-    "is_blank": true
   },
   {
     "mc_time_branch": "both",
@@ -69,9 +63,6 @@
     "label": "per_diff_vs_mc_time_len_4"
   },
   {
-    "is_blank": true
-  },
-  {
     "mc_time_branch": "both",
     "input_type": "Simple",
     "Selection": "\\textit{Simple}",
@@ -88,9 +79,6 @@
     "input_type": "Uneven",
     "Selection": "\\textit{Uneven}",
     "label": "per_diff_vs_mc_time_uneven"
-  },
-  {
-    "is_blank": true
   },
   {
     "mc_time_branch": "both",
@@ -164,9 +152,6 @@
     "operation": "reverse",
     "Selection": "Includes $\\mathtt{reverse}$",
     "label": "per_diff_vs_mc_time_incl_reverse"
-  },
-  {
-    "is_blank": true
   },
   {
     "mc_time_branch": "both",

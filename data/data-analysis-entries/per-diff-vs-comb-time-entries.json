@@ -21,9 +21,6 @@
     "label": "per_diff_vs_comb_time_false"
   },
   {
-    "is_blank": true
-  },
-  {
     "acc_time": true,
     "mc_time_branch": "both",
     "pred_time_branch": "both",
@@ -54,9 +51,6 @@
     "alphabet": "AE",
     "Selection": "$|\\Sigma| = 5$",
     "label": "per_diff_vs_comb_time_alpha_AE"
-  },
-  {
-    "is_blank": true
   },
   {
     "acc_time": true,
@@ -91,9 +85,6 @@
     "label": "per_diff_vs_comb_time_len_4"
   },
   {
-    "is_blank": true
-  },
-  {
     "acc_time": true,
     "mc_time_branch": "both",
     "pred_time_branch": "both",
@@ -116,9 +107,6 @@
     "input_type": "Uneven",
     "Selection": "\\textit{Uneven}",
     "label": "per_diff_vs_comb_time_uneven"
-  },
-  {
-    "is_blank": true
   },
   {
     "acc_time": true,
@@ -214,9 +202,6 @@
     "operation": "reverse",
     "Selection": "Includes $\\mathtt{reverse}$",
     "label": "per_diff_vs_comb_time_incl_reverse"
-  },
-  {
-    "is_blank": true
   },
   {
     "acc_time": true,
