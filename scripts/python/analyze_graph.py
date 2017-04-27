@@ -24,36 +24,18 @@ ch.setFormatter(formatter)
 log.addHandler(ch)
 
 # Globals
-OPERATIONS = (
-    'append'
-    'concat'
-    'deleteCharAt'
-    'delete'
-    'insert'
-    'replace'
-    'replaceAll'
-    'replaceFirst'
-    'replace'
-    'reverse'
-    'substring'
-    'toLowerCase'
-    'toString'
-    'toUpperCase'
-    'trim'
-)
-
 PREDICATES = (
-    'contains',
-    'contentEquals',
-    'contentEquals',
-    'endsWith',
-    'equals',
-    'equalsIgnoreCase',
-    'isEmpty',
-    'matches',
-    'regionMatches',
-    'startsWith',
-    'startsWith'
+    'contains!!Ljava/lang/CharSequence;',
+    'contentEquals!!Ljava/lang/CharSequence;',
+    'contentEquals!!Ljava/lang/StringBuffer;',
+    'endsWith!!Ljava/lang/String;',
+    'equals!!Ljava/lang/Object;',
+    'equalsIgnoreCase!!Ljava/lang/String;',
+    'isEmpty!!',
+    'matches!!Ljava/lang/String;',
+    'regionMatches!!ILjava/lang/String;II',
+    'startsWith!!Ljava/lang/String;',
+    'startsWith!!Ljava/lang/String;I'
 )
 
 SPECIAL_CHARS = [u'\b', u'\f', u'\n', u'\r', u'\t', u'\'', u'\"', u'\\\\']
@@ -274,8 +256,7 @@ def split_graph(vertices):
     for dest_id, dest_type in out_edges.get(root_v.get('id')):
         dest_v = v_map.get(dest_id)
         # check for uneven contains creation predicate
-        if dest_v.get('value').startswith('contains!!') \
-                and dest_id < root_v.get('id'):
+        if dest_v.get('value').split('!:!')[0] in PREDICATES:
             predicates.append(dest_v)
         else:  # split into subgraphs
             for child_id, child_type in out_edges.get(dest_id):
@@ -357,14 +338,14 @@ def main(arguments):
     for i, vertex_list in enumerate(vertices_list):
 
         # analyze graph vertices for alphabet
-        alphabet, max_length, c_strings, u_strings = analyze_graph(vertices)
+        alphabet, max_length, c_strings, u_strings = analyze_graph(vertex_list)
 
         # create alphabet declaration from set
         declaration = create_alphabet_declaration(alphabet)
 
         # get graph file structure
         graph = {
-            'vertices': vertices,
+            'vertices': vertex_list,
             'alphabet': {
                 'concrete_strings': len(c_strings),
                 'declaration': declaration,
