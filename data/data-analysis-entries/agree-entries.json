@@ -1,0 +1,218 @@
+[
+  {
+    "Selection": "All"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "alphabet": "AB",
+    "Selection": "$|\\Sigma| = 2$"
+  },
+  {
+    "alphabet": "AC",
+    "Selection": "$|\\Sigma| = 3$"
+  },
+  {
+    "alphabet": "AD",
+    "Selection": "$|\\Sigma| = 4$"
+  },
+  {
+    "alphabet": "AE",
+    "Selection": "$|\\Sigma| = 5$"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "length": 1,
+    "Selection": "Length 1"
+  },
+  {
+    "length": 2,
+    "Selection": "Length 2"
+  },
+  {
+    "length": 3,
+    "Selection": "Length 3"
+  },
+  {
+    "length": 4,
+    "Selection": "Length 4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "input_type": "Simple",
+    "Selection": "\\textit{Simple}"
+  },
+  {
+    "input_type": "Even",
+    "Selection": "\\textit{Even}"
+  },
+  {
+    "input_type": "Uneven",
+    "Selection": "\\textit{Uneven}"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "operation": "concat",
+    "Selection": "Includes $\\mathtt{concat}$"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "Selection": "Includes $\\mathtt{concat}(Simple)$"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "Selection": "Includes $\\mathtt{concat}(Even)$"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "Selection": "Includes $\\mathtt{concat}(Uneven)$"
+  },
+  {
+    "operation": "delete",
+    "Selection": "Includes $\\mathtt{delete}$"
+  },
+  {
+    "operation": "delete",
+    "op_arg_type": "same",
+    "Selection": "Includes $\\mathtt{delete}(same)$"
+  },
+  {
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "Selection": "Includes $\\mathtt{delete}(diff)$"
+  },
+  {
+    "operation": "replace",
+    "Selection": "Includes $\\mathtt{replace}$"
+  },
+  {
+    "operation": "replace",
+    "op_arg_type": "same",
+    "Selection": "Includes $\\mathtt{replace}(same)$"
+  },
+  {
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "Selection": "Includes $\\mathtt{replace}(diff)$"
+  },
+  {
+    "operation": "reverse",
+    "Selection": "Includes $\\mathtt{reverse}$"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "operation": "concat",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{concat}$"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{concat}(Simple)$"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{concat}(Even)$"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{concat}(Uneven)$"
+  },
+  {
+    "operation": "delete",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{delete}$"
+  },
+  {
+    "operation": "delete",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{delete}(same)$"
+  },
+  {
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{delete}(diff)$"
+  },
+  {
+    "operation": "replace",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{replace}$"
+  },
+  {
+    "operation": "replace",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{replace}(same)$"
+  },
+  {
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{replace}(diff)$"
+  },
+  {
+    "operation": "reverse",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{reverse}$"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "predicate": "contains",
+    "Selection": "$\\mathtt{contains}$"
+  },
+  {
+    "predicate": "contains",
+    "pred_arg_type": "Simple",
+    "Selection": "$\\mathtt{contains}(Simple)$"
+  },
+  {
+    "predicate": "contains",
+    "pred_arg_type": "Even",
+    "Selection": "$\\mathtt{contains}(Even)$"
+  },
+  {
+    "predicate": "contains",
+    "pred_arg_type": "Uneven",
+    "Selection": "$\\mathtt{contains}(Uneven)$"
+  },
+  {
+    "predicate": "equals",
+    "Selection": "$\\mathtt{equals}$"
+  },
+  {
+    "predicate": "equals",
+    "pred_arg_type": "Simple",
+    "Selection": "$\\mathtt{equals}(Simple)$"
+  },
+  {
+    "predicate": "equals",
+    "pred_arg_type": "Even",
+    "Selection": "$\\mathtt{equals}(Even)$"
+  },
+  {
+    "predicate": "equals",
+    "pred_arg_type": "Uneven",
+    "Selection": "$\\mathtt{equals}(Uneven)$"
+  }
+]

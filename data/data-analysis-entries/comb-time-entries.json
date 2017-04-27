@@ -1,0 +1,397 @@
+[
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "Selection": "All",
+    "label": "comb_time_all"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "true",
+    "pred_time_branch": "true",
+    "Selection": "\\textit{true} Branches",
+    "label": "comb_time_true"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "false",
+    "pred_time_branch": "false",
+    "Selection": "\\textit{false} Branches",
+    "label": "comb_time_false"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "alphabet": "AB",
+    "Selection": "$|\\Sigma| = 2$",
+    "label": "comb_time_alpha_AB"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "alphabet": "AC",
+    "Selection": "$|\\Sigma| = 3$",
+    "label": "comb_time_alpha_AC"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "alphabet": "AD",
+    "Selection": "$|\\Sigma| = 4$",
+    "label": "comb_time_alpha_AD"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "alphabet": "AE",
+    "Selection": "$|\\Sigma| = 5$",
+    "label": "comb_time_alpha_AE"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "length": 1,
+    "Selection": "Length 1",
+    "label": "comb_time_len_1"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "length": 2,
+    "Selection": "Length 2",
+    "label": "comb_time_len_2"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "length": 3,
+    "Selection": "Length 3",
+    "label": "comb_time_len_3"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "length": 4,
+    "Selection": "Length 4",
+    "label": "comb_time_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "input_type": "Simple",
+    "Selection": "\\textit{Simple}",
+    "label": "comb_time_simple"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "input_type": "Even",
+    "Selection": "\\textit{Even}",
+    "label": "comb_time_even"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "input_type": "Uneven",
+    "Selection": "\\textit{Uneven}",
+    "label": "comb_time_uneven"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "concat",
+    "Selection": "Includes $\\mathtt{concat}$",
+    "label": "comb_time_incl_concat_all"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "Selection": "Includes $\\mathtt{concat}(Simple)$",
+    "label": "comb_time_incl_concat_simple"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "Selection": "Includes $\\mathtt{concat}(Even)$",
+    "label": "comb_time_incl_concat_even"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "Selection": "Includes $\\mathtt{concat}(Uneven)$",
+    "label": "comb_time_incl_concat_uneven"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "delete",
+    "Selection": "Includes $\\mathtt{delete}$",
+    "label": "comb_time_incl_delete_all"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "delete",
+    "op_arg_type": "same",
+    "Selection": "Includes $\\mathtt{delete}(same)$",
+    "label": "comb_time_incl_delete_same"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "Selection": "Includes $\\mathtt{delete}(diff)$",
+    "label": "comb_time_incl_delete_diff"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "replace",
+    "Selection": "Includes $\\mathtt{replace}$",
+    "label": "comb_time_incl_replace_all"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "replace",
+    "op_arg_type": "same",
+    "Selection": "Includes $\\mathtt{replace}(same)$",
+    "label": "comb_time_incl_replace_same"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "Selection": "Includes $\\mathtt{replace}(diff)$",
+    "label": "comb_time_incl_replace_diff"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "reverse",
+    "Selection": "Includes $\\mathtt{reverse}$",
+    "label": "comb_time_incl_reverse"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "concat",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{concat}$",
+    "label": "comb_time_excl_concat_all"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{concat}(Simple)$",
+    "label": "comb_time_excl_concat_simple"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{concat}(Even)$",
+    "label": "comb_time_excl_concat_even"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{concat}(Uneven)$",
+    "label": "comb_time_excl_concat_uneven"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "delete",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{delete}$",
+    "label": "comb_time_excl_delete_all"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "delete",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{delete}(same)$",
+    "label": "comb_time_excl_delete_same"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{delete}(diff)$",
+    "label": "comb_time_excl_delete_diff"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "replace",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{replace}$",
+    "label": "comb_time_excl_replace_all"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "replace",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{replace}(same)$",
+    "label": "comb_time_excl_replace_same"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{replace}(diff)$",
+    "label": "comb_time_excl_replace_diff"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "reverse",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{reverse}$",
+    "label": "comb_time_excl_reverse"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "predicate": "contains",
+    "Selection": "$\\mathtt{contains}$",
+    "label": "comb_time_contains_all"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "predicate": "contains",
+    "pred_arg_type": "Simple",
+    "Selection": "$\\mathtt{contains}(Simple)$",
+    "label": "comb_time_contains_simple"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "predicate": "contains",
+    "pred_arg_type": "Even",
+    "Selection": "$\\mathtt{contains}(Even)$",
+    "label": "comb_time_contains_even"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "predicate": "contains",
+    "pred_arg_type": "Uneven",
+    "Selection": "$\\mathtt{contains}(Uneven)$",
+    "label": "comb_time_contains_uneven"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "predicate": "equals",
+    "Selection": "$\\mathtt{equals}$",
+    "label": "comb_time_equals_all"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "predicate": "equals",
+    "pred_arg_type": "Simple",
+    "Selection": "$\\mathtt{equals}(Simple)$",
+    "label": "comb_time_equals_simple"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "predicate": "equals",
+    "pred_arg_type": "Even",
+    "Selection": "$\\mathtt{equals}(Even)$",
+    "label": "comb_time_equals_even"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "predicate": "equals",
+    "pred_arg_type": "Uneven",
+    "Selection": "$\\mathtt{equals}(Uneven)$",
+    "label": "comb_time_equals_uneven"
+  }
+]

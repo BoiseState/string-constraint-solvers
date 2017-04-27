@@ -23,7 +23,39 @@ ch.setFormatter(formatter)
 
 log.addHandler(ch)
 
-# initialize special character list
+# Globals
+OPERATIONS = (
+    'append'
+    'concat'
+    'deleteCharAt'
+    'delete'
+    'insert'
+    'replace'
+    'replaceAll'
+    'replaceFirst'
+    'replace'
+    'reverse'
+    'substring'
+    'toLowerCase'
+    'toString'
+    'toUpperCase'
+    'trim'
+)
+
+PREDICATES = (
+    'contains',
+    'contentEquals',
+    'contentEquals',
+    'endsWith',
+    'equals',
+    'equalsIgnoreCase',
+    'isEmpty',
+    'matches',
+    'regionMatches',
+    'startsWith',
+    'startsWith'
+)
+
 SPECIAL_CHARS = [u'\b', u'\f', u'\n', u'\r', u'\t', u'\'', u'\"', u'\\\\']
 
 
@@ -194,16 +226,16 @@ def split_graph(vertices):
     v_map = dict()
 
     # get graph data
-    for v in vertices:
-        v_map[v.get('id')] = v
-        for e in v.get('incomingEdges'):
+    for pred_v in vertices:
+        v_map[pred_v.get('id')] = pred_v
+        for e in pred_v.get('incomingEdges'):
             source_id = e.get('source')
             # add out edges
             out_set = out_edges.get(source_id)
             if out_set is None:
                 out_set = set()
                 out_edges[source_id] = out_set
-            out_set.add((v.get('id'), e.get('type')))
+            out_set.add((pred_v.get('id'), e.get('type')))
 
     def is_root(vertex):
         return len(vertex.get('incomingEdges')) == 0 \
@@ -238,23 +270,25 @@ def split_graph(vertices):
     # split vertices
     non_split_vertices = list()
     non_split_vertices.append(root_v)
-    uneven_vertex = None
+    predicates = list()
     for dest_id, dest_type in out_edges.get(root_v.get('id')):
         dest_v = v_map.get(dest_id)
         # check for uneven contains creation predicate
         if dest_v.get('value').startswith('contains!!') \
                 and dest_id < root_v.get('id'):
-            uneven_vertex = dest_v
-        else:  # split into subgraph
-            sg_vertices = list()
-            sg_vertices.append(dest_v)
-            add_subgraph_to_vertices(dest_v, sg_vertices, out_edges, v_map)
-            vertices_list.append(sg_vertices)
+            predicates.append(dest_v)
+        else:  # split into subgraphs
+            for child_id, child_type in out_edges.get(dest_id):
+                child_v = v_map.get(child_id)
+                sg_vertices = list()
+                sg_vertices.append(child_v)
+                add_subgraph_to_vertices(child_v, sg_vertices, out_edges, v_map)
+                vertices_list.append(sg_vertices)
 
-    # add any uneven vertices to unsplit vertices
-    if uneven_vertex is not None:
-        non_split_vertices.append(uneven_vertex)
-        for e in uneven_vertex.get('incomingEdges'):
+    # add any predicate vertices to unsplit vertices
+    for pred_v in predicates:
+        non_split_vertices.append(pred_v)
+        for e in pred_v.get('incomingEdges'):
             in_v = v_map.get(e.get('source'))
             if in_v not in non_split_vertices:
                 non_split_vertices.append(in_v)

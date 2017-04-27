@@ -1,0 +1,74 @@
+[
+  {
+    "mc_time_branch": "both",
+    "Selection": "All Constraints",
+    "label": "mc_time_all"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "mc_time_branch": "true",
+    "Selection": "\\textit{true} Branches",
+    "label": "mc_time_true"
+  },
+  {
+    "mc_time_branch": "false",
+    "Selection": "\\textit{false} Branches",
+    "label": "mc_time_false"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "mc_time_branch": "both",
+    "alphabet": "AB",
+    "Selection": "$|\\Sigma| = 2$",
+    "label": "mc_time_alpha_AB"
+  },
+  {
+    "mc_time_branch": "both",
+    "alphabet": "AC",
+    "Selection": "$|\\Sigma| = 3$",
+    "label": "mc_time_alpha_AC"
+  },
+  {
+    "mc_time_branch": "both",
+    "alphabet": "AD",
+    "Selection": "$|\\Sigma| = 4$",
+    "label": "mc_time_alpha_AD"
+  },
+  {
+    "mc_time_branch": "both",
+    "alphabet": "AE",
+    "Selection": "$|\\Sigma| = 5$",
+    "label": "mc_time_alpha_AE"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "mc_time_branch": "both",
+    "length": 1,
+    "Selection": "Length 1",
+    "label": "mc_time_len_1"
+  },
+  {
+    "mc_time_branch": "both",
+    "length": 2,
+    "Selection": "Length 2",
+    "label": "mc_time_len_2"
+  },
+  {
+    "mc_time_branch": "both",
+    "length": 3,
+    "Selection": "Length 3",
+    "label": "mc_time_len_3"
+  },
+  {
+    "mc_time_branch": "both",
+    "length": 4,
+    "Selection": "Length 4",
+    "label": "mc_time_len_4"
+  }
+]
