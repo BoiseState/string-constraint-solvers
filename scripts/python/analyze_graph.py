@@ -3,6 +3,8 @@
 import argparse
 import json
 import logging
+import re
+
 import os
 import sys
 
@@ -183,21 +185,19 @@ def create_alphabet_declaration(alphabet):
     return ','.join(range_strings)
 
 
-def add_subgraph_to_vertices(dest_v, sg_vertices, out_edges, v_map):
-
-    def explore_v(v):
+def add_subgraph_to_vertices(v, sg_vertices, out_edges, v_map, in_edge=False):
         sg_vertices.append(v)
         edges = list()
         if v.get('id') in out_edges:
-            edges.extend(out_edges.get(v.get('id')))
-        if v is not dest_v:
-            for e in v.get('incomingEdges'):
-                edges.append((e.get('source'), e.get('type')))
-        for dest_id, dest_type in edges:
+            for o_id, o_type in out_edges.get(v.get('id')):
+                edges.append((o_id, o_type, False))
+        for e in v.get('incomingEdges'):
+            edges.append((e.get('source'), e.get('type'), True))
+        for dest_id, dest_type, is_in_edge in edges:
             d_v = v_map.get(dest_id)
-            if d_v not in sg_vertices:
-                explore_v(d_v)
-    explore_v(dest_v)
+            if d_v not in sg_vertices and (not in_edge or (v.get('value').split('!:!')[0] == 'r1' and d_v.get('value').startswith('contains') and dest_id - 2 == v.get('id'))):
+                add_subgraph_to_vertices(d_v, sg_vertices, out_edges, v_map,
+                                         is_in_edge)
 
 
 def split_graph(vertices):
@@ -252,30 +252,40 @@ def split_graph(vertices):
     # split vertices
     non_split_vertices = list()
     non_split_vertices.append(root_v)
+    uneven_vertex = None
     predicates = list()
     for dest_id, dest_type in out_edges.get(root_v.get('id')):
         dest_v = v_map.get(dest_id)
         # check for uneven contains creation predicate
-        if dest_v.get('value').split('!:!')[0] in PREDICATES:
-            predicates.append(dest_v)
+        if dest_v.get('value').startswith('contains') \
+                and dest_id == root_v.get('id') + 2:
+            uneven_vertex = dest_v
+        elif dest_v.get('value').split('!:!')[0] in PREDICATES:
+            add_subgraph_to_vertices(dest_v, predicates, out_edges,
+                                     v_map, non_split_vertices)
         else:  # split into subgraphs
             for child_id, child_type in out_edges.get(dest_id):
                 child_v = v_map.get(child_id)
                 sg_vertices = list()
-                sg_vertices.append(child_v)
+                sg_vertices.append(dest_v)
+                for e in filter(lambda x: x.get('source') != root_v.get('id'),
+                                dest_v.get('incomingEdges')):
+                    add_subgraph_to_vertices(v_map.get(e.get('source')),
+                                             sg_vertices, out_edges, v_map,
+                                             True)
                 add_subgraph_to_vertices(child_v, sg_vertices, out_edges, v_map)
                 vertices_list.append(sg_vertices)
 
-    # add any predicate vertices to unsplit vertices
-    for pred_v in predicates:
-        non_split_vertices.append(pred_v)
-        for e in pred_v.get('incomingEdges'):
-            in_v = v_map.get(e.get('source'))
-            if in_v not in non_split_vertices:
-                non_split_vertices.append(in_v)
+    # add any uneven vertices to unsplit vertices
+    if uneven_vertex is not None:
+        non_split_vertices.append(uneven_vertex)
+        non_split_vertices.append(v_map.get(root_v.get('id') + 1))
 
     # add non split vertices to each subgraph
     for vl in vertices_list:
+        to_remove = [x for x in vl if x in non_split_vertices]
+        for item in to_remove:
+            vl.remove(item)
         vl.extend(non_split_vertices)
 
     return vertices_list
@@ -358,12 +368,18 @@ def main(arguments):
         if len(vertices_list) > 1:
             graph_filename = os.path.basename(graph_path).split('.')[0]
             graph_dir = os.path.dirname(graph_path)
-            graph_file = '{0}_{1:02d}.json'.format(graph_filename, i)
+            format_string = '{0}_{1:02d}.json'
+            if len(vertices_list) > 99:
+                format_string = '{0}_{1:03d}.json'
+            if len(vertices_list) > 999:
+                format_string = '{0}_{1:04d}.json'
+            graph_file = format_string.format(graph_filename, i)
             g_path = os.path.join(graph_dir, graph_file)
         graphs.append((graph, g_path))
 
     # write out updated graph files
     for g, g_path in graphs:
+        log.debug('Writing to graph: %s', g_path)
         with open(g_path, 'w') as graph_file:
             json.dump(g, graph_file)
 
