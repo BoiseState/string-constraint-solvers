@@ -13,13 +13,9 @@ import java.util.*;
 public class Testing {
 
     public static void main(String[] args) {
-        automatonTesting();
+//        automatonTesting();
 //        aggregateAutomatonOperationTesting();
-//        stringTesting();
-
-//        String s1 = "a";
-//        String s2 = "a";
-//        System.out.printf("%b\n", s1.contains(s2));
+        stringTesting();
     }
 
     private static void automatonTesting() {
@@ -48,83 +44,196 @@ public class Testing {
 
     private static void stringTesting() {
 
-        Alphabet alphabet = new Alphabet("A-D");
+        Alphabet alphabet = new Alphabet("A-E");
 
-        List<String> empty = new ArrayList<>();
-        List<String> emptyString = new ArrayList<>();
-        emptyString.add("");
-        List<String> concrete = new ArrayList<>();
-        concrete.add("ABC");
-        List<String> concreteStringLower = new ArrayList<>();
-        concreteStringLower.add("abc");
-        List<String> concreteStringUpper = new ArrayList<>();
-        concreteStringUpper.add("ABC");
-        List<String> concreteStringNonWhitespace = new ArrayList<>();
-        concreteStringNonWhitespace.add("ABC");
-        List<String> concreteStringWhitespace = new ArrayList<>();
-        concreteStringWhitespace.add(" B ");
+        List<String> even = alphabet.allStrings(0, 4);
 
-        List<String> uniformStrings = alphabet.allStrings(0, 3);
-
-        List<String> nonUniformStrings = new ArrayList<>();
-        for (String str : uniformStrings) {
+        List<String> unevenA = new ArrayList<>();
+        List<String> unevenB = new ArrayList<>();
+        List<String> unevenC = new ArrayList<>();
+        List<String> unevenD = new ArrayList<>();
+        List<String> unevenE = new ArrayList<>();
+        for (String str : even) {
             if (str.contains("A")) {
-                nonUniformStrings.add(str);
+                unevenA.add(str);
+            }
+            if (str.contains("B")) {
+                unevenB.add(str);
+            }
+            if (str.contains("C")) {
+                unevenC.add(str);
+            }
+            if (str.contains("D")) {
+                unevenD.add(str);
+            }
+            if (str.contains("E")) {
+                unevenE.add(str);
             }
         }
 
-        Map<String, List<String>> stringList = new HashMap<>();
-        stringList.put("Empty", empty);
-        stringList.put("Empty String", emptyString);
-        stringList.put("Concrete", concrete);
-//        stringList.put("Concrete Lower", concreteStringLower);
-//        stringList.put("Concrete Upper", concreteStringUpper);
-//        stringList.put("Concrete Whitespace", concreteStringWhitespace);
-//        stringList.put("Concrete Non-Whitespace", concreteStringNonWhitespace);
-        stringList.put("Uniform", uniformStrings);
-        stringList.put("Non-Uniform", nonUniformStrings);
-
-        // perform operation
-        Map<Object[], List<String>> resultMap = new HashMap<>();
-        for (String baseKey : stringList.keySet()) {
-            for (String argKey : stringList.keySet()) {
-                List<String> baseStrings = stringList.get(baseKey);
-                List<String> argStrings = stringList.get(argKey);
-                Object[] resultKey = new Object[]{baseKey, argKey};
-                List<String> resultStrings = resultMap.get(resultKey);
-                if (resultStrings == null) {
-                    resultStrings = new ArrayList<>();
-                    resultMap.put(resultKey, resultStrings);
-                }
-                // perform binary operation
-                for (String baseString : baseStrings) {
-                    boolean flag = false;
-                    for (String argString : argStrings) {
-                        String result = baseString + argString;
-                        resultStrings.add(result);
+        Lambda2<Tuple<Boolean, Boolean>, String, List<String>> contains = new Lambda2<Tuple<Boolean, Boolean>, String, List<String>>() {
+            @Override
+            public Tuple<Boolean, Boolean> execute(String str, List<String> strings) {
+                boolean tFlag = false;
+                boolean fFlag = false;
+                for (String substr : strings) {
+                    if (str.contains(substr)) {
+                        tFlag = true;
+                    } else {
+                        fFlag = true;
+                    }
+                    if (tFlag && fFlag) {
+                        break;
                     }
                 }
+                return new Tuple<>(tFlag, fFlag);
             }
-        }
+        };
 
-
-        // output expected result
-        List<Object[]> keys = new ArrayList<>(resultMap.keySet());
-        Collections.sort(keys, new sortByStringName());
-        for (Object[] resultKey : keys) {
-            List<String> resultStrings = resultMap.get(resultKey);
-            for (int i = 0; i < resultKey.length; i++) {
-                if (resultKey[i] instanceof String) {
-                    System.out.print("\"" + resultKey[i] + "\"");
-                } else if (resultKey[i] instanceof Character) {
-                    System.out.print("\'" + resultKey[i] + "\'");
-                } else {
-                    System.out.print(resultKey[i]);
+        Lambda2<Tuple<Boolean, Boolean>, String, List<String>> equals = new Lambda2<Tuple<Boolean, Boolean>, String, List<String>>() {
+            @Override
+            public Tuple<Boolean, Boolean> execute(String str, List<String> strings) {
+                boolean tFlag = false;
+                boolean fFlag = false;
+                for (String substr : strings) {
+                    if (str.equals(substr)) {
+                        tFlag = true;
+                    } else {
+                        fFlag = true;
+                    }
+                    if (tFlag && fFlag) {
+                        break;
+                    }
                 }
-                System.out.print(", ");
+                return new Tuple<>(tFlag, fFlag);
             }
-            System.out.print(resultStrings.size() + "\n");
-        }
+        };
+
+        List<Quintuple<String, List<String>, List<String>, List<String>, Tuple<Lambda2<Tuple<Boolean, Boolean>, String, List<String>>, List<String>>>> args = new ArrayList<>();
+        args.add(new Quintuple<>("54-U-E-E-contains(S-T)", unevenB, even, even, new Tuple<>(contains, Collections.singletonList("C"))));
+        args.add(new Quintuple<>("54-U-E-E-contains(S-F)", unevenB, even, even, new Tuple<>(contains, Collections.singletonList("ACEADD"))));
+        args.add(new Quintuple<>("54-U-E-E-contains(E-T)", unevenB, even, even, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("54-U-E-E-contains(E-F)", unevenB, even, even, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("54-U-E-E-contains(U-T)", unevenB, even, even, new Tuple<>(contains, unevenC)));
+        args.add(new Quintuple<>("54-U-E-E-contains(U-F)", unevenB, even, even, new Tuple<>(contains, unevenA)));
+        args.add(new Quintuple<>("54-U-E-E-contains(S-T)", unevenB, even, even, new Tuple<>(equals, Collections.singletonList("AACB"))));
+        args.add(new Quintuple<>("54-U-E-E-contains(S-F)", unevenB, even, even, new Tuple<>(equals, Collections.singletonList("EA"))));
+        args.add(new Quintuple<>("54-U-E-E-contains(E-T)", unevenB, even, even, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("54-U-E-E-contains(E-F)", unevenB, even, even, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("54-U-E-E-contains(U-T)", unevenB, even, even, new Tuple<>(equals, unevenB)));
+        args.add(new Quintuple<>("54-U-E-E-contains(U-F)", unevenB, even, even, new Tuple<>(equals, unevenA)));
+        args.add(new Quintuple<>("54-U-E-U-contains(S-T)", unevenB, even, unevenB, new Tuple<>(contains, Collections.singletonList("E"))));
+        args.add(new Quintuple<>("54-U-E-U-contains(S-F)", unevenB, even, unevenB, new Tuple<>(contains, Collections.singletonList("ACEADD"))));
+        args.add(new Quintuple<>("54-U-E-U-contains(E-T)", unevenB, even, unevenB, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("54-U-E-U-contains(E-F)", unevenB, even, unevenB, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("54-U-E-U-contains(U-T)", unevenB, even, unevenB, new Tuple<>(contains, unevenA)));
+        args.add(new Quintuple<>("54-U-E-U-contains(U-F)", unevenB, even, unevenB, new Tuple<>(contains, unevenA)));
+        args.add(new Quintuple<>("54-U-E-U-contains(S-T)", unevenB, even, unevenB, new Tuple<>(equals, Collections.singletonList("AACBCCBE"))));
+        args.add(new Quintuple<>("54-U-E-U-contains(S-F)", unevenB, even, unevenB, new Tuple<>(equals, Collections.singletonList("EA"))));
+        args.add(new Quintuple<>("54-U-E-U-contains(E-T)", unevenB, even, unevenB, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("54-U-E-U-contains(E-F)", unevenB, even, unevenB, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("54-U-E-U-contains(U-T)", unevenB, even, unevenB, new Tuple<>(equals, unevenE)));
+        args.add(new Quintuple<>("54-U-E-U-contains(U-F)", unevenB, even, unevenB, new Tuple<>(equals, unevenD)));
+        args.add(new Quintuple<>("55-U-U-E-contains(S-T)", unevenB, unevenC, even, new Tuple<>(contains, Collections.singletonList("C"))));
+        args.add(new Quintuple<>("55-U-U-E-contains(S-F)", unevenB, unevenC, even, new Tuple<>(contains, Collections.singletonList("ACEADD"))));
+        args.add(new Quintuple<>("55-U-U-E-contains(E-T)", unevenB, unevenC, even, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("55-U-U-E-contains(E-F)", unevenB, unevenC, even, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("55-U-U-E-contains(U-T)", unevenB, unevenC, even, new Tuple<>(contains, unevenE)));
+        args.add(new Quintuple<>("55-U-U-E-contains(U-F)", unevenB, unevenC, even, new Tuple<>(contains, unevenA)));
+        args.add(new Quintuple<>("55-U-U-E-contains(S-T)", unevenB, unevenC, even, new Tuple<>(equals, Collections.singletonList("AACBCCBE"))));
+        args.add(new Quintuple<>("55-U-U-E-contains(S-F)", unevenB, unevenC, even, new Tuple<>(equals, Collections.singletonList("EA"))));
+        args.add(new Quintuple<>("55-U-U-E-contains(E-T)", unevenB, unevenC, even, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("55-U-U-E-contains(E-F)", unevenB, unevenC, even, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("55-U-U-E-contains(U-T)", unevenB, unevenC, even, new Tuple<>(equals, unevenE)));
+        args.add(new Quintuple<>("55-U-U-E-contains(U-F)", unevenB, unevenC, even, new Tuple<>(equals, unevenA)));
+        args.add(new Quintuple<>("55-U-U-U-contains(S-T)", unevenB, unevenC, unevenC, new Tuple<>(contains, Collections.singletonList("B"))));
+        args.add(new Quintuple<>("55-U-U-U-contains(S-F)", unevenB, unevenC, unevenC, new Tuple<>(contains, Collections.singletonList("ACEADD"))));
+        args.add(new Quintuple<>("55-U-U-U-contains(E-T)", unevenB, unevenC, unevenC, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("55-U-U-U-contains(E-F)", unevenB, unevenC, unevenC, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("55-U-U-U-contains(U-T)", unevenB, unevenC, unevenC, new Tuple<>(contains, unevenE)));
+        args.add(new Quintuple<>("55-U-U-U-contains(U-F)", unevenB, unevenC, unevenC, new Tuple<>(contains, unevenE)));
+        args.add(new Quintuple<>("55-U-U-U-contains(S-T)", unevenB, unevenC, unevenC, new Tuple<>(equals, Collections.singletonList("AACBCCBECCBE"))));
+        args.add(new Quintuple<>("55-U-U-U-contains(S-F)", unevenB, unevenC, unevenC, new Tuple<>(equals, Collections.singletonList("EA"))));
+        args.add(new Quintuple<>("55-U-U-U-contains(E-T)", unevenB, unevenC, unevenC, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("55-U-U-U-contains(E-F)", unevenB, unevenC, unevenC, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("55-U-U-U-contains(U-T)", unevenB, unevenC, unevenC, new Tuple<>(equals, unevenC)));
+        args.add(new Quintuple<>("55-U-U-U-contains(U-F)", unevenB, unevenC, unevenC, new Tuple<>(equals, unevenE)));
+        args.add(new Quintuple<>("102-E-E-E-contains(S-T)", even, even, even, new Tuple<>(contains, Collections.singletonList("A"))));
+        args.add(new Quintuple<>("102-E-E-E-contains(S-F)", even, even, even, new Tuple<>(contains, Collections.singletonList("ACEADD"))));
+        args.add(new Quintuple<>("102-E-E-E-contains(E-T)", even, even, even, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("102-E-E-E-contains(E-F)", even, even, even, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("102-E-E-E-contains(U-T)", even, even, even, new Tuple<>(contains, unevenA)));
+        args.add(new Quintuple<>("102-E-E-E-contains(U-F)", even, even, even, new Tuple<>(contains, unevenA)));
+        args.add(new Quintuple<>("102-E-E-E-contains(S-T)", even, even, even, new Tuple<>(equals, Collections.singletonList("BDBA"))));
+        args.add(new Quintuple<>("102-E-E-E-contains(S-F)", even, even, even, new Tuple<>(equals, Collections.singletonList("EA"))));
+        args.add(new Quintuple<>("102-E-E-E-contains(E-T)", even, even, even, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("102-E-E-E-contains(E-F)", even, even, even, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("102-E-E-E-contains(U-T)", even, even, even, new Tuple<>(equals, unevenD)));
+        args.add(new Quintuple<>("102-E-E-E-contains(U-F)", even, even, even, new Tuple<>(equals, unevenB)));
+        args.add(new Quintuple<>("102-E-E-U-contains(S-T)", even, even, unevenB, new Tuple<>(contains, Collections.singletonList("B"))));
+        args.add(new Quintuple<>("102-E-E-U-contains(S-F)", even, even, unevenB, new Tuple<>(contains, Collections.singletonList("ACEADD"))));
+        args.add(new Quintuple<>("102-E-E-U-contains(E-T)", even, even, unevenB, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("102-E-E-U-contains(E-F)", even, even, unevenB, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("102-E-E-U-contains(U-T)", even, even, unevenB, new Tuple<>(contains, unevenB)));
+        args.add(new Quintuple<>("102-E-E-U-contains(U-F)", even, even, unevenB, new Tuple<>(contains, unevenE)));
+        args.add(new Quintuple<>("102-E-E-U-contains(S-T)", even, even, unevenB, new Tuple<>(equals, Collections.singletonList("BDBACCBE"))));
+        args.add(new Quintuple<>("102-E-E-U-contains(S-F)", even, even, unevenB, new Tuple<>(equals, Collections.singletonList("EA"))));
+        args.add(new Quintuple<>("102-E-E-U-contains(E-T)", even, even, unevenB, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("102-E-E-U-contains(E-F)", even, even, unevenB, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("102-E-E-U-contains(U-T)", even, even, unevenB, new Tuple<>(equals, unevenA)));
+        args.add(new Quintuple<>("102-E-E-U-contains(U-F)", even, even, unevenB, new Tuple<>(equals, unevenE)));
+        args.add(new Quintuple<>("103-E-U-E-contains(S-T)", even, unevenC, even, new Tuple<>(contains, Collections.singletonList("A"))));
+        args.add(new Quintuple<>("103-E-U-E-contains(S-F)", even, unevenC, even, new Tuple<>(contains, Collections.singletonList("ACEADD"))));
+        args.add(new Quintuple<>("103-E-U-E-contains(E-T)", even, unevenC, even, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("103-E-U-E-contains(E-F)", even, unevenC, even, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("103-E-U-E-contains(U-T)", even, unevenC, even, new Tuple<>(contains, unevenD)));
+        args.add(new Quintuple<>("103-E-U-E-contains(U-F)", even, unevenC, even, new Tuple<>(contains, unevenA)));
+        args.add(new Quintuple<>("103-E-U-E-contains(S-T)", even, unevenC, even, new Tuple<>(equals, Collections.singletonList("BDBACCBE"))));
+        args.add(new Quintuple<>("103-E-U-E-contains(S-F)", even, unevenC, even, new Tuple<>(equals, Collections.singletonList("EA"))));
+        args.add(new Quintuple<>("103-E-U-E-contains(E-T)", even, unevenC, even, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("103-E-U-E-contains(E-F)", even, unevenC, even, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("103-E-U-E-contains(U-T)", even, unevenC, even, new Tuple<>(equals, unevenB)));
+        args.add(new Quintuple<>("103-E-U-E-contains(U-F)", even, unevenC, even, new Tuple<>(equals, unevenE)));
+        args.add(new Quintuple<>("103-E-U-U-contains(S-T)", even, unevenC, unevenE, new Tuple<>(contains, Collections.singletonList("A"))));
+        args.add(new Quintuple<>("103-E-U-U-contains(S-F)", even, unevenC, unevenE, new Tuple<>(contains, Collections.singletonList("ACEADD"))));
+        args.add(new Quintuple<>("103-E-U-U-contains(E-T)", even, unevenC, unevenE, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("103-E-U-U-contains(E-F)", even, unevenC, unevenE, new Tuple<>(contains, even)));
+        args.add(new Quintuple<>("103-E-U-U-contains(U-T)", even, unevenC, unevenE, new Tuple<>(contains, unevenE)));
+        args.add(new Quintuple<>("103-E-U-U-contains(U-F)", even, unevenC, unevenE, new Tuple<>(contains, unevenA)));
+        args.add(new Quintuple<>("103-E-U-U-contains(S-T)", even, unevenC, unevenE, new Tuple<>(equals, Collections.singletonList("BDBACCBECCBE"))));
+        args.add(new Quintuple<>("103-E-U-U-contains(S-F)", even, unevenC, unevenE, new Tuple<>(equals, Collections.singletonList("EA"))));
+        args.add(new Quintuple<>("103-E-U-U-contains(E-T)", even, unevenC, unevenE, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("103-E-U-U-contains(E-F)", even, unevenC, unevenE, new Tuple<>(equals, even)));
+        args.add(new Quintuple<>("103-E-U-U-contains(U-T)", even, unevenC, unevenE, new Tuple<>(equals, unevenB)));
+        args.add(new Quintuple<>("103-E-U-U-contains(U-F)", even, unevenC, unevenE, new Tuple<>(equals, unevenA)));
+
+//        for (Quintuple<String, List<String>, List<String>, List<String>, Tuple<Lambda2<Tuple<Boolean, Boolean>, String, List<String>>, List<String>>> arg : args) {
+//            long inCount = 0;
+//            long trueCount = 0;
+//            long falseCount = 0;
+//            for (String strBase : arg.get2()) {
+//                for(String strConcat1 : arg.get3()) {
+//                    String concat1Result = strBase.concat(strConcat1);
+//                    for (String strConcat2 : arg.get4()) {
+//                        String concat2Result = concat1Result.concat(strConcat2);
+//                        inCount += 1;
+//                        Tuple<Lambda2<Tuple<Boolean, Boolean>, String, List<String>>, List<String>> pred = arg.get5();
+//                        Tuple<Boolean, Boolean> predResults = pred.get1().execute(concat2Result, pred.get2());
+//                        if (predResults.get1()) {
+//                            trueCount += 1;
+//                        }
+//                        if (predResults.get2()) {
+//                            falseCount += 1;
+//                        }
+//                    }
+//                }
+//            }
+//            System.out.println(arg.get1() + "In Count: " + inCount);
+//            System.out.println(arg.get1() + "True Count: " + trueCount);
+//            System.out.println(arg.get1() + "False Count: " + falseCount);
+//        }
+
+        System.out.println("Num of constraints: " + args.size());
     }
 
     private static void aggregateAutomatonOperationTesting() {

@@ -7,6 +7,7 @@
     "label": "per_diff_vs_comb_time_all"
   },
   {
+    "branch": true,
     "acc_time": true,
     "mc_time_branch": "true",
     "pred_time_branch": "true",
@@ -14,6 +15,7 @@
     "label": "per_diff_vs_comb_time_true"
   },
   {
+    "branch": false,
     "acc_time": true,
     "mc_time_branch": "false",
     "pred_time_branch": "false",
@@ -249,7 +251,27 @@
     "operation": "delete",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{delete}$",
-    "label": "per_diff_vs_comb_time_excl_delete_all"
+    "label": "per_diff_vs_mc_time_excl_delete_all"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "delete",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{delete}(same)$",
+    "label": "per_diff_vs_mc_time_excl_delete_same"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{delete}(diff)$",
+    "label": "per_diff_vs_mc_time_excl_delete_diff"
   },
   {
     "acc_time": true,
@@ -258,7 +280,27 @@
     "operation": "replace",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{replace}$",
-    "label": "per_diff_vs_comb_time_excl_delete_same"
+    "label": "per_diff_vs_mc_time_excl_replace_all"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "replace",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{replace}(same)$",
+    "label": "per_diff_vs_mc_time_excl_replace_same"
+  },
+  {
+    "acc_time": true,
+    "mc_time_branch": "both",
+    "pred_time_branch": "both",
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{replace}(diff)$",
+    "label": "per_diff_vs_mc_time_excl_replace_diff"
   },
   {
     "acc_time": true,
@@ -267,7 +309,7 @@
     "operation": "reverse",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{reverse}$",
-    "label": "per_diff_vs_comb_time_excl_delete_diff"
+    "label": "per_diff_vs_comb_time_excl_reverse"
   },
   {
     "acc_time": true,
@@ -275,7 +317,7 @@
     "pred_time_branch": "both",
     "predicate": "contains",
     "Selection": "$\\mathtt{contains}$",
-    "label": "per_diff_vs_comb_time_excl_replace_all"
+    "label": "per_diff_vs_comb_time_contains_all"
   },
   {
     "acc_time": true,
@@ -284,7 +326,7 @@
     "predicate": "contains",
     "pred_arg_type": "Simple",
     "Selection": "$\\mathtt{contains}(Simple)$",
-    "label": "per_diff_vs_comb_time_excl_replace_same"
+    "label": "per_diff_vs_comb_time_contains_simple"
   },
   {
     "acc_time": true,
@@ -293,7 +335,7 @@
     "predicate": "contains",
     "pred_arg_type": "Even",
     "Selection": "$\\mathtt{contains}(Even)$",
-    "label": "per_diff_vs_comb_time_excl_replace_diff"
+    "label": "per_diff_vs_comb_time_contains_even"
   },
   {
     "acc_time": true,
@@ -302,7 +344,7 @@
     "predicate": "contains",
     "pred_arg_type": "Uneven",
     "Selection": "$\\mathtt{contains}(Uneven)$",
-    "label": "per_diff_vs_comb_time_excl_reverse"
+    "label": "per_diff_vs_comb_time_contains_uneven"
   },
   {
     "acc_time": true,
@@ -310,7 +352,7 @@
     "pred_time_branch": "both",
     "predicate": "equals",
     "Selection": "$\\mathtt{equals}$",
-    "label": "per_diff_vs_comb_time_contains_all"
+    "label": "per_diff_vs_comb_time_equals_all"
   },
   {
     "acc_time": true,
@@ -319,7 +361,7 @@
     "predicate": "equals",
     "pred_arg_type": "Simple",
     "Selection": "$\\mathtt{equals}(Simple)$",
-    "label": "per_diff_vs_comb_time_contains_simple"
+    "label": "per_diff_vs_comb_time_equals_simple"
   },
   {
     "acc_time": true,
@@ -328,7 +370,7 @@
     "predicate": "equals",
     "pred_arg_type": "Even",
     "Selection": "$\\mathtt{equals}(Even)$",
-    "label": "per_diff_vs_comb_time_contains_even"
+    "label": "per_diff_vs_comb_time_equals_even"
   },
   {
     "acc_time": true,
@@ -337,6 +379,6 @@
     "predicate": "equals",
     "pred_arg_type": "Uneven",
     "Selection": "$\\mathtt{equals}(Uneven)$",
-    "label": "per_diff_vs_comb_time_contains_uneven"
+    "label": "per_diff_vs_comb_time_equals_uneven"
   }
 ]
