@@ -109,7 +109,7 @@ public class Testing {
             }
         };
 
-        List<Quintuple<String, List<String>, List<String>, List<String>, Tuple<Lambda2<Tuple<Boolean, Boolean>, String, List<String>>, List<String>>>> args = new ArrayList<>();
+        LinkedList<Quintuple<String, List<String>, List<String>, List<String>, Tuple<Lambda2<Tuple<Boolean, Boolean>, String, List<String>>, List<String>>>> args = new LinkedList<>();
         args.add(new Quintuple<>("54-U-E-E-contains(S-T)", unevenB, even, even, new Tuple<>(contains, Collections.singletonList("C"))));
         args.add(new Quintuple<>("54-U-E-E-contains(S-F)", unevenB, even, even, new Tuple<>(contains, Collections.singletonList("ACEADD"))));
         args.add(new Quintuple<>("54-U-E-E-contains(E-T)", unevenB, even, even, new Tuple<>(contains, even)));
@@ -207,33 +207,34 @@ public class Testing {
         args.add(new Quintuple<>("103-E-U-U-contains(U-T)", even, unevenC, unevenE, new Tuple<>(equals, unevenB)));
         args.add(new Quintuple<>("103-E-U-U-contains(U-F)", even, unevenC, unevenE, new Tuple<>(equals, unevenA)));
 
-//        for (Quintuple<String, List<String>, List<String>, List<String>, Tuple<Lambda2<Tuple<Boolean, Boolean>, String, List<String>>, List<String>>> arg : args) {
-//            long inCount = 0;
-//            long trueCount = 0;
-//            long falseCount = 0;
-//            for (String strBase : arg.get2()) {
-//                for(String strConcat1 : arg.get3()) {
-//                    String concat1Result = strBase.concat(strConcat1);
-//                    for (String strConcat2 : arg.get4()) {
-//                        String concat2Result = concat1Result.concat(strConcat2);
-//                        inCount += 1;
-//                        Tuple<Lambda2<Tuple<Boolean, Boolean>, String, List<String>>, List<String>> pred = arg.get5();
-//                        Tuple<Boolean, Boolean> predResults = pred.get1().execute(concat2Result, pred.get2());
-//                        if (predResults.get1()) {
-//                            trueCount += 1;
-//                        }
-//                        if (predResults.get2()) {
-//                            falseCount += 1;
-//                        }
-//                    }
-//                }
-//            }
-//            System.out.println(arg.get1() + "In Count: " + inCount);
-//            System.out.println(arg.get1() + "True Count: " + trueCount);
-//            System.out.println(arg.get1() + "False Count: " + falseCount);
-//        }
-
-        System.out.println("Num of constraints: " + args.size());
+        while (!args.isEmpty()) {
+            Quintuple<String, List<String>, List<String>, List<String>, Tuple<Lambda2<Tuple<Boolean, Boolean>, String, List<String>>, List<String>>> arg = args.removeFirst();
+            long inCount = 0;
+            long trueCount = 0;
+            long falseCount = 0;
+            for (String strBase : arg.get2()) {
+                for(String strConcat1 : arg.get3()) {
+                    String concat1Result = strBase.concat(strConcat1);
+                    for (String strConcat2 : arg.get4()) {
+                        String concat2Result = concat1Result.concat(strConcat2);
+                        inCount += 1;
+                        Tuple<Lambda2<Tuple<Boolean, Boolean>, String, List<String>>, List<String>> pred = arg.get5();
+                        Tuple<Boolean, Boolean> predResults = pred.get1().execute(concat2Result, pred.get2());
+                        if (predResults.get1()) {
+                            trueCount += 1;
+                        }
+                        if (predResults.get2()) {
+                            falseCount += 1;
+                        }
+                    }
+                }
+            }
+            System.out.printf("%s\t%d\t%d\t%d\n",
+                              arg.get1(),
+                              inCount,
+                              trueCount,
+                              falseCount);
+        }
     }
 
     private static void aggregateAutomatonOperationTesting() {

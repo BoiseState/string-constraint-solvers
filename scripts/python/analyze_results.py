@@ -44,15 +44,15 @@ GLOB['alphabet-match']['AD'] = re.compile('\w+-AD-\d+(-\d+)?.csv')
 GLOB['alphabet-match']['AE'] = re.compile('\w+-AE-\d+(-\d+)?.csv')
 
 ANALYSIS_LIST = (
-    'agree, '
-    'comb-time, '
-    'mc-stat, '
-    'mc-time, '
-    'op-time, '
-    'per-diff, '
-    'per-diff-vs-solve-time, '
-    'per-diff-vs-mc-time, '
-    'per-diff-vs-comb-time, '
+    'agree',
+    'comb-time',
+    'mc-stat',
+    'mc-time',
+    'op-time',
+    'per-diff',
+    'per-diff-vs-solve-time',
+    'per-diff-vs-mc-time',
+    'per-diff-vs-comb-time',
     'solve-time'
 )
 
@@ -310,8 +310,19 @@ def get_latex_table(table, caption, label):
     return lines
 
 
-def get_latex_plot_figure(fig):
-    pass
+def get_latex_plot_figure(caption, label):
+    lines = list()
+
+    lines.append('\\begin{figure}[h!]\n')
+    lines.append(' ' * 4 + '\\centering\n')
+    lines.append(' ' * 4 + '\\includegraphics[width=\\linewidth]{'
+                 + label + '.png}')
+    lines.append(' ' * 4 + '\\caption{' + caption + '}\n')
+    lines.append(' ' * 4 + '\\label{tab:' + label + '}\n')
+    lines.append('\\end{figure}\n')
+    lines.append('\n\\clearpage\n')
+
+    return lines
 
 
 def output_latex(tables, plots):
@@ -319,9 +330,12 @@ def output_latex(tables, plots):
     before_lines.append('\\documentclass [11pt]{article}\n')
     before_lines.append('\n')
     before_lines.append('\\usepackage[utf8]{inputenc}\n')
+    before_lines.append('\\usepackage[pdftex]{graphicx}\n')
     before_lines.append('\\usepackage{fullpage}\n')
     before_lines.append('\\usepackage[justification=centering]{caption}\n')
     before_lines.append('\\usepackage{tabu}\n')
+    before_lines.append('\n')
+    before_lines.append('\\graphicspath{{../plot-data/}}\n')
     before_lines.append('\n')
     before_lines.append('\\begin{document}\n')
     before_lines.append('\n')
@@ -331,8 +345,8 @@ def output_latex(tables, plots):
         table_list.append(get_latex_table(table, caption, label))
 
     figure_list = list()
-    for fig in plots:
-        figure_list.append(get_latex_plot_figure(fig))
+    for data, plot_types, caption, label in plots:
+        figure_list.append(get_latex_plot_figure(caption, label))
 
     after_lines = list()
     after_lines.append('\\end{document}\n')
@@ -356,17 +370,20 @@ def output_plot_data_file(data, plot_types, label):
     if 'boxplot' in plot_types:
         plots.append({
             'label': '{0}_boxplot',
-            'columns': [(4, 'Values')]
+            'columns': [(4, 'Values')],
+            'first-columns': []
         })
     if 'histogram' in plot_types:
         plots.append({
             'label': '{0}_histogram',
-            'columns': [(2, 'Values'), (3, 'Bins')]
+            'columns': [(2, 'Values')],
+            'first-columns': [(3, 'Bins')]
         })
     if 'scatter' in plot_types:
         plots.append({
             'label': '{0}_scatter',
-            'columns': [(0, 'Per_Diffs'), (1, 'Time_Values'), (2, 'Weights')]
+            'columns': [(0, 'Per Diffs'), (1, 'Times'), (2, 'Weights')],
+            'first-columns': []
         })
 
     for plot in plots:
@@ -376,14 +393,20 @@ def output_plot_data_file(data, plot_types, label):
         log.debug('Creating Plot Data File: %s', plot_data_file)
         with open(data_file_path, 'w') as csv_file:
             # write header
+            for column in plot.get('first-columns'):
+                csv_file.write(column[1])
+                csv_file.write('\t')
             for s in SOLVERS:
                 for column in plot.get('columns'):
-                    csv_file.write('{0}_{1}'.format(s, column[1]))
+                    csv_file.write('{0} {1}'.format(s[0], column[1]))
                     csv_file.write('\t')
             csv_file.write('\n')
 
             # write rows
             for i in range(data.get(SOLVERS[0])[plot.get('columns')[0][0]].size):
+                for column in plot.get('first-columns'):
+                    csv_file.write(str(data.get(SOLVERS[0])[column[0]][i]))
+                    csv_file.write('\t')
                 for s in SOLVERS:
                     for column in plot.get('columns'):
                         csv_file.write(str(data.get(s)[column[0]][i]))
@@ -391,18 +414,105 @@ def output_plot_data_file(data, plot_types, label):
                 csv_file.write('\n')
 
 
-def output_plot_script(data, plot_type, label):
-    lines = list()
-
-    out_path = os.path.join(project_dir, 'data', 'plot-scripts', label + '.gnu')
+def output_plot_script(boxplot_lines, histogram_lines, scatter_lines):
+    out_path = os.path.join(project_dir, 'data', 'plot-data', 'all-plots.gnu')
     with open(out_path, 'w') as out_file:
-        out_file.writelines(lines)
+        # write boxplots
+        out_file.write('set style fill solid 0.25 noborder\n')
+        out_file.write('set style boxplot nooutliers\n')
+        out_file.write('set style data boxplot\n')
+        out_file.write('set datafile separator "\\t"\n')
+        out_file.write('unset key\n')
+        out_file.write('set border 2\n')
+        out_file.write('set xtics ("Unbouned" 1, "Bounded" 2,'
+                       ' "Aggregate" 3, "Weighted" 4)\n')
+        out_file.write('set xtics nomirror\n')
+        out_file.write('unset ytics\n')
+        out_file.write('set logscale y 2\n')
+        out_file.write('set term png\n')
+        out_file.writelines(boxplot_lines)
+
+        # write histograms
+        out_file.write('set style data histogram\n')
+        out_file.write('set style histogram clustered\n')
+        out_file.write('set key on\n')
+        out_file.write('unset xtics\n')
+        out_file.write('set xtics nomirror rotate by -45\n')
+        out_file.write('set logscale y 2\n')
+        out_file.writelines(histogram_lines)
+
+        # write scatters
+        out_file.write('set style line\n')
+        out_file.write('set style data dots\n')
+        out_file.write('set logscale y 2\n')
+        out_file.write('set term png size 1000, 1000\n')
+        out_file.writelines(scatter_lines)
+
+
+def get_script_lines(data, plot_types, label):
+    boxplot_lines = list()
+    hist_lines = list()
+    scatter_lines = list()
+
+    if 'boxplot' in plot_types:
+        boxplot_lines.append('set output "' + label + '_boxplot.png"\n')
+        boxplot_lines.append('plot "' + label + '_boxplot.csv" '
+                             'using (1):(column(1)) ti col, \\\n'
+                             '' * (len(label) + 17) +
+                             '"" using (2):(column(2)) ti col, \\\n'
+                             '' * (len(label) + 17) +
+                             '"" using (3):(column(3)) ti col, \\\n'
+                             '' * (len(label) + 17) +
+                             '"" using (4):(column(4)) ti col\n')
+    if 'histogram' in plot_types:
+        hist_lines.append('set output "' + label + '_histogram.png"\n')
+        hist_lines.append('plot "' + label + '_histogram.csv" '
+                                             'using 2:xtic(1) ti col, \\\n'
+                                             '' * (len(label) + 19) +
+                                             '"" using 3 ti col, \\\n'
+                                             '' * (len(label) + 19) +
+                                             '"" using 4 ti col, \\\n'
+                                             '' * (len(label) + 19) +
+                                             '"" using 5 ti col\n')
+    if 'scatter' in plot_types:
+        scatter_lines.append('set output "' + label + '_scatter.png"\n')
+        scatter_lines.append('plot "' + label + '_scatter.csv" '
+                             'using "U Times":"U Per Diffs" ti '
+                             '"Unbounded", \\\n'
+                             '' * (len(label) + 17) +
+                             '"" using "B Times":"B Per Diffs" ti '
+                             '"Bounded", \\\n'
+                             '' * (len(label) + 17) +
+                             '"" using "A Times":"A Per Diffs" ti '
+                             '"Aggregate", \\\n'
+                             '' * (len(label) + 17) +
+                             '"" using "W Times":"W Per Diffs" ti "Weighted"\n')
+
+    return boxplot_lines, hist_lines, scatter_lines
 
 
 def output_plot_files(files):
+    script_lines = dict()
+    script_lines['boxplot'] = list()
+    script_lines['histogram'] = list()
+    script_lines['scatter'] = list()
+
+    # ensure output directories exists
+    out_dir_path = os.path.join(project_dir, 'data', 'plot-data')
+    if not os.path.isdir(out_dir_path):
+        os.makedirs(out_dir_path)
+
     for data, plot_types, caption, label in files:
         output_plot_data_file(data, plot_types, label)
-        # output_plot_script(data, plot_types, label)
+
+        new_lines = get_script_lines(data, plot_types, label)
+        script_lines['boxplot'].extend(new_lines[0])
+        script_lines['histogram'].extend(new_lines[1])
+        script_lines['scatter'].extend(new_lines[2])
+
+    output_plot_script(script_lines.get('boxplot'),
+                       script_lines.get('histogram'),
+                       script_lines.get('scatter'))
 
 
 def filter_disagree(row, prefix, disagree=True):
@@ -557,7 +667,7 @@ def get_per_diffs(rows,
                   pred_arg_type=None):
     # initialize structures
     if bins is None:
-        bins = [0.0, 0.01, 0.03, 0.05, 1.0]
+        bins = [0.0, 0.000001, 0.01, 0.03, 0.05, 1.0]
     results = list()
     per_diff_map = dict()
 
@@ -676,6 +786,8 @@ def get_perf_metrics(rows,
                and filter_predicate(r, predicate, pred_arg_type)
 
     filtered = filter(perf_metric_filter, rows)
+    min_val = 0.
+    max_val = 0.
 
     # get weights
     weights_np = numpy.asarray(map(lambda r: int(r.get('Norm')), filtered))
@@ -753,14 +865,19 @@ def get_perf_metrics(rows,
         else:
             times_np = times_np[0]
 
+        l_min = numpy.nanmin(times_np)
+        if l_min < min_val or min_val == 0:
+            min_val = l_min
+        l_max = numpy.nanmax(times_np)
+        if l_max > max_val:
+            max_val = l_max
         mean = numpy.average(times_np, weights=weights_np)
         avg_results[solver] = '{0:.1f}'.format(mean)
 
         quantiles = weighted_quantile(times_np,
-                                      [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75,
-                                       0.875, 1.0],
+                                      numpy.arange(0.0, 1.0, 0.01),
                                       sample_weight=weights_np)
-        median_results[solver] = '{0:.1f}'.format(quantiles[4])
+        median_results[solver] = '{0:.1f}'.format(quantiles[len(quantiles)/2])
         # median_results[solver] = '{0:.1f}'.format(numpy.median(w_times_np))
 
         sq_d = numpy.apply_along_axis(lambda x: (x - mean) ** 2, 0, times_np)
@@ -771,9 +888,15 @@ def get_perf_metrics(rows,
         s_d_results[solver] = '{0:.1f}'.format(math.sqrt(var_result))
         # std_dev_results[solver] = '{0:.1f}'.format(numpy.std(w_times_np))
 
-        hist = numpy.histogram(times_np, bins=20, weights=weights_np)
-        data_results[solver] = (times_np, weights_np, hist[0], hist[1],
-                                quantiles)
+        data_results[solver] = [times_np, weights_np, None, None, quantiles]
+
+    interval = (max_val - min_val) / 20.
+    bins = numpy.arange(min_val, (max_val + interval), interval)
+    for s in SOLVERS:
+        hist = numpy.histogram(data_results.get(s)[0], bins=bins,
+                               weights=data_results.get(s)[1])
+        data_results.get(s)[2] = hist[0]
+        data_results.get(s)[3] = hist[1]
 
     return avg_results, median_results, v_results, s_d_results, data_results
 
