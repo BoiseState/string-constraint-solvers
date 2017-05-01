@@ -33,15 +33,28 @@ log.addHandler(ch)
 # globals
 GLOB = dict()
 GLOB['len-match'] = dict()
-GLOB['len-match'][1] = re.compile('\w+-A[BCDE]-01(-\d{2})?.csv')
-GLOB['len-match'][2] = re.compile('\w+-A[BCDE]-02(-\d{2})?.csv')
-GLOB['len-match'][3] = re.compile('\w+-A[BCDE]-03(-\d{2})?.csv')
-GLOB['len-match'][4] = re.compile('\w+-A[BCDE]-04(-\d{2})?.csv')
+GLOB['len-match'][1] = re.compile('\w+-A[BCDE]-01(-\d+)?.csv')
+GLOB['len-match'][2] = re.compile('\w+-A[BCDE]-02(-\d+)?.csv')
+GLOB['len-match'][3] = re.compile('\w+-A[BCDE]-03(-\d+)?.csv')
+GLOB['len-match'][4] = re.compile('\w+-A[BCDE]-04(-\d+)?.csv')
 GLOB['alphabet-match'] = dict()
-GLOB['alphabet-match']['AB'] = re.compile('\w+-AB-\d{2}(-\d{2})?.csv')
-GLOB['alphabet-match']['AC'] = re.compile('\w+-AC-\d{2}(-\d{2})?.csv')
-GLOB['alphabet-match']['AD'] = re.compile('\w+-AD-\d{2}(-\d{2})?.csv')
-GLOB['alphabet-match']['AE'] = re.compile('\w+-AE-\d{2}(-\d{2})?.csv')
+GLOB['alphabet-match']['AB'] = re.compile('\w+-AB-\d+(-\d+)?.csv')
+GLOB['alphabet-match']['AC'] = re.compile('\w+-AC-\d+(-\d+)?.csv')
+GLOB['alphabet-match']['AD'] = re.compile('\w+-AD-\d+(-\d+)?.csv')
+GLOB['alphabet-match']['AE'] = re.compile('\w+-AE-\d+(-\d+)?.csv')
+
+ANALYSIS_LIST = (
+    'agree, '
+    'comb-time, '
+    'mc-stat, '
+    'mc-time, '
+    'op-time, '
+    'per-diff, '
+    'per-diff-vs-solve-time, '
+    'per-diff-vs-mc-time, '
+    'per-diff-vs-comb-time, '
+    'solve-time'
+)
 
 SOLVERS = (
     'Unbounded',
@@ -131,27 +144,37 @@ class Settings:
 
         # determine analysis entries
         self.entries = list()
-        if options.percent_difference:
-            self.entries.append('per-diff')
-        if options.agreement:
-            self.entries.append('agree')
-        if options.solving_time:
-            self.entries.append('solve-time')
-        if options.mc_time:
-            self.entries.append('mc-time')
-        if options.ops_time:
-            self.entries.append('op-time')
-        if options.comb_time:
-            self.entries.append('comb-time')
-        if options.per_diff_vs_solve_time:
-            self.entries.append('per-diff-vs-solve-time')
-        if options.per_diff_vs_mc_time:
-            self.entries.append('per-diff-vs-mc-time')
-        if options.per_diff_vs_comb_time:
-            self.entries.append('per-diff-vs-comb-time')
+        for a in ANALYSIS_LIST:
+            if a in options.analysis_list:
+                self.entries.append(a)
 
         # initialize result file pattern
         self.file_pattern = options.data_files
+
+
+def set_options(arguments):
+    # process command line args
+    analyze_parser = argparse.ArgumentParser(prog=__doc__,
+                                             description='Analyze results.')
+
+    analyses_help = 'List of analyses to run, includes any of the following: '\
+                    + ','.join(ANALYSIS_LIST)
+    analyze_parser.add_argument('-a',
+                                '--analysis-list',
+                                nargs='+',
+                                default=list(),
+                                help=analyses_help)
+
+    analyze_parser.add_argument('-d',
+                                '--debug',
+                                help='Display debug messages for this script.',
+                                action='store_true')
+
+    analyze_parser.add_argument('data_files',
+                                help='A Unix shell-style pattern which is '
+                                     'used to match a set of result files.')
+
+    GLOB['Settings'] = Settings(analyze_parser.parse_args(arguments))
 
 
 def read_csv_data(file_path):
@@ -201,7 +224,7 @@ def get_entries():
                                        '{0}-entries.json'.format(e))
         with open(entry_file_path, 'r') as entry_file:
             entries = json.load(entry_file)
-            entries = filter(filter_entries, entries)
+            # entries = filter(filter_entries, entries)
             GLOB['entries'][e] = entries
 
 
@@ -209,7 +232,7 @@ def normalize_row(row):
     f_name = row.get('File')
     for a in ('AB', 'AC', 'AD', 'AE'):
         if GLOB.get('alphabet-match').get(a).match(f_name):
-            for i in range(1, 4):
+            for i in range(1, 5):
                 if GLOB.get('len-match').get(i).match(f_name):
                     op_1 = row.get('Op 1')
                     op_2 = row.get('Op 2')
@@ -431,6 +454,17 @@ def filter_predicate(row, predicate, arg_type=None):
                     or row.get('Pred Arg') == arg_type))
 
 
+def compute_mc_per(row, prefix, branch_sel=True):
+    # compute percent difference
+    b = ' T ' if branch_sel else ' F '
+    in_mc = float(row.get(prefix + ' In MC'))
+    b_mc = int(row.get(prefix + b + 'MC'))
+    b_per = 0
+    if in_mc > 0:
+        b_per = b_mc / in_mc
+    return b_per
+
+
 def compute_per_diff(row, prefix, branch_sel=True):
     # compute percent difference
     b = ' T ' if branch_sel else ' F '
@@ -614,66 +648,6 @@ def get_agreement(rows,
     return results
 
 
-def analyze_accuracy(mc_rows):
-    # initialize tables list
-    tables = list()
-
-    if 'per-diff' in GLOB['entries']:
-        log.debug('Calculating Model Count Accuracy')
-
-        for entry in GLOB.get('entries').get('per-diff'):
-            log.debug('Processing %s', entry.get('caption'))
-            table = get_per_diffs(mc_rows,
-                                  disagree=entry.get('disagree'),
-                                  branch=entry.get('branch'),
-                                  input_type=entry.get('input_type'),
-                                  alphabet=entry.get('alphabet'),
-                                  length=entry.get('length'),
-                                  operation=entry.get('operation'),
-                                  exclusive_op=entry.get('exclusive_op'),
-                                  op_arg_type=entry.get('op_arg_type'),
-                                  predicate=entry.get('predicate'),
-                                  pred_arg_type=entry.get('pred_arg_type'))
-            tables.append((table, entry.get('caption'), entry.get('label')))
-
-    if 'agree' in GLOB.get('entries'):
-        # agreement
-        agree_results = list()
-
-        blank_row = {
-            'Selection': '',
-            'Unbounded': '',
-            'Bounded': '',
-            'Aggregate': '',
-            'Weighted': ''
-        }
-
-        for entry in GLOB.get('entries').get('agree'):
-            if 'is_blank' in entry and entry.get('is_blank'):
-                agree_results.append(blank_row)
-            else:
-                log.debug('Processing Agreement Percent for %s',
-                          entry.get('Selection'))
-                row = get_agreement(mc_rows,
-                                    input_type=entry.get('input_type'),
-                                    alphabet=entry.get('alphabet'),
-                                    length=entry.get('length'),
-                                    operation=entry.get('operation'),
-                                    exclusive_op=entry.get('exclusive_op'),
-                                    op_arg_type=entry.get('op_arg_type'),
-                                    predicate=entry.get('predicate'),
-                                    pred_arg_type=entry.get('pred_arg_type'))
-                row['Selection'] = entry.get('Selection')
-                agree_results.append(row)
-
-        tables.append((agree_results,
-                       'Frequency of Branch Selection Agreement for '
-                       'Constraints',
-                       'acc_agree'))
-
-    return tables
-
-
 def get_perf_metrics(rows,
                      mc_time=None,
                      acc_time=False,
@@ -804,7 +778,7 @@ def get_perf_metrics(rows,
     return avg_results, median_results, v_results, s_d_results, data_results
 
 
-def process_perf_entries(rows, entries, perf_type):
+def process_perf_entries(rows, entries, caption_prefix):
     blank_row = {
         'Selection': '',
         'Unbounded': '',
@@ -819,7 +793,7 @@ def process_perf_entries(rows, entries, perf_type):
         if 'is_blank' in entry and entry.get('is_blank'):
             results = (blank_row, blank_row, blank_row, blank_row)
         else:
-            log.debug('Getting Performance Metrics - ' + entry.get('Selection'))
+            log.debug('Getting %s - %s', caption_prefix, entry.get('Selection'))
             results = get_perf_metrics(rows,
                                        mc_time=entry.get('mc_time_branch'),
                                        acc_time=entry.get('acc_time'),
@@ -837,10 +811,9 @@ def process_perf_entries(rows, entries, perf_type):
             results[1]['Selection'] = entry.get('Selection')
             results[2]['Selection'] = entry.get('Selection')
             results[3]['Selection'] = entry.get('Selection')
-            caption = ' for {0} - {1}'.format(perf_type, entry.get('Selection'))
             lists[4].append((results[4],
                              ['boxplot', 'histogram'],
-                             caption,
+                             caption_prefix + ' - ' + entry.get('Selection'),
                              entry.get('label')))
         lists[0].append(results[0])
         lists[1].append(results[1])
@@ -850,94 +823,81 @@ def process_perf_entries(rows, entries, perf_type):
     return lists
 
 
-def analyze_mc_performance(mc_time_rows):
-    # initialize tables list
-    tables = list()
+def get_acc_vs_perf_files(acc_rows, perf_rows, entries, caption_prefix):
+
+    # initialize file list
     files = list()
 
-    if GLOB.get('entries').get('mc-time'):
-        log.debug('Calculating Model Count Performance')
+    for entry in entries:
+        log.debug('Getting %s - %s', caption_prefix, entry.get('Selection'))
+        table = get_per_diffs(acc_rows,
+                              raw=True,
+                              disagree=entry.get('disagree'),
+                              branch=entry.get('branch'),
+                              input_type=entry.get('input_type'),
+                              alphabet=entry.get('alphabet'),
+                              length=entry.get('length'),
+                              operation=entry.get('operation'),
+                              exclusive_op=entry.get('exclusive_op'),
+                              op_arg_type=entry.get('op_arg_type'),
+                              predicate=entry.get('predicate'),
+                              pred_arg_type=entry.get('pred_arg_type'))
 
-        results = process_perf_entries(mc_time_rows,
-                                       GLOB.get('entries').get('mc-time'),
-                                       'Model Counting Times')
+        results = get_perf_metrics(perf_rows,
+                                   mc_time=entry.get('mc_time_branch'),
+                                   acc_time=entry.get('acc_time'),
+                                   pred_time=entry.get('pred_time_branch'),
+                                   op_time=entry.get('op_time'),
+                                   input_type=entry.get('input_type'),
+                                   alphabet=entry.get('alphabet'),
+                                   length=entry.get('length'),
+                                   operation=entry.get('operation'),
+                                   exclusive_op=entry.get('exclusive_op'),
+                                   op_arg_type=entry.get('op_arg_type'),
+                                   predicate=entry.get('predicate'),
+                                   pred_arg_type=entry.get('pred_arg_type'))
+        values = dict()
+        for solver in SOLVERS:
+            values[solver] = (table.pop(solver, None),
+                              results[4].get(solver)[0],
+                              results[4].get(solver)[1])
 
-        tables.append((results[0],
-                       'Average Model Counting Times',
-                       'mc_perf_avg'))
-        tables.append((results[1],
-                       'Median Model Counting Times',
-                       'mc_perf_median'))
-        tables.append((results[2],
-                       'Model Counting Time Variance',
-                       'mc_perf_var'))
-        tables.append((results[3],
-                       'Standard Deviation for Model Counting Times',
-                       'mc_perf_std_dev'))
+        files.append((values,
+                      'scatter',
+                      caption_prefix + ' - ' + entry.get('Selection'),
+                      entry.get('label')))
 
-        files.extend(results[4])
-
-    return tables, files
+    return files
 
 
-def analyze_solve_performance(mc_time_rows, op_time_rows):
-    # initialize tables list
+def get_per_diff_tables(mc_rows):
     tables = list()
-    files = list()
 
-    if GLOB.get('entries').get('solve-time'):
-        log.debug('Calculating Constraint Solving Performance')
+    log.debug('Calculating Model Count Accuracy')
 
-        results = process_perf_entries(mc_time_rows,
-                                       GLOB.get('entries').get('solve-time'),
-                                       'Constraint Solving Times')
+    for entry in GLOB.get('entries').get('per-diff'):
+        log.debug('Processing %s', entry.get('caption'))
+        table = get_per_diffs(mc_rows,
+                              disagree=entry.get('disagree'),
+                              branch=entry.get('branch'),
+                              input_type=entry.get('input_type'),
+                              alphabet=entry.get('alphabet'),
+                              length=entry.get('length'),
+                              operation=entry.get('operation'),
+                              exclusive_op=entry.get('exclusive_op'),
+                              op_arg_type=entry.get('op_arg_type'),
+                              predicate=entry.get('predicate'),
+                              pred_arg_type=entry.get('pred_arg_type'))
+        tables.append((table, entry.get('caption'), entry.get('label')))
 
-        tables.append((results[0],
-                       'Average Constraint Solving Times',
-                       'solve_perf_acc_avg'))
-        tables.append((results[1],
-                       'Median Constraint Solving Times',
-                       'solve_perf_acc_median'))
-        tables.append((results[2],
-                       'Constraint Solving Time Variance',
-                       'solve_perf_acc_var'))
-        tables.append((results[3],
-                       'Standard Deviation for Constraint Solving Times',
-                       'solve_perf_acc_std_dev'))
-
-        files.extend(results[4])
-
-    if GLOB.get('entries').get('op-time'):
-        log.debug('Calculating Operation and Predicate Performance')
-
-        results = process_perf_entries(op_time_rows,
-                                       GLOB.get('entries').get('op-time'),
-                                       'Operation and Predicate Times')
-
-        tables.append((results[0],
-                       'Average Operation and Predicate Times',
-                       'solve_perf_op_avg'))
-        tables.append((results[1],
-                       'Median Operation and Predicate Times',
-                       'solve_perf_op_median'))
-        tables.append((results[2],
-                       'Operation and Predicate Time Variance',
-                       'solve_perf_op_var'))
-        tables.append((results[3],
-                       'Standard Deviation for Operation and Predicate Times',
-                       'solve_perf_op_std_dev'))
-
-        files.extend(results[4])
-
-    return tables, files
+    return tables
 
 
-def analyze_comb_perf(mc_time_rows):
-    # initialize tables list
+def get_agree_tables(rows):
     tables = list()
-    files = list()
 
-    log.debug('Calculating Combined Model Counting and Solver Performance')
+    # agreement
+    agree_results = list()
 
     blank_row = {
         'Selection': '',
@@ -947,209 +907,287 @@ def analyze_comb_perf(mc_time_rows):
         'Weighted': ''
     }
 
-    lists = (list(), list(), list(), list(), list())
-
-    for entry in GLOB.get('entries').get('comb-time'):
+    for entry in GLOB.get('entries').get('agree'):
         if 'is_blank' in entry and entry.get('is_blank'):
-            results = (blank_row, blank_row, blank_row, blank_row)
+            agree_results.append(blank_row)
         else:
-            log.debug(
-                'Getting Combined Performance - ' + entry.get('Selection'))
-            results = get_perf_metrics(mc_time_rows,
-                                       mc_time=entry.get('mc_time_branch'),
-                                       acc_time=entry.get('acc_time'),
-                                       pred_time=entry.get('pred_time_branch'),
-                                       op_time=entry.get('op_time'),
-                                       input_type=entry.get('input_type'),
-                                       alphabet=entry.get('alphabet'),
-                                       length=entry.get('length'),
-                                       operation=entry.get('operation'),
-                                       exclusive_op=entry.get('exclusive_op'),
-                                       op_arg_type=entry.get('op_arg_type'),
-                                       predicate=entry.get('predicate'),
-                                       pred_arg_type=entry.get('pred_arg_type'))
-            results[0]['Selection'] = entry.get('Selection')
-            results[1]['Selection'] = entry.get('Selection')
-            results[2]['Selection'] = entry.get('Selection')
-            results[3]['Selection'] = entry.get('Selection')
-            files.append((results[4],
-                          ['boxplot', 'histogram'],
-                          'Box Plot of Combined Model Counting and Constraint'
-                          ' Solving Times - ' + entry.get('Selection'),
-                          entry.get('label')))
-        lists[0].append(results[0])
-        lists[1].append(results[1])
-        lists[2].append(results[2])
-        lists[3].append(results[3])
+            log.debug('Processing Agreement Percent for %s',
+                      entry.get('Selection'))
+            row = get_agreement(rows,
+                                input_type=entry.get('input_type'),
+                                alphabet=entry.get('alphabet'),
+                                length=entry.get('length'),
+                                operation=entry.get('operation'),
+                                exclusive_op=entry.get('exclusive_op'),
+                                op_arg_type=entry.get('op_arg_type'),
+                                predicate=entry.get('predicate'),
+                                pred_arg_type=entry.get('pred_arg_type'))
+            row['Selection'] = entry.get('Selection')
+            agree_results.append(row)
 
-    tables.append((lists[0],
-                   'Average Combined Model Counting and Constraint Solving'
-                   ' Times',
-                   'comb_perf_avg'))
-    tables.append((lists[1],
-                   'Median Combined Model Counting and Constraint Solving'
-                   ' Times',
-                   'comb_perf_median'))
-    tables.append((lists[2],
-                   'Combined Model Counting and Constraint Solving Time'
-                   ' Variance',
-                   'comb_perf_var'))
-    tables.append((lists[3],
-                   'Standard Deviation for Combined Model Counting and '
-                   'Constraint Solving Times',
-                   'comb_perf_std_dev'))
+    tables.append((agree_results,
+                   'Frequency of Branch Selection Agreement for '
+                   'Constraints',
+                   'acc_agree'))
+
+    return tables
+
+
+def get_mc_time_tables_and_files(rows):
+    # initialize tables list
+    tables = list()
+    files = list()
+
+    log.debug('Calculating Model Count Performance')
+
+    results = process_perf_entries(rows,
+                                   GLOB.get('entries').get('mc-time'),
+                                   'Model Counting Times')
+
+    tables.append((results[0],
+                   'Average Model Counting Times',
+                   'mc_perf_avg'))
+    tables.append((results[1],
+                   'Median Model Counting Times',
+                   'mc_perf_median'))
+    tables.append((results[2],
+                   'Model Counting Time Variance',
+                   'mc_perf_var'))
+    tables.append((results[3],
+                   'Standard Deviation for Model Counting Times',
+                   'mc_perf_std_dev'))
+
+    files.extend(results[4])
 
     return tables, files
 
 
-def analyze_acc_vs_solve_perf(mc_rows, mc_time_rows):
-    # initialize file list
+def get_solve_time_tables_and_files(rows):
+    # initialize tables list
+    tables = list()
     files = list()
 
-    log.debug(
-        'Gathering Model Count Accuracy vs Constraint Solving Performance')
+    log.debug('Calculating Constraint Solving Performance')
 
-    for entry in GLOB.get('entries').get('per-diff-vs-solve-time'):
-        log.debug('Getting Model Count Accuracy vs Constraint Solving '
-                  'Performance - ' + entry.get('Selection'))
-        table = get_per_diffs(mc_rows,
-                              raw=True,
-                              disagree=entry.get('disagree'),
-                              branch=entry.get('branch'),
-                              input_type=entry.get('input_type'),
-                              alphabet=entry.get('alphabet'),
-                              length=entry.get('length'),
-                              operation=entry.get('operation'),
-                              exclusive_op=entry.get('exclusive_op'),
-                              op_arg_type=entry.get('op_arg_type'),
-                              predicate=entry.get('predicate'),
-                              pred_arg_type=entry.get('pred_arg_type'))
+    results = process_perf_entries(rows,
+                                   GLOB.get('entries').get('solve-time'),
+                                   'Constraint Solving Times')
 
-        results = get_perf_metrics(mc_time_rows,
-                                   mc_time=entry.get('mc_time_branch'),
-                                   acc_time=entry.get('acc_time'),
-                                   pred_time=entry.get('pred_time_branch'),
-                                   op_time=entry.get('op_time'),
-                                   input_type=entry.get('input_type'),
-                                   alphabet=entry.get('alphabet'),
-                                   length=entry.get('length'),
-                                   operation=entry.get('operation'),
-                                   exclusive_op=entry.get('exclusive_op'),
-                                   op_arg_type=entry.get('op_arg_type'),
-                                   predicate=entry.get('predicate'),
-                                   pred_arg_type=entry.get('pred_arg_type'))
-        values = dict()
-        for solver in SOLVERS:
-            values[solver] = (table.pop(solver, None),
-                              results[4].get(solver)[0],
-                              results[4].get(solver)[1])
+    tables.append((results[0],
+                   'Average Constraint Solving Times',
+                   'solve_perf_acc_avg'))
+    tables.append((results[1],
+                   'Median Constraint Solving Times',
+                   'solve_perf_acc_median'))
+    tables.append((results[2],
+                   'Constraint Solving Time Variance',
+                   'solve_perf_acc_var'))
+    tables.append((results[3],
+                   'Standard Deviation for Constraint Solving Times',
+                   'solve_perf_acc_std_dev'))
 
-        files.append((values,
-                      'scatter',
-                      'Plot of Percent Difference vs Constraint Solving Time '
-                      '- ' + entry.get('Selection'),
-                      entry.get('label')))
+    files.extend(results[4])
 
-    return files
+    return tables, files
 
 
-def analyze_acc_vs_mc_perf(mc_rows, mc_time_rows):
-    # initialize file list
+def get_op_tables_and_files(rows):
+    # initialize tables list
+    tables = list()
     files = list()
 
-    log.debug('Gathering Model Count Accuracy vs Model Count Performance')
+    log.debug('Calculating Operation and Predicate Performance')
 
-    for entry in GLOB.get('entries').get('per-diff-vs-mc-time'):
-        log.debug('Getting Model Count Accuracy vs Model Count Performance - '
-                  + entry.get('Selection'))
-        table = get_per_diffs(mc_rows,
-                              raw=True,
-                              disagree=entry.get('disagree'),
-                              branch=entry.get('branch'),
-                              input_type=entry.get('input_type'),
-                              alphabet=entry.get('alphabet'),
-                              length=entry.get('length'),
-                              operation=entry.get('operation'),
-                              exclusive_op=entry.get('exclusive_op'),
-                              op_arg_type=entry.get('op_arg_type'),
-                              predicate=entry.get('predicate'),
-                              pred_arg_type=entry.get('pred_arg_type'))
+    results = process_perf_entries(rows,
+                                   GLOB.get('entries').get('op-time'),
+                                   'Operation and Predicate Times')
 
-        results = get_perf_metrics(mc_time_rows,
-                                   mc_time=entry.get('mc_time_branch'),
-                                   acc_time=entry.get('acc_time'),
-                                   pred_time=entry.get('pred_time_branch'),
-                                   op_time=entry.get('op_time'),
-                                   input_type=entry.get('input_type'),
-                                   alphabet=entry.get('alphabet'),
-                                   length=entry.get('length'),
-                                   operation=entry.get('operation'),
-                                   exclusive_op=entry.get('exclusive_op'),
-                                   op_arg_type=entry.get('op_arg_type'),
-                                   predicate=entry.get('predicate'),
-                                   pred_arg_type=entry.get('pred_arg_type'))
-        values = dict()
-        for solver in SOLVERS:
-            values[solver] = (table.pop(solver, None),
-                              results[4].get(solver)[0],
-                              results[4].get(solver)[1])
+    tables.append((results[0],
+                   'Average Operation and Predicate Times',
+                   'solve_perf_op_avg'))
+    tables.append((results[1],
+                   'Median Operation and Predicate Times',
+                   'solve_perf_op_median'))
+    tables.append((results[2],
+                   'Operation and Predicate Time Variance',
+                   'solve_perf_op_var'))
+    tables.append((results[3],
+                   'Standard Deviation for Operation and Predicate Times',
+                   'solve_perf_op_std_dev'))
 
-        files.append((values,
-                      'scatter',
-                      'Plot of Percent Difference vs Model Counting Time - '
-                      + entry.get('Selection'),
-                      entry.get('label')))
+    files.extend(results[4])
 
-    return files
+    return tables, files
 
 
-def analyze_acc_vs_comb_perf(mc_rows, mc_time_rows):
-    # initialize file list
+def get_comb_time_tables_and_files(rows):
+    # initialize tables list
+    tables = list()
     files = list()
 
-    log.debug('Gathering Model Count Accuracy vs Combined Model Counting and '
-              'Constraint Solving Performance')
+    log.debug('Calculating Combined Model Counting and Solver Performance')
 
-    for entry in GLOB.get('entries').get('per-diff-vs-comb-time'):
-        log.debug('Getting Model Count Accuracy vs Combined Model Counting and'
-                  ' Constraint Solving Performance - ' + entry.get('Selection'))
-        table = get_per_diffs(mc_rows,
-                              raw=True,
-                              disagree=entry.get('disagree'),
-                              branch=entry.get('branch'),
-                              input_type=entry.get('input_type'),
-                              alphabet=entry.get('alphabet'),
-                              length=entry.get('length'),
-                              operation=entry.get('operation'),
-                              exclusive_op=entry.get('exclusive_op'),
-                              op_arg_type=entry.get('op_arg_type'),
-                              predicate=entry.get('predicate'),
-                              pred_arg_type=entry.get('pred_arg_type'))
+    results = process_perf_entries(rows,
+                                   GLOB.get('entries').get('comb-time'),
+                                   'Combined Model Counting and Constraint'
+                                   ' Solving Times')
 
-        results = get_perf_metrics(mc_time_rows,
-                                   mc_time=entry.get('mc_time_branch'),
-                                   acc_time=entry.get('acc_time'),
-                                   pred_time=entry.get('pred_time_branch'),
-                                   op_time=entry.get('op_time'),
-                                   input_type=entry.get('input_type'),
-                                   alphabet=entry.get('alphabet'),
-                                   length=entry.get('length'),
-                                   operation=entry.get('operation'),
-                                   exclusive_op=entry.get('exclusive_op'),
-                                   op_arg_type=entry.get('op_arg_type'),
-                                   predicate=entry.get('predicate'),
-                                   pred_arg_type=entry.get('pred_arg_type'))
-        values = dict()
-        for solver in SOLVERS:
-            values[solver] = (table.pop(solver, None),
-                              results[4].get(solver)[0],
-                              results[4].get(solver)[1])
+    tables.append((results[0],
+                   'Average Combined Model Counting and Constraint Solving'
+                   ' Times',
+                   'comb_perf_avg'))
+    tables.append((results[1],
+                   'Median Combined Model Counting and Constraint Solving'
+                   ' Times',
+                   'comb_perf_median'))
+    tables.append((results[2],
+                   'Combined Model Counting and Constraint Solving Time'
+                   ' Variance',
+                   'comb_perf_var'))
+    tables.append((results[3],
+                   'Standard Deviation for Combined Model Counting and '
+                   'Constraint Solving Times',
+                   'comb_perf_std_dev'))
 
-        files.append((values,
-                      'scatter',
-                      'Plot of Percent Difference vs Combined Model Counting '
-                      'and Constraint Solving Time - ' + entry.get('Selection'),
-                      entry.get('label')))
+    files.extend(results[4])
+
+    return tables, files
+
+
+def get_p_values(rows,
+                 branch=None,
+                 input_type=None,
+                 length=None,
+                 alphabet=None,
+                 operation=None,
+                 exclusive_op=None,
+                 op_arg_type=None,
+                 predicate=None,
+                 pred_arg_type=None):
+    results = dict()
+
+    def row_filter(row):
+        return row.get('Op 1') != '' \
+               and filter_input_type(row, input_type) \
+               and filter_alphabet(row, alphabet) \
+               and filter_length(row, length) \
+               and filter_operation(row, operation, exclusive_op, op_arg_type) \
+               and filter_predicate(row, predicate, pred_arg_type)
+
+    filtered = filter(row_filter, rows)
+    weights_np = numpy.asarray(map(lambda r: r.get('Norm'), filtered))
+    per_keys = {'C-T': 0, 'C-F': 1, 'U-T': 2, 'U-F': 3, 'B-T': 4, 'B-F': 5,
+                'A-T': 6, 'A-F': 7, 'W-T': 8, 'W-F': 9}
+    mc_per_map = dict()
+
+    for solver in SOLVERS:
+        if branch is None or branch:
+            temp = map(lambda r: compute_mc_per(r, solver[0], branch_sel=True),
+                       filtered)
+
+        if branch is None or not branch:
+            temp = map(lambda r: compute_mc_per(r, solver[0], branch_sel=True),
+                       filtered)
+
+    return results
+
+
+def get_mc_test_tables(rows):
+    # initialize tables list
+    tables = list()
+
+    log.debug('Computing p-values for Model Count Percentage')
+
+    for entry in GLOB.get('entries').get('per-diff'):
+        log.debug('Processing %s', entry.get('caption'))
+        table = get_p_values(rows,
+                             branch=entry.get('branch'),
+                             input_type=entry.get('input_type'),
+                             alphabet=entry.get('alphabet'),
+                             length=entry.get('length'),
+                             operation=entry.get('operation'),
+                             exclusive_op=entry.get('exclusive_op'),
+                             op_arg_type=entry.get('op_arg_type'),
+                             predicate=entry.get('predicate'),
+                             pred_arg_type=entry.get('pred_arg_type'))
+        tables.append((table, entry.get('caption'), entry.get('label')))
+
+    return tables
+
+
+def analyze_accuracy(mc_rows):
+    # initialize tables list
+    tables = list()
+
+    if 'mc-stat' in GLOB['entries']:
+        test_tables = get_mc_test_tables(mc_rows)
+        tables.extend(test_tables)
+
+    if 'per-diff' in GLOB['entries']:
+        per_diff_tables = get_per_diff_tables(mc_rows)
+        tables.extend(per_diff_tables)
+
+    if 'agree' in GLOB['entries']:
+        agree_tables = get_agree_tables(mc_rows)
+        tables.extend(agree_tables)
+
+    return tables
+
+
+def analyze_perf(mc_time_rows, op_time_rows):
+    tables = list()
+    files = list()
+
+    if 'mc-time' in GLOB.get('entries'):
+        mc_perf_tables, mc_perf_files = \
+            get_mc_time_tables_and_files(mc_time_rows)
+        tables.extend(mc_perf_tables)
+        files.extend(mc_perf_files)
+
+    if 'solve-time' in GLOB.get('entries'):
+        solve_perf_tables, solve_perf_files = \
+            get_solve_time_tables_and_files(mc_time_rows)
+        tables.extend(solve_perf_tables)
+        files.extend(solve_perf_files)
+
+    if 'op-time' in GLOB.get('entries'):
+        op_perf_tables, op_perf_files = get_op_tables_and_files(op_time_rows)
+        tables.extend(op_perf_tables)
+        files.extend(op_perf_files)
+
+    if 'comb-time' in GLOB.get('entries'):
+        comb_perf_tables, comb_perf_files = \
+            get_comb_time_tables_and_files(mc_time_rows)
+        tables.extend(comb_perf_tables)
+        files.extend(comb_perf_files)
+
+    return tables, files
+
+
+def analyze_acc_vs_perf(mc_rows, mc_time_rows):
+    files = list()
+
+    if 'per-diff-vs-solve-time' in GLOB.get('entries'):
+        files.extend(get_acc_vs_perf_files(mc_rows, mc_time_rows,
+                                           GLOB.get('entries').get(
+                                             'per-diff-vs-solve-time'),
+                                           'Plot of Percent Difference vs '
+                                           'Constraint Solving Time'))
+
+    if 'per-diff-vs-mc-time' in GLOB.get('entries'):
+        files.extend(get_acc_vs_perf_files(mc_rows, mc_time_rows,
+                                           GLOB.get('entries').get(
+                                             'per-diff-vs-mc-time'),
+                                           'Plot of Percent Difference vs Model'
+                                           ' Counting Time'))
+
+    if 'per-diff-vs-comb-time' in GLOB.get('entries'):
+        files.extend(get_acc_vs_perf_files(mc_rows, mc_time_rows,
+                                           GLOB.get('entries').get(
+                                             'per-diff-vs-comb-time'),
+                                           'Plot of Percent Difference vs '
+                                           'Combined Model Counting and '
+                                           'Constraint Solving Time'))
 
     return files
 
@@ -1157,104 +1195,24 @@ def analyze_acc_vs_comb_perf(mc_rows, mc_time_rows):
 def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
     # create lists
     tables = list()
-    figures = list()
+    files = list()
 
     acc_tables = analyze_accuracy(mc_rows)
     tables.extend(acc_tables)
 
-    if 'mc-time' in GLOB.get('entries'):
-        mc_perf_tables, mc_perf_files = analyze_mc_performance(mc_time_rows)
-        tables.extend(mc_perf_tables)
-        figures.extend(mc_perf_files)
+    perf_tables, perf_files = analyze_perf(mc_time_rows, op_time_rows)
+    tables.extend(perf_tables)
+    files.extend(perf_files)
 
-    solve_perf_tables, solve_perf_files = analyze_solve_performance(
-        mc_time_rows, op_time_rows)
-    tables.extend(solve_perf_tables)
-    figures.extend(solve_perf_files)
+    comp_files = analyze_acc_vs_perf(mc_rows, mc_time_rows)
+    files.extend(comp_files)
 
-    if 'comb-time' in GLOB.get('entries'):
-        comb_perf_tables, comb_perf_files = analyze_comb_perf(mc_time_rows)
-        tables.extend(comb_perf_tables)
-        figures.extend(comb_perf_files)
-
-    if 'per-diff-vs-solve-time' in GLOB.get('entries'):
-        figures.extend(analyze_acc_vs_solve_perf(mc_rows, mc_time_rows))
-
-    if 'per-diff-vs-mc-time' in GLOB.get('entries'):
-        figures.extend(analyze_acc_vs_mc_perf(mc_rows, mc_time_rows))
-
-    if 'per-diff-vs-comb-time' in GLOB.get('entries'):
-        figures.extend(analyze_acc_vs_comb_perf(mc_rows, mc_time_rows))
-
-    output_plot_files(figures)
-
-    output_latex(tables, figures)
+    return tables, files
 
 
-def set_options(arguments):
-    # process command line args
-    analyze_parser = argparse.ArgumentParser(prog=__doc__,
-                                             description='Analyze results.')
-
-    analyze_parser.add_argument('-p',
-                                '--percent-difference',
-                                help='Percent Difference',
-                                action='store_true')
-
-    analyze_parser.add_argument('-a',
-                                '--agreement',
-                                help='Agreement',
-                                action='store_true')
-
-    analyze_parser.add_argument('-s',
-                                '--solving-time',
-                                help='Constraint Solving Time',
-                                action='store_true')
-
-    analyze_parser.add_argument('-m',
-                                '--mc-time',
-                                help='Model Counting Time',
-                                action='store_true')
-
-    analyze_parser.add_argument('-o',
-                                '--ops-time',
-                                help='Operation or Predicate Time',
-                                action='store_true')
-
-    analyze_parser.add_argument('-c',
-                                '--comb-time',
-                                help='Combined Constraint Solving and Model '
-                                     'Counting Time',
-                                action='store_true')
-
-    analyze_parser.add_argument('-vs',
-                                '--per-diff-vs-solve-time',
-                                help='Percent Difference vs Constraint Solving'
-                                     ' Time',
-                                action='store_true')
-
-    analyze_parser.add_argument('-vm',
-                                '--per-diff-vs-mc-time',
-                                help='Percent Difference vs Model Counting '
-                                     'Time',
-                                action='store_true')
-
-    analyze_parser.add_argument('-vc',
-                                '--per-diff-vs-comb-time',
-                                help='Percent Difference vs Combined Constraint'
-                                     ' Solving and Model Counting Time',
-                                action='store_true')
-
-    analyze_parser.add_argument('-d',
-                                '--debug',
-                                help='Display debug messages for this script.',
-                                action='store_true')
-
-    analyze_parser.add_argument('data_files',
-                                help='A Unix shell-style pattern which is '
-                                     'used to match a set of result files.')
-
-    GLOB['Settings'] = Settings(analyze_parser.parse_args(arguments))
+def output_results(tables, files):
+    output_plot_files(files)
+    output_latex(tables, files)
 
 
 def main(arguments):
@@ -1268,7 +1226,10 @@ def main(arguments):
     get_entries()
 
     # perform analysis
-    perform_analysis(mc_data, mc_time_data, op_time_data)
+    tables, files = perform_analysis(mc_data, mc_time_data, op_time_data)
+
+    # output results
+    output_results(tables, files)
 
 
 if __name__ == '__main__':
