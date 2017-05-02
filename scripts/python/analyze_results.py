@@ -1463,12 +1463,10 @@ def get_test_tables(rows,
     if include_concrete:
         solvers.insert(0, 'Concrete')
 
-    values = (list(), list(), list(), list())
-    if include_concrete:
-        values = (list(), list(), list(), list(), list())
+    values = list()
 
     for i, solver in enumerate(solvers):
-        vals_np = numpy.asarray(get_values_from_rows(rows,
+        vals_np = numpy.asarray(get_values_from_rows(filtered,
                                                      solver,
                                                      branch=branch,
                                                      mc_per=mc_per,
@@ -1476,7 +1474,7 @@ def get_test_tables(rows,
                                                      op_time=op_time,
                                                      mc_time=mc_time,
                                                      acc_time=acc_time))
-        values[i].extend(vals_np)
+        values.append(vals_np)
 
     for i in range(len(solvers)):
         for j in range(i + 1, len(solver)):
