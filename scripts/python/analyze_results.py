@@ -12,6 +12,8 @@ import numpy
 import os
 
 # set relevant path and file variables
+import scipy
+
 file_name = os.path.basename(__file__).replace('.py', '')
 project_dir = '{0}/../..'.format(os.path.dirname(__file__))
 project_dir = os.path.normpath(project_dir)
@@ -45,15 +47,20 @@ GLOB['alphabet-match']['AE'] = re.compile('\w+-AE-\d+(-\d+)?.csv')
 
 ANALYSIS_LIST = (
     'agree',
+    'agree-stat',
     'comb-time',
+    'comb-time-stat',
     'mc-stat',
     'mc-time',
+    'mc-time-stat',
     'op-time',
+    'op-time-stat',
     'per-diff',
     'per-diff-vs-solve-time',
     'per-diff-vs-mc-time',
     'per-diff-vs-comb-time',
     'solve-time'
+    'solve-time-stat'
 )
 
 SOLVERS = (
@@ -125,10 +132,12 @@ OP_NORMS = {
 ORDER_COLUMNS = {
     'Bin': 1,
     'Selection': 2,
-    'Unbounded': 3,
-    'Bounded': 4,
-    'Aggregate': 5,
-    'Weighted': 6
+    'First Solver': 3,
+    'Concrete': 4,
+    'Unbounded': 5,
+    'Bounded': 6,
+    'Aggregate': 7,
+    'Weighted': 8
 }
 
 
@@ -266,19 +275,39 @@ def order_columns(column):
 
 def get_latex_table(table, caption, label):
     lines = list()
-    columns = sorted(table[0].keys(), key=order_columns)
+    keys = table[0].keys()
+    if 'multicolumn' in keys:
+        keys = table[1].keys()
+    columns = sorted(keys, key=order_columns)
 
     # create before table
-    lines.append('\\begin{table}[h!]\n')
-    lines.append(' ' * 4 + '\\centering\n')
-    lines.append(' ' * 4 + '\\footnotesize\n')
+    before_table = list()
+    before_table.append('\\begin{table}[h!]\n')
+    before_table.append(' ' * 4 + '\\centering\n')
+    before_table.append(' ' * 4 + '\\footnotesize\n')
 
     begin_tabu = ' ' * 4 + '\\begin{tabu}{|'
     for i in range(0, len(columns)):
         begin_tabu += ' c |'
     begin_tabu += '}\n'
-    lines.append(begin_tabu)
-    lines.append(' ' * 8 + '\\hline\n')
+    before_table.append(begin_tabu)
+    before_table.append(' ' * 8 + '\\hline\n')
+
+    # create multicolumn header
+    if 'multicolumn' in table[0].keys():
+        multi_header = ' ' * 8
+        for i in range(1, table[0]['multicolumn'][0]):
+            if i != 1:
+                multi_header += '& '
+
+        multi_header += '\\multicolumn{4}{c|}{\\textbf{' \
+                        + table[0]['multicolumn'][2] + '}} '
+
+        for i in range(table[0]['multicolumn'][2], len(columns)):
+            multi_header += '& '
+
+        multi_header += '\\\\\n'
+
 
     # create column headers
     headers = ' ' * 8
@@ -287,25 +316,34 @@ def get_latex_table(table, caption, label):
             headers += '& '
         headers += '\\textbf{' + column + '} '
     headers += '\\\\\n'
-    lines.append(headers)
-    lines.append(' ' * 8 + '\\hline\n')
+    before_table.append(headers)
+    before_table.append(' ' * 8 + '\\hline\n')
+
+    # create after table
+    after_table = list()
+    after_table.append(' ' * 4 + '\\end{tabu}\n')
+    after_table.append(' ' * 4 + '\\caption{' + caption + '}\n')
+    after_table.append(' ' * 4 + '\\label{tab:' + label + '}\n')
+    after_table.append('\\end{table}\n')
+
+    lines.extend(before_table)
 
     # create columns
-    for row in table:
+    for i, row in enumerate(table):
         out_row = ' ' * 8
-        for i, column in enumerate(columns):
-            if i != 0:
+        for j, column in enumerate(columns):
+            if j != 0:
                 out_row += '& '
             out_row += '{0} '.format(row.get(column))
         out_row += '\\\\\n'
         lines.append(out_row)
         lines.append(' ' * 8 + '\\hline\n')
+        if (i + 1) % 55 == 0:
+            lines.extend(after_table)
+            lines.append('\n\\clearpage\n')
+            lines.extend(before_table)
 
-    # create after table
-    lines.append(' ' * 4 + '\\end{tabu}\n')
-    lines.append(' ' * 4 + '\\caption{' + caption + '}\n')
-    lines.append(' ' * 4 + '\\label{tab:' + label + '}\n')
-    lines.append('\\end{table}\n')
+    lines.extend(after_table)
 
     return lines
 
@@ -339,10 +377,20 @@ def output_latex(tables, plots):
     before_lines.append('\n')
     before_lines.append('\\begin{document}\n')
     before_lines.append('\n')
+    before_lines.append('\\listoffigures\n')
+    before_lines.append('\n')
+    before_lines.append('\\listoftables\n')
+    before_lines.append('\n')
 
     table_list = list()
+    num_lines = 0
     for table, caption, label in tables:
+        new_num_lines = num_lines + len(table) + 7
+        if new_num_lines > 55:
+            table_list.append(['\n\\clearpage\n'])
+            new_num_lines = 0
         table_list.append(get_latex_table(table, caption, label))
+        num_lines = new_num_lines
 
     figure_list = list()
     for data, plot_types, caption, label in plots:
@@ -616,40 +664,66 @@ def compute_agreement(row, prefix):
            (c_t_per < c_f_per and t_per < f_per)
 
 
-def weighted_quantile(values, quantiles, sample_weight=None,
+def weighted_quantile(a, q, weights=None,
                       values_sorted=False, old_style=False):
-    """ Very close to numpy.percentile, but supports weights.
-    NOTE: quantiles should be in [0, 1]!
-    :param values: numpy.array with data
-    :param quantiles: array-like with many quantiles needed
-    :param sample_weight: array-like of the same length as `array`
-    :param values_sorted: bool, if True, then will avoid sorting of initial 
-     array
-    :param old_style: if True, will correct output to be consistent with
-     numpy.percentile.
-    :return: numpy.array with computed quantiles.
+    """ 
+    Compute the qth percentile of the data along the specified axis.
+
+    Returns the qth percentile(s) of the array elements.
+
+    Parameters
+    ----------
+    a : array_like
+        Array containing data to be averaged. If `a` is not an array, a
+        conversion is attempted.
+    q : float in range of [0,1] (or sequence of floats)
+        Percentile to compute, which must be between 0 and 100 inclusive.
+    weights : array_like, optional
+        An array of weights associated with the values in `a`. Each value in
+        `a` contributes to the average according to its associated weight.
+        The weights array can either be 1-D (in which case its length must be
+        the size of `a` along the given axis) or of the same shape as `a`.
+        If `weights=None`, then all data in `a` are assumed to have a
+        weight equal to one.
+    values_sorted: bool, optional
+        if True, then will avoid sorting of initial array
+    old_style: bool, optional
+        if True, will correct output to be consistent with numpy.percentile.
+
+
+    Returns
+    -------
+    percentile : scalar or ndarray
+        If `q` is a single percentile and `axis=None`, then the result
+        is a scalar. If multiple percentiles are given, first axis of
+        the result corresponds to the percentiles. The other axes are
+        the axes that remain after the reduction of `a`. If the input
+        contains integers or floats smaller than ``float64``, the output
+        data-type is ``float64``. Otherwise, the output data-type is the
+        same as that of the input. If `out` is specified, that array is
+        returned instead.
     """
-    values = numpy.array(values)
-    quantiles = numpy.array(quantiles)
-    if sample_weight is None:
-        sample_weight = numpy.ones(len(values))
-    sample_weight = numpy.array(sample_weight)
-    assert numpy.all(quantiles >= 0) and numpy.all(
-        quantiles <= 1), 'quantiles should be in [0, 1]'
+    a = numpy.array(a)
+    q = numpy.array(q)
+    if weights is None:
+        weights = numpy.ones(len(a))
+    weights = numpy.array(weights)
+    assert numpy.all(q >= 0) and numpy.all(
+        q <= 1), 'quantiles should be in [0, 1]'
 
     if not values_sorted:
-        sorter = numpy.argsort(values)
-        values = values[sorter]
-        sample_weight = sample_weight[sorter]
+        sorter = numpy.argsort(a)
+        a = a[sorter]
+        weights = weights[sorter]
 
-    weighted_quantiles = numpy.cumsum(sample_weight) - 0.5 * sample_weight
+    weighted_quantiles = numpy.cumsum(weights) - 0.5 * weights
     if old_style:
         # To be convenient with numpy.percentile
         weighted_quantiles -= weighted_quantiles[0]
         weighted_quantiles /= weighted_quantiles[-1]
     else:
-        weighted_quantiles /= numpy.sum(sample_weight)
-    return numpy.interp(quantiles, weighted_quantiles, values)
+        weighted_quantiles /= numpy.sum(weights)
+    return numpy.interp(q, weighted_quantiles, a)
 
 
 def get_per_diffs(rows,
@@ -876,7 +950,7 @@ def get_perf_metrics(rows,
 
         quantiles = weighted_quantile(times_np,
                                       numpy.arange(0.0, 1.0, 0.01),
-                                      sample_weight=weights_np)
+                                      weights=weights_np)
         median_results[solver] = '{0:.1f}'.format(quantiles[len(quantiles)/2])
         # median_results[solver] = '{0:.1f}'.format(numpy.median(w_times_np))
 
@@ -1177,16 +1251,195 @@ def get_comb_time_tables_and_files(rows):
     return tables, files
 
 
-def get_p_values(rows,
-                 branch=None,
-                 input_type=None,
-                 length=None,
-                 alphabet=None,
-                 operation=None,
-                 exclusive_op=None,
-                 op_arg_type=None,
-                 predicate=None,
-                 pred_arg_type=None):
+def get_values_from_rows(rows,
+                         solver,
+                         branch=None,
+                         mc_per=False,
+                         agree=False,
+                         op_time=False,
+                         mc_time=False,
+                         acc_time=False):
+    vals_np = numpy.empty([0, len(rows)])
+
+    if mc_per:
+        mc_per_vals = list()
+        if branch is None or branch:
+            mc_per_vals.extend(map(lambda r: compute_mc_per(r, solver[0]),
+                                   rows))
+        if branch is None or not branch:
+            mc_per_vals.extend(map(lambda r: compute_mc_per(r, solver[0],
+                                                            branch_sel=False),
+                                   rows))
+
+        vals_np = numpy.append(vals_np, numpy.asarray(mc_per_vals))
+
+    if agree:
+        agree_vals = map(lambda r: compute_agreement(r, solver[0]), rows)
+
+        if branch is None:
+            agree_vals.extend(list(agree_vals))
+
+        vals_np = numpy.append(vals_np, numpy.asarray(agree_vals))
+
+    elif op_time:
+        # get op times
+        op_times = map(lambda r: int(r.get(solver[0] + ' Op Time')), rows)
+        vals_np = numpy.append(vals_np, numpy.asarray(op_times))
+    else:
+        # get mc times
+        if mc_time is not None:
+            mc_times = list()
+            if mc_time:
+                if branch is None or branch:
+                    mc_times.extend(map(lambda r: int(r.get(solver[0] +
+                                                            ' T MC Time')),
+                                        rows))
+                if branch is None or not branch:
+                    mc_times.extend(map(lambda r: int(r.get(solver[0] +
+                                                            ' F MC Time')),
+                                        rows))
+
+            vals_np = numpy.append(vals_np, numpy.asarray([mc_times]), axis=0)
+
+        # get acc times
+        if acc_time:
+            acc_times = map(lambda r: int(r.get(solver[0] + ' Acc Time')), rows)
+
+            if branch is None:
+                acc_times.extend(list(acc_times))
+
+            vals_np = numpy.append(vals_np, numpy.asarray([acc_times]), axis=0)
+
+            # get pred times
+            pred_times = list()
+            if branch is None or branch:
+                pred_times.extend(map(lambda r: int(r.get(solver[0] +
+                                                          ' T Pred Time')),
+                                      rows))
+            if branch is None or not branch:
+                pred_times.extend(map(lambda r: int(r.get(solver[0] +
+                                                          ' F Pred Time')),
+                                      rows))
+
+            vals_np = numpy.append(vals_np, numpy.asarray([pred_times]), axis=0)
+
+        # sum times
+        if len(vals_np.shape) == 2 and vals_np.shape[0] > 1:
+            vals_np = numpy.sum(vals_np, axis=0)
+        else:
+            vals_np = vals_np[0]
+
+    return vals_np
+
+
+def compute_variance(a, weights=None, axis=None):
+    """
+    Compute the variance along the specified axis.
+
+    Returns the variance of the array elements, a measure of the spread of a
+    distribution.  The variance is computed for the flattened array by
+    default, otherwise over the specified axis.
+
+    Parameters
+    ----------
+    a : array_like
+        Array containing numbers whose variance is desired.  If `a` is not an
+        array, a conversion is attempted.
+    weights : array_like, optional
+        An array of weights associated with the values in `a`. Each value in
+        `a` contributes to the average according to its associated weight.
+        The weights array can either be 1-D (in which case its length must be
+        the size of `a` along the given axis) or of the same shape as `a`.
+        If `weights=None`, then all data in `a` are assumed to have a
+        weight equal to one.
+    axis : None or int or tuple of ints, optional
+        Axis or axes along which the variance is computed.  The default is to
+        compute the variance of the flattened array.
+
+    Returns
+    -------
+    variance : ndarray, see dtype parameter above
+        If ``out=None``, returns a new array containing the variance;
+        otherwise, a reference to the output array is returned.
+    """
+    if weights is None:
+        return numpy.var(a, axis=axis)
+
+    # get mean
+    mean = numpy.average(a, axis=axis, weights=weights)
+
+    # compute squared difference along axis
+    apply_axis = 0 if axis is None else axis
+    sq_d = numpy.apply_along_axis(lambda x: (x - mean) ** 2, apply_axis, a)
+
+    # average squared difference to get variance
+    return numpy.average(sq_d, axis=axis, weights=weights)
+
+
+def compute_std_dev(a, weights=None, axis=None):
+    """
+    Compute the standard deviation along the specified axis.
+
+    Returns the standard deviation, a measure of the spread of a distribution,
+    of the array elements. The standard deviation is computed for the
+    flattened array by default, otherwise over the specified axis.
+
+    Parameters
+    ----------
+    a : array_like
+        Calculate the standard deviation of these values.
+    weights : array_like, optional
+        An array of weights associated with the values in `a`. Each value in
+        `a` contributes to the average according to its associated weight.
+        The weights array can either be 1-D (in which case its length must be
+        the size of `a` along the given axis) or of the same shape as `a`.
+        If `weights=None`, then all data in `a` are assumed to have a
+        weight equal to one.
+    axis : None or int or tuple of ints, optional
+        Axis or axes along which the standard deviation is computed. The
+        default is to compute the standard deviation of the flattened array.
+
+    Returns
+    -------
+    standard_deviation : ndarray
+        Return a new array containing the standard deviation, otherwise return
+        a reference to the output array.
+    """
+    if weights is None:
+        return numpy.std(a, axis=axis)
+
+    # get mean
+    mean = numpy.average(a, axis=axis, weights=weights)
+
+    # compute squared difference along axis
+    apply_axis = 0 if axis is None else axis
+    sq_d = numpy.apply_along_axis(lambda x: (x - mean) ** 2, apply_axis, a)
+
+    # average squared difference to get variance
+    variance = numpy.average(sq_d, axis=axis, weights=weights)
+
+    # get standard deviation by computing square root of variance
+    return numpy.sqrt(variance)
+
+
+def get_test_tables(rows,
+                    include_concrete=False,
+                    chi_test=None,
+                    t_test=False,
+                    branch=None,
+                    mc_per=False,
+                    agree=False,
+                    op_time=False,
+                    mc_time=False,
+                    acc_time=False,
+                    input_type=None,
+                    length=None,
+                    alphabet=None,
+                    operation=None,
+                    exclusive_op=None,
+                    op_arg_type=None,
+                    predicate=None,
+                    pred_arg_type=None):
     results = dict()
 
     def row_filter(row):
@@ -1197,43 +1450,115 @@ def get_p_values(rows,
                and filter_operation(row, operation, exclusive_op, op_arg_type) \
                and filter_predicate(row, predicate, pred_arg_type)
 
+    # filter rows
     filtered = filter(row_filter, rows)
-    weights_np = numpy.asarray(map(lambda r: r.get('Norm'), filtered))
-    per_keys = {'C-T': 0, 'C-F': 1, 'U-T': 2, 'U-F': 3, 'B-T': 4, 'B-F': 5,
-                'A-T': 6, 'A-F': 7, 'W-T': 8, 'W-F': 9}
-    mc_per_map = dict()
 
-    for solver in SOLVERS:
-        if branch is None or branch:
-            temp = map(lambda r: compute_mc_per(r, solver[0], branch_sel=True),
-                       filtered)
+    # get weights as numpy array from filtered rows
+    weights = map(lambda r: r.get('Norm'), filtered)
+    if branch is None:
+        weights.extend(list(weights))
+    weights_np = numpy.asarray(weights)
 
-        if branch is None or not branch:
-            temp = map(lambda r: compute_mc_per(r, solver[0], branch_sel=True),
-                       filtered)
+    solvers = list(SOLVERS)
+    if include_concrete:
+        solvers.insert(0, 'Concrete')
+
+    values = (list(), list(), list(), list())
+    if include_concrete:
+        values = (list(), list(), list(), list(), list())
+
+    for i, solver in enumerate(solvers):
+        vals_np = numpy.asarray(get_values_from_rows(rows,
+                                                     solver,
+                                                     branch=branch,
+                                                     mc_per=mc_per,
+                                                     agree=agree,
+                                                     op_time=op_time,
+                                                     mc_time=mc_time,
+                                                     acc_time=acc_time))
+        values[i].extend(vals_np)
+
+    for i in range(len(solvers)):
+        for j in range(i + 1, len(solver)):
+            stat_val = 0.
+            p_val = 0.
+            if chi_test is not None:
+                o_unique, o_counts = numpy.unique(values[i], return_counts=True)
+                e_unique, e_counts = numpy.unique(values[j], return_counts=True)
+                categories = numpy.union1d(o_unique, e_unique)
+                o_np = numpy.zeros(categories.size)
+                e_np = numpy.zeros(categories.size)
+                for k, c in enumerate(categories):
+                    if c in o_unique:
+                        index = numpy.nonzero(o_unique == c)[0][0]
+                        o_np[k] = o_counts[index] / numpy.sum(o_counts)
+                    if c in e_unique:
+                        index = numpy.nonzero(e_unique == c)[0][0]
+                        e_np[k] = e_counts[index] / numpy.sum(e_counts)
+
+                stat_val, p_val = scipy.stats.chisquare(o_np, e_np)
+
+            if t_test:  # independent t test
+                mean_1 = numpy.average(values[i], weights=weights_np)
+                std_1 = compute_std_dev(values[i], weights=weights_np)
+                mean_2 = numpy.average(values[j], weights=weights_np)
+                std_2 = compute_std_dev(values[j], weights=weights_np)
+                observations = numpy.sum(weights_np)
+                stat_val, p_val = \
+                    scipy.stats.ttest_ind_from_stats(mean_1, std_1,
+                                                     observations, mean_2,
+                                                     std_2, observations,
+                                                     equal_var=False)
+
+            results[solvers[i]] = (solvers[j], stat_val, p_val)
 
     return results
 
 
-def get_mc_test_tables(rows):
+def get_mc_test_tables(rows, entries):
     # initialize tables list
     tables = list()
 
-    log.debug('Computing p-values for Model Count Percentage')
+    for entry in entries:
+        log.debug('Getting p-values for %s', entry.get('caption'))
+        results = get_test_tables(rows,
+                                  include_concrete=entry.get(
+                                      'include_concrete'),
+                                  chi_test=entry.get('chi_test'),
+                                  t_test=entry.get('t_test'),
+                                  branch=entry.get('branch'),
+                                  mc_per=entry.get('mc_per'),
+                                  agree=entry.get('agree'),
+                                  op_time=entry.get('op_time'),
+                                  mc_time=entry.get('mc_time'),
+                                  acc_time=entry.get('acc_time'),
+                                  input_type=entry.get('input_type'),
+                                  length=entry.get('length'),
+                                  alphabet=entry.get('alphabet'),
+                                  operation=entry.get('operation'),
+                                  exclusive_op=entry.get('exclusive_op'),
+                                  op_arg_type=entry.get('op_arg_type'),
+                                  predicate=entry.get('predicate'),
+                                  pred_arg_type=entry.get('pred_arg_type'))
+        table = list()
+        table.append({
+            'multicolumn': (2, 9, 'Second Solver Statistics and '
+                                  '\\textit{p}-values')
+        })
+        rows = dict()
+        for key in results.keys():
+            if key not in rows:
+                rows[key] = dict()
+                rows[key]['First Solver'] = key
+            s = results[key][0]
+            rows[key][s + ' Stat'] = results[key][1]
+            rows[key][s + ' \\textit{p}-value'] = results[key][2]
 
-    for entry in GLOB.get('entries').get('per-diff'):
-        log.debug('Processing %s', entry.get('caption'))
-        table = get_p_values(rows,
-                             branch=entry.get('branch'),
-                             input_type=entry.get('input_type'),
-                             alphabet=entry.get('alphabet'),
-                             length=entry.get('length'),
-                             operation=entry.get('operation'),
-                             exclusive_op=entry.get('exclusive_op'),
-                             op_arg_type=entry.get('op_arg_type'),
-                             predicate=entry.get('predicate'),
-                             pred_arg_type=entry.get('pred_arg_type'))
-        tables.append((table, entry.get('caption'), entry.get('label')))
+        table.extend([rows[x] for x in sorted(rows.keys(), key=order_columns)])
+
+        tables.append((table,
+                       entry.get('caption'),
+                       entry.get('label')))
 
     return tables
 
@@ -1243,12 +1568,16 @@ def analyze_accuracy(mc_rows):
     tables = list()
 
     if 'mc-stat' in GLOB['entries']:
-        test_tables = get_mc_test_tables(mc_rows)
+        test_tables = get_mc_test_tables(mc_rows, GLOB['entries']['mc-stat'])
         tables.extend(test_tables)
 
     if 'per-diff' in GLOB['entries']:
         per_diff_tables = get_per_diff_tables(mc_rows)
         tables.extend(per_diff_tables)
+
+    if 'agree-stat' in GLOB['entries']:
+        test_tables = get_mc_test_tables(mc_rows, GLOB['entries']['agree-stat'])
+        tables.extend(test_tables)
 
     if 'agree' in GLOB['entries']:
         agree_tables = get_agree_tables(mc_rows)
@@ -1261,11 +1590,21 @@ def analyze_perf(mc_time_rows, op_time_rows):
     tables = list()
     files = list()
 
+    if 'mc-time-stat' in GLOB['entries']:
+        test_tables = get_mc_test_tables(mc_time_rows,
+                                         GLOB['entries']['mc-time-stat'])
+        tables.extend(test_tables)
+
     if 'mc-time' in GLOB.get('entries'):
         mc_perf_tables, mc_perf_files = \
             get_mc_time_tables_and_files(mc_time_rows)
         tables.extend(mc_perf_tables)
         files.extend(mc_perf_files)
+
+    if 'solve-time-stat' in GLOB['entries']:
+        test_tables = get_mc_test_tables(mc_time_rows,
+                                         GLOB['entries']['solve-time-stat'])
+        tables.extend(test_tables)
 
     if 'solve-time' in GLOB.get('entries'):
         solve_perf_tables, solve_perf_files = \
@@ -1273,10 +1612,20 @@ def analyze_perf(mc_time_rows, op_time_rows):
         tables.extend(solve_perf_tables)
         files.extend(solve_perf_files)
 
+    if 'op-time-stat' in GLOB['entries']:
+        test_tables = get_mc_test_tables(mc_time_rows,
+                                         GLOB['entries']['op-time-stat'])
+        tables.extend(test_tables)
+
     if 'op-time' in GLOB.get('entries'):
         op_perf_tables, op_perf_files = get_op_tables_and_files(op_time_rows)
         tables.extend(op_perf_tables)
         files.extend(op_perf_files)
+
+    if 'comb-time-stat' in GLOB['entries']:
+        test_tables = get_mc_test_tables(mc_time_rows,
+                                         GLOB['entries']['comb-time-stat'])
+        tables.extend(test_tables)
 
     if 'comb-time' in GLOB.get('entries'):
         comb_perf_tables, comb_perf_files = \

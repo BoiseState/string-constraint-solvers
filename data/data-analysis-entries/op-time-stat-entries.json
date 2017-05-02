@@ -1,0 +1,340 @@
+[
+  {
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for All Constraints",
+    "label": "op_time_stat_all"
+  },
+  {
+    "branch": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for \\textit{true} Branch Constraints",
+    "label": "op_time_stat_true"
+  },
+  {
+    "branch": false,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for \\textit{false} Branch Constraints",
+    "label": "op_time_stat_false"
+  },
+  {
+    "alphabet": "AB",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Where $|\\Sigma| = 2$",
+    "label": "op_time_stat_alpha_AB"
+  },
+  {
+    "alphabet": "AC",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Where $|\\Sigma| = 3$",
+    "label": "op_time_stat_alpha_AC"
+  },
+  {
+    "alphabet": "AD",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Where $|\\Sigma| = 4$",
+    "label": "op_time_stat_alpha_AD"
+  },
+  {
+    "alphabet": "AE",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Where $|\\Sigma| = 5$",
+    "label": "op_time_stat_alpha_AE"
+  },
+  {
+    "length": 1,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Following an Input String of Length 1",
+    "label": "op_time_stat_len_1"
+  },
+  {
+    "length": 2,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Following an Input String of Length 2",
+    "label": "op_time_stat_len_2"
+  },
+  {
+    "length": 3,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Following an Input String of Length 3",
+    "label": "op_time_stat_len_3"
+  },
+  {
+    "length": 4,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Following an Input String of Length 3",
+    "label": "op_time_stat_len_4"
+  },
+  {
+    "input_type": "Simple",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Following a \\textit{Simple} Input String",
+    "label": "op_time_stat_simple"
+  },
+  {
+    "input_type": "Even",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Following a \\textit{Even} Unknown Input String",
+    "label": "op_time_stat_even"
+  },
+  {
+    "input_type": "Uneven",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Following a \\textit{Uneven} Unknown Input String",
+    "label": "op_time_stat_uneven"
+  },
+  {
+    "operation": "concat",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Including $\\mathtt{concat}$ Operations",
+    "label": "op_time_stat_incl_concat_all"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Including $\\mathtt{concat}(Simple)$ Operations",
+    "label": "op_time_stat_incl_concat_simple"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Including $\\mathtt{concat}(Even)$ Operations",
+    "label": "op_time_stat_incl_concat_even"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Including $\\mathtt{concat}(Uneven)$ Operations",
+    "label": "op_time_stat_incl_concat_uneven"
+  },
+  {
+    "operation": "delete",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Including $\\mathtt{delete}$ Operations",
+    "label": "op_time_stat_incl_delete_all"
+  },
+  {
+    "operation": "delete",
+    "op_arg_type": "same",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Including $\\mathtt{delete}(same)$ Operations",
+    "label": "op_time_stat_incl_delete_same"
+  },
+  {
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Including $\\mathtt{delete}(diff)$ Operations",
+    "label": "op_time_stat_incl_delete_diff"
+  },
+  {
+    "operation": "replace",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Including $\\mathtt{replace}$ Operations",
+    "label": "op_time_stat_incl_replace_all"
+  },
+  {
+    "operation": "replace",
+    "op_arg_type": "same",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Including $\\mathtt{replace}(same)$ Operations",
+    "label": "op_time_stat_incl_replace_same"
+  },
+  {
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Including $\\mathtt{replace}(diff)$ Operations",
+    "label": "op_time_stat_incl_replace_diff"
+  },
+  {
+    "operation": "reverse",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Including $\\mathtt{reverse}$ Operations",
+    "label": "op_time_stat_incl_reverse"
+  },
+  {
+    "operation": "concat",
+    "exclusive_op": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Only $\\mathtt{concat}$ Operations",
+    "label": "op_time_stat_excl_concat_all"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "exclusive_op": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Only $\\mathtt{concat}(Simple)$ Operations",
+    "label": "op_time_stat_excl_concat_simple"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "exclusive_op": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Only $\\mathtt{concat}(Even)$ Operations",
+    "label": "op_time_stat_excl_concat_even"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "exclusive_op": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Only $\\mathtt{concat}(Uneven)$ Operations",
+    "label": "op_time_stat_excl_concat_uneven"
+  },
+  {
+    "operation": "delete",
+    "exclusive_op": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Only $\\mathtt{delete}$ Operations",
+    "label": "op_time_stat_excl_delete_all"
+  },
+  {
+    "operation": "delete",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Only $\\mathtt{delete}(same)$ Operations",
+    "label": "op_time_stat_excl_delete_same"
+  },
+  {
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Only $\\mathtt{delete}(diff)$ Operations",
+    "label": "op_time_stat_excl_delete_diff"
+  },
+  {
+    "operation": "replace",
+    "exclusive_op": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Only $\\mathtt{replace}$ Operations",
+    "label": "op_time_stat_excl_replace_all"
+  },
+  {
+    "operation": "replace",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Only $\\mathtt{replace}(same)$ Operations",
+    "label": "op_time_stat_excl_replace_same"
+  },
+  {
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Only $\\mathtt{replace}(diff)$ Operations",
+    "label": "op_time_stat_excl_replace_diff"
+  },
+  {
+    "operation": "reverse",
+    "exclusive_op": true,
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Operation Time for Constraints Only $\\mathtt{reverse}$ Operations",
+    "label": "op_time_stat_excl_reverse"
+  },
+  {
+    "predicate": "contains",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Predicate Time for Constraints Ending in $\\mathtt{contains}$ Predicates",
+    "label": "op_time_stat_contains_all"
+  },
+  {
+    "predicate": "contains",
+    "pred_arg_type": "Simple",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Predicate Time for Constraints Ending in $\\mathtt{contains}(Simple)$ Predicates",
+    "label": "op_time_stat_contains_simple"
+  },
+  {
+    "predicate": "contains",
+    "pred_arg_type": "Even",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Predicate Time for Constraints Ending in $\\mathtt{contains}(Even)$ Predicates",
+    "label": "op_time_stat_contains_even"
+  },
+  {
+    "predicate": "contains",
+    "pred_arg_type": "Uneven",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Predicate Time for Constraints Ending in $\\mathtt{contains}(Uneven)$ Predicates",
+    "label": "op_time_stat_contains_uneven"
+  },
+  {
+    "predicate": "equals",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Predicate Time for Constraints Ending in $\\mathtt{equals}$ Predicates",
+    "label": "op_time_stat_equals_all"
+  },
+  {
+    "predicate": "equals",
+    "pred_arg_type": "Simple",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Predicate Time for Constraints Ending in $\\mathtt{equals}(Simple)$ Predicates",
+    "label": "op_time_stat_equals_simple"
+  },
+  {
+    "predicate": "equals",
+    "pred_arg_type": "Even",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Predicate Time for Constraints Ending in $\\mathtt{equals}(Even)$ Predicates",
+    "label": "op_time_stat_equals_even"
+  },
+  {
+    "predicate": "equals",
+    "pred_arg_type": "Uneven",
+    "op_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Predicate Time for Constraints Ending in $\\mathtt{equals}(Uneven)$ Predicates",
+    "label": "op_time_stat_equals_uneven"
+  }
+]

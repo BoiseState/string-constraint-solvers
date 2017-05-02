@@ -1,0 +1,78 @@
+[
+  {
+    "mc_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Model Counting Time for All Constraints",
+    "label": "mc_time_stat_all"
+  },
+  {
+    "branch": true,
+    "mc_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Model Counting Time for \\textit{true} Branch Constraints",
+    "label": "mc_time_stat_true"
+  },
+  {
+    "branch": false,
+    "mc_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Model Counting Time for \\textit{false} Branch Constraints",
+    "label": "mc_time_stat_false"
+  },
+  {
+    "alphabet": "AB",
+    "mc_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Model Counting Time for Constraints Where $|\\Sigma| = 2$",
+    "label": "mc_time_stat_alpha_AB"
+  },
+  {
+    "alphabet": "AC",
+    "mc_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Model Counting Time for Constraints Where $|\\Sigma| = 3$",
+    "label": "mc_time_stat_alpha_AC"
+  },
+  {
+    "alphabet": "AD",
+    "mc_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Model Counting Time for Constraints Where $|\\Sigma| = 4$",
+    "label": "mc_time_stat_alpha_AD"
+  },
+  {
+    "alphabet": "AE",
+    "mc_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Model Counting Time for Constraints Where $|\\Sigma| = 5$",
+    "label": "mc_time_stat_alpha_AE"
+  },
+  {
+    "length": 1,
+    "mc_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Model Counting Time for Constraints Following an Input String of Length 1",
+    "label": "mc_time_stat_len_1"
+  },
+  {
+    "length": 2,
+    "mc_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Model Counting Time for Constraints Following an Input String of Length 2",
+    "label": "mc_time_stat_len_2"
+  },
+  {
+    "length": 3,
+    "mc_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Model Counting Time for Constraints Following an Input String of Length 3",
+    "label": "mc_time_stat_len_3"
+  },
+  {
+    "length": 4,
+    "mc_time": true,
+    "t_test": true,
+    "caption": "\\textit{t}-test of Model Counting Time for Constraints Following an Input String of Length 3",
+    "label": "mc_time_stat_len_4"
+  }
+]
