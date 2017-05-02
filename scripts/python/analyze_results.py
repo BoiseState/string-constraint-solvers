@@ -5,15 +5,14 @@ import fnmatch
 import json
 import logging
 import math
-import re
-import sys
-
 import numpy
 import os
+import re
+import sys
+import scipy.stats
+
 
 # set relevant path and file variables
-import scipy
-
 file_name = os.path.basename(__file__).replace('.py', '')
 project_dir = '{0}/../..'.format(os.path.dirname(__file__))
 project_dir = os.path.normpath(project_dir)
@@ -134,10 +133,18 @@ ORDER_COLUMNS = {
     'Selection': 2,
     'First Solver': 3,
     'Concrete': 4,
-    'Unbounded': 5,
-    'Bounded': 6,
-    'Aggregate': 7,
-    'Weighted': 8
+    'Unbounded': 10,
+    'Unbounded Stat': 11,
+    'Unbounded \\textit{p}-value': 12,
+    'Bounded': 20,
+    'Bounded Stat': 21,
+    'Bounded \\textit{p}-value': 22,
+    'Aggregate': 30,
+    'Aggregate Stat': 31,
+    'Aggregate \\textit{p}-value': 32,
+    'Weighted': 40,
+    'Weighted Stat': 41,
+    'Weighted \\textit{p}-value': 42
 }
 
 
@@ -222,9 +229,9 @@ def read_data_files(file_pattern):
 def get_entries():
     GLOB['entries'] = dict()
 
-    def filter_entries(entry):
-        return ('alphabet' not in entry or entry.get('alphabet') != 'AE') \
-               and ('length' not in entry or entry.get('length') < 4)
+    # def filter_entries(entry):
+    #     return ('alphabet' not in entry or entry.get('alphabet') != 'AE') \
+    #            and ('length' not in entry or entry.get('length') < 4)
 
     for e in GLOB['Settings'].entries:
         entry_file_path = os.path.join(project_dir,
@@ -303,11 +310,10 @@ def get_latex_table(table, caption, label):
         multi_header += '\\multicolumn{4}{c|}{\\textbf{' \
                         + table[0]['multicolumn'][2] + '}} '
 
-        for i in range(table[0]['multicolumn'][2], len(columns)):
+        for i in range(table[0]['multicolumn'][1], len(columns)):
             multi_header += '& '
 
         multi_header += '\\\\\n'
-
 
     # create column headers
     headers = ' ' * 8
@@ -451,7 +457,8 @@ def output_plot_data_file(data, plot_types, label):
             csv_file.write('\n')
 
             # write rows
-            for i in range(data.get(SOLVERS[0])[plot.get('columns')[0][0]].size):
+            num_rows = data.get(SOLVERS[0])[plot.get('columns')[0][0]].size
+            for i in range(num_rows):
                 for column in plot.get('first-columns'):
                     csv_file.write(str(data.get(SOLVERS[0])[column[0]][i]))
                     csv_file.write('\t')
@@ -497,7 +504,7 @@ def output_plot_script(boxplot_lines, histogram_lines, scatter_lines):
         out_file.writelines(scatter_lines)
 
 
-def get_script_lines(data, plot_types, label):
+def get_script_lines(plot_types, label):
     boxplot_lines = list()
     hist_lines = list()
     scatter_lines = list()
@@ -553,7 +560,7 @@ def output_plot_files(files):
     for data, plot_types, caption, label in files:
         output_plot_data_file(data, plot_types, label)
 
-        new_lines = get_script_lines(data, plot_types, label)
+        new_lines = get_script_lines(plot_types, label)
         script_lines['boxplot'].extend(new_lines[0])
         script_lines['histogram'].extend(new_lines[1])
         script_lines['scatter'].extend(new_lines[2])
@@ -790,7 +797,7 @@ def get_per_diffs(rows,
         result['Bin'] = '{0:d}\\%'.format(int(100 * p))
         for solver in SOLVERS:
             count = numpy.sum(per_diff_map.get(solver)[0])
-            per_diff = 100 * (per_diff_map.get(solver)[0][i] / float(count))
+            per_diff = 100 * numpy.divide(per_diff_map.get(solver)[0][i], count)
             result[solver] = '{0:.1f}\\%'.format(per_diff)
         results.append(result)
 
@@ -946,23 +953,28 @@ def get_perf_metrics(rows,
         if l_max > max_val:
             max_val = l_max
         mean = numpy.average(times_np, weights=weights_np)
-        avg_results[solver] = '{0:.1f}'.format(mean)
+        avg_results[solver] = '{0:.0f}'.format(mean)
 
         quantiles = weighted_quantile(times_np,
                                       numpy.arange(0.0, 1.0, 0.01),
                                       weights=weights_np)
-        median_results[solver] = '{0:.1f}'.format(quantiles[len(quantiles)/2])
+        median_results[solver] = '{0:.0f}'.format(quantiles[len(quantiles)/2])
         # median_results[solver] = '{0:.1f}'.format(numpy.median(w_times_np))
 
         sq_d = numpy.apply_along_axis(lambda x: (x - mean) ** 2, 0, times_np)
         var_result = numpy.average(sq_d, weights=weights_np)
-        v_results[solver] = '{0:.1f}'.format(var_result)
+        v_results[solver] = '{0:.0f}'.format(var_result)
         # variance_results[solver] = '{0:.1f}'.format(numpy.var(w_times_np))
 
-        s_d_results[solver] = '{0:.1f}'.format(math.sqrt(var_result))
+        s_d_results[solver] = '{0:.0f}'.format(math.sqrt(var_result))
         # std_dev_results[solver] = '{0:.1f}'.format(numpy.std(w_times_np))
 
         data_results[solver] = [times_np, weights_np, None, None, quantiles]
+
+    correction = max_val % 1000
+    max_val = max_val + correction
+    correction = min_val % 1000
+    min_val = min_val - correction
 
     interval = (max_val - min_val) / 20.
     bins = numpy.arange(min_val, (max_val + interval), interval)
@@ -1259,7 +1271,10 @@ def get_values_from_rows(rows,
                          op_time=False,
                          mc_time=False,
                          acc_time=False):
-    vals_np = numpy.empty([0, len(rows)])
+    num_vals = len(rows)
+    if branch is None:
+        num_vals = num_vals * 2
+    vals_np = numpy.empty([0, num_vals])
 
     if mc_per:
         mc_per_vals = list()
@@ -1273,7 +1288,7 @@ def get_values_from_rows(rows,
 
         vals_np = numpy.append(vals_np, numpy.asarray(mc_per_vals))
 
-    if agree:
+    elif agree:
         agree_vals = map(lambda r: compute_agreement(r, solver[0]), rows)
 
         if branch is None:
@@ -1477,7 +1492,7 @@ def get_test_tables(rows,
         values.append(vals_np)
 
     for i in range(len(solvers)):
-        for j in range(i + 1, len(solver)):
+        for j in range(i + 1, len(solvers)):
             stat_val = 0.
             p_val = 0.
             if chi_test is not None:
@@ -1508,7 +1523,9 @@ def get_test_tables(rows,
                                                      std_2, observations,
                                                      equal_var=False)
 
-            results[solvers[i]] = (solvers[j], stat_val, p_val)
+            results[solvers[i]] = (solvers[j],
+                                   '{0:.3f}'.format(stat_val),
+                                   '{0:.3f}'.format(p_val))
 
     return results
 
@@ -1543,16 +1560,17 @@ def get_mc_test_tables(rows, entries):
             'multicolumn': (2, 9, 'Second Solver Statistics and '
                                   '\\textit{p}-values')
         })
-        rows = dict()
+        result_rows = dict()
         for key in results.keys():
-            if key not in rows:
-                rows[key] = dict()
-                rows[key]['First Solver'] = key
+            if key not in result_rows:
+                result_rows[key] = dict()
+                result_rows[key]['First Solver'] = key
             s = results[key][0]
-            rows[key][s + ' Stat'] = results[key][1]
-            rows[key][s + ' \\textit{p}-value'] = results[key][2]
+            result_rows[key][s + ' Stat'] = results[key][1]
+            result_rows[key][s + ' \\textit{p}-value'] = results[key][2]
 
-        table.extend([rows[x] for x in sorted(rows.keys(), key=order_columns)])
+        table.extend([result_rows[x] for x in sorted(result_rows.keys(),
+                                                     key=order_columns)])
 
         tables.append((table,
                        entry.get('caption'),

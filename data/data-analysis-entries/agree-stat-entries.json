@@ -7,22 +7,6 @@
     "label": "agree_stat_all"
   },
   {
-    "branch": true,
-    "agree": true,
-    "include_concrete": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for \\textit{true} Branch Constraints",
-    "label": "agree_stat_true"
-  },
-  {
-    "branch": false,
-    "agree": true,
-    "include_concrete": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for \\textit{false} Branch Constraints",
-    "label": "agree_stat_false"
-  },
-  {
     "alphabet": "AB",
     "agree": true,
     "include_concrete": true,
