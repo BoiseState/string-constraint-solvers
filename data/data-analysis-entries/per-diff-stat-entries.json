@@ -23,6 +23,7 @@
     "alphabet": "AB",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Where $|\\Sigma| = 2$",
     "label": "per_diff_stat_alpha_AB"
   },
@@ -30,6 +31,7 @@
     "alphabet": "AC",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Where $|\\Sigma| = 3$",
     "label": "per_diff_stat_alpha_AC"
   },
@@ -37,6 +39,7 @@
     "alphabet": "AD",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Where $|\\Sigma| = 4$",
     "label": "per_diff_stat_alpha_AD"
   },
@@ -44,6 +47,7 @@
     "alphabet": "AE",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Where $|\\Sigma| = 5$",
     "label": "per_diff_stat_alpha_AE"
   },
@@ -51,6 +55,7 @@
     "length": 1,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Following an Input String of Length 1",
     "label": "per_diff_stat_len_1"
   },
@@ -58,6 +63,7 @@
     "length": 2,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Following an Input String of Length 2",
     "label": "per_diff_stat_len_2"
   },
@@ -65,6 +71,7 @@
     "length": 3,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Following an Input String of Length 3",
     "label": "per_diff_stat_len_3"
   },
@@ -72,6 +79,7 @@
     "length": 4,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Following an Input String of Length 3",
     "label": "per_diff_stat_len_4"
   },
@@ -79,6 +87,7 @@
     "input_type": "Simple",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Following a \\textit{Simple} Input String",
     "label": "per_diff_stat_simple"
   },
@@ -86,6 +95,7 @@
     "input_type": "Even",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Following a \\textit{Even} Unknown Input String",
     "label": "per_diff_stat_even"
   },
@@ -93,6 +103,7 @@
     "input_type": "Uneven",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Following a \\textit{Uneven} Unknown Input String",
     "label": "per_diff_stat_uneven"
   },
@@ -100,6 +111,7 @@
     "operation": "concat",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Including $\\mathtt{concat}$ Operations",
     "label": "per_diff_stat_incl_concat_all"
   },
@@ -108,6 +120,7 @@
     "op_arg_type": "Simple",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Including $\\mathtt{concat}(Simple)$ Operations",
     "label": "per_diff_stat_incl_concat_simple"
   },
@@ -116,6 +129,7 @@
     "op_arg_type": "Even",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Including $\\mathtt{concat}(Even)$ Operations",
     "label": "per_diff_stat_incl_concat_even"
   },
@@ -124,6 +138,7 @@
     "op_arg_type": "Uneven",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Including $\\mathtt{concat}(Uneven)$ Operations",
     "label": "per_diff_stat_incl_concat_uneven"
   },
@@ -131,6 +146,7 @@
     "operation": "delete",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Including $\\mathtt{delete}$ Operations",
     "label": "per_diff_stat_incl_delete_all"
   },
@@ -139,6 +155,7 @@
     "op_arg_type": "same",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Including $\\mathtt{delete}(same)$ Operations",
     "label": "per_diff_stat_incl_delete_same"
   },
@@ -147,6 +164,7 @@
     "op_arg_type": "diff",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Including $\\mathtt{delete}(diff)$ Operations",
     "label": "per_diff_stat_incl_delete_diff"
   },
@@ -154,6 +172,7 @@
     "operation": "replace",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Including $\\mathtt{replace}$ Operations",
     "label": "per_diff_stat_incl_replace_all"
   },
@@ -162,6 +181,7 @@
     "op_arg_type": "same",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Including $\\mathtt{replace}(same)$ Operations",
     "label": "per_diff_stat_incl_replace_same"
   },
@@ -170,6 +190,7 @@
     "op_arg_type": "diff",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Including $\\mathtt{replace}(diff)$ Operations",
     "label": "per_diff_stat_incl_replace_diff"
   },
@@ -177,6 +198,7 @@
     "operation": "reverse",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Including $\\mathtt{reverse}$ Operations",
     "label": "per_diff_stat_incl_reverse"
   },
@@ -185,6 +207,7 @@
     "exclusive_op": true,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Only $\\mathtt{concat}$ Operations",
     "label": "per_diff_stat_excl_concat_all"
   },
@@ -194,6 +217,7 @@
     "exclusive_op": true,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Only $\\mathtt{concat}(Simple)$ Operations",
     "label": "per_diff_stat_excl_concat_simple"
   },
@@ -203,6 +227,7 @@
     "exclusive_op": true,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Only $\\mathtt{concat}(Even)$ Operations",
     "label": "per_diff_stat_excl_concat_even"
   },
@@ -212,6 +237,7 @@
     "exclusive_op": true,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Only $\\mathtt{concat}(Uneven)$ Operations",
     "label": "per_diff_stat_excl_concat_uneven"
   },
@@ -220,6 +246,7 @@
     "exclusive_op": true,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Only $\\mathtt{delete}$ Operations",
     "label": "per_diff_stat_excl_delete_all"
   },
@@ -229,6 +256,7 @@
     "exclusive_op": true,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Only $\\mathtt{delete}(same)$ Operations",
     "label": "per_diff_stat_excl_delete_same"
   },
@@ -238,6 +266,7 @@
     "exclusive_op": true,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Only $\\mathtt{delete}(diff)$ Operations",
     "label": "per_diff_stat_excl_delete_diff"
   },
@@ -246,6 +275,7 @@
     "exclusive_op": true,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Only $\\mathtt{replace}$ Operations",
     "label": "per_diff_stat_excl_replace_all"
   },
@@ -255,6 +285,7 @@
     "exclusive_op": true,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Only $\\mathtt{replace}(same)$ Operations",
     "label": "per_diff_stat_excl_replace_same"
   },
@@ -264,6 +295,7 @@
     "exclusive_op": true,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Only $\\mathtt{replace}(diff)$ Operations",
     "label": "per_diff_stat_excl_replace_diff"
   },
@@ -272,6 +304,7 @@
     "exclusive_op": true,
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Only $\\mathtt{reverse}$ Operations",
     "label": "per_diff_stat_excl_reverse"
   },
@@ -279,6 +312,7 @@
     "predicate": "contains",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Ending in $\\mathtt{contains}$ Predicates",
     "label": "per_diff_stat_contains_all"
   },
@@ -287,6 +321,7 @@
     "pred_arg_type": "Simple",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Ending in $\\mathtt{contains}(Simple)$ Predicates",
     "label": "per_diff_stat_contains_simple"
   },
@@ -295,6 +330,7 @@
     "pred_arg_type": "Even",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Ending in $\\mathtt{contains}(Even)$ Predicates",
     "label": "per_diff_stat_contains_even"
   },
@@ -303,6 +339,7 @@
     "pred_arg_type": "Uneven",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Ending in $\\mathtt{contains}(Uneven)$ Predicates",
     "label": "per_diff_stat_contains_uneven"
   },
@@ -310,6 +347,7 @@
     "predicate": "equals",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Ending in $\\mathtt{equals}$ Predicates",
     "label": "per_diff_stat_equals_all"
   },
@@ -318,6 +356,7 @@
     "pred_arg_type": "Simple",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Ending in $\\mathtt{equals}(Simple)$ Predicates",
     "label": "per_diff_stat_equals_simple"
   },
@@ -326,6 +365,7 @@
     "pred_arg_type": "Even",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Ending in $\\mathtt{equals}(Even)$ Predicates",
     "label": "per_diff_stat_equals_even"
   },
@@ -334,6 +374,7 @@
     "pred_arg_type": "Uneven",
     "per_diff": true,
     "t_test": true,
+    "ind_var": true,
     "caption": "\\textit{t}-test of Branch Model Count Percentage for Constraints Ending in $\\mathtt{equals}(Uneven)$ Predicates",
     "label": "per_diff_stat_equals_uneven"
   }

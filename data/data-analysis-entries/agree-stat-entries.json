@@ -1,7 +1,7 @@
 [
   {
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for All Constraints",
     "label": "agree_stat_all"
@@ -9,7 +9,7 @@
   {
     "alphabet": "AB",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 2$",
     "label": "agree_stat_alpha_AB"
@@ -17,7 +17,7 @@
   {
     "alphabet": "AC",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 3$",
     "label": "agree_stat_alpha_AC"
@@ -25,7 +25,7 @@
   {
     "alphabet": "AD",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 4$",
     "label": "agree_stat_alpha_AD"
@@ -33,7 +33,7 @@
   {
     "alphabet": "AE",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 5$",
     "label": "agree_stat_alpha_AE"
@@ -41,7 +41,7 @@
   {
     "length": 1,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following an Input String of Length 1",
     "label": "agree_stat_len_1"
@@ -49,7 +49,7 @@
   {
     "length": 2,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following an Input String of Length 2",
     "label": "agree_stat_len_2"
@@ -57,7 +57,7 @@
   {
     "length": 3,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following an Input String of Length 3",
     "label": "agree_stat_len_3"
@@ -65,7 +65,7 @@
   {
     "length": 4,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following an Input String of Length 3",
     "label": "agree_stat_len_4"
@@ -73,7 +73,7 @@
   {
     "input_type": "Simple",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following a \\textit{Simple} Input String",
     "label": "agree_stat_simple"
@@ -81,7 +81,7 @@
   {
     "input_type": "Even",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following a \\textit{Even} Unknown Input String",
     "label": "agree_stat_even"
@@ -89,7 +89,7 @@
   {
     "input_type": "Uneven",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following a \\textit{Uneven} Unknown Input String",
     "label": "agree_stat_uneven"
@@ -97,7 +97,7 @@
   {
     "operation": "concat",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}$ Operations",
     "label": "agree_stat_incl_concat_all"
@@ -106,7 +106,7 @@
     "operation": "concat",
     "op_arg_type": "Simple",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}(Simple)$ Operations",
     "label": "agree_stat_incl_concat_simple"
@@ -115,7 +115,7 @@
     "operation": "concat",
     "op_arg_type": "Even",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}(Even)$ Operations",
     "label": "agree_stat_incl_concat_even"
@@ -124,7 +124,7 @@
     "operation": "concat",
     "op_arg_type": "Uneven",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}(Uneven)$ Operations",
     "label": "agree_stat_incl_concat_uneven"
@@ -132,7 +132,7 @@
   {
     "operation": "delete",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{delete}$ Operations",
     "label": "agree_stat_incl_delete_all"
@@ -141,7 +141,7 @@
     "operation": "delete",
     "op_arg_type": "same",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{delete}(same)$ Operations",
     "label": "agree_stat_incl_delete_same"
@@ -150,7 +150,7 @@
     "operation": "delete",
     "op_arg_type": "diff",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{delete}(diff)$ Operations",
     "label": "agree_stat_incl_delete_diff"
@@ -158,7 +158,7 @@
   {
     "operation": "replace",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{replace}$ Operations",
     "label": "agree_stat_incl_replace_all"
@@ -167,7 +167,7 @@
     "operation": "replace",
     "op_arg_type": "same",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{replace}(same)$ Operations",
     "label": "agree_stat_incl_replace_same"
@@ -176,7 +176,7 @@
     "operation": "replace",
     "op_arg_type": "diff",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{replace}(diff)$ Operations",
     "label": "agree_stat_incl_replace_diff"
@@ -184,7 +184,7 @@
   {
     "operation": "reverse",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{reverse}$ Operations",
     "label": "agree_stat_incl_reverse"
@@ -193,7 +193,7 @@
     "operation": "concat",
     "exclusive_op": true,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}$ Operations",
     "label": "agree_stat_excl_concat_all"
@@ -203,7 +203,7 @@
     "op_arg_type": "Simple",
     "exclusive_op": true,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}(Simple)$ Operations",
     "label": "agree_stat_excl_concat_simple"
@@ -213,7 +213,7 @@
     "op_arg_type": "Even",
     "exclusive_op": true,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}(Even)$ Operations",
     "label": "agree_stat_excl_concat_even"
@@ -223,7 +223,7 @@
     "op_arg_type": "Uneven",
     "exclusive_op": true,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}(Uneven)$ Operations",
     "label": "agree_stat_excl_concat_uneven"
@@ -232,7 +232,7 @@
     "operation": "delete",
     "exclusive_op": true,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{delete}$ Operations",
     "label": "agree_stat_excl_delete_all"
@@ -242,7 +242,7 @@
     "op_arg_type": "same",
     "exclusive_op": true,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{delete}(same)$ Operations",
     "label": "agree_stat_excl_delete_same"
@@ -252,7 +252,7 @@
     "op_arg_type": "diff",
     "exclusive_op": true,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{delete}(diff)$ Operations",
     "label": "agree_stat_excl_delete_diff"
@@ -261,7 +261,7 @@
     "operation": "replace",
     "exclusive_op": true,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{replace}$ Operations",
     "label": "agree_stat_excl_replace_all"
@@ -271,7 +271,7 @@
     "op_arg_type": "same",
     "exclusive_op": true,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{replace}(same)$ Operations",
     "label": "agree_stat_excl_replace_same"
@@ -281,7 +281,7 @@
     "op_arg_type": "diff",
     "exclusive_op": true,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{replace}(diff)$ Operations",
     "label": "agree_stat_excl_replace_diff"
@@ -290,7 +290,7 @@
     "operation": "reverse",
     "exclusive_op": true,
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{reverse}$ Operations",
     "label": "agree_stat_excl_reverse"
@@ -298,7 +298,7 @@
   {
     "predicate": "contains",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}$ Predicates",
     "label": "agree_stat_contains_all"
@@ -307,7 +307,7 @@
     "predicate": "contains",
     "pred_arg_type": "Simple",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}(Simple)$ Predicates",
     "label": "agree_stat_contains_simple"
@@ -316,7 +316,7 @@
     "predicate": "contains",
     "pred_arg_type": "Even",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}(Even)$ Predicates",
     "label": "agree_stat_contains_even"
@@ -325,7 +325,7 @@
     "predicate": "contains",
     "pred_arg_type": "Uneven",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}(Uneven)$ Predicates",
     "label": "agree_stat_contains_uneven"
@@ -333,7 +333,7 @@
   {
     "predicate": "equals",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}$ Predicates",
     "label": "agree_stat_equals_all"
@@ -342,7 +342,7 @@
     "predicate": "equals",
     "pred_arg_type": "Simple",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}(Simple)$ Predicates",
     "label": "agree_stat_equals_simple"
@@ -351,7 +351,7 @@
     "predicate": "equals",
     "pred_arg_type": "Even",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}(Even)$ Predicates",
     "label": "agree_stat_equals_even"
@@ -360,7 +360,7 @@
     "predicate": "equals",
     "pred_arg_type": "Uneven",
     "agree": true,
-    "include_concrete": true,
+    "ind_var": true,
     "chi_test": true,
     "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}(Uneven)$ Predicates",
     "label": "agree_stat_equals_uneven"
