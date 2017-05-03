@@ -49,12 +49,12 @@ ANALYSIS_LIST = (
     'agree-stat',
     'comb-time',
     'comb-time-stat',
-    'mc-stat',
     'mc-time',
     'mc-time-stat',
     'op-time',
     'op-time-stat',
     'per-diff',
+    'per-diff-stat',
     'per-diff-vs-solve-time',
     'per-diff-vs-mc-time',
     'per-diff-vs-comb-time',
@@ -132,19 +132,22 @@ ORDER_COLUMNS = {
     'Bin': 1,
     'Selection': 2,
     'First Solver': 3,
-    'Concrete': 4,
+    'Solver': 3,
+    'Statistic': 4,
+    '\\textit{p}-value': 5,
+    'Concrete': 9,
     'Unbounded': 10,
-    'Unbounded Stat': 11,
-    'Unbounded \\textit{p}-value': 12,
+    'U Stat': 11,
+    'U \\textit{p}-value': 12,
     'Bounded': 20,
-    'Bounded Stat': 21,
-    'Bounded \\textit{p}-value': 22,
+    'B Stat': 21,
+    'B \\textit{p}-value': 22,
     'Aggregate': 30,
-    'Aggregate Stat': 31,
-    'Aggregate \\textit{p}-value': 32,
+    'A Stat': 31,
+    'A \\textit{p}-value': 32,
     'Weighted': 40,
-    'Weighted Stat': 41,
-    'Weighted \\textit{p}-value': 42
+    'W Stat': 41,
+    'W \\textit{p}-value': 42
 }
 
 
@@ -302,18 +305,26 @@ def get_latex_table(table, caption, label):
 
     # create multicolumn header
     if 'multicolumn' in table[0].keys():
+        multi_i_start = table[0]['multicolumn'][0]
+        multi_i_end = table[0]['multicolumn'][1]
+        multi_i_text = table[0]['multicolumn'][2]
+        multi_size = multi_i_end - multi_i_start + 1
         multi_header = ' ' * 8
-        for i in range(1, table[0]['multicolumn'][0]):
+        for i in range(1, multi_i_start):
             if i != 1:
                 multi_header += '& '
 
-        multi_header += '\\multicolumn{4}{c|}{\\textbf{' \
-                        + table[0]['multicolumn'][2] + '}} '
+        multi_header += '& \\multicolumn{' + str(multi_size) + \
+                        '}{c|}{\\textbf{' + multi_i_text + '}} '
 
-        for i in range(table[0]['multicolumn'][1], len(columns)):
+        for i in range(multi_i_end, len(columns)):
             multi_header += '& '
 
         multi_header += '\\\\\n'
+
+        before_table.append(multi_header)
+        before_table.append(' ' * 8 + '\\hline\n')
+        table = table[1:]
 
     # create column headers
     headers = ' ' * 8
@@ -340,7 +351,15 @@ def get_latex_table(table, caption, label):
         for j, column in enumerate(columns):
             if j != 0:
                 out_row += '& '
-            out_row += '{0} '.format(row.get(column))
+            col_val = row.get(column)
+            if isinstance(col_val, tuple):
+                if col_val[1]:
+                    col_val = col_val[0]
+                else:
+                    col_val = '\\cellcolor[gray]{0.8} ' + col_val[0]
+            elif col_val == 'BLANK':
+                col_val = '\\cellcolor{black}'
+            out_row += '{0} '.format(col_val)
         out_row += '\\\\\n'
         lines.append(out_row)
         lines.append(' ' * 8 + '\\hline\n')
@@ -376,8 +395,10 @@ def output_latex(tables, plots):
     before_lines.append('\\usepackage[utf8]{inputenc}\n')
     before_lines.append('\\usepackage[pdftex]{graphicx}\n')
     before_lines.append('\\usepackage{fullpage}\n')
+    before_lines.append('\\usepackage{hyperref}\n')
     before_lines.append('\\usepackage[justification=centering]{caption}\n')
     before_lines.append('\\usepackage{tabu}\n')
+    before_lines.append('\\usepackage[table]{xcolor}\n')
     before_lines.append('\n')
     before_lines.append('\\graphicspath{{../plot-data/}}\n')
     before_lines.append('\n')
@@ -497,7 +518,6 @@ def output_plot_script(boxplot_lines, histogram_lines, scatter_lines):
         out_file.writelines(histogram_lines)
 
         # write scatters
-        out_file.write('set style line\n')
         out_file.write('set style data dots\n')
         out_file.write('set logscale y 2\n')
         out_file.write('set term png size 1000, 1000\n')
@@ -510,37 +530,31 @@ def get_script_lines(plot_types, label):
     scatter_lines = list()
 
     if 'boxplot' in plot_types:
+        ind = ' ' * (len(label) + 17)
         boxplot_lines.append('set output "' + label + '_boxplot.png"\n')
         boxplot_lines.append('plot "' + label + '_boxplot.csv" '
-                             'using (1):(column(1)) ti col, \\\n'
-                             '' * (len(label) + 17) +
-                             '"" using (2):(column(2)) ti col, \\\n'
-                             '' * (len(label) + 17) +
-                             '"" using (3):(column(3)) ti col, \\\n'
-                             '' * (len(label) + 17) +
+                             'using (1):(column(1)) ti col, \\\n' + ind +
+                             '"" using (2):(column(2)) ti col, \\\n' + ind +
+                             '"" using (3):(column(3)) ti col, \\\n' + ind +
                              '"" using (4):(column(4)) ti col\n')
     if 'histogram' in plot_types:
+        ind = ' ' * (len(label) + 19)
         hist_lines.append('set output "' + label + '_histogram.png"\n')
-        hist_lines.append('plot "' + label + '_histogram.csv" '
-                                             'using 2:xtic(1) ti col, \\\n'
-                                             '' * (len(label) + 19) +
-                                             '"" using 3 ti col, \\\n'
-                                             '' * (len(label) + 19) +
-                                             '"" using 4 ti col, \\\n'
-                                             '' * (len(label) + 19) +
+        hist_lines.append('plot "' + label + '_histogram.csv" using '
+                                             '2:xtic(1) ti col, \\\n' + ind +
+                                             '"" using 3 ti col, \\\n' + ind +
+                                             '"" using 4 ti col, \\\n' + ind +
                                              '"" using 5 ti col\n')
     if 'scatter' in plot_types:
+        ind = ' ' * (len(label) + 17)
         scatter_lines.append('set output "' + label + '_scatter.png"\n')
         scatter_lines.append('plot "' + label + '_scatter.csv" '
                              'using "U Times":"U Per Diffs" ti '
-                             '"Unbounded", \\\n'
-                             '' * (len(label) + 17) +
+                             '"Unbounded", \\\n' + ind +
                              '"" using "B Times":"B Per Diffs" ti '
-                             '"Bounded", \\\n'
-                             '' * (len(label) + 17) +
+                             '"Bounded", \\\n' + ind +
                              '"" using "A Times":"A Per Diffs" ti '
-                             '"Aggregate", \\\n'
-                             '' * (len(label) + 17) +
+                             '"Aggregate", \\\n' + ind +
                              '"" using "W Times":"W Per Diffs" ti "Weighted"\n')
 
     return boxplot_lines, hist_lines, scatter_lines
@@ -565,9 +579,9 @@ def output_plot_files(files):
         script_lines['histogram'].extend(new_lines[1])
         script_lines['scatter'].extend(new_lines[2])
 
-    output_plot_script(script_lines.get('boxplot'),
-                       script_lines.get('histogram'),
-                       script_lines.get('scatter'))
+    # output_plot_script(script_lines.get('boxplot'),
+    #                    script_lines.get('histogram'),
+    #                    script_lines.get('scatter'))
 
 
 def filter_disagree(row, prefix, disagree=True):
@@ -598,11 +612,13 @@ def filter_operation(row, operation=None, exclusive=False, arg_type=None, ):
                and ((row.get('Op 1') == operation
                      and row.get('Op 2') == operation
                      and (arg_type is None
-                          or row.get('Op 2 Arg') == arg_type))
+                          or (row.get('Op 1 Arg') == arg_type
+                              and row.get('Op 2 Arg') == arg_type)))
                     or (row.get('Op 1') == operation
                         and row.get('Op 2') == ''
                         and (arg_type is None
-                             or row.get('Op 2 Arg') == arg_type)))) \
+                             or (row.get('Op 1 Arg') == arg_type
+                                 and row.get('Op 2 Arg') == arg_type))))) \
            or (not exclusive
                and ((row.get('Op 1') == operation
                      and (arg_type is None
@@ -797,7 +813,8 @@ def get_per_diffs(rows,
         result['Bin'] = '{0:d}\\%'.format(int(100 * p))
         for solver in SOLVERS:
             count = numpy.sum(per_diff_map.get(solver)[0])
-            per_diff = 100 * numpy.divide(per_diff_map.get(solver)[0][i], count)
+            per_diff = 100 * numpy.true_divide(per_diff_map.get(solver)[0][i],
+                                               count)
             result[solver] = '{0:.1f}\\%'.format(per_diff)
         results.append(result)
 
@@ -1266,7 +1283,7 @@ def get_comb_time_tables_and_files(rows):
 def get_values_from_rows(rows,
                          solver,
                          branch=None,
-                         mc_per=False,
+                         per_diff=False,
                          agree=False,
                          op_time=False,
                          mc_time=False,
@@ -1276,17 +1293,17 @@ def get_values_from_rows(rows,
         num_vals = num_vals * 2
     vals_np = numpy.empty([0, num_vals])
 
-    if mc_per:
-        mc_per_vals = list()
+    if per_diff:
+        per_diff_vals = list()
         if branch is None or branch:
-            mc_per_vals.extend(map(lambda r: compute_mc_per(r, solver[0]),
-                                   rows))
+            per_diff_vals.extend(map(lambda r: compute_per_diff(r, solver[0]),
+                                     rows))
         if branch is None or not branch:
-            mc_per_vals.extend(map(lambda r: compute_mc_per(r, solver[0],
-                                                            branch_sel=False),
-                                   rows))
+            per_diff_vals.extend(
+                map(lambda r: compute_per_diff(r, solver[0], branch_sel=False),
+                    rows))
 
-        vals_np = numpy.append(vals_np, numpy.asarray(mc_per_vals))
+        vals_np = numpy.append(vals_np, numpy.asarray(per_diff_vals))
 
     elif agree:
         agree_vals = map(lambda r: compute_agreement(r, solver[0]), rows)
@@ -1437,12 +1454,56 @@ def compute_std_dev(a, weights=None, axis=None):
     return numpy.sqrt(variance)
 
 
+def perform_test(a1, a2, w1=None, w2=None, chi_test=False, t_test=False, pair_test=False):
+
+    stat_val = 0.
+    p_val = 0.
+    if chi_test is not None:
+        o_unique, o_counts = numpy.unique(a1, return_counts=True)
+        e_unique, e_counts = numpy.unique(a2, return_counts=True)
+        categories = numpy.union1d(o_unique, e_unique)
+        o_np = numpy.zeros(categories.size)
+        e_np = numpy.zeros(categories.size)
+        for k, c in enumerate(categories):
+            if c in o_unique:
+                index = numpy.nonzero(o_unique == c)[0][0]
+                o_np[k] = o_counts[index] / numpy.sum(o_counts)
+            if c in e_unique:
+                index = numpy.nonzero(e_unique == c)[0][0]
+                e_np[k] = e_counts[index] / numpy.sum(e_counts)
+
+        stat_val, p_val = scipy.stats.chisquare(o_np, e_np)
+
+    if t_test:  # independent t test
+        mean_1 = numpy.average(a1, weights=w1)
+        std_1 = compute_std_dev(a1, weights=w1)
+        mean_2 = numpy.average(a2, weights=w2)
+        std_2 = compute_std_dev(a2, weights=w2)
+        obs_1 = numpy.sum(w1)
+        obs_2 = numpy.sum(w2)
+        stat_val, p_val = \
+            scipy.stats.ttest_ind_from_stats(mean_1, std_1, obs_1, mean_2,
+                                             std_2, obs_2, equal_var=False)
+    if pair_test:  # dependent paired t test
+        stat_val, p_val = scipy.stats.ttest_rel(a1, a2)
+
+    out_stat_val = ('{0:.3f}'.format(stat_val), False)
+    out_p_val = ('{0:.3f}'.format(p_val), False)
+    if p_val > 0.05:
+        out_stat_val = ('{0:.3f}'.format(stat_val), True)
+        out_p_val = ('{0:.3f}'.format(p_val), True)
+
+    return out_stat_val, out_p_val
+
+
 def get_test_tables(rows,
                     include_concrete=False,
+                    ind_var=False,
                     chi_test=None,
                     t_test=False,
+                    pair_test=False,
                     branch=None,
-                    mc_per=False,
+                    per_diff=False,
                     agree=False,
                     op_time=False,
                     mc_time=False,
@@ -1455,8 +1516,6 @@ def get_test_tables(rows,
                     op_arg_type=None,
                     predicate=None,
                     pred_arg_type=None):
-    results = dict()
-
     def row_filter(row):
         return row.get('Op 1') != '' \
                and filter_input_type(row, input_type) \
@@ -1466,68 +1525,76 @@ def get_test_tables(rows,
                and filter_predicate(row, predicate, pred_arg_type)
 
     # filter rows
+    unfiltered = numpy.empty(0)
+    if ind_var:
+        unfiltered = filter(lambda r: r.get('Op 1') != '')
     filtered = filter(row_filter, rows)
 
     # get weights as numpy array from filtered rows
-    weights = map(lambda r: r.get('Norm'), filtered)
+    f_weights = map(lambda r: r.get('Norm'), filtered)
     if branch is None:
-        weights.extend(list(weights))
-    weights_np = numpy.asarray(weights)
+        f_weights.extend(list(f_weights))
+    f_weights_np = numpy.asarray(f_weights)
+    u_weights_np = numpy.empty(0)
+    if ind_var:
+        u_weights = map(lambda r: r.get('Norm'), filtered)
+        if branch is None:
+            u_weights.extend(list(u_weights))
+        u_weights_np = numpy.asarray(u_weights)
 
     solvers = list(SOLVERS)
     if include_concrete:
         solvers.insert(0, 'Concrete')
 
-    values = list()
+    f_values = dict()
+    u_values = dict()
 
-    for i, solver in enumerate(solvers):
-        vals_np = numpy.asarray(get_values_from_rows(filtered,
-                                                     solver,
-                                                     branch=branch,
-                                                     mc_per=mc_per,
-                                                     agree=agree,
-                                                     op_time=op_time,
-                                                     mc_time=mc_time,
-                                                     acc_time=acc_time))
-        values.append(vals_np)
+    for solver in solvers:
+        # get filtered vals
+        f_vals_np = \
+            numpy.asarray(get_values_from_rows(filtered,
+                                               solver,
+                                               branch=branch,
+                                               per_diff=per_diff,
+                                               agree=agree,
+                                               op_time=op_time,
+                                               mc_time=mc_time,
+                                               acc_time=acc_time))
+        f_values[solver] = f_vals_np
 
-    for i in range(len(solvers)):
-        for j in range(i + 1, len(solvers)):
-            stat_val = 0.
-            p_val = 0.
-            if chi_test is not None:
-                o_unique, o_counts = numpy.unique(values[i], return_counts=True)
-                e_unique, e_counts = numpy.unique(values[j], return_counts=True)
-                categories = numpy.union1d(o_unique, e_unique)
-                o_np = numpy.zeros(categories.size)
-                e_np = numpy.zeros(categories.size)
-                for k, c in enumerate(categories):
-                    if c in o_unique:
-                        index = numpy.nonzero(o_unique == c)[0][0]
-                        o_np[k] = o_counts[index] / numpy.sum(o_counts)
-                    if c in e_unique:
-                        index = numpy.nonzero(e_unique == c)[0][0]
-                        e_np[k] = e_counts[index] / numpy.sum(e_counts)
+        # get unfiliterd vals
+        if ind_var:
+            u_vals_np = \
+                numpy.asarray(get_values_from_rows(unfiltered,
+                                                   solver,
+                                                   branch=branch,
+                                                   per_diff=per_diff,
+                                                   agree=agree,
+                                                   op_time=op_time,
+                                                   mc_time=mc_time,
+                                                   acc_time=acc_time))
+            u_values[solver] = u_vals_np
 
-                stat_val, p_val = scipy.stats.chisquare(o_np, e_np)
+    comp_results = dict()
+    ind_var_results = dict()
 
-            if t_test:  # independent t test
-                mean_1 = numpy.average(values[i], weights=weights_np)
-                std_1 = compute_std_dev(values[i], weights=weights_np)
-                mean_2 = numpy.average(values[j], weights=weights_np)
-                std_2 = compute_std_dev(values[j], weights=weights_np)
-                observations = numpy.sum(weights_np)
-                stat_val, p_val = \
-                    scipy.stats.ttest_ind_from_stats(mean_1, std_1,
-                                                     observations, mean_2,
-                                                     std_2, observations,
-                                                     equal_var=False)
+    # compare solvers
+    for s1 in solvers:
+        for s2 in solvers[solvers.index(s1) + 1:]:
+            comp_results[(s1, s2)] = \
+                perform_test(f_values[s1], f_values[s2], w1=f_weights_np,
+                             w2=f_weights_np, chi_test=chi_test, t_test=t_test,
+                             pair_test=pair_test)
 
-            results[solvers[i]] = (solvers[j],
-                                   '{0:.3f}'.format(stat_val),
-                                   '{0:.3f}'.format(p_val))
+    # determine signifigance of ind var
+    if ind_var:
+        for s in SOLVERS:
+            ind_var_results[s] = \
+                perform_test(f_values[s], u_values[s], w1=f_weights_np,
+                             w2=u_weights_np, chi_test=chi_test, t_test=t_test,
+                             pair_test=pair_test)
 
-    return results
+    return comp_results, ind_var_results
 
 
 def get_mc_test_tables(rows, entries):
@@ -1539,10 +1606,12 @@ def get_mc_test_tables(rows, entries):
         results = get_test_tables(rows,
                                   include_concrete=entry.get(
                                       'include_concrete'),
+                                  ind_var=entry.get('ind_var'),
                                   chi_test=entry.get('chi_test'),
                                   t_test=entry.get('t_test'),
+                                  pair_test=entry.get('pair_test'),
                                   branch=entry.get('branch'),
-                                  mc_per=entry.get('mc_per'),
+                                  per_diff=entry.get('per_diff'),
                                   agree=entry.get('agree'),
                                   op_time=entry.get('op_time'),
                                   mc_time=entry.get('mc_time'),
@@ -1555,24 +1624,50 @@ def get_mc_test_tables(rows, entries):
                                   op_arg_type=entry.get('op_arg_type'),
                                   predicate=entry.get('predicate'),
                                   pred_arg_type=entry.get('pred_arg_type'))
-        table = list()
-        table.append({
+        comp_results = results[0]
+        ind_var_results = results[1]
+        comp_table = list()
+        ind_var_table = list()
+
+        # format comparison table
+        comp_table.append({
             'multicolumn': (2, 9, 'Second Solver Statistics and '
                                   '\\textit{p}-values')
         })
-        result_rows = dict()
-        for key in results.keys():
-            if key not in result_rows:
-                result_rows[key] = dict()
-                result_rows[key]['First Solver'] = key
-            s = results[key][0]
-            result_rows[key][s + ' Stat'] = results[key][1]
-            result_rows[key][s + ' \\textit{p}-value'] = results[key][2]
+        comp_rows = dict()
+        for s1, s2 in comp_results.keys():
+            if s1 not in comp_rows:
+                comp_rows[s1] = dict()
+                comp_rows[s1]['First Solver'] = s1
 
-        table.extend([result_rows[x] for x in sorted(result_rows.keys(),
-                                                     key=order_columns)])
+        for key in comp_rows.keys():
+            for s in SOLVERS:
+                s_stat = 'BLANK'
+                s_p_val = 'BLANK'
+                if (key, s) in comp_results.keys():
+                    s_stat = comp_results[(key, s)][0]
+                    s_p_val = comp_results[(key, s)][1]
+                elif (s, key) in comp_results.keys():
+                    s_stat = comp_results[(s, key)][0]
+                    s_p_val = comp_results[(s, key)][1]
+                comp_rows[key][s[0] + ' Stat'] = s_stat
+                comp_rows[key][s[0] + ' \\textit{p}-value'] = s_p_val
 
-        tables.append((table,
+        comp_table.extend([comp_rows[x] for x in sorted(comp_rows.keys(),
+                                                        key=order_columns)])
+        tables.append((comp_table,
+                       entry.get('caption'),
+                       entry.get('label')))
+
+        # format ind var table
+        ind_var_rows = list()
+        for s in SOLVERS:
+            ind_var_rows.append({
+                'Solver': s,
+                'Statistic': ind_var_results[s][0],
+                '\\textit{p}-value': ind_var_results[s][1]
+            })
+        tables.append((ind_var_table,
                        entry.get('caption'),
                        entry.get('label')))
 
