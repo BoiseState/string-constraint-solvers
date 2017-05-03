@@ -2,6 +2,7 @@
 import argparse
 import csv
 import fnmatch
+import functools
 import json
 import logging
 import math
@@ -68,6 +69,96 @@ SOLVERS = (
     'Aggregate',
     'Weighted'
 )
+
+D_TYPES = {
+    'mc-all*': (
+        ('File', 'u2'),
+        ('Id', 'u8'),
+        ('Operation', 'u1'),
+        ('C_In_MC', 'u8'),
+        ('U_In_MC', 'u8'),
+        ('B_In_MC', 'u8'),
+        ('A_In_MC', 'u8'),
+        ('W_In_MC', 'u8'),
+        ('C_T_MC', 'u8'),
+        ('U_T_MC', 'u8'),
+        ('B_T_MC', 'u8'),
+        ('A_T_MC', 'u8'),
+        ('W_T_MC', 'u8'),
+        ('C_F_MC', 'u8'),
+        ('U_F_MC', 'u8'),
+        ('B_F_MC', 'u8'),
+        ('A_F_MC', 'u8'),
+        ('W_F_MC', 'u8'),
+        ('Input_Type', 'u1'),
+        ('Op_1', 'u1'),
+        ('Op_1_Arg', 'u1'),
+        ('Op_2', 'u1'),
+        ('Op_2_Arg', 'u1'),
+        ('Pred', 'u1'),
+        ('Pred_Arg', 'u1')
+    ),
+    'mc-time-all*': (
+        ('File', 'u2'),
+        ('Id', 'u8'),
+        ('Operation', 'u1'),
+        ('C_Acc_Time', 'u8'),
+        ('U_Acc_Time', 'u8'),
+        ('B_Acc_Time', 'u8'),
+        ('A_Acc_Time', 'u8'),
+        ('W_Acc_Time', 'u8'),
+        ('C_T_MC_Time', 'u8'),
+        ('C_T_Pred_Time', 'u8'),
+        ('U_T_MC_Time', 'u8'),
+        ('U_T_Pred_Time', 'u8'),
+        ('B_T_MC_Time', 'u8'),
+        ('B_T_Pred_Time', 'u8'),
+        ('A_T_MC_Time', 'u8'),
+        ('A_T_Pred_Time', 'u8'),
+        ('W_T_MC_Time', 'u8'),
+        ('W_T_Pred_Time', 'u8'),
+        ('C_F_MC_Time', 'u8'),
+        ('C_F_Pred_Time', 'u8'),
+        ('U_F_MC_Time', 'u8'),
+        ('U_F_Pred_Time', 'u8'),
+        ('B_F_MC_Time', 'u8'),
+        ('B_F_Pred_Time', 'u8'),
+        ('A_F_MC_Time', 'u8'),
+        ('A_F_Pred_Time', 'u8'),
+        ('W_F_MC_Time', 'u8'),
+        ('W_F_Pred_Time', 'u8'),
+        ('Input_Type', 'u1'),
+        ('Op_1', 'u1'),
+        ('Op_1_Arg', 'u1'),
+        ('Op_2', 'u1'),
+        ('Op_2_Arg', 'u1'),
+        ('Pred', 'u1'),
+        ('Pred_Arg', 'u1')
+    ),
+    'op-time-all*': (
+        ('File', 'u2'),
+        ('Op_Id', 'u8'),
+        ('Op', 'u1'),
+        ('Op_Group', 'u1'),
+        ('In_Type', 'u1'),
+        ('Args', 'u1'),
+        ('Base_Id', 'u8'),
+        ('C_Op_Time', 'u8'),
+        ('U_Op_Time', 'u8'),
+        ('B_Op_Time', 'u8'),
+        ('A_Op_Time', 'u8'),
+        ('W_Op_Time', 'u8')
+    )
+}
+
+ALPHABETS = ('AB', 'AC', 'AD', 'AE')
+
+LENGTHS = (1, 2, 3, 4)
+
+OPS_AND_PREDS = ('', 'concat', 'delete', 'replace', 'reverse', 'contains',
+                 'equals')
+
+IN_AND_ARG_TYPE = ('', 'Simple', 'Even', 'Uneven', 'same', 'diff', 'none')
 
 OP_NORMS = {
     'concat': {
@@ -147,6 +238,40 @@ ORDER_COLUMNS = {
     'Weighted \\textit{p}-value': 42
 }
 
+DATA_COLUMNS = {'mc-all*': 25, 'mc-time-all*': 35, 'op-time-all*': 12}
+
+CONVERTERS = {
+    'mc-all*': {
+        'File': lambda v: ALPHABETS.index(v[4:6]) * 10 + int(v[7:9]),
+        'Operation': lambda v: 0,
+        'Input_Type': lambda v: IN_AND_ARG_TYPE.index(v),
+        'Op_1': lambda v: OPS_AND_PREDS.index(v),
+        'Op_1_Arg': lambda v: IN_AND_ARG_TYPE.index(v),
+        'Op_2': lambda v: OPS_AND_PREDS.index(v),
+        'Op_2_Arg': lambda v: IN_AND_ARG_TYPE.index(v),
+        'Pred': lambda v: OPS_AND_PREDS.index(v),
+        'Pred_Arg': lambda v: IN_AND_ARG_TYPE.index(v)
+    },
+    'mc-time-all*': {
+        'File': lambda v: ALPHABETS.index(get_alphabet(v)) * 10 + get_init_max_len(v),
+        'Operation': lambda v: 0,
+        'Input_Type': lambda v: IN_AND_ARG_TYPE.index(v),
+        'Op_1': lambda v: OPS_AND_PREDS.index(v),
+        'Op_1_Arg': lambda v: IN_AND_ARG_TYPE.index(v),
+        'Op_2': lambda v: OPS_AND_PREDS.index(v),
+        'Op_2_Arg': lambda v: IN_AND_ARG_TYPE.index(v),
+        'Pred': lambda v: OPS_AND_PREDS.index(v),
+        'Pred_Arg': lambda v: IN_AND_ARG_TYPE.index(v)
+    },
+    'op-time-all*': {
+        'File': lambda v: ALPHABETS.index(get_alphabet(v)) * 10 + get_init_max_len(v),
+        'Op_Group': lambda v: 0,
+        'Op': lambda v: OPS_AND_PREDS.index(v),
+        'Input_Type': lambda v: IN_AND_ARG_TYPE.index(v),
+        'Args': lambda v: IN_AND_ARG_TYPE.index(v)
+    }
+}
+
 
 # Classes
 class Settings:
@@ -166,6 +291,20 @@ class Settings:
 
         # initialize result file pattern
         self.file_pattern = options.data_files
+
+
+def get_init_max_len(f_name):
+    for i in LENGTHS:
+        if GLOB.get('len-match').get(i).match(f_name):
+            return i
+    return -1
+
+
+def get_alphabet(f_name):
+    for a in ALPHABETS:
+        if GLOB.get('alphabet-match').get(a).match(f_name):
+            return a
+    return ''
 
 
 def set_options(arguments):
@@ -214,14 +353,53 @@ def read_csv_data(file_path):
 
 
 def read_data_files(file_pattern):
+    # get data types for file
+    d_types = list(D_TYPES.get(file_pattern))
     # initialize return dictionary
-    return_data = list()
+    data_rows = numpy.empty(0, dtype=d_types)
 
     # check for matching files and read csv data
     for f in os.listdir(data_dir):
         test_path = os.path.join(data_dir, f)
         if os.path.isfile(test_path) and fnmatch.fnmatch(f, file_pattern):
-            return_data.extend(read_csv_data(test_path))
+            # return_data.extend(read_csv_data(test_path))
+            data = numpy.genfromtxt(test_path,
+                                    dtype=d_types,
+                                    delimiter='\t',
+                                    names=True,
+                                    converters=CONVERTERS[file_pattern])
+            data_rows = numpy.append(data_rows, data)
+
+    norm = False
+    if file_pattern == 'mc-all*' or file_pattern == 'mc-time-all*':
+        norm = True
+
+    # create return data array from modified data types
+    d_types.pop(0)
+    d_types.insert(0, ('Length', 'u1'))
+    d_types.insert(0, ('Alphabet', 'u1'))
+    if norm:
+        d_types.append(('Norm', 'u8'))
+    return_data = numpy.zeros(data_rows.size, dtype=d_types)
+
+    # fill in existing data
+    dt_slice = d_types[2:]
+    if norm:
+        dt_slice = d_types[2:-1]
+    for col, dt in dt_slice:
+        return_data[col] = data_rows[col]
+
+    # fill in alphabet and length data
+    return_data['Alphabet'] = numpy.floor_divide(data_rows['File'], 10)
+    return_data['Length'] = data_rows['File'] % 10
+
+    if norm:
+        # compute normalize factors
+        norm_factors = numpy.zeros(return_data.size, dtype=numpy.uint64)
+        r_iter = numpy.nditer(return_data, flags=['f_index'])
+        for row in r_iter:
+            norm_factors[r_iter.index] = get_norm(row)
+        return_data['Norm'] = norm_factors
 
     return return_data
 
@@ -244,9 +422,40 @@ def get_entries():
             GLOB['entries'][e] = entries
 
 
+def get_norm(row):
+    a_index = row['Alphabet']
+    length = int(row['Length'])
+    op_1_index = row['Op_1']
+    op_1_arg_index = row['Op_1_Arg']
+    op_2_index = row['Op_2']
+    op_2_arg_index = row['Op_2_Arg']
+    if op_1_index > 0 and op_2_index > 0:
+        norm_1 = OP_NORMS.get(OPS_AND_PREDS[op_1_index])\
+                         .get(IN_AND_ARG_TYPE[op_1_arg_index])\
+                         .get(ALPHABETS[a_index])\
+                         .get(length)
+        norm_2 = OP_NORMS.get(OPS_AND_PREDS[op_2_index])\
+                         .get(IN_AND_ARG_TYPE[op_2_arg_index])\
+                         .get(ALPHABETS[a_index])\
+                         .get(length)
+        return norm_1 * norm_2
+    elif op_1_index > 0:
+        return OP_NORMS.get(OPS_AND_PREDS[op_1_index]) \
+                       .get(IN_AND_ARG_TYPE[op_1_arg_index]) \
+                       .get(ALPHABETS[a_index]) \
+                       .get(length)
+    elif op_2_index > 0:
+        return OP_NORMS.get(OPS_AND_PREDS[op_2_index]) \
+                       .get(IN_AND_ARG_TYPE[op_2_arg_index]) \
+                       .get(ALPHABETS[a_index]) \
+                       .get(length)
+    else:
+        return 0
+
+
 def normalize_row(row):
     f_name = row.get('File')
-    for a in ('AB', 'AC', 'AD', 'AE'):
+    for a in ALPHABETS:
         if GLOB.get('alphabet-match').get(a).match(f_name):
             for i in range(1, 5):
                 if GLOB.get('len-match').get(i).match(f_name):
@@ -570,60 +779,66 @@ def output_plot_files(files):
                        script_lines.get('scatter'))
 
 
-def filter_disagree(row, prefix, disagree=True):
-    return disagree or row.get(prefix + ' Agree')
-
-
 def filter_input_type(row, input_type=None):
-    return input_type is None or row.get('Input Type') == input_type
+    return input_type is None \
+           or IN_AND_ARG_TYPE[row['Input Type']] == input_type
 
 
 def filter_length(row, length=None):
-    return length is None \
-           or GLOB.get('len-match').get(length).match(row.get('File'))
+    return length is None or int(row['Length']) == length
 
 
 def filter_alphabet(row, alphabet=None):
     return alphabet is None \
-           or GLOB.get('alphabet-match').get(alphabet).match(row.get('File'))
+           or ALPHABETS[row['Alphabet']] == alphabet
 
 
 def filter_operation(row, operation=None, exclusive=False, arg_type=None, ):
     return operation is None \
-           or ('Op' in row
-               and row.get('Op') == operation
+           or ('Op' in row.dtype.names
+               and OPS_AND_PREDS[row['Op']] == operation
                and (arg_type is None
-                    or row.get('Args') == arg_type)) \
+                    or IN_AND_ARG_TYPE[row['Args']] == arg_type)
+               ) \
            or (exclusive
-               and ((row.get('Op 1') == operation
-                     and row.get('Op 2') == operation
+               and ((OPS_AND_PREDS[row['Op_1']] == operation
+                     and OPS_AND_PREDS[row['Op_2']] == operation
                      and (arg_type is None
-                          or row.get('Op 2 Arg') == arg_type))
-                    or (row.get('Op 1') == operation
-                        and row.get('Op 2') == ''
+                          or (IN_AND_ARG_TYPE[row['Op_1_Arg']] == arg_type
+                              and IN_AND_ARG_TYPE[row['Op_2_Arg']] == arg_type)
+                          )
+                     )
+                    or (OPS_AND_PREDS[row['Op_1']] == operation
+                        and OPS_AND_PREDS[row['Op_2']] == ''
                         and (arg_type is None
-                             or row.get('Op 2 Arg') == arg_type)))) \
+                             or IN_AND_ARG_TYPE[row['Op_1_Arg']] == arg_type))
+                    )
+               ) \
            or (not exclusive
-               and ((row.get('Op 1') == operation
+               and ((OPS_AND_PREDS[row['Op_1']] == operation
                      and (arg_type is None
-                          or row.get('Op 1 Arg') == arg_type))
-                    or (row.get('Op 2') == operation
+                          or IN_AND_ARG_TYPE[row['Op_1_Arg']] == arg_type)
+                     )
+                    or (OPS_AND_PREDS[row['Op_2']] == operation
                         and (arg_type is None
-                             or row.get('Op 2 Arg') == arg_type))))
+                             or IN_AND_ARG_TYPE[row['Op_2_Arg']] == arg_type)
+                        )
+                    )
+               )
 
 
 def filter_predicate(row, predicate, arg_type=None):
     return predicate is None \
-           or (row.get('Pred') == predicate
+           or (OPS_AND_PREDS[row['Pred']] == predicate
                and (arg_type is None
-                    or row.get('Pred Arg') == arg_type))
+                    or IN_AND_ARG_TYPE[row['Pred_Arg']] == arg_type))
 
 
 def compute_mc_per(row, prefix, branch_sel=True):
     # compute percent difference
     b = ' T ' if branch_sel else ' F '
-    in_mc = float(row.get(prefix + ' In MC'))
-    b_mc = int(row.get(prefix + b + 'MC'))
+    in_mc = float(row[prefix + ' In MC'])
+    b_mc = int(row[prefix + b + 'MC'])
     b_per = 0
     if in_mc > 0:
         b_per = b_mc / in_mc
@@ -633,13 +848,13 @@ def compute_mc_per(row, prefix, branch_sel=True):
 def compute_per_diff(row, prefix, branch_sel=True):
     # compute percent difference
     b = ' T ' if branch_sel else ' F '
-    c_in_mc = float(row.get('C In MC'))
-    c_b_mc = int(row.get('C' + b + 'MC'))
+    c_in_mc = float(row['C In MC'])
+    c_b_mc = int(row['C' + b + 'MC'])
     c_b_per = 0
     if c_in_mc > 0:
         c_b_per = c_b_mc / c_in_mc
-    in_mc = float(row.get(prefix + ' In MC'))
-    b_mc = int(row.get(prefix + b + 'MC'))
+    in_mc = float(row[prefix + ' In MC'])
+    b_mc = int(row[prefix + b + 'MC'])
     b_per = 0
     if in_mc > 0:
         b_per = b_mc / in_mc
@@ -648,18 +863,18 @@ def compute_per_diff(row, prefix, branch_sel=True):
 
 def compute_agreement(row, prefix):
     # compute agreement
-    c_in_mc = float(row.get('C In MC'))
-    c_t_mc = int(row.get('C T MC'))
-    c_f_mc = int(row.get('C F MC'))
+    c_in_mc = float(row['C In MC'])
+    c_t_mc = int(row['C T MC'])
+    c_f_mc = int(row['C F MC'])
     c_t_per = 0
     if c_in_mc > 0:
         c_t_per = c_t_mc / c_in_mc
     c_f_per = 0
     if c_in_mc > 0:
         c_f_per = c_f_mc / c_in_mc
-    in_mc = float(row.get(prefix + ' In MC'))
-    t_mc = int(row.get(prefix + ' T MC'))
-    f_mc = int(row.get(prefix + ' F MC'))
+    in_mc = float(row[prefix + ' In MC'])
+    t_mc = int(row[prefix + ' T MC'])
+    f_mc = int(row[prefix + ' F MC'])
     t_per = 0
     if in_mc > 0:
         t_per = t_mc / in_mc
@@ -754,7 +969,7 @@ def get_per_diffs(rows,
 
     def get_filter(prefix):
         def per_diff_filter(row):
-            return row.get('Op 1') != '' \
+            return row['Op_1'] != 0 \
                    and filter_input_type(row, input_type) \
                    and filter_alphabet(row, alphabet) \
                    and filter_length(row, length) \
@@ -766,22 +981,19 @@ def get_per_diffs(rows,
         return per_diff_filter
 
     for solver in SOLVERS:
-        diffs = list()
-        weights = list()
-        filtered = filter(get_filter(solver[0]), rows)
+        filtered = rows[get_filter(solver[0])(rows)]
+        diffs_np = numpy.empty(0)
+        weights_np = numpy.empty(0)
         if branch is None or branch:
-            diffs.extend(
-                map(lambda x: compute_per_diff(x, solver[0]), filtered))
-            weights.extend(map(lambda x: x.get('Norm'), filtered))
+            v_cpd = numpy.vectorize(lambda x: compute_per_diff(x, solver[0]))
+            diffs_np = numpy.append(diffs_np, v_cpd(filtered))
+            weights_np = numpy.append(weights_np, filtered['Norm'])
 
         if branch is None or not branch:
-            diffs.extend(
-                map(lambda x: compute_per_diff(x, solver[0], branch_sel=False),
-                    filtered))
-            weights.extend(map(lambda x: x.get('Norm'), filtered))
-
-        diffs_np = numpy.asarray(diffs)
-        weights_np = numpy.asarray(weights)
+            v_cpd = numpy.vectorize(
+                lambda x: compute_per_diff(x, solver[0], branch_sel=False))
+            diffs_np = numpy.append(diffs_np, v_cpd(filtered))
+            weights_np = numpy.append(weights_np, filtered['Norm'])
 
         if raw:
             per_diff_map[solver] = diffs_np
@@ -817,7 +1029,7 @@ def get_agreement(rows,
     results = dict()
 
     def agree_filter(row):
-        return row.get('Op 1') != '' \
+        return row['Op_1'] != 0 \
                and filter_input_type(row, input_type) \
                and filter_alphabet(row, alphabet) \
                and filter_length(row, length) \
@@ -825,12 +1037,12 @@ def get_agreement(rows,
                                     op_arg_type) \
                and filter_predicate(row, predicate, pred_arg_type)
 
-    filtered = filter(agree_filter, rows)
+    filtered = rows[agree_filter(rows)]
 
     for solver in SOLVERS:
-        agree_rows = filter(lambda x: compute_agreement(x, solver[0]), filtered)
-        agree_weights = map(lambda x: x.get('Norm'), agree_rows)
-        all_weights = map(lambda x: x.get('Norm'), filtered)
+        agree_rows = filtered[compute_agreement(filtered, solver[0])]
+        agree_weights = agree_rows['Norm']
+        all_weights = filtered['Norm']
         agree_count = sum(agree_weights)
         all_count = sum(all_weights)
         per = 100 * (float(agree_count) / all_count)
@@ -866,14 +1078,14 @@ def get_perf_metrics(rows,
                and filter_operation(r, operation, exclusive_op, op_arg_type) \
                and filter_predicate(r, predicate, pred_arg_type)
 
-    filtered = filter(perf_metric_filter, rows)
+    filtered = rows[perf_metric_filter(rows)]
     min_val = 0.
     max_val = 0.
 
     # get weights
-    weights_np = numpy.asarray(map(lambda r: int(r.get('Norm')), filtered))
+    weights_np = filtered['Norm']
     if mc_time == 'both' or pred_time == 'both':
-        weights_np = numpy.repeat(weights_np, 2)
+        weights_np = numpy.append(weights_np, weights_np)
 
     for solver in SOLVERS:
         times_np = numpy.empty([0, weights_np.size])
@@ -883,31 +1095,29 @@ def get_perf_metrics(rows,
         if mc_time is not None:
             mc_times_np = numpy.empty(0)
             if mc_time == 'both':
-                temp = list()
-                for row in filtered:
-                    temp.append(int(row.get(s + ' T MC Time')))
-                    temp.append(int(row.get(s + ' F MC Time')))
-                mc_times_np = numpy.asarray(temp)
+                mc_times_np = numpy.append(mc_times_np,
+                                           filtered[s + ' T_MC_Time'])
+                mc_times_np = numpy.append(mc_times_np,
+                                           filtered[s + ' F_MC_Time'])
             else:
                 if mc_time == 'true':
-                    mc_times_np = numpy.asarray(
-                        map(lambda r: int(r.get(s + ' T MC Time')), filtered))
+                    mc_times_np = numpy.append(mc_times_np,
+                                               filtered[s + ' T_MC_Time'])
                 elif mc_time == 'false':
-                    mc_times_np = numpy.asarray(
-                        map(lambda r: int(r.get(s + ' F MC Time')), filtered))
+                    mc_times_np = numpy.append(mc_times_np,
+                                               filtered[s + ' F_MC_Time'])
 
                 if pred_time == 'both':
-                    mc_times_np = numpy.repeat(mc_times_np, 2)
+                    mc_times_np = numpy.append(mc_times_np, mc_times_np)
 
             times_np = numpy.append(times_np, [mc_times_np], axis=0)
 
         # get acc times
         if acc_time:
-            acc_times_np = numpy.asarray(
-                map(lambda r: int(r.get(s + ' Acc Time')), filtered))
+            acc_times_np = filtered['Acc_Time']
 
             if mc_time == 'both' or pred_time == 'both':
-                acc_times_np = numpy.repeat(acc_times_np, 2)
+                acc_times_np = numpy.append(acc_times_np, acc_times_np)
 
             times_np = numpy.append(times_np, [acc_times_np], axis=0)
 
@@ -915,30 +1125,27 @@ def get_perf_metrics(rows,
         if pred_time is not None:
             pred_times_np = numpy.empty(0)
             if pred_time == 'both':
-                temp = list()
-                for row in filtered:
-                    temp.append(int(row.get(s + ' T Pred Time')))
-                    temp.append(int(row.get(s + ' F Pred Time')))
-                pred_times_np = numpy.asarray(temp)
+                pred_times_np = numpy.append(pred_times_np,
+                                             filtered[s + ' T_Pred_Time'])
+                pred_times_np = numpy.append(pred_times_np,
+                                             filtered[s + ' F_Pred_Time'])
             else:
                 if pred_time == 'true':
-                    pred_times_np = numpy.asarray(
-                        map(lambda r: int(r.get(s + ' T Pred Time')), filtered))
+                    pred_times_np = numpy.append(pred_times_np,
+                                                 filtered[s + ' T_Pred_Time'])
                 elif pred_time == 'false':
-                    pred_times_np = numpy.asarray(
-                        map(lambda r: int(r.get(s + ' F Pred Time')), filtered))
+                    pred_times_np = numpy.append(pred_times_np,
+                                                 filtered[s + ' F_Pred_Time'])
 
                 if pred_time == 'both':
-                    pred_times_np = numpy.repeat(pred_times_np, 2)
+                    pred_times_np = numpy.append(pred_times_np, pred_times_np)
 
             times_np = numpy.append(times_np, [pred_times_np], axis=0)
 
         # get op times
         if op_time:
-            op_times = map(lambda r: int(r.get(s + ' Op Time')), filtered)
-            times_np = numpy.append(times_np,
-                                    [(numpy.asarray(op_times))],
-                                    axis=0)
+            op_times_np = filtered[' Op_Time']
+            times_np = numpy.append(times_np, [op_times_np], axis=0)
 
         # sum times
         if len(times_np.shape) == 2 and times_np.shape[0] > 1:
@@ -1266,7 +1473,7 @@ def get_comb_time_tables_and_files(rows):
 def get_values_from_rows(rows,
                          solver,
                          branch=None,
-                         mc_per=False,
+                         per_diff=False,
                          agree=False,
                          op_time=False,
                          mc_time=False,
@@ -1276,67 +1483,65 @@ def get_values_from_rows(rows,
         num_vals = num_vals * 2
     vals_np = numpy.empty([0, num_vals])
 
-    if mc_per:
-        mc_per_vals = list()
+    if per_diff:
+        mc_per_np = numpy.empty(0)
         if branch is None or branch:
-            mc_per_vals.extend(map(lambda r: compute_mc_per(r, solver[0]),
-                                   rows))
+            v_mc_per = numpy.vectorize(lambda r: compute_per_diff(r, solver[0]))
+            mc_per_np = numpy.append(mc_per_np, v_mc_per(rows))
         if branch is None or not branch:
-            mc_per_vals.extend(map(lambda r: compute_mc_per(r, solver[0],
-                                                            branch_sel=False),
-                                   rows))
+            v_mc_per = numpy.vectorize(
+                lambda r: compute_per_diff(r, solver[0], branch_sel=False))
+            mc_per_np = numpy.append(mc_per_np, v_mc_per(rows))
 
-        vals_np = numpy.append(vals_np, numpy.asarray(mc_per_vals))
+        vals_np = numpy.append(vals_np, mc_per_np)
 
     elif agree:
-        agree_vals = map(lambda r: compute_agreement(r, solver[0]), rows)
+        v_agree = numpy.vectorize(lambda r: compute_agreement(r, solver[0]))
+        agree_np = v_agree(rows)
 
         if branch is None:
-            agree_vals.extend(list(agree_vals))
+            agree_np = numpy.append(agree_np, agree_np)
 
-        vals_np = numpy.append(vals_np, numpy.asarray(agree_vals))
+        vals_np = numpy.append(vals_np, agree_np)
 
     elif op_time:
         # get op times
-        op_times = map(lambda r: int(r.get(solver[0] + ' Op Time')), rows)
-        vals_np = numpy.append(vals_np, numpy.asarray(op_times))
+        op_times_np = rows[' Op_Time']
+        vals_np = numpy.append(vals_np, [op_times_np], axis=0)
     else:
         # get mc times
         if mc_time is not None:
-            mc_times = list()
+            mc_times_np = numpy.empty(0)
             if mc_time:
                 if branch is None or branch:
-                    mc_times.extend(map(lambda r: int(r.get(solver[0] +
-                                                            ' T MC Time')),
-                                        rows))
+                    v_mc_time = numpy.vectorize(lambda r: int(r[solver[0] + '_T_MC_Time']))
+                    mc_times_np = numpy.append(mc_times_np, v_mc_time(rows))
                 if branch is None or not branch:
-                    mc_times.extend(map(lambda r: int(r.get(solver[0] +
-                                                            ' F MC Time')),
-                                        rows))
+                    v_mc_time = numpy.vectorize(lambda r: int(r[solver[0] + '_F_MC_Time']))
+                    mc_times_np = numpy.append(mc_times_np, v_mc_time(rows))
 
-            vals_np = numpy.append(vals_np, numpy.asarray([mc_times]), axis=0)
+            vals_np = numpy.append(vals_np, [mc_times_np], axis=0)
 
         # get acc times
         if acc_time:
-            acc_times = map(lambda r: int(r.get(solver[0] + ' Acc Time')), rows)
+            v_acc_time = numpy.vectorize(lambda r: int(r[solver[0] + '_Acc_Time']))
+            acc_time_np = v_acc_time(rows)
 
             if branch is None:
-                acc_times.extend(list(acc_times))
+                acc_time_np = numpy.append(acc_time_np, acc_time_np)
 
-            vals_np = numpy.append(vals_np, numpy.asarray([acc_times]), axis=0)
+            vals_np = numpy.append(vals_np, [acc_time_np], axis=0)
 
             # get pred times
-            pred_times = list()
+            pred_times_np = numpy.empty(0)
             if branch is None or branch:
-                pred_times.extend(map(lambda r: int(r.get(solver[0] +
-                                                          ' T Pred Time')),
-                                      rows))
+                v_mc_time = numpy.vectorize(lambda r: int(r[solver[0] + '_T_Pred_Time']))
+                pred_times_np = numpy.append(pred_times_np, v_mc_time(rows))
             if branch is None or not branch:
-                pred_times.extend(map(lambda r: int(r.get(solver[0] +
-                                                          ' F Pred Time')),
-                                      rows))
+                v_mc_time = numpy.vectorize(lambda r: int(r[solver[0] + '_F_Pred_Time']))
+                pred_times_np = numpy.append(pred_times_np, v_mc_time(rows))
 
-            vals_np = numpy.append(vals_np, numpy.asarray([pred_times]), axis=0)
+            vals_np = numpy.append(vals_np, [pred_times_np], axis=0)
 
         # sum times
         if len(vals_np.shape) == 2 and vals_np.shape[0] > 1:
@@ -1442,7 +1647,7 @@ def get_test_tables(rows,
                     chi_test=None,
                     t_test=False,
                     branch=None,
-                    mc_per=False,
+                    per_diff=False,
                     agree=False,
                     op_time=False,
                     mc_time=False,
@@ -1458,7 +1663,7 @@ def get_test_tables(rows,
     results = dict()
 
     def row_filter(row):
-        return row.get('Op 1') != '' \
+        return row['Op_1'] != 0 \
                and filter_input_type(row, input_type) \
                and filter_alphabet(row, alphabet) \
                and filter_length(row, length) \
@@ -1466,13 +1671,12 @@ def get_test_tables(rows,
                and filter_predicate(row, predicate, pred_arg_type)
 
     # filter rows
-    filtered = filter(row_filter, rows)
+    filtered = rows[row_filter(rows)]
 
     # get weights as numpy array from filtered rows
-    weights = map(lambda r: r.get('Norm'), filtered)
+    weights_np = filtered['Norm']
     if branch is None:
-        weights.extend(list(weights))
-    weights_np = numpy.asarray(weights)
+        weights_np = numpy.append(weights_np, weights_np)
 
     solvers = list(SOLVERS)
     if include_concrete:
@@ -1484,7 +1688,7 @@ def get_test_tables(rows,
         vals_np = numpy.asarray(get_values_from_rows(filtered,
                                                      solver,
                                                      branch=branch,
-                                                     mc_per=mc_per,
+                                                     per_diff=per_diff,
                                                      agree=agree,
                                                      op_time=op_time,
                                                      mc_time=mc_time,
@@ -1542,7 +1746,7 @@ def get_mc_test_tables(rows, entries):
                                   chi_test=entry.get('chi_test'),
                                   t_test=entry.get('t_test'),
                                   branch=entry.get('branch'),
-                                  mc_per=entry.get('mc_per'),
+                                  per_diff=entry.get('per_diff'),
                                   agree=entry.get('agree'),
                                   op_time=entry.get('op_time'),
                                   mc_time=entry.get('mc_time'),
