@@ -1,17 +1,31 @@
 #! /usr/bin/env python
+
+# import standard libraries
 import argparse
 import csv
 import fnmatch
-import functools
 import json
 import logging
-import math
-import numpy
 import os
-import re
 import sys
+
+# import third party libraries
+import numpy
 import scipy.stats
 
+# import constants
+from constants import ANALYSIS_LIST
+from constants import MEASUREMENTS
+from constants import SOLVERS
+from constants import D_TYPES
+from constants import OUT_FORMATS
+from constants import DATA_SETS
+from constants import ALPHABETS
+from constants import LENGTHS
+from constants import OPS_AND_PREDS
+from constants import IN_AND_ARG_TYPE
+from constants import OP_NORMS
+from constants import ORDER_COLUMNS
 
 # set relevant path and file variables
 file_name = os.path.basename(__file__).replace('.py', '')
@@ -34,244 +48,61 @@ log.addHandler(ch)
 
 # globals
 GLOB = dict()
-GLOB['len-match'] = dict()
-GLOB['len-match'][1] = re.compile('\w+-A[BCDE]-01(-\d+)?.csv')
-GLOB['len-match'][2] = re.compile('\w+-A[BCDE]-02(-\d+)?.csv')
-GLOB['len-match'][3] = re.compile('\w+-A[BCDE]-03(-\d+)?.csv')
-GLOB['len-match'][4] = re.compile('\w+-A[BCDE]-04(-\d+)?.csv')
-GLOB['alphabet-match'] = dict()
-GLOB['alphabet-match']['AB'] = re.compile('\w+-AB-\d+(-\d+)?.csv')
-GLOB['alphabet-match']['AC'] = re.compile('\w+-AC-\d+(-\d+)?.csv')
-GLOB['alphabet-match']['AD'] = re.compile('\w+-AD-\d+(-\d+)?.csv')
-GLOB['alphabet-match']['AE'] = re.compile('\w+-AE-\d+(-\d+)?.csv')
-
-ANALYSIS_LIST = (
-    'agree',
-    'agree-stat',
-    'comb-time',
-    'comb-time-stat',
-    'mc-time',
-    'mc-time-stat',
-    'op-time',
-    'op-time-stat',
-    'per-diff',
-    'per-diff-stat',
-    'per-diff-vs-solve-time',
-    'per-diff-vs-mc-time',
-    'per-diff-vs-comb-time',
-    'solve-time'
-    'solve-time-stat'
-)
-
-SOLVERS = (
-    'Unbounded',
-    'Bounded',
-    'Aggregate',
-    'Weighted'
-)
-
-D_TYPES = {
-    'mc-all*': (
-        ('File', 'u2'),
-        ('Id', 'u8'),
-        ('Operation', 'u1'),
-        ('C_In_MC', 'u8'),
-        ('U_In_MC', 'u8'),
-        ('B_In_MC', 'u8'),
-        ('A_In_MC', 'u8'),
-        ('W_In_MC', 'u8'),
-        ('C_T_MC', 'u8'),
-        ('U_T_MC', 'u8'),
-        ('B_T_MC', 'u8'),
-        ('A_T_MC', 'u8'),
-        ('W_T_MC', 'u8'),
-        ('C_F_MC', 'u8'),
-        ('U_F_MC', 'u8'),
-        ('B_F_MC', 'u8'),
-        ('A_F_MC', 'u8'),
-        ('W_F_MC', 'u8'),
-        ('Input_Type', 'u1'),
-        ('Op_1', 'u1'),
-        ('Op_1_Arg', 'u1'),
-        ('Op_2', 'u1'),
-        ('Op_2_Arg', 'u1'),
-        ('Pred', 'u1'),
-        ('Pred_Arg', 'u1')
-    ),
-    'mc-time-all*': (
-        ('File', 'u2'),
-        ('Id', 'u8'),
-        ('Operation', 'u1'),
-        ('C_Acc_Time', 'u8'),
-        ('U_Acc_Time', 'u8'),
-        ('B_Acc_Time', 'u8'),
-        ('A_Acc_Time', 'u8'),
-        ('W_Acc_Time', 'u8'),
-        ('C_T_MC_Time', 'u8'),
-        ('C_T_Pred_Time', 'u8'),
-        ('U_T_MC_Time', 'u8'),
-        ('U_T_Pred_Time', 'u8'),
-        ('B_T_MC_Time', 'u8'),
-        ('B_T_Pred_Time', 'u8'),
-        ('A_T_MC_Time', 'u8'),
-        ('A_T_Pred_Time', 'u8'),
-        ('W_T_MC_Time', 'u8'),
-        ('W_T_Pred_Time', 'u8'),
-        ('C_F_MC_Time', 'u8'),
-        ('C_F_Pred_Time', 'u8'),
-        ('U_F_MC_Time', 'u8'),
-        ('U_F_Pred_Time', 'u8'),
-        ('B_F_MC_Time', 'u8'),
-        ('B_F_Pred_Time', 'u8'),
-        ('A_F_MC_Time', 'u8'),
-        ('A_F_Pred_Time', 'u8'),
-        ('W_F_MC_Time', 'u8'),
-        ('W_F_Pred_Time', 'u8'),
-        ('Input_Type', 'u1'),
-        ('Op_1', 'u1'),
-        ('Op_1_Arg', 'u1'),
-        ('Op_2', 'u1'),
-        ('Op_2_Arg', 'u1'),
-        ('Pred', 'u1'),
-        ('Pred_Arg', 'u1')
-    ),
-    'op-time-all*': (
-        ('File', 'u2'),
-        ('Op_Id', 'u8'),
-        ('Op', 'u1'),
-        ('Op_Group', 'u1'),
-        ('In_Type', 'u1'),
-        ('Args', 'u1'),
-        ('Base_Id', 'u8'),
-        ('C_Op_Time', 'u8'),
-        ('U_Op_Time', 'u8'),
-        ('B_Op_Time', 'u8'),
-        ('A_Op_Time', 'u8'),
-        ('W_Op_Time', 'u8')
-    )
-}
-
-ALPHABETS = ('AB', 'AC', 'AD', 'AE')
-
-LENGTHS = (1, 2, 3, 4)
-
-OPS_AND_PREDS = ('', 'concat', 'delete', 'replace', 'reverse', 'contains',
-                 'equals')
-
-IN_AND_ARG_TYPE = ('', 'Simple', 'Even', 'Uneven', 'same', 'diff', 'none')
-
-OP_NORMS = {
-    'concat': {
-        'Simple': {
-            'AB': {1: 30, 2: 30, 3: 30, 4: 30},
-            'AC': {1: 20, 2: 20, 3: 20, 4: 20},
-            'AD': {1: 15, 2: 15, 3: 15, 4: 15},
-            'AE': {1: 12, 2: 12, 3: 12, 4: 12}
-        },
-        'Even': {
-            'AB': {1: 60, 2: 60, 3: 60, 4: 60},
-            'AC': {1: 60, 2: 60, 3: 60, 4: 60},
-            'AD': {1: 60, 2: 60, 3: 60, 4: 60},
-            'AE': {1: 60, 2: 60, 3: 60, 4: 60}
-        },
-        'Uneven': {
-            'AB': {1: 60, 2: 60, 3: 60, 4: 60},
-            'AC': {1: 60, 2: 60, 3: 60, 4: 60},
-            'AD': {1: 60, 2: 60, 3: 60, 4: 60},
-            'AE': {1: 60, 2: 60, 3: 60, 4: 60}
-        }
-    },
-    'delete': {
-        'same': {
-            'AB': {1: 30, 2: 20, 3: 15, 4: 12},
-            'AC': {1: 30, 2: 20, 3: 15, 4: 12},
-            'AD': {1: 30, 2: 20, 3: 15, 4: 12},
-            'AE': {1: 30, 2: 20, 3: 15, 4: 12}
-        },
-        'diff': {
-            'AB': {1: 60, 2: 20, 3: 10, 4: 6},
-            'AC': {1: 60, 2: 20, 3: 10, 4: 6},
-            'AD': {1: 60, 2: 20, 3: 10, 4: 6},
-            'AE': {1: 60, 2: 20, 3: 10, 4: 6}
-        }
-    },
-    'replace': {
-        'same': {
-            'AB': {1: 30, 2: 30, 3: 30, 4: 30},
-            'AC': {1: 20, 2: 20, 3: 20, 4: 20},
-            'AD': {1: 15, 2: 15, 3: 15, 4: 15},
-            'AE': {1: 12, 2: 12, 3: 12, 4: 12}
-        },
-        'diff': {
-            'AB': {1: 30, 2: 30, 3: 30, 4: 30},
-            'AC': {1: 10, 2: 10, 3: 10, 4: 10},
-            'AD': {1: 5, 2: 5, 3: 5, 4: 5},
-            'AE': {1: 3, 2: 3, 3: 3, 4: 3}
-        }
-    },
-    'reverse': {
-        'none': {
-            'AB': {1: 60, 2: 60, 3: 60, 4: 60},
-            'AC': {1: 60, 2: 60, 3: 60, 4: 60},
-            'AD': {1: 60, 2: 60, 3: 60, 4: 60},
-            'AE': {1: 60, 2: 60, 3: 60, 4: 60}
-        }
-    }
-}
-
-ORDER_COLUMNS = {
-    'Bin': 1,
-    'Selection': 2,
-    'First Solver': 3,
-    'Solver': 3,
-    'Statistic': 4,
-    '\\textit{p}-value': 5,
-    'Concrete': 9,
-    'Unbounded': 10,
-    'U Stat': 11,
-    'U \\textit{p}-value': 12,
-    'Bounded': 20,
-    'B Stat': 21,
-    'B \\textit{p}-value': 22,
-    'Aggregate': 30,
-    'A Stat': 31,
-    'A \\textit{p}-value': 32,
-    'Weighted': 40,
-    'W Stat': 41,
-    'W \\textit{p}-value': 42
-}
-
-DATA_COLUMNS = {'mc-all*': 25, 'mc-time-all*': 35, 'op-time-all*': 12}
 
 CONVERTERS = {
-    'mc-all*': {
-        'File': lambda v: ALPHABETS.index(v[4:6]) * 10 + int(v[7:9]),
-        'Operation': lambda v: 0,
-        'Input_Type': lambda v: IN_AND_ARG_TYPE.index(v),
-        'Op_1': lambda v: OPS_AND_PREDS.index(v),
-        'Op_1_Arg': lambda v: IN_AND_ARG_TYPE.index(v),
-        'Op_2': lambda v: OPS_AND_PREDS.index(v),
-        'Op_2_Arg': lambda v: IN_AND_ARG_TYPE.index(v),
-        'Pred': lambda v: OPS_AND_PREDS.index(v),
-        'Pred_Arg': lambda v: IN_AND_ARG_TYPE.index(v)
+    'const': {
+        'Alphabet': lambda r: ALPHABETS.index(r.get('File')[4:6]),
+        'Length': lambda r: int(r.get('File')[7:9]),
+        'U_Agree': lambda r: compute_agreement(r, 'U'),
+        'B_Agree': lambda r: compute_agreement(r, 'B'),
+        'A_Agree': lambda r: compute_agreement(r, 'A'),
+        'W_Agree': lambda r: compute_agreement(r, 'W'),
+        'C_T_Per_Diff': lambda r: compute_per_diff(r, 'C'),
+        'U_T_Per_Diff': lambda r: compute_per_diff(r, 'U'),
+        'B_T_Per_Diff': lambda r: compute_per_diff(r, 'B'),
+        'A_T_Per_Diff': lambda r: compute_per_diff(r, 'A'),
+        'W_T_Per_Diff': lambda r: compute_per_diff(r, 'W'),
+        'C_F_Per_Diff': lambda r: compute_per_diff(r, 'C', branch_sel=False),
+        'U_F_Per_Diff': lambda r: compute_per_diff(r, 'U', branch_sel=False),
+        'B_F_Per_Diff': lambda r: compute_per_diff(r, 'B', branch_sel=False),
+        'A_F_Per_Diff': lambda r: compute_per_diff(r, 'A', branch_sel=False),
+        'W_F_Per_Diff': lambda r: compute_per_diff(r, 'W', branch_sel=False),
+        'C_T_Solve_Time': lambda r: (int(r.get('C Acc Time')) +
+                                     int(r.get('C T Pred Time'))),
+        'U_T_Solve_Time': lambda r: (int(r.get('U Acc Time')) +
+                                     int(r.get('U T Pred Time'))),
+        'B_T_Solve_Time': lambda r: (int(r.get('B Acc Time')) +
+                                     int(r.get('B T Pred Time'))),
+        'A_T_Solve_Time': lambda r: (int(r.get('A Acc Time')) +
+                                     int(r.get('A T Pred Time'))),
+        'W_T_Solve_Time': lambda r: (int(r.get('W Acc Time')) +
+                                     int(r.get('W T Pred Time'))),
+        'C_F_Solve_Time': lambda r: (int(r.get('C Acc Time')) +
+                                     int(r.get('C F Pred Time'))),
+        'U_F_Solve_Time': lambda r: (int(r.get('U Acc Time')) +
+                                     int(r.get('U F Pred Time'))),
+        'B_F_Solve_Time': lambda r: (int(r.get('B Acc Time')) +
+                                     int(r.get('B F Pred Time'))),
+        'A_F_Solve_Time': lambda r: (int(r.get('A Acc Time')) +
+                                     int(r.get('A F Pred Time'))),
+        'W_F_Solve_Time': lambda r: (int(r.get('W Acc Time')) +
+                                     int(r.get('W F Pred Time'))),
+        'Input_Type': lambda r: IN_AND_ARG_TYPE.index(r.get('Input Type')),
+        'Op_1': lambda r: OPS_AND_PREDS.index(r.get('Op 1')),
+        'Op_1_Arg': lambda r: IN_AND_ARG_TYPE.index(r.get('Op 1 Arg')),
+        'Op_2': lambda r: OPS_AND_PREDS.index(r.get('Op 2')),
+        'Op_2_Arg': lambda r: IN_AND_ARG_TYPE.index(r.get('Op 2 Arg')),
+        'Pred': lambda r: OPS_AND_PREDS.index(r.get('Pred')),
+        'Pred_Arg': lambda r: IN_AND_ARG_TYPE.index(r.get('Pred Arg')),
+        'Norm': lambda r: get_norm(r)
     },
-    'mc-time-all*': {
-        'File': lambda v: ALPHABETS.index(get_alphabet(v)) * 10 + get_init_max_len(v),
-        'Operation': lambda v: 0,
-        'Input_Type': lambda v: IN_AND_ARG_TYPE.index(v),
-        'Op_1': lambda v: OPS_AND_PREDS.index(v),
-        'Op_1_Arg': lambda v: IN_AND_ARG_TYPE.index(v),
-        'Op_2': lambda v: OPS_AND_PREDS.index(v),
-        'Op_2_Arg': lambda v: IN_AND_ARG_TYPE.index(v),
-        'Pred': lambda v: OPS_AND_PREDS.index(v),
-        'Pred_Arg': lambda v: IN_AND_ARG_TYPE.index(v)
-    },
-    'op-time-all*': {
-        'File': lambda v: ALPHABETS.index(get_alphabet(v)) * 10 + get_init_max_len(v),
-        'Op_Group': lambda v: 0,
-        'Op': lambda v: OPS_AND_PREDS.index(v),
-        'Input_Type': lambda v: IN_AND_ARG_TYPE.index(v),
-        'Args': lambda v: IN_AND_ARG_TYPE.index(v)
+    'op': {
+        'Alphabet': lambda r: ALPHABETS.index(r.get('File')[4:6]),
+        'Length': lambda r: int(r.get('File')[7:9]),
+        'Op': lambda r: OPS_AND_PREDS.index(r.get('Op')),
+        'In_Type': lambda r: IN_AND_ARG_TYPE.index(r.get('In Type')),
+        'Args': lambda r: IN_AND_ARG_TYPE.index(r.get('Args')),
+        'Norm': lambda r: get_norm(r)
     }
 }
 
@@ -335,84 +166,8 @@ def set_options(arguments):
     GLOB['Settings'] = Settings(analyze_parser.parse_args(arguments))
 
 
-def read_csv_data(file_path):
-    # initialize rows list
-    rows = list()
-
-    # read csv rows
-    log.debug('Reading in data from %s', file_path)
-    with open(file_path, 'r') as csv_file:
-        reader = csv.DictReader(csv_file,
-                                delimiter='\t',
-                                quoting=csv.QUOTE_NONE,
-                                quotechar='|',
-                                lineterminator='\n')
-        for row in reader:
-            normalize_row(row)
-            rows.append(row)
-
-    # return rows data
-    return rows
-
-
-def read_data_files(file_pattern):
-    # get data types for file
-    d_types = list(D_TYPES.get(file_pattern))
-    # initialize return dictionary
-    data_rows = numpy.empty(0, dtype=d_types)
-
-    # check for matching files and read csv data
-    for f in os.listdir(data_dir):
-        test_path = os.path.join(data_dir, f)
-        if os.path.isfile(test_path) and fnmatch.fnmatch(f, file_pattern):
-            # return_data.extend(read_csv_data(test_path))
-            data = numpy.genfromtxt(test_path,
-                                    dtype=d_types,
-                                    delimiter='\t',
-                                    names=True,
-                                    converters=CONVERTERS[file_pattern])
-            data_rows = numpy.append(data_rows, data)
-
-    norm = False
-    if file_pattern == 'mc-all*' or file_pattern == 'mc-time-all*':
-        norm = True
-
-    # create return data array from modified data types
-    d_types.pop(0)
-    d_types.insert(0, ('Length', 'u1'))
-    d_types.insert(0, ('Alphabet', 'u1'))
-    if norm:
-        d_types.append(('Norm', 'u8'))
-    return_data = numpy.zeros(data_rows.size, dtype=d_types)
-
-    # fill in existing data
-    dt_slice = d_types[2:]
-    if norm:
-        dt_slice = d_types[2:-1]
-    for col, dt in dt_slice:
-        return_data[col] = data_rows[col]
-
-    # fill in alphabet and length data
-    return_data['Alphabet'] = numpy.floor_divide(data_rows['File'], 10)
-    return_data['Length'] = data_rows['File'] % 10
-
-    if norm:
-        # compute normalize factors
-        norm_factors = numpy.zeros(return_data.size, dtype=numpy.uint64)
-        r_iter = numpy.nditer(return_data, flags=['f_index'])
-        for row in r_iter:
-            norm_factors[r_iter.index] = get_norm(row)
-        return_data['Norm'] = norm_factors
-
-    return return_data
-
-
 def get_entries():
     GLOB['entries'] = dict()
-
-    # def filter_entries(entry):
-    #     return ('alphabet' not in entry or entry.get('alphabet') != 'AE') \
-    #            and ('length' not in entry or entry.get('length') < 4)
 
     for e in GLOB['Settings'].entries:
         entry_file_path = os.path.join(project_dir,
@@ -421,37 +176,30 @@ def get_entries():
                                        '{0}-entries.json'.format(e))
         with open(entry_file_path, 'r') as entry_file:
             entries = json.load(entry_file)
-            # entries = filter(filter_entries, entries)
             GLOB['entries'][e] = entries
 
 
 def get_norm(row):
-    a_index = row['Alphabet']
-    length = int(row['Length'])
-    op_1_index = row['Op_1']
-    op_1_arg_index = row['Op_1_Arg']
-    op_2_index = row['Op_2']
-    op_2_arg_index = row['Op_2_Arg']
-    if op_1_index > 0 and op_2_index > 0:
-        norm_1 = OP_NORMS.get(OPS_AND_PREDS[op_1_index])\
-                         .get(IN_AND_ARG_TYPE[op_1_arg_index])\
-                         .get(ALPHABETS[a_index])\
-                         .get(length)
-        norm_2 = OP_NORMS.get(OPS_AND_PREDS[op_2_index])\
-                         .get(IN_AND_ARG_TYPE[op_2_arg_index])\
-                         .get(ALPHABETS[a_index])\
-                         .get(length)
+    op_column = 'Op 1'
+    op_arg_column = 'Op 1 Arg'
+    if row.get(op_column) is None:
+        op_column = 'Op'
+        op_arg_column = 'Args'
+    if row.get(op_column) and row.get('Op 2'):
+        norm_1 = OP_NORMS.get(row.get('Op 1'))\
+                         .get(row.get('Op 1 Arg'))\
+                         .get(row.get('File')[4:6])\
+                         .get(int(row.get('File')[7:9]))
+        norm_2 = OP_NORMS.get(row.get('Op 2'))\
+                         .get(row.get('Op 2 Arg'))\
+                         .get(row.get('File')[4:6])\
+                         .get(int(row.get('File')[7:9]))
         return norm_1 * norm_2
-    elif op_1_index > 0:
-        return OP_NORMS.get(OPS_AND_PREDS[op_1_index]) \
-                       .get(IN_AND_ARG_TYPE[op_1_arg_index]) \
-                       .get(ALPHABETS[a_index]) \
-                       .get(length)
-    elif op_2_index > 0:
-        return OP_NORMS.get(OPS_AND_PREDS[op_2_index]) \
-                       .get(IN_AND_ARG_TYPE[op_2_arg_index]) \
-                       .get(ALPHABETS[a_index]) \
-                       .get(length)
+    elif row.get(op_column):
+        return OP_NORMS.get(row.get(op_column)) \
+                       .get(row.get(op_arg_column)) \
+                       .get(row.get('File')[4:6]) \
+                       .get(int(row.get('File')[7:9]))
     else:
         return 0
 
@@ -478,18 +226,116 @@ def normalize_row(row):
                     return
 
 
+def read_data_files(file_pattern, id_field_names):
+    # initialize return list
+    data_rows = dict()
+
+    # check for matching files and read csv data
+    for f in os.listdir(data_dir):
+        test_path = os.path.join(data_dir, f)
+        if os.path.isfile(test_path) and fnmatch.fnmatch(f, file_pattern):
+            log.debug('Reading in data from %s', test_path)
+            with open(test_path, 'r') as csv_file:
+                reader = csv.DictReader(csv_file,
+                                        delimiter='\t',
+                                        quoting=csv.QUOTE_NONE,
+                                        quotechar='|',
+                                        lineterminator='\n')
+                for row in reader:
+                    id_fields = list()
+                    for id_field_name in id_field_names:
+                        id_fields.append(row.get(id_field_name))
+                    data_rows[tuple(id_fields)] = row
+
+    return data_rows
+
+
+def rows_to_numpy_array(rows, key):
+    # create return data array from data types
+    return_data = numpy.zeros(len(rows), dtype=D_TYPES.get(key))
+
+    log.debug('Converting data list into byte arrays')
+    converters = CONVERTERS.get(key)
+    for col, dt in D_TYPES.get(key):
+        converter = converters.get(col)
+        if converter is not None:
+            return_data[col] = [converter(r) for r in rows]
+        else:
+            return_data[col] = [r.get(col.replace('_', ' ')) for r in rows]
+
+    return return_data
+
+
 def get_data():
-    # get lists of data files
-    mc_data = read_data_files('mc-' + GLOB['Settings'].file_pattern)
-    mc_time_data = read_data_files('mc-time-' + GLOB['Settings'].file_pattern)
-    op_time_data = read_data_files('op-time-' + GLOB['Settings'].file_pattern)
+    # initialize return data variables
+    const_data = None
+    op_data = None
+
+    if 'const' in GLOB.get('entries').keys():
+        # check if result file already exists
+        const_file_path = os.path.join(project_dir, 'data', 'constraints.npy')
+        if os.path.isfile(const_file_path):
+            log.debug('Constraint data file exists, reading data.')
+
+            const_data = numpy.load(const_file_path)
+        else:
+            log.debug('Constraint data file not found,'
+                      ' creating file from collected results')
+
+            # get lists of data files
+            const_count_data = read_data_files('const-count-' +
+                                               GLOB['Settings'].file_pattern,
+                                               ['File', 'Id'])
+            const_time_data = read_data_files('const-time-' +
+                                              GLOB['Settings'].file_pattern,
+                                              ['File', 'Id'])
+
+            const_rows = list()
+            for key in const_count_data.keys():
+                count_row = const_count_data.get(key)
+                time_row = const_time_data.get(key)
+                for missing_keys in filter(lambda k: k not in count_row.keys(),
+                                           time_row.keys()):
+                    count_row[missing_keys] = time_row.get(missing_keys)
+                const_rows.append(count_row)
+
+            # convert rows to numpy array
+            const_data = rows_to_numpy_array(const_rows, 'const')
+
+            # write data to file
+            numpy.save(const_file_path[:-4], const_data)
+
+    if 'op' in GLOB.get('entries').keys():
+        # check if result file already exists
+        op_file_path = os.path.join(project_dir, 'data', 'ops-and-preds.npy')
+        if os.path.isfile(op_file_path):
+            log.debug('Operation and Predicate data file exists, reading data.')
+
+            op_data = numpy.load(op_file_path)
+        else:
+            log.debug('Constraint data file not found,'
+                      ' creating file from collected results')
+
+            # get op time data rows
+            op_time_data = read_data_files('op-time-' +
+                                           GLOB['Settings'].file_pattern,
+                                           ['File', 'Op Id'])
+
+            # convert rows to numpy array
+            op_data = rows_to_numpy_array(list(op_time_data.values()), 'op')
+
+            # write data to file
+            numpy.save(op_file_path[:-4], op_data)
 
     # return data
-    return mc_data, mc_time_data, op_time_data
+    return const_data, op_data
 
 
 def order_columns(column):
-    return ORDER_COLUMNS[column]
+    try:
+        return ORDER_COLUMNS.index(column)
+    except ValueError:
+        return 32767
 
 
 def get_latex_table(table, caption, label):
@@ -793,82 +639,79 @@ def output_plot_files(files):
     #                    script_lines.get('scatter'))
 
 
-def filter_input_type(row, input_type=None):
-    return input_type is None \
-           or IN_AND_ARG_TYPE[row['Input Type']] == input_type
+def filter_input_type(rows, input_type=None):
+    return numpy.full(rows.size, True) if input_type is None else \
+        rows['Input_Type'] == IN_AND_ARG_TYPE.index(input_type)
 
 
-def filter_length(row, length=None):
-    return length is None or int(row['Length']) == length
+def filter_length(rows, length=None):
+    return numpy.full(rows.size, True) if length is None else \
+        rows['Length'] == length
 
 
-def filter_alphabet(row, alphabet=None):
-    return alphabet is None \
-           or ALPHABETS[row['Alphabet']] == alphabet
+def filter_alphabet(rows, alphabet=None):
+    return numpy.full(rows.size, True) if alphabet is None else \
+        rows['Alphabet'] == ALPHABETS.index(alphabet)
 
 
-def filter_operation(row, operation=None, exclusive=False, arg_type=None, ):
-    return operation is None \
-           or ('Op' in row.dtype.names
-               and OPS_AND_PREDS[row['Op']] == operation
-               and (arg_type is None
-                    or IN_AND_ARG_TYPE[row['Args']] == arg_type)
-               ) \
-           or (exclusive
-               and ((OPS_AND_PREDS[row['Op_1']] == operation
-                     and OPS_AND_PREDS[row['Op_2']] == operation
-                     and (arg_type is None
-                          or (IN_AND_ARG_TYPE[row['Op_1_Arg']] == arg_type
-                              and IN_AND_ARG_TYPE[row['Op_2_Arg']] == arg_type)
-                          )
-                     )
-                    or (OPS_AND_PREDS[row['Op_1']] == operation
-                        and OPS_AND_PREDS[row['Op_2']] == ''
-                        and (arg_type is None
-                             or IN_AND_ARG_TYPE[row['Op_1_Arg']] == arg_type))
-                    )
-               ) \
-           or (not exclusive
-               and ((OPS_AND_PREDS[row['Op_1']] == operation
-                     and (arg_type is None
-                          or IN_AND_ARG_TYPE[row['Op_1_Arg']] == arg_type)
-                     )
-                    or (OPS_AND_PREDS[row['Op_2']] == operation
-                        and (arg_type is None
-                             or IN_AND_ARG_TYPE[row['Op_2_Arg']] == arg_type)
-                        )
-                    )
-               )
+def filter_operation(rows, operation=None, exclusive=False, arg_type=None, ):
+    return numpy.full(rows.size, True) if operation is None else \
+        (numpy.full(rows.size, True) if 'Op' not in rows.dtype.names else
+         (rows['Op'] == OPS_AND_PREDS.index(operation))
+         & (numpy.full(rows.size, True) if arg_type is None else
+            rows['Args'] == IN_AND_ARG_TYPE.index(arg_type))) \
+        | (numpy.full(rows.size, True) if not exclusive else
+           (numpy.full(rows.size, True) if 'Op_1' not in rows.dtype.names else
+            (((rows['Op_1'] == OPS_AND_PREDS.index(operation))
+             & (rows['Op_2'] == OPS_AND_PREDS.index(operation))
+             & (numpy.full(rows.size, True) if arg_type is None else
+                ((rows['Op_1_Arg'] == IN_AND_ARG_TYPE.index(arg_type))
+                 & (rows['Op_2_Arg'] == IN_AND_ARG_TYPE.index(arg_type)))))
+            | ((rows['Op_1'] == OPS_AND_PREDS.index(operation))
+               & (rows['Op_2'] == 0)
+               & (numpy.full(rows.size, True) if arg_type is None else
+                  rows['Op_1_Arg'] == IN_AND_ARG_TYPE.index(arg_type)))))) \
+        | (numpy.full(rows.size, True) if exclusive else
+           (numpy.full(rows.size, True) if 'Op_1' not in rows.dtype.names else
+            (((rows['Op_1'] == OPS_AND_PREDS.index(operation))
+             & (numpy.full(rows.size, True) if arg_type is None else
+                rows['Op_1_Arg'] == IN_AND_ARG_TYPE.index(arg_type)))
+            | ((rows['Op_2'] == OPS_AND_PREDS.index(operation))
+               & (numpy.full(rows.size, True) if arg_type is None else
+                  rows['Op_2_Arg'] == IN_AND_ARG_TYPE.index(arg_type))))))
 
 
-def filter_predicate(row, predicate, arg_type=None):
-    return predicate is None \
-           or (OPS_AND_PREDS[row['Pred']] == predicate
-               and (arg_type is None
-                    or IN_AND_ARG_TYPE[row['Pred_Arg']] == arg_type))
+def filter_predicate(rows, predicate, arg_type=None):
+    return numpy.full(rows.size, True) if predicate is None else \
+        ((rows['Pred'] == OPS_AND_PREDS.index(predicate))
+         & (numpy.full(rows.size, True) if arg_type is None else
+            rows['Pred_Arg'] == IN_AND_ARG_TYPE.index(arg_type)))
 
 
-def compute_mc_per(row, prefix, branch_sel=True):
-    # compute percent difference
-    b = ' T ' if branch_sel else ' F '
-    in_mc = float(row[prefix + ' In MC'])
-    b_mc = int(row[prefix + b + 'MC'])
-    b_per = 0
-    if in_mc > 0:
-        b_per = b_mc / in_mc
-    return b_per
+def filter_rows(rows, alphabet=None, length=None, input_type=None,
+                operation=None, exclusive_op=None, op_arg_type=None,
+                predicate=None, pred_arg_type=None):
+    filter_array = (numpy.full(rows.size, True)
+                    if 'Op_1' not in rows.dtype.names else rows['Op_1'] != 0) \
+                   & filter_input_type(rows, input_type) \
+                   & filter_alphabet(rows, alphabet) \
+                   & filter_length(rows, length) \
+                   & filter_operation(rows, operation, exclusive_op,
+                                      op_arg_type) \
+                   & filter_predicate(rows, predicate, pred_arg_type)
+    return rows[filter_array]
 
 
 def compute_per_diff(row, prefix, branch_sel=True):
     # compute percent difference
     b = ' T ' if branch_sel else ' F '
-    c_in_mc = float(row['C In MC'])
-    c_b_mc = int(row['C' + b + 'MC'])
+    c_in_mc = float(row.get('C In MC'))
+    c_b_mc = int(row.get('C' + b + 'MC'))
     c_b_per = 0
     if c_in_mc > 0:
         c_b_per = c_b_mc / c_in_mc
-    in_mc = float(row[prefix + ' In MC'])
-    b_mc = int(row[prefix + b + 'MC'])
+    in_mc = float(row.get(prefix + ' In MC'))
+    b_mc = int(row.get(prefix + b + 'MC'))
     b_per = 0
     if in_mc > 0:
         b_per = b_mc / in_mc
@@ -877,18 +720,18 @@ def compute_per_diff(row, prefix, branch_sel=True):
 
 def compute_agreement(row, prefix):
     # compute agreement
-    c_in_mc = float(row['C In MC'])
-    c_t_mc = int(row['C T MC'])
-    c_f_mc = int(row['C F MC'])
+    c_in_mc = float(row.get('C In MC'))
+    c_t_mc = int(row.get('C T MC'))
+    c_f_mc = int(row.get('C F MC'))
     c_t_per = 0
     if c_in_mc > 0:
         c_t_per = c_t_mc / c_in_mc
     c_f_per = 0
     if c_in_mc > 0:
         c_f_per = c_f_mc / c_in_mc
-    in_mc = float(row[prefix + ' In MC'])
-    t_mc = int(row[prefix + ' T MC'])
-    f_mc = int(row[prefix + ' F MC'])
+    in_mc = float(row.get(prefix + ' In MC'))
+    t_mc = int(row.get(prefix + ' T MC'))
+    f_mc = int(row.get(prefix + ' F MC'))
     t_per = 0
     if in_mc > 0:
         t_per = t_mc / in_mc
@@ -962,616 +805,213 @@ def weighted_quantile(a, q, weights=None,
     return numpy.interp(q, weighted_quantiles, a)
 
 
-def get_per_diffs(rows,
-                  disagree=None,
-                  bins=None,
-                  branch=None,
-                  raw=False,
-                  input_type=None,
-                  alphabet=None,
-                  length=None,
-                  operation=None,
-                  exclusive_op=None,
-                  op_arg_type=None,
-                  predicate=None,
-                  pred_arg_type=None):
-    # initialize structures
+def get_histogram_data(values,
+                       bins=None):
+
+    # initialize bins
     if bins is None:
-        bins = [0.0, 0.000001, 0.01, 0.03, 0.05, 1.0]
-    results = list()
-    per_diff_map = dict()
+        min_val = numpy.nanmin(values[list(SOLVERS)].copy().view('f8'))
+        max_val = numpy.nanmax(values[list(SOLVERS)].copy().view('f8'))
 
-    def get_filter(prefix):
-        def per_diff_filter(row):
-            return row['Op_1'] != 0 \
-                   and filter_input_type(row, input_type) \
-                   and filter_alphabet(row, alphabet) \
-                   and filter_length(row, length) \
-                   and filter_operation(row, operation, exclusive_op,
-                                        op_arg_type) \
-                   and filter_predicate(row, predicate, pred_arg_type) \
-                   and (disagree is None or compute_agreement(row, prefix))
+        if min_val > 1.0:
+            min_log = numpy.log10(min_val)
+            floor = numpy.floor_divide(min_val, min_log) * 10**min_log
+        else:
+            floor = min_val
 
-        return per_diff_filter
+        if max_val > 1.0:
+            max_log = numpy.log10(max_val)
+            ceiling = (numpy.floor_divide(min_val, max_log) + 1) * 10**max_log
+        else:
+            ceiling = max_val
+
+        interval = numpy.true_divide(ceiling - floor, 20)
+        bins_np = numpy.arange(floor, ceiling + interval, interval)
+    else:
+        bins_np = numpy.asarray(bins)
+
+    # initialize result array
+    histogram_dtypes = list()
+    histogram_dtypes.append(('Bins', 'f8'))
+    for solver in SOLVERS:
+        histogram_dtypes.append((solver, 'f8'))
+    results = numpy.empty(bins_np.size - 1, dtype=histogram_dtypes)
+    results['Bins'] = bins_np[1:]
 
     for solver in SOLVERS:
-        filtered = rows[get_filter(solver[0])(rows)]
-        diffs_np = numpy.empty(0)
-        weights_np = numpy.empty(0)
-        if branch is None or branch:
-            v_cpd = numpy.vectorize(lambda x: compute_per_diff(x, solver[0]))
-            diffs_np = numpy.append(diffs_np, v_cpd(filtered))
-            weights_np = numpy.append(weights_np, filtered['Norm'])
+        s_values = values[solver]
+        s_weights = values[solver + '_Norm'][
+            numpy.logical_not(numpy.isnan(s_values))]
+        s_values = s_values[numpy.logical_not(numpy.isnan(s_values))]
 
-        if branch is None or not branch:
-            v_cpd = numpy.vectorize(
-                lambda x: compute_per_diff(x, solver[0], branch_sel=False))
-            diffs_np = numpy.append(diffs_np, v_cpd(filtered))
-            weights_np = numpy.append(weights_np, filtered['Norm'])
-
-        if raw:
-            per_diff_map[solver] = diffs_np
-        else:
-            per_diff_map[solver] = numpy.histogram(diffs_np, bins=bins,
-                                                   weights=weights_np)
-
-    if raw:
-        return per_diff_map
-
-    for i, p in enumerate(bins[1:]):
-        result = dict()
-        result['Bin'] = '{0:d}\\%'.format(int(100 * p))
-        for solver in SOLVERS:
-            count = numpy.sum(per_diff_map.get(solver)[0])
-            per_diff = 100 * numpy.true_divide(per_diff_map.get(solver)[0][i],
-                                               count)
-            result[solver] = '{0:.1f}\\%'.format(per_diff)
-        results.append(result)
+        counts, bins = numpy.histogram(s_values,
+                                       bins=bins_np,
+                                       weights=s_weights)
+        results[solver] = counts
 
     return results
 
 
-def get_agreement(rows,
-                  input_type=None,
-                  length=None,
-                  alphabet=None,
-                  operation=None,
-                  exclusive_op=None,
-                  op_arg_type=None,
-                  predicate=None,
-                  pred_arg_type=None):
-    # initialize result dictionary
-    results = dict()
-
-    def agree_filter(row):
-        return row['Op_1'] != 0 \
-               and filter_input_type(row, input_type) \
-               and filter_alphabet(row, alphabet) \
-               and filter_length(row, length) \
-               and filter_operation(row, operation, exclusive_op,
-                                    op_arg_type) \
-               and filter_predicate(row, predicate, pred_arg_type)
-
-    filtered = rows[agree_filter(rows)]
+def get_agreement(values):
+    # initialize result array
+    agree_dtypes = list()
+    for solver in SOLVERS:
+        agree_dtypes.append((solver, 'f8'))
+    results = numpy.zeros(1, dtype=agree_dtypes)
 
     for solver in SOLVERS:
-        agree_rows = filtered[compute_agreement(filtered, solver[0])]
-        agree_weights = agree_rows['Norm']
-        all_weights = filtered['Norm']
+        agree_weights = values[values[solver]][solver + '_Norm']
+        all_weights = values[solver]
         agree_count = sum(agree_weights)
         all_count = sum(all_weights)
-        per = 100 * (float(agree_count) / all_count)
-        results[solver] = '{0:.1f}\\%'.format(per)
+        results[solver] = numpy.true_divide(agree_count, all_count)
 
     return results
 
 
-def get_perf_metrics(rows,
-                     mc_time=None,
-                     acc_time=False,
-                     pred_time=None,
-                     op_time=False,
-                     input_type=None,
-                     length=None,
-                     alphabet=None,
-                     operation=None,
-                     exclusive_op=None,
-                     op_arg_type=None,
-                     predicate=None,
-                     pred_arg_type=None):
-    avg_results = dict()
-    median_results = dict()
-    v_results = dict()
-    s_d_results = dict()
-    data_results = dict()
-
-    def perf_metric_filter(r):
-        return r.get('Op 1') != '' \
-               and filter_input_type(r, input_type) \
-               and filter_alphabet(r, alphabet) \
-               and filter_length(r, length) \
-               and filter_operation(r, operation, exclusive_op, op_arg_type) \
-               and filter_predicate(r, predicate, pred_arg_type)
-
-    filtered = rows[perf_metric_filter(rows)]
-    min_val = 0.
-    max_val = 0.
-
-    # get weights
-    weights_np = filtered['Norm']
-    if mc_time == 'both' or pred_time == 'both':
-        weights_np = numpy.append(weights_np, weights_np)
+def get_desc_stats(values):
+    # initialize result array
+    result_dtypes = list()
+    for solver in SOLVERS:
+        result_dtypes.append((solver, 'f8'))
+    avg_results = numpy.zeros(1, dtype=result_dtypes)
+    median_results = numpy.zeros(1, dtype=result_dtypes)
+    std_dev_results = numpy.zeros(1, dtype=result_dtypes)
 
     for solver in SOLVERS:
-        times_np = numpy.empty([0, weights_np.size])
-        s = solver[0].upper()
+        s_values = values[solver]
+        s_weights = values[solver + '_Norm'][
+            numpy.logical_not(numpy.isnan(s_values))]
+        s_values = s_values[numpy.logical_not(numpy.isnan(s_values))]
 
-        # get mc times
-        if mc_time is not None:
-            mc_times_np = numpy.empty(0)
-            if mc_time == 'both':
-                mc_times_np = numpy.append(mc_times_np,
-                                           filtered[s + ' T_MC_Time'])
-                mc_times_np = numpy.append(mc_times_np,
-                                           filtered[s + ' F_MC_Time'])
-            else:
-                if mc_time == 'true':
-                    mc_times_np = numpy.append(mc_times_np,
-                                               filtered[s + ' T_MC_Time'])
-                elif mc_time == 'false':
-                    mc_times_np = numpy.append(mc_times_np,
-                                               filtered[s + ' F_MC_Time'])
+        # get average for solver
+        avg_results[solver] = numpy.average(s_values, weights=s_weights)
 
-                if pred_time == 'both':
-                    mc_times_np = numpy.append(mc_times_np, mc_times_np)
+        # get median for solver
+        median_results[solver] = weighted_quantile(s_values, 0.5,
+                                                   weights=s_weights)
 
-            times_np = numpy.append(times_np, [mc_times_np], axis=0)
+        # get std dev for solver
+        std_dev_results[solver] = compute_std_dev(s_values, weights=s_weights)
 
-        # get acc times
-        if acc_time:
-            acc_times_np = filtered['Acc_Time']
+    return avg_results, median_results, std_dev_results
 
-            if mc_time == 'both' or pred_time == 'both':
-                acc_times_np = numpy.append(acc_times_np, acc_times_np)
 
-            times_np = numpy.append(times_np, [acc_times_np], axis=0)
+def get_quantiles(values, start=0.0, stop=1.0, step=0.01):
+    # initialize quantiles array
+    quantiles = numpy.arange(start, stop + step, step)
 
-        # get pred times
-        if pred_time is not None:
-            pred_times_np = numpy.empty(0)
-            if pred_time == 'both':
-                pred_times_np = numpy.append(pred_times_np,
-                                             filtered[s + ' T_Pred_Time'])
-                pred_times_np = numpy.append(pred_times_np,
-                                             filtered[s + ' F_Pred_Time'])
-            else:
-                if pred_time == 'true':
-                    pred_times_np = numpy.append(pred_times_np,
-                                                 filtered[s + ' T_Pred_Time'])
-                elif pred_time == 'false':
-                    pred_times_np = numpy.append(pred_times_np,
-                                                 filtered[s + ' F_Pred_Time'])
+    # initialize result array
+    result_dtypes = list()
+    for solver in SOLVERS:
+        result_dtypes.append((solver, 'f8'))
+    results = numpy.zeros(quantiles.size, dtype=result_dtypes)
 
-                if pred_time == 'both':
-                    pred_times_np = numpy.append(pred_times_np, pred_times_np)
+    for solver in SOLVERS:
+        s_values = values[solver]
+        s_weights = values[solver + '_Norm'][
+            numpy.logical_not(numpy.isnan(s_values))]
+        s_values = s_values[numpy.logical_not(numpy.isnan(s_values))]
+        results[solver] = weighted_quantile(s_values,
+                                            quantiles,
+                                            weights=s_weights)
 
-            times_np = numpy.append(times_np, [pred_times_np], axis=0)
+    return results
 
-        # get op times
-        if op_time:
-            op_times_np = filtered[' Op_Time']
-            times_np = numpy.append(times_np, [op_times_np], axis=0)
 
-        # sum times
-        if len(times_np.shape) == 2 and times_np.shape[0] > 1:
-            times_np = numpy.sum(times_np, axis=0)
-        else:
-        times_np = get_values_from_rows(filtered, solver, branch=branch,
-                                        op_time=op_time, mc_time=mc_time,
-                                        acc_time=acc_time)
+def get_values(rows, measurement, branch=None, only_agree=False):
+    s_values = dict()
+    s_weights = dict()
 
-        l_min = numpy.nanmin(times_np)
-        if l_min < min_val or min_val == 0:
-            min_val = l_min
-        l_max = numpy.nanmax(times_np)
-        if l_max > max_val:
-            max_val = l_max
-        mean = numpy.average(times_np, weights=weights_np)
-        avg_results[solver] = '{0:.0f}'.format(mean)
-
-        quantiles = weighted_quantile(times_np,
-                                      numpy.arange(0.0, 1.0, 0.01),
-                                      weights=weights_np)
-        median_results[solver] = '{0:.0f}'.format(quantiles[len(quantiles)/2])
-        # median_results[solver] = '{0:.1f}'.format(numpy.median(w_times_np))
-
-        sq_d = numpy.apply_along_axis(lambda x: (x - mean) ** 2, 0, times_np)
-        var_result = numpy.average(sq_d, weights=weights_np)
-        v_results[solver] = '{0:.0f}'.format(var_result)
-        # variance_results[solver] = '{0:.1f}'.format(numpy.var(w_times_np))
-
-        s_d_results[solver] = '{0:.0f}'.format(math.sqrt(var_result))
-        # std_dev_results[solver] = '{0:.1f}'.format(numpy.std(w_times_np))
-
-        data_results[solver] = [times_np, weights_np, None, None, quantiles]
-
-    correction = max_val % 1000
-    max_val = max_val + correction
-    correction = min_val % 1000
-    min_val = min_val - correction
-
-    interval = (max_val - min_val) / 20.
-    bins = numpy.arange(min_val, (max_val + interval), interval)
-    for s in SOLVERS:
-        hist = numpy.histogram(data_results.get(s)[0], bins=bins,
-                               weights=data_results.get(s)[1])
-        data_results.get(s)[2] = hist[0]
-        data_results.get(s)[3] = hist[1]
-
-    return avg_results, median_results, v_results, s_d_results, data_results
-
-
-def process_perf_entries(rows, entries, caption_prefix):
-    blank_row = {
-        'Selection': '',
-        'Unbounded': '',
-        'Bounded': '',
-        'Aggregate': '',
-        'Weighted': ''
-    }
-
-    lists = (list(), list(), list(), list(), list())
-
-    for entry in entries:
-        if 'is_blank' in entry and entry.get('is_blank'):
-            results = (blank_row, blank_row, blank_row, blank_row)
-        else:
-            log.debug('Getting %s - %s', caption_prefix, entry.get('Selection'))
-            results = get_perf_metrics(rows,
-                                       mc_time=entry.get('mc_time_branch'),
-                                       acc_time=entry.get('acc_time'),
-                                       pred_time=entry.get('pred_time_branch'),
-                                       op_time=entry.get('op_time'),
-                                       input_type=entry.get('input_type'),
-                                       alphabet=entry.get('alphabet'),
-                                       length=entry.get('length'),
-                                       operation=entry.get('operation'),
-                                       exclusive_op=entry.get('exclusive_op'),
-                                       op_arg_type=entry.get('op_arg_type'),
-                                       predicate=entry.get('predicate'),
-                                       pred_arg_type=entry.get('pred_arg_type'))
-            results[0]['Selection'] = entry.get('Selection')
-            results[1]['Selection'] = entry.get('Selection')
-            results[2]['Selection'] = entry.get('Selection')
-            results[3]['Selection'] = entry.get('Selection')
-            lists[4].append((results[4],
-                             ['boxplot', 'histogram'],
-                             caption_prefix + ' - ' + entry.get('Selection'),
-                             entry.get('label')))
-        lists[0].append(results[0])
-        lists[1].append(results[1])
-        lists[2].append(results[2])
-        lists[3].append(results[3])
-
-    return lists
-
-
-def get_acc_vs_perf_files(acc_rows, perf_rows, entries, caption_prefix):
-
-    # initialize file list
-    files = list()
-
-    for entry in entries:
-        log.debug('Getting %s - %s', caption_prefix, entry.get('Selection'))
-        table = get_per_diffs(acc_rows,
-                              raw=True,
-                              disagree=entry.get('disagree'),
-                              branch=entry.get('branch'),
-                              input_type=entry.get('input_type'),
-                              alphabet=entry.get('alphabet'),
-                              length=entry.get('length'),
-                              operation=entry.get('operation'),
-                              exclusive_op=entry.get('exclusive_op'),
-                              op_arg_type=entry.get('op_arg_type'),
-                              predicate=entry.get('predicate'),
-                              pred_arg_type=entry.get('pred_arg_type'))
-
-        results = get_perf_metrics(perf_rows,
-                                   mc_time=entry.get('mc_time_branch'),
-                                   acc_time=entry.get('acc_time'),
-                                   pred_time=entry.get('pred_time_branch'),
-                                   op_time=entry.get('op_time'),
-                                   input_type=entry.get('input_type'),
-                                   alphabet=entry.get('alphabet'),
-                                   length=entry.get('length'),
-                                   operation=entry.get('operation'),
-                                   exclusive_op=entry.get('exclusive_op'),
-                                   op_arg_type=entry.get('op_arg_type'),
-                                   predicate=entry.get('predicate'),
-                                   pred_arg_type=entry.get('pred_arg_type'))
-        values = dict()
-        for solver in SOLVERS:
-            values[solver] = (table.pop(solver, None),
-                              results[4].get(solver)[0],
-                              results[4].get(solver)[1])
-
-        files.append((values,
-                      'scatter',
-                      caption_prefix + ' - ' + entry.get('Selection'),
-                      entry.get('label')))
-
-    return files
-
-
-def get_per_diff_tables(mc_rows):
-    tables = list()
-
-    log.debug('Calculating Model Count Accuracy')
-
-    for entry in GLOB.get('entries').get('per-diff'):
-        log.debug('Processing %s', entry.get('caption'))
-        table = get_per_diffs(mc_rows,
-                              disagree=entry.get('disagree'),
-                              branch=entry.get('branch'),
-                              input_type=entry.get('input_type'),
-                              alphabet=entry.get('alphabet'),
-                              length=entry.get('length'),
-                              operation=entry.get('operation'),
-                              exclusive_op=entry.get('exclusive_op'),
-                              op_arg_type=entry.get('op_arg_type'),
-                              predicate=entry.get('predicate'),
-                              pred_arg_type=entry.get('pred_arg_type'))
-        tables.append((table, entry.get('caption'), entry.get('label')))
-
-    return tables
-
-
-def get_agree_tables(rows):
-    tables = list()
-
-    # agreement
-    agree_results = list()
-
-    blank_row = {
-        'Selection': '',
-        'Unbounded': '',
-        'Bounded': '',
-        'Aggregate': '',
-        'Weighted': ''
-    }
-
-    for entry in GLOB.get('entries').get('agree'):
-        if 'is_blank' in entry and entry.get('is_blank'):
-            agree_results.append(blank_row)
-        else:
-            log.debug('Processing Agreement Percent for %s',
-                      entry.get('Selection'))
-            row = get_agreement(rows,
-                                input_type=entry.get('input_type'),
-                                alphabet=entry.get('alphabet'),
-                                length=entry.get('length'),
-                                operation=entry.get('operation'),
-                                exclusive_op=entry.get('exclusive_op'),
-                                op_arg_type=entry.get('op_arg_type'),
-                                predicate=entry.get('predicate'),
-                                pred_arg_type=entry.get('pred_arg_type'))
-            row['Selection'] = entry.get('Selection')
-            agree_results.append(row)
-
-    tables.append((agree_results,
-                   'Frequency of Branch Selection Agreement for '
-                   'Constraints',
-                   'acc_agree'))
-
-    return tables
-
-
-def get_mc_time_tables_and_files(rows):
-    # initialize tables list
-    tables = list()
-    files = list()
-
-    log.debug('Calculating Model Count Performance')
-
-    results = process_perf_entries(rows,
-                                   GLOB.get('entries').get('mc-time'),
-                                   'Model Counting Times')
-
-    tables.append((results[0],
-                   'Average Model Counting Times',
-                   'mc_perf_avg'))
-    tables.append((results[1],
-                   'Median Model Counting Times',
-                   'mc_perf_median'))
-    tables.append((results[2],
-                   'Model Counting Time Variance',
-                   'mc_perf_var'))
-    tables.append((results[3],
-                   'Standard Deviation for Model Counting Times',
-                   'mc_perf_std_dev'))
-
-    files.extend(results[4])
-
-    return tables, files
-
-
-def get_solve_time_tables_and_files(rows):
-    # initialize tables list
-    tables = list()
-    files = list()
-
-    log.debug('Calculating Constraint Solving Performance')
-
-    results = process_perf_entries(rows,
-                                   GLOB.get('entries').get('solve-time'),
-                                   'Constraint Solving Times')
-
-    tables.append((results[0],
-                   'Average Constraint Solving Times',
-                   'solve_perf_acc_avg'))
-    tables.append((results[1],
-                   'Median Constraint Solving Times',
-                   'solve_perf_acc_median'))
-    tables.append((results[2],
-                   'Constraint Solving Time Variance',
-                   'solve_perf_acc_var'))
-    tables.append((results[3],
-                   'Standard Deviation for Constraint Solving Times',
-                   'solve_perf_acc_std_dev'))
-
-    files.extend(results[4])
-
-    return tables, files
-
-
-def get_op_tables_and_files(rows):
-    # initialize tables list
-    tables = list()
-    files = list()
-
-    log.debug('Calculating Operation and Predicate Performance')
-
-    results = process_perf_entries(rows,
-                                   GLOB.get('entries').get('op-time'),
-                                   'Operation and Predicate Times')
-
-    tables.append((results[0],
-                   'Average Operation and Predicate Times',
-                   'solve_perf_op_avg'))
-    tables.append((results[1],
-                   'Median Operation and Predicate Times',
-                   'solve_perf_op_median'))
-    tables.append((results[2],
-                   'Operation and Predicate Time Variance',
-                   'solve_perf_op_var'))
-    tables.append((results[3],
-                   'Standard Deviation for Operation and Predicate Times',
-                   'solve_perf_op_std_dev'))
-
-    files.extend(results[4])
-
-    return tables, files
-
-
-def get_comb_time_tables_and_files(rows):
-    # initialize tables list
-    tables = list()
-    files = list()
-
-    log.debug('Calculating Combined Model Counting and Solver Performance')
-
-    results = process_perf_entries(rows,
-                                   GLOB.get('entries').get('comb-time'),
-                                   'Combined Model Counting and Constraint'
-                                   ' Solving Times')
-
-    tables.append((results[0],
-                   'Average Combined Model Counting and Constraint Solving'
-                   ' Times',
-                   'comb_perf_avg'))
-    tables.append((results[1],
-                   'Median Combined Model Counting and Constraint Solving'
-                   ' Times',
-                   'comb_perf_median'))
-    tables.append((results[2],
-                   'Combined Model Counting and Constraint Solving Time'
-                   ' Variance',
-                   'comb_perf_var'))
-    tables.append((results[3],
-                   'Standard Deviation for Combined Model Counting and '
-                   'Constraint Solving Times',
-                   'comb_perf_std_dev'))
-
-    files.extend(results[4])
-
-    return tables, files
-
-
-def get_values_from_rows(rows,
-                         solver,
-                         branch=None,
-                         per_diff=False,
-                         agree=False,
-                         op_time=False,
-                         mc_time=False,
-                         acc_time=False):
-    num_vals = len(rows)
-    if branch is None:
+    num_vals = rows.size
+    if measurement in ['per_diff', 'solve_time', 'mc_time', 'comb_time'] \
+            and branch is None:
         num_vals = num_vals * 2
-    vals_np = numpy.empty([0, num_vals])
 
-    if per_diff:
-        mc_per_np = numpy.empty(0)
-        if branch is None or branch:
-            v_mc_per = numpy.vectorize(lambda r: compute_per_diff(r, solver[0]))
-            mc_per_np = numpy.append(mc_per_np, v_mc_per(rows))
-        if branch is None or not branch:
-            v_mc_per = numpy.vectorize(
-                lambda r: compute_per_diff(r, solver[0], branch_sel=False))
-            mc_per_np = numpy.append(mc_per_np, v_mc_per(rows))
-
-        vals_np = numpy.append(vals_np, mc_per_np)
-
-    elif agree:
-        v_agree = numpy.vectorize(lambda r: compute_agreement(r, solver[0]))
-        agree_np = v_agree(rows)
-
-        if branch is None:
-            agree_np = numpy.append(agree_np, agree_np)
-
-        vals_np = numpy.append(vals_np, agree_np)
-
-    elif op_time:
-        # get op times
-        op_times_np = rows[' Op_Time']
-        vals_np = numpy.append(vals_np, [op_times_np], axis=0)
-    else:
-        # get mc times
-        if mc_time is not None:
-            mc_times_np = numpy.empty(0)
-            if mc_time:
-                if branch is None or branch:
-                    v_mc_time = numpy.vectorize(
-                        lambda r: int(r[solver[0] + '_T_MC_Time']))
-                    mc_times_np = numpy.append(mc_times_np, v_mc_time(rows))
-                if branch is None or not branch:
-                    v_mc_time = numpy.vectorize(
-                        lambda r: int(r[solver[0] + '_F_MC_Time']))
-                    mc_times_np = numpy.append(mc_times_np, v_mc_time(rows))
-
-            vals_np = numpy.append(vals_np, [mc_times_np], axis=0)
-
-        # get acc times
-        if acc_time:
-            v_acc_time = numpy.vectorize(
-                lambda r: int(r[solver[0] + '_Acc_Time']))
-            acc_time_np = v_acc_time(rows)
+    for solver in SOLVERS:
+        s_weights[solver] = rows['Norm']
+        if measurement == 'per_diff':
+            filtered = rows
+            if only_agree:
+                filtered = rows[rows[solver[0] + '_Agree']]
+                s_weights[solver] = filtered['Norm']
 
             if branch is None:
-                acc_time_np = numpy.append(acc_time_np, acc_time_np)
+                s_weights[solver] = numpy.append(s_weights[solver],
+                                                 s_weights[solver])
 
-            vals_np = numpy.append(vals_np, [acc_time_np], axis=0)
-
-            # get pred times
-            pred_times_np = numpy.empty(0)
+            per_diff_np = numpy.empty(0)
             if branch is None or branch:
-                v_mc_time = numpy.vectorize(
-                    lambda r: int(r[solver[0] + '_T_Pred_Time']))
-                pred_times_np = numpy.append(pred_times_np, v_mc_time(rows))
+                per_diff_np = numpy.append(per_diff_np,
+                                           filtered[solver[0] + '_T_Per_Diff'])
             if branch is None or not branch:
-                v_mc_time = numpy.vectorize(
-                    lambda r: int(r[solver[0] + '_F_Pred_Time']))
-                pred_times_np = numpy.append(pred_times_np, v_mc_time(rows))
+                per_diff_np = numpy.append(per_diff_np,
+                                           filtered[solver[0] + '_F_Per_Diff'])
 
-            vals_np = numpy.append(vals_np, [pred_times_np], axis=0)
+            if per_diff_np.size < num_vals:
+                size_diff = num_vals - per_diff_np.size
+                diff_np = numpy.full(size_diff, numpy.nan)
+                per_diff_np = numpy.append(per_diff_np, diff_np)
+                s_weights[solver] = numpy.append(s_weights[solver], diff_np)
 
-        # sum times
-        if len(vals_np.shape) == 2 and vals_np.shape[0] > 1:
-            vals_np = numpy.sum(vals_np, axis=0)
+            s_values[solver] = per_diff_np
+
+        elif measurement == 'agree':
+            s_values[solver] = rows[solver[0] + '_Agree']
+
+        elif measurement == 'op_time':
+            # get op times
+            s_values[solver] = rows[solver[0] + '_Op_Time']
         else:
-            vals_np = vals_np[0]
+            if branch is None:
+                s_weights[solver] = numpy.append(s_weights[solver],
+                                                 s_weights[solver])
 
-    return vals_np
+            vals_np = numpy.empty([0, num_vals])
+
+            # get mc times
+            if measurement == 'mc_time' or measurement == 'comb_time':
+                mc_times_np = numpy.empty(0)
+                if branch is None or branch:
+                    mc_times_np = numpy.append(mc_times_np,
+                                               rows[solver[0] + '_T_MC_Time'])
+                if branch is None or not branch:
+                    mc_times_np = numpy.append(mc_times_np,
+                                               rows[solver[0] + '_F_MC_Time'])
+
+                vals_np = numpy.append(vals_np, [mc_times_np], axis=0)
+
+            # get solve times
+            if measurement == 'solve_time' or measurement == 'comb_time':
+                solve_times_np = numpy.empty(0)
+                if branch is None or branch:
+                    solve_times_np = numpy.append(solve_times_np,
+                                                  rows[solver[0] +
+                                                       '_T_Solve_Time'])
+                if branch is None or not branch:
+                    solve_times_np = numpy.append(solve_times_np,
+                                                  rows[solver[0] +
+                                                       '_F_Solve_Time'])
+
+                vals_np = numpy.append(vals_np, [solve_times_np], axis=0)
+
+            # sum times
+            if len(vals_np.shape) == 2 and vals_np.shape[0] > 1:
+                s_values[solver] = numpy.sum(vals_np, axis=0)
+            else:
+                s_values[solver] = vals_np[0]
+
+    val_d_type = s_values.get(SOLVERS[0]).dtype
+    d_types = list()
+    for solver in SOLVERS:
+        d_types.append((solver, val_d_type))
+        d_types.append((solver + '_Norm', 'u8'))
+    values = numpy.zeros(num_vals, dtype=d_types)
+    for solver in SOLVERS:
+        values[solver] = s_values.get(solver)
+        values[solver + '_Norm'] = s_weights.get(solver)
+
+    return values
 
 
 def compute_variance(a, weights=None, axis=None):
@@ -1664,363 +1104,341 @@ def compute_std_dev(a, weights=None, axis=None):
     return numpy.sqrt(variance)
 
 
-def perform_test(a1, a2, w1=None, w2=None, chi_test=False, t_test=False, pair_test=False):
+def two_sample_z_test(mean_1, sd_1, n_1, mean_2, sd_2, n_2, mu_diff=0):
+    squared_se_1 = sd_1**2 / n_1
+    squared_se_2 = sd_2**2 / n_2
+    pooled_se = numpy.sqrt(squared_se_1 + squared_se_2)
+    avg_diff = mean_1 - mean_2 - mu_diff
+    z = numpy.true_divide(avg_diff, pooled_se)
+    p_val = 2 * (scipy.stats.norm.sf(numpy.absolute(z)))
+    return numpy.round(z, 3), numpy.round(p_val, 4)
 
-    stat_val = 0.
-    p_val = 0.
-    if chi_test is not None:
-        o_unique, o_counts = numpy.unique(a1, return_counts=True)
-        e_unique, e_counts = numpy.unique(a2, return_counts=True)
-        categories = numpy.union1d(o_unique, e_unique)
-        o_np = numpy.zeros(categories.size)
-        e_np = numpy.zeros(categories.size)
-        for k, c in enumerate(categories):
-            if c in o_unique:
-                index = numpy.nonzero(o_unique == c)[0][0]
-                o_np[k] = o_counts[index] / numpy.sum(o_counts)
-            if c in e_unique:
-                index = numpy.nonzero(e_unique == c)[0][0]
-                e_np[k] = e_counts[index] / numpy.sum(e_counts)
 
-        stat_val, p_val = scipy.stats.chisquare(o_np, e_np)
+def perform_test(a1, a2, w1=None, w2=None, fisher=False):
 
-    if t_test:  # independent t test
+    if fisher:
+        # stack values and weights together
+        a_w_1 = numpy.column_stack([a1, w1])
+        a_w_2 = numpy.column_stack([a2, w2])
+
+        # get rows for true and false
+        true_1 = numpy.where(a_w_1[:, 0],
+                             a_w_1[:, 1],
+                             numpy.zeros(a_w_1.shape[0]))
+        false_1 = numpy.where(numpy.logical_not(a_w_1[:, 0]),
+                              a_w_1[:, 1],
+                              numpy.zeros(a_w_1.shape[0]))
+        true_2 = numpy.where(a_w_2[:, 0],
+                             a_w_2[:, 1],
+                             numpy.zeros(a_w_2.shape[0]))
+        false_2 = numpy.where(numpy.logical_not(a_w_2[:, 0]),
+                              a_w_2[:, 1],
+                              numpy.zeros(a_w_2.shape[0]))
+
+        a1_true_count = numpy.sum(true_1)
+        a1_false_count = numpy.sum(false_1)
+        a2_true_count = numpy.sum(true_2)
+        a2_false_count = numpy.sum(false_2)
+
+        # contingency_table = [
+        #     [a1_true_count, a1_false_count],
+        #     [a2_true_count, a2_false_count]
+        # ]
+        # stat_val, p_val, dof, expected =\
+        #     scipy.stats.chi2_contingency(contingency_table)
+
+        o_t_freq = numpy.true_divide(a1_true_count,
+                                     (a1_true_count + a1_false_count))
+        o_f_freq = numpy.true_divide(a1_false_count,
+                                     (a1_true_count + a1_false_count))
+        e_t_freq = numpy.true_divide(a2_true_count,
+                                     (a2_true_count + a2_false_count))
+        e_f_freq = numpy.true_divide(a2_false_count,
+                                     (a2_true_count + a2_false_count))
+
+        o_freq = numpy.asarray([o_t_freq, o_f_freq])
+        e_freq = numpy.asarray([e_t_freq, e_f_freq])
+
+        stat_val, p_val = scipy.stats.chisquare(o_freq, e_freq)
+
+    else:  # paired Z-test
         mean_1 = numpy.average(a1, weights=w1)
         std_1 = compute_std_dev(a1, weights=w1)
         mean_2 = numpy.average(a2, weights=w2)
         std_2 = compute_std_dev(a2, weights=w2)
         obs_1 = numpy.sum(w1)
         obs_2 = numpy.sum(w2)
-        stat_val, p_val = \
-            scipy.stats.ttest_ind_from_stats(mean_1, std_1, obs_1, mean_2,
-                                             std_2, obs_2, equal_var=False)
-    if pair_test:  # dependent paired t test
-        stat_val, p_val = scipy.stats.ttest_rel(a1, a2)
+        stat_val, p_val = two_sample_z_test(mean_1,
+                                            std_1,
+                                            obs_1,
+                                            mean_2,
+                                            std_2,
+                                            obs_2)
 
-    out_stat_val = ('{0:.3f}'.format(stat_val), False)
-    out_p_val = ('{0:.3f}'.format(p_val), False)
-    if p_val > 0.05:
-        out_stat_val = ('{0:.3f}'.format(stat_val), True)
-        out_p_val = ('{0:.3f}'.format(p_val), True)
-
-    return out_stat_val, out_p_val
+    return stat_val, p_val
 
 
-def get_test_tables(rows,
-                    include_concrete=False,
-                    ind_var=False,
-                    chi_test=None,
-                    t_test=False,
-                    pair_test=False,
-                    branch=None,
-                    per_diff=False,
-                    agree=False,
-                    op_time=False,
-                    mc_time=False,
-                    acc_time=False,
-                    input_type=None,
-                    length=None,
-                    alphabet=None,
-                    operation=None,
-                    exclusive_op=None,
-                    op_arg_type=None,
-                    predicate=None,
-                    pred_arg_type=None):
-    def row_filter(row):
-        return row['Op_1'] != 0 \
-               and filter_input_type(row, input_type) \
-               and filter_alphabet(row, alphabet) \
-               and filter_length(row, length) \
-               and filter_operation(row, operation, exclusive_op, op_arg_type) \
-               and filter_predicate(row, predicate, pred_arg_type)
+def get_stat_tests(f_values, u_values, fisher=False):
+    # initialize result arrays
+    result_dtypes = list()
+    result_dtypes.append(('Test_Stat_Ind_Var', 'f8'))
+    result_dtypes.append(('P_Val_Ind_Var', 'f8'))
+    for solver in SOLVERS:
+        result_dtypes.append(('Test_Stat_vs_' + solver, 'f8'))
+        result_dtypes.append(('P_Val_vs_' + solver, 'f8'))
+    results = numpy.zeros(len(SOLVERS), dtype=result_dtypes)
 
-    # filter rows
-    unfiltered = numpy.empty(0)
-    if ind_var:
-        unfiltered = rows[rows['Op 1'] != '']
-    filtered = rows[row_filter(rows)]
+    # get test statistics
+    for i, s1 in enumerate(SOLVERS):
+        s1_values = f_values[s1]
+        s1_weights = f_values[s1 + '_Norm'][
+            numpy.logical_not(numpy.isnan(s1_values))]
+        s1_values = s1_values[numpy.logical_not(numpy.isnan(s1_values))]
 
-    # get weights as numpy array from filtered rows
-    f_weights_np = filtered['Norm']
-    if branch is None:
-        f_weights_np = numpy.append(f_weights_np, f_weights_np)
-    u_weights_np = numpy.empty(0)
-    if ind_var:
-        u_weights_np = unfiltered['Norm']
-        if branch is None:
-            u_weights_np = numpy.append(u_weights_np, u_weights_np)
+        # compare solvers
+        for s2 in SOLVERS:
+            s2_values = f_values[s2]
+            s2_weights = f_values[s2 + '_Norm'][
+                numpy.logical_not(numpy.isnan(s2_values))]
+            s2_values = s2_values[numpy.logical_not(numpy.isnan(s2_values))]
 
-    solvers = list(SOLVERS)
-    if include_concrete:
-        solvers.insert(0, 'Concrete')
+            stat_val, p_val = perform_test(s1_values,
+                                           s2_values,
+                                           w1=s1_weights,
+                                           w2=s2_weights,
+                                           fisher=fisher)
+            results['Test_Stat_vs_' + solver][i] = stat_val
+            results['P_Val_vs_' + solver][i] = p_val
 
-    f_values = dict()
-    u_values = dict()
+        # compare filtered for ind var vs unfiltered
+        s_u_values = u_values[s1]
+        s_u_weights = u_values[s1 + '_Norm'][
+            numpy.logical_not(numpy.isnan(s_u_values))]
+        s_u_values = s_u_values[numpy.logical_not(numpy.isnan(s_u_values))]
 
-    for solver in solvers:
-        # get filtered vals
-        f_vals_np = \
-            numpy.asarray(get_values_from_rows(filtered,
-                                               solver,
-                                               branch=branch,
-                                               per_diff=per_diff,
-                                               agree=agree,
-                                               op_time=op_time,
-                                               mc_time=mc_time,
-                                               acc_time=acc_time))
-        f_values[solver] = f_vals_np
+        stat_val, p_val = perform_test(s1_values,
+                                       s_u_values,
+                                       w1=s1_weights,
+                                       w2=s_u_weights,
+                                       fisher=fisher)
+        results['Test_Stat_Ind_Var'][i] = stat_val
+        results['P_Val_Ind_Var'][i] = p_val
 
-        # get unfiliterd vals
-        if ind_var:
-            u_vals_np = \
-                numpy.asarray(get_values_from_rows(unfiltered,
-                                                   solver,
-                                                   branch=branch,
-                                                   per_diff=per_diff,
-                                                   agree=agree,
-                                                   op_time=op_time,
-                                                   mc_time=mc_time,
-                                                   acc_time=acc_time))
-            u_values[solver] = u_vals_np
-
-    comp_results = dict()
-    ind_var_results = dict()
-
-    # compare solvers
-    for s1 in solvers:
-        for s2 in solvers[solvers.index(s1) + 1:]:
-            comp_results[(s1, s2)] = \
-                perform_test(f_values[s1], f_values[s2], w1=f_weights_np,
-                             w2=f_weights_np, chi_test=chi_test, t_test=t_test,
-                             pair_test=pair_test)
-
-    # determine significance of ind var
-    if ind_var:
-        for s in SOLVERS:
-            ind_var_results[s] = \
-                perform_test(f_values[s], u_values[s], w1=f_weights_np,
-                             w2=u_weights_np, chi_test=chi_test, t_test=t_test,
-                             pair_test=pair_test)
-
-    return comp_results, ind_var_results
+    return results
 
 
-def get_mc_test_tables(rows, entries):
-    # initialize tables list
-    tables = list()
+def calculate_stats(values, u_values, stat_rows, agree=False, test=0):
+    if agree:
+        # get mean, median, and std deviation
+        agreements = get_agreement(values)
+        stat_rows['Avg/Freq'] = agreements.view('f8').reshape(stat_rows.size)
+
+        # get test an p values
+        stat_test_results = get_stat_tests(values, u_values, fisher=True)
+    else:
+        # get mean, median, and std deviation
+        avg_np, median_np, std_dev_np = get_desc_stats(values)
+        stat_rows['Avg/Freq'] = avg_np.view('f8').reshape(stat_rows.size)
+        stat_rows['Median'] = median_np.view('f8').reshape(stat_rows.size)
+        stat_rows['Std_Dev'] = std_dev_np.view('f8').reshape(stat_rows.size)
+
+        # get test an p values
+        stat_test_results = get_stat_tests(values, u_values)
+
+    for col in stat_test_results.dtype.names:
+        stat_rows[col] = stat_test_results[col]
+
+
+def analyze_data(const_data, entries):
+    # create return structures
+    stat_rows = numpy.empty(0, dtype=D_TYPES.get('stat'))
+    box_plot_data = dict()
+    histogram_data = dict()
 
     for entry in entries:
-        log.debug('Getting p-values for %s', entry.get('caption'))
-        results = get_test_tables(rows,
-                                  include_concrete=entry.get(
-                                      'include_concrete'),
-                                  ind_var=entry.get('ind_var'),
-                                  chi_test=entry.get('chi_test'),
-                                  t_test=entry.get('t_test'),
-                                  pair_test=entry.get('pair_test'),
+        log.debug('Processing Data Set Entry: %s', entry.get('data_set'))
+        filtered = filter_rows(const_data,
+                               alphabet=entry.get('alphabet'),
+                               length=entry.get('length'),
+                               input_type=entry.get('input_type'),
+                               operation=entry.get('operation'),
+                               exclusive_op=entry.get('exclusive_op'),
+                               op_arg_type=entry.get('op_arg_type'),
+                               predicate=entry.get('predicate'),
+                               pred_arg_type=entry.get('pred_arg_type'))
+
+        measurements = set()
+        if entry.get('stats') is not None:
+            measurements.update(entry.get('stats'))
+        if entry.get('box_plots') is not None:
+            measurements.update(entry.get('box_plots'))
+        if entry.get('histograms') is not None:
+            measurements.update(entry.get('histograms'))
+
+        for measurement in measurements:
+            log.debug('Getting Values for Data Set and Measurement: %s, %s',
+                      entry.get('data_set'),
+                      measurement)
+
+            # get filtered measurements
+            values = get_values(filtered,
+                                measurement,
+                                branch=entry.get('branch'),
+                                only_agree=entry.get('only_agree'))
+
+            # get unfiltered measurements
+            u_values = get_values(filtered,
+                                  measurement,
                                   branch=entry.get('branch'),
-                                  per_diff=entry.get('per_diff'),
-                                  agree=entry.get('agree'),
-                                  op_time=entry.get('op_time'),
-                                  mc_time=entry.get('mc_time'),
-                                  acc_time=entry.get('acc_time'),
-                                  input_type=entry.get('input_type'),
-                                  length=entry.get('length'),
-                                  alphabet=entry.get('alphabet'),
-                                  operation=entry.get('operation'),
-                                  exclusive_op=entry.get('exclusive_op'),
-                                  op_arg_type=entry.get('op_arg_type'),
-                                  predicate=entry.get('predicate'),
-                                  pred_arg_type=entry.get('pred_arg_type'))
-        comp_results = results[0]
-        ind_var_results = results[1]
-        comp_table = list()
-        ind_var_table = list()
+                                  only_agree=entry.get('only_agree'))
 
-        # format comparison table
-        comp_table.append({
-            'multicolumn': (2, 9, 'Second Solver Statistics and '
-                                  '\\textit{p}-values')
-        })
-        comp_rows = dict()
-        for s1, s2 in comp_results.keys():
-            if s1 not in comp_rows:
-                comp_rows[s1] = dict()
-                comp_rows[s1]['First Solver'] = s1
+            m_val = MEASUREMENTS.index(measurement)
+            ds_val = DATA_SETS.index(entry.get('data_set'))
 
-        for key in comp_rows.keys():
-            for s in SOLVERS:
-                s_stat = 'BLANK'
-                s_p_val = 'BLANK'
-                if (key, s) in comp_results.keys():
-                    s_stat = comp_results[(key, s)][0]
-                    s_p_val = comp_results[(key, s)][1]
-                elif (s, key) in comp_results.keys():
-                    s_stat = comp_results[(s, key)][0]
-                    s_p_val = comp_results[(s, key)][1]
-                comp_rows[key][s[0] + ' Stat'] = s_stat
-                comp_rows[key][s[0] + ' \\textit{p}-value'] = s_p_val
+            # get stats for measurement
+            if entry.get('stats') is not None \
+                    and measurement in entry.get('stats'):
+                log.debug('Getting Stats for Data Set and Measurement: %s, %s',
+                          entry.get('data_set'),
+                          measurement)
 
-        comp_table.extend([comp_rows[x] for x in sorted(comp_rows.keys(),
-                                                        key=order_columns)])
-        tables.append((comp_table,
-                       entry.get('caption'),
-                       entry.get('label')))
+                # create new stat rows array
+                new_stat_rows = numpy.zeros(len(SOLVERS),
+                                            dtype=D_TYPES.get('stat'))
+                new_stat_rows['Measurement'] = numpy.full(new_stat_rows.size,
+                                                          m_val)
+                solver_indices = [SOLVERS.index(s) for s in SOLVERS]
+                new_stat_rows['Solver'] = numpy.asarray(solver_indices)
+                new_stat_rows['Data_Set'] = numpy.full(new_stat_rows.size,
+                                                       ds_val)
 
-        # format ind var table
-        ind_var_rows = list()
-        for s in SOLVERS:
-            ind_var_rows.append({
-                'Solver': s,
-                'Statistic': ind_var_results[s][0],
-                '\\textit{p}-value': ind_var_results[s][1]
-            })
-        tables.append((ind_var_table,
-                       entry.get('caption'),
-                       entry.get('label')))
+                calculate_stats(values, u_values, new_stat_rows,
+                                agree=(measurement == 'agree'))
+                stat_rows = numpy.append(stat_rows, new_stat_rows)
 
-    return tables
+            if entry.get('box_plots') is not None \
+                    and measurement in entry.get('box_plots'):
+                log.debug('Getting Box Plots for Data Set and Measurement:'
+                          ' %s, %s',
+                          entry.get('data_set'),
+                          measurement)
+
+                box_plot_data[(m_val, ds_val)] = get_quantiles(values)
+
+            if entry.get('histograms') is not None \
+                    and measurement in entry.get('histograms'):
+                log.debug('Getting Histograms for Data Set and Measurement:'
+                          ' %s, %s',
+                          entry.get('data_set'),
+                          measurement)
+
+                histogram_data[(m_val, ds_val)] = get_histogram_data(values)
+
+    return stat_rows, box_plot_data, histogram_data
 
 
-def analyze_accuracy(mc_rows):
-    # initialize tables list
-    tables = list()
+def perform_analysis(const_data, op_data):
+    # create return structures
+    stat_rows = numpy.empty(0, dtype=D_TYPES.get('stat'))
+    box_columns = dict()
+    hist_columns = dict()
 
-    if 'mc-stat' in GLOB['entries']:
-        test_tables = get_mc_test_tables(mc_rows, GLOB['entries']['mc-stat'])
-        tables.extend(test_tables)
+    const_results = analyze_data(const_data, GLOB.get('entries').get('const'))
+    stat_rows = numpy.append(stat_rows, const_results[0])
+    box_columns.update(const_results[1])
+    hist_columns.update(const_results[2])
 
-    if 'per-diff' in GLOB['entries']:
-        per_diff_tables = get_per_diff_tables(mc_rows)
-        tables.extend(per_diff_tables)
+    op_results = analyze_data(op_data, GLOB.get('entries').get('op'))
+    stat_rows = numpy.append(stat_rows, op_results[0])
+    box_columns.update(op_results[1])
+    hist_columns.update(op_results[2])
 
-    if 'agree-stat' in GLOB['entries']:
-        test_tables = get_mc_test_tables(mc_rows, GLOB['entries']['agree-stat'])
-        tables.extend(test_tables)
-
-    if 'agree' in GLOB['entries']:
-        agree_tables = get_agree_tables(mc_rows)
-        tables.extend(agree_tables)
-
-    return tables
+    return stat_rows, box_columns, hist_columns
 
 
-def analyze_perf(mc_time_rows, op_time_rows):
-    tables = list()
-    files = list()
+def output_results(stats_results, box_results, hist_results):
 
-    if 'mc-time-stat' in GLOB['entries']:
-        test_tables = get_mc_test_tables(mc_time_rows,
-                                         GLOB['entries']['mc-time-stat'])
-        tables.extend(test_tables)
+    log.debug('Saving Statistic Results')
+    stats_file_path = os.path.join(project_dir, 'data', 'stats.csv')
+    output_csv_file(stats_file_path, stats_results, 'stat')
 
-    if 'mc-time' in GLOB.get('entries'):
-        mc_perf_tables, mc_perf_files = \
-            get_mc_time_tables_and_files(mc_time_rows)
-        tables.extend(mc_perf_tables)
-        files.extend(mc_perf_files)
+    # get plot data dir
+    plot_data_dir = os.path.join(project_dir, 'data', 'plot-data')
+    if not os.path.isdir(plot_data_dir):
+        os.makedir(plot_data_dir)
 
-    if 'solve-time-stat' in GLOB['entries']:
-        test_tables = get_mc_test_tables(mc_time_rows,
-                                         GLOB['entries']['solve-time-stat'])
-        tables.extend(test_tables)
+    log.debug('Writing Box Plot Data')
+    for m_num, ds_num in box_results.keys():
+        box_values = box_results.get((m_num, ds_num))
+        box_file_name = '{0}-{1}-box.csv'.format(MEASUREMENTS[m_num],
+                                                 DATA_SETS[ds_num])
+        box_file_path = os.path.join(plot_data_dir, box_file_name)
+        output_csv_file(box_file_path, box_values, 'box')
 
-    if 'solve-time' in GLOB.get('entries'):
-        solve_perf_tables, solve_perf_files = \
-            get_solve_time_tables_and_files(mc_time_rows)
-        tables.extend(solve_perf_tables)
-        files.extend(solve_perf_files)
-
-    if 'op-time-stat' in GLOB['entries']:
-        test_tables = get_mc_test_tables(mc_time_rows,
-                                         GLOB['entries']['op-time-stat'])
-        tables.extend(test_tables)
-
-    if 'op-time' in GLOB.get('entries'):
-        op_perf_tables, op_perf_files = get_op_tables_and_files(op_time_rows)
-        tables.extend(op_perf_tables)
-        files.extend(op_perf_files)
-
-    if 'comb-time-stat' in GLOB['entries']:
-        test_tables = get_mc_test_tables(mc_time_rows,
-                                         GLOB['entries']['comb-time-stat'])
-        tables.extend(test_tables)
-
-    if 'comb-time' in GLOB.get('entries'):
-        comb_perf_tables, comb_perf_files = \
-            get_comb_time_tables_and_files(mc_time_rows)
-        tables.extend(comb_perf_tables)
-        files.extend(comb_perf_files)
-
-    return tables, files
+    log.debug('Writing Histogram Data')
+    for m_num, ds_num in hist_results.keys():
+        hist_values = hist_results.get((m_num, ds_num))
+        hist_file_name = '{0}-{1}-hist.csv'.format(MEASUREMENTS[m_num],
+                                                   DATA_SETS[ds_num])
+        hist_file_path = os.path.join(plot_data_dir, hist_file_name)
+        output_csv_file(hist_file_path, hist_values, 'hist')
 
 
-def analyze_acc_vs_perf(mc_rows, mc_time_rows):
-    files = list()
+def output_data(const_data, op_data):
+    # get plot data dir
+    plot_data_dir = os.path.join(project_dir, 'data', 'plot-data')
+    if not os.path.isdir(plot_data_dir):
+        os.makedir(plot_data_dir)
 
-    if 'per-diff-vs-solve-time' in GLOB.get('entries'):
-        files.extend(get_acc_vs_perf_files(mc_rows, mc_time_rows,
-                                           GLOB.get('entries').get(
-                                             'per-diff-vs-solve-time'),
-                                           'Plot of Percent Difference vs '
-                                           'Constraint Solving Time'))
+    log.debug('Writing Constraint Data')
+    const_file_path = os.path.join(plot_data_dir, 'const.csv')
+    if not os.path.isfile(const_file_path):
+        output_csv_file(const_file_path, const_data, 'const')
 
-    if 'per-diff-vs-mc-time' in GLOB.get('entries'):
-        files.extend(get_acc_vs_perf_files(mc_rows, mc_time_rows,
-                                           GLOB.get('entries').get(
-                                             'per-diff-vs-mc-time'),
-                                           'Plot of Percent Difference vs Model'
-                                           ' Counting Time'))
-
-    if 'per-diff-vs-comb-time' in GLOB.get('entries'):
-        files.extend(get_acc_vs_perf_files(mc_rows, mc_time_rows,
-                                           GLOB.get('entries').get(
-                                             'per-diff-vs-comb-time'),
-                                           'Plot of Percent Difference vs '
-                                           'Combined Model Counting and '
-                                           'Constraint Solving Time'))
-
-    return files
+    log.debug('Writing Operation and Predicate Data')
+    op_file_path = os.path.join(plot_data_dir, 'op.csv')
+    if not os.path.isfile(op_file_path):
+        output_csv_file(op_file_path, op_data, 'op')
 
 
-def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
-    # create lists
-    tables = list()
-    files = list()
+def output_csv_file(file_path, np_array, format_id):
+    # get column headers
+    columns = '\t'.join(np_array.dtype.names)
+    formats = OUT_FORMATS.get(format_id)
 
-    acc_tables = analyze_accuracy(mc_rows)
-    tables.extend(acc_tables)
+    with open(file_path, 'w') as out_file:
+        # write header
+        out_file.write(columns)
+        out_file.write('\n')
 
-    perf_tables, perf_files = analyze_perf(mc_time_rows, op_time_rows)
-    tables.extend(perf_tables)
-    files.extend(perf_files)
-
-    comp_files = analyze_acc_vs_perf(mc_rows, mc_time_rows)
-    files.extend(comp_files)
-
-    return tables, files
-
-
-def output_results(tables, files):
-    output_plot_files(files)
-    output_latex(tables, files)
+        for row in np_array.flat:
+            for i, col in enumerate(np_array.dtype.names):
+                if i > 0:
+                    out_file.write('\t')
+                col_val = row[col]
+                out_val = formats[i].format(col_val)
+                out_file.write(out_val)
+            out_file.write('\n')
 
 
 def main(arguments):
     # set options from args
     set_options(arguments)
 
-    # read data
-    mc_data, mc_time_data, op_time_data = get_data()
-
     # get analysis entries
     get_entries()
 
+    # read data
+    const_data, op_data = get_data()
+
+    # output const and op data
+    output_data(const_data, op_data)
+
     # perform analysis
-    tables, files = perform_analysis(mc_data, mc_time_data, op_time_data)
+    results = perform_analysis(const_data, op_data)
 
     # output results
-    output_results(tables, files)
+    output_results(*results)
 
 
 if __name__ == '__main__':

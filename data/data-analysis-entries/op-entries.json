@@ -1,0 +1,1522 @@
+[
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "data_set": "concat_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "alphabet": "AB",
+    "data_set": "concat_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "alphabet": "AC",
+    "data_set": "concat_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "alphabet": "AD",
+    "data_set": "concat_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "alphabet": "AE",
+    "data_set": "concat_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "length": 1,
+    "data_set": "concat_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "length": 2,
+    "data_set": "concat_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "length": 3,
+    "data_set": "concat_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "length": 4,
+    "data_set": "concat_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "data_set": "concat_simple_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "alphabet": "AB",
+    "data_set": "concat_simple_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "alphabet": "AC",
+    "data_set": "concat_simple_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "alphabet": "AD",
+    "data_set": "concat_simple_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "alphabet": "AE",
+    "data_set": "concat_simple_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "length": 1,
+    "data_set": "concat_simple_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "length": 2,
+    "data_set": "concat_simple_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "length": 3,
+    "data_set": "concat_simple_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "length": 4,
+    "data_set": "concat_simple_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "data_set": "concat_even_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "alphabet": "AB",
+    "data_set": "concat_even_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "alphabet": "AC",
+    "data_set": "concat_even_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "alphabet": "AD",
+    "data_set": "concat_even_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "alphabet": "AE",
+    "data_set": "concat_even_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "length": 1,
+    "data_set": "concat_even_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "length": 2,
+    "data_set": "concat_even_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "length": 3,
+    "data_set": "concat_even_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "length": 4,
+    "data_set": "concat_even_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "data_set": "concat_uneven_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "alphabet": "AB",
+    "data_set": "concat_uneven_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "alphabet": "AC",
+    "data_set": "concat_uneven_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "alphabet": "AD",
+    "data_set": "concat_uneven_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "alphabet": "AE",
+    "data_set": "concat_uneven_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "length": 1,
+    "data_set": "concat_uneven_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "length": 2,
+    "data_set": "concat_uneven_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "length": 3,
+    "data_set": "concat_uneven_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "length": 4,
+    "data_set": "concat_uneven_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "data_set": "delete_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "alphabet": "AB",
+    "data_set": "delete_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "alphabet": "AC",
+    "data_set": "delete_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "alphabet": "AD",
+    "data_set": "delete_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "alphabet": "AE",
+    "data_set": "delete_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "length": 1,
+    "data_set": "delete_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "length": 2,
+    "data_set": "delete_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "length": 3,
+    "data_set": "delete_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "length": 4,
+    "data_set": "delete_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "data_set": "delete_same_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "alphabet": "AB",
+    "data_set": "delete_same_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "alphabet": "AC",
+    "data_set": "delete_same_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "alphabet": "AD",
+    "data_set": "delete_same_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "alphabet": "AE",
+    "data_set": "delete_same_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "length": 1,
+    "data_set": "delete_same_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "length": 2,
+    "data_set": "delete_same_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "length": 3,
+    "data_set": "delete_same_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "length": 4,
+    "data_set": "delete_same_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "data_set": "delete_diff_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "alphabet": "AB",
+    "data_set": "delete_diff_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "alphabet": "AC",
+    "data_set": "delete_diff_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "alphabet": "AD",
+    "data_set": "delete_diff_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "alphabet": "AE",
+    "data_set": "delete_diff_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "length": 1,
+    "data_set": "delete_diff_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "length": 2,
+    "data_set": "delete_diff_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "length": 3,
+    "data_set": "delete_diff_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "length": 4,
+    "data_set": "delete_diff_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "data_set": "replace_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "alphabet": "AB",
+    "data_set": "replace_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "alphabet": "AC",
+    "data_set": "replace_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "alphabet": "AD",
+    "data_set": "replace_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "alphabet": "AE",
+    "data_set": "replace_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "length": 1,
+    "data_set": "replace_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "length": 2,
+    "data_set": "replace_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "length": 3,
+    "data_set": "replace_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "length": 4,
+    "data_set": "replace_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "data_set": "replace_same_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "alphabet": "AB",
+    "data_set": "replace_same_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "alphabet": "AC",
+    "data_set": "replace_same_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "alphabet": "AD",
+    "data_set": "replace_same_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "alphabet": "AE",
+    "data_set": "replace_same_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "length": 1,
+    "data_set": "replace_same_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "length": 2,
+    "data_set": "replace_same_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "length": 3,
+    "data_set": "replace_same_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "length": 4,
+    "data_set": "replace_same_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "data_set": "replace_diff_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "alphabet": "AB",
+    "data_set": "replace_diff_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "alphabet": "AC",
+    "data_set": "replace_diff_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "alphabet": "AD",
+    "data_set": "replace_diff_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "alphabet": "AE",
+    "data_set": "replace_diff_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "length": 1,
+    "data_set": "replace_diff_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "length": 2,
+    "data_set": "replace_diff_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "length": 3,
+    "data_set": "replace_diff_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "length": 4,
+    "data_set": "replace_diff_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "reverse",
+    "data_set": "reverse_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "reverse",
+    "alphabet": "AB",
+    "data_set": "reverse_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "reverse",
+    "alphabet": "AC",
+    "data_set": "reverse_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "reverse",
+    "alphabet": "AD",
+    "data_set": "reverse_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "reverse",
+    "alphabet": "AE",
+    "data_set": "reverse_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "reverse",
+    "length": 1,
+    "data_set": "reverse_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "reverse",
+    "length": 2,
+    "data_set": "reverse_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "reverse",
+    "length": 3,
+    "data_set": "reverse_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "reverse",
+    "length": 4,
+    "data_set": "reverse_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "data_set": "contains_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "alphabet": "AB",
+    "data_set": "contains_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "alphabet": "AC",
+    "data_set": "contains_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "alphabet": "AD",
+    "data_set": "contains_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "alphabet": "AE",
+    "data_set": "contains_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "length": 1,
+    "data_set": "contains_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "length": 2,
+    "data_set": "contains_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "length": 3,
+    "data_set": "contains_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "length": 4,
+    "data_set": "contains_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Simple",
+    "data_set": "contains_simple_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Simple",
+    "alphabet": "AB",
+    "data_set": "contains_simple_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Simple",
+    "alphabet": "AC",
+    "data_set": "contains_simple_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Simple",
+    "alphabet": "AD",
+    "data_set": "contains_simple_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Simple",
+    "alphabet": "AE",
+    "data_set": "contains_simple_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Simple",
+    "length": 1,
+    "data_set": "contains_simple_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Simple",
+    "length": 2,
+    "data_set": "contains_simple_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Simple",
+    "length": 3,
+    "data_set": "contains_simple_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Simple",
+    "length": 4,
+    "data_set": "contains_simple_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Even",
+    "data_set": "contains_Even_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Even",
+    "alphabet": "AB",
+    "data_set": "contains_Even_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Even",
+    "alphabet": "AC",
+    "data_set": "contains_Even_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Even",
+    "alphabet": "AD",
+    "data_set": "contains_Even_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Even",
+    "alphabet": "AE",
+    "data_set": "contains_Even_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Even",
+    "length": 1,
+    "data_set": "contains_Even_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Even",
+    "length": 2,
+    "data_set": "contains_Even_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Even",
+    "length": 3,
+    "data_set": "contains_Even_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Even",
+    "length": 4,
+    "data_set": "contains_Even_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Uneven",
+    "data_set": "contains_uneven_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Uneven",
+    "alphabet": "AB",
+    "data_set": "contains_uneven_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Uneven",
+    "alphabet": "AC",
+    "data_set": "contains_uneven_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Uneven",
+    "alphabet": "AD",
+    "data_set": "contains_uneven_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Uneven",
+    "alphabet": "AE",
+    "data_set": "contains_uneven_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Uneven",
+    "length": 1,
+    "data_set": "contains_uneven_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Uneven",
+    "length": 2,
+    "data_set": "contains_uneven_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Uneven",
+    "length": 3,
+    "data_set": "contains_uneven_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "contains",
+    "op_arg_type": "Uneven",
+    "length": 4,
+    "data_set": "contains_uneven_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "data_set": "equals_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "alphabet": "AB",
+    "data_set": "equals_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "alphabet": "AC",
+    "data_set": "equals_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "alphabet": "AD",
+    "data_set": "equals_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "alphabet": "AE",
+    "data_set": "equals_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "length": 1,
+    "data_set": "equals_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "length": 2,
+    "data_set": "equals_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "length": 3,
+    "data_set": "equals_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "length": 4,
+    "data_set": "equals_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Simple",
+    "data_set": "equals_simple_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Simple",
+    "alphabet": "AB",
+    "data_set": "equals_simple_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Simple",
+    "alphabet": "AC",
+    "data_set": "equals_simple_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Simple",
+    "alphabet": "AD",
+    "data_set": "equals_simple_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Simple",
+    "alphabet": "AE",
+    "data_set": "equals_simple_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Simple",
+    "length": 1,
+    "data_set": "equals_simple_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Simple",
+    "length": 2,
+    "data_set": "equals_simple_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Simple",
+    "length": 3,
+    "data_set": "equals_simple_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Simple",
+    "length": 4,
+    "data_set": "equals_simple_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Even",
+    "data_set": "equals_even_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Even",
+    "alphabet": "AB",
+    "data_set": "equals_even_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Even",
+    "alphabet": "AC",
+    "data_set": "equals_even_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Even",
+    "alphabet": "AD",
+    "data_set": "equals_even_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Even",
+    "alphabet": "AE",
+    "data_set": "equals_even_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Even",
+    "length": 1,
+    "data_set": "equals_even_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Even",
+    "length": 2,
+    "data_set": "equals_even_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Even",
+    "length": 3,
+    "data_set": "equals_even_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Even",
+    "length": 4,
+    "data_set": "equals_even_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Uneven",
+    "data_set": "equals_uneven_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Uneven",
+    "alphabet": "AB",
+    "data_set": "equals_uneven_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Uneven",
+    "alphabet": "AC",
+    "data_set": "equals_uneven_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Uneven",
+    "alphabet": "AD",
+    "data_set": "equals_uneven_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Uneven",
+    "alphabet": "AE",
+    "data_set": "equals_uneven_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Uneven",
+    "length": 1,
+    "data_set": "equals_uneven_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Uneven",
+    "length": 2,
+    "data_set": "equals_uneven_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Uneven",
+    "length": 3,
+    "data_set": "equals_uneven_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Uneven",
+    "length": 4,
+    "data_set": "equals_uneven_len_4"
+  }
+]

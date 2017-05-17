@@ -1,0 +1,1420 @@
+[
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "data_set": "all"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "branch": true,
+    "data_set": "true"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "branch": false,
+    "data_set": "false"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "alphabet": "AB",
+    "data_set": "alpha_AB"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "alphabet": "AC",
+    "data_set": "alpha_AC"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "alphabet": "AD",
+    "data_set": "alpha_AD"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "alphabet": "AE",
+    "data_set": "alpha_AE"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "length": 1,
+    "data_set": "len_1"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "length": 2,
+    "data_set": "len_2"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "length": 3,
+    "data_set": "len_3"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "length": 4,
+    "data_set": "len_4"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "input_type": "Simple",
+    "data_set": "simple"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "input_type": "Even",
+    "data_set": "even"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "input_type": "Uneven",
+    "data_set": "uneven"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "concat",
+    "data_set": "incl_concat_all"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "data_set": "incl_concat_simple"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "data_set": "incl_concat_even"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "data_set": "incl_concat_uneven"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "delete",
+    "data_set": "incl_delete_all"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "data_set": "incl_delete_same"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "data_set": "incl_delete_diff"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "replace",
+    "data_set": "incl_replace_all"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "data_set": "incl_replace_same"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "data_set": "incl_replace_diff"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "reverse",
+    "data_set": "incl_reverse"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "concat",
+    "exclusive_op": true,
+    "data_set": "excl_concat_all"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "exclusive_op": true,
+    "data_set": "excl_concat_simple"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "exclusive_op": true,
+    "data_set": "excl_concat_even"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "exclusive_op": true,
+    "data_set": "excl_concat_uneven"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "delete",
+    "exclusive_op": true,
+    "data_set": "excl_delete_all"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "data_set": "excl_delete_same"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "data_set": "excl_delete_diff"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "replace",
+    "exclusive_op": true,
+    "data_set": "excl_replace_all"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "data_set": "excl_replace_same"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "data_set": "excl_replace_diff"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "reverse",
+    "exclusive_op": true,
+    "data_set": "excl_reverse"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "predicate": "contains",
+    "data_set": "contains_all"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "predicate": "contains",
+    "pred_arg_type": "Simple",
+    "data_set": "contains_simple"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "predicate": "contains",
+    "pred_arg_type": "Even",
+    "data_set": "contains_even"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "predicate": "contains",
+    "pred_arg_type": "Uneven",
+    "data_set": "contains_uneven"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "predicate": "equals",
+    "data_set": "equals_all"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "predicate": "equals",
+    "pred_arg_type": "Simple",
+    "data_set": "equals_simple"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "predicate": "equals",
+    "pred_arg_type": "Even",
+    "data_set": "equals_even"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "predicate": "equals",
+    "pred_arg_type": "Uneven",
+    "data_set": "equals_uneven"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "only_agree": true,
+    "data_set": "agree_all"
+  },
+  {
+    "stats": ["per_diff"],
+    "branch": true,
+    "only_agree": true,
+    "data_set": "agree_true"
+  },
+  {
+    "stats": ["per_diff"],
+    "branch": false,
+    "only_agree": true,
+    "data_set": "agree_false"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "alphabet": "AB",
+    "only_agree": true,
+    "data_set": "agree_alpha_AB"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "alphabet": "AC",
+    "only_agree": true,
+    "data_set": "agree_alpha_AC"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "alphabet": "AD",
+    "only_agree": true,
+    "data_set": "agree_alpha_AD"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "alphabet": "AE",
+    "only_agree": true,
+    "data_set": "agree_alpha_AE"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "length": 1,
+    "only_agree": true,
+    "data_set": "agree_len_1"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "length": 2,
+    "only_agree": true,
+    "data_set": "agree_len_2"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "length": 3,
+    "only_agree": true,
+    "data_set": "agree_len_3"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "length": 4,
+    "only_agree": true,
+    "data_set": "agree_len_4"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "input_type": "Simple",
+    "only_agree": true,
+    "data_set": "agree_simple"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "input_type": "Even",
+    "only_agree": true,
+    "data_set": "agree_even"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "input_type": "Uneven",
+    "only_agree": true,
+    "data_set": "agree_uneven"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "concat",
+    "only_agree": true,
+    "data_set": "agree_incl_concat_all"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "only_agree": true,
+    "data_set": "agree_incl_concat_simple"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "only_agree": true,
+    "data_set": "agree_incl_concat_even"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "only_agree": true,
+    "data_set": "agree_incl_concat_uneven"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "delete",
+    "only_agree": true,
+    "data_set": "agree_incl_delete_all"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "only_agree": true,
+    "data_set": "agree_incl_delete_same"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "only_agree": true,
+    "data_set": "agree_incl_delete_diff"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "replace",
+    "only_agree": true,
+    "data_set": "agree_incl_replace_all"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "only_agree": true,
+    "data_set": "agree_incl_replace_same"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "only_agree": true,
+    "data_set": "agree_incl_replace_diff"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "reverse",
+    "only_agree": true,
+    "data_set": "agree_incl_reverse"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "concat",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_concat_all"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "concat",
+    "op_arg_type": "Simple",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_concat_simple"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "concat",
+    "op_arg_type": "Even",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_concat_even"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "concat",
+    "op_arg_type": "Uneven",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_concat_uneven"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "delete",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_delete_all"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "delete",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_delete_same"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "delete",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_delete_diff"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "replace",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_replace_all"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "replace",
+    "op_arg_type": "same",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_replace_same"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "replace",
+    "op_arg_type": "diff",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_replace_diff"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "reverse",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_reverse"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "predicate": "contains",
+    "only_agree": true,
+    "data_set": "agree_contains_all"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "predicate": "contains",
+    "pred_arg_type": "Simple",
+    "only_agree": true,
+    "data_set": "agree_contains_simple"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "predicate": "contains",
+    "pred_arg_type": "Even",
+    "only_agree": true,
+    "data_set": "agree_contains_even"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "predicate": "contains",
+    "pred_arg_type": "Uneven",
+    "only_agree": true,
+    "data_set": "agree_contains_uneven"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "predicate": "equals",
+    "only_agree": true,
+    "data_set": "agree_equals_all"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "predicate": "equals",
+    "pred_arg_type": "Simple",
+    "only_agree": true,
+    "data_set": "agree_equals_simple"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "predicate": "equals",
+    "pred_arg_type": "Even",
+    "only_agree": true,
+    "data_set": "agree_equals_even"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "predicate": "equals",
+    "pred_arg_type": "Uneven",
+    "only_agree": true,
+    "data_set": "agree_equals_uneven"
+  }
+]
