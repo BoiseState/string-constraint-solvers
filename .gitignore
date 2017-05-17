@@ -277,6 +277,7 @@ release.properties
 
 data/tables.*
 data/plot-data/
+data/*.npy
 graphs/dot/
 graphs/png/
 graphs/synthetic/
