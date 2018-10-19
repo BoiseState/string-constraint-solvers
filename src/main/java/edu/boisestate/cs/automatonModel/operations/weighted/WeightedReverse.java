@@ -35,7 +35,7 @@ public class WeightedReverse extends UnaryWeightedOperation{
             }
             for (WeightedTransition t : s.getTransitions()) {
                 WeightedState pp = map.get(t.getDest());
-                pp.addTransition(new WeightedTransition(t.getMin(), t.getMax(), ss, t.getWeight()));
+                pp.addTransition(new WeightedTransition(t.getMin(), t.getMax(), ss, t.getWeightInt()));
             }
         }
         clone.setDeterministic(false);

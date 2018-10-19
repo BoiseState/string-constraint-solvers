@@ -93,10 +93,10 @@ public class WeightedReplaceString
 
                     // add back the remaining characters from the interval
                     if (tr.getMin() < first) {
-                        newTransitions.add(new StateTransitionPair(origin, new WeightedTransition(tr.getMin(), (char)(first-1), tr.getDest(), tr.getWeight())));
+                        newTransitions.add(new StateTransitionPair(origin, new WeightedTransition(tr.getMin(), (char)(first-1), tr.getDest(), tr.getWeightInt())));
                     }
                     if (tr.getMax() > first) {
-                        newTransitions.add(new StateTransitionPair(origin, new WeightedTransition((char)(first+1), tr.getMax(), tr.getDest(), tr.getWeight())));
+                        newTransitions.add(new StateTransitionPair(origin, new WeightedTransition((char)(first+1), tr.getMax(), tr.getDest(), tr.getWeightInt())));
                     }
                 }
             }
@@ -313,12 +313,12 @@ public class WeightedReplaceString
                     if (illegal > tr.getMax())
                         break;
                     if (illegal > ch) {
-                        transitions.add(new StateTransitionPair(pair.getFirstState(), new WeightedTransition(ch, (char)(illegal - 1), tr.getDest(), tr.getWeight())));
+                        transitions.add(new StateTransitionPair(pair.getFirstState(), new WeightedTransition(ch, (char)(illegal - 1), tr.getDest(), tr.getWeightInt())));
                     }
                     ch = (char)(illegal + 1);
                 }
                 if (ch <= tr.getMax()) {
-                    transitions.add(new StateTransitionPair(pair.getFirstState(), new WeightedTransition(ch, tr.getMax(), tr.getDest(), tr.getWeight())));
+                    transitions.add(new StateTransitionPair(pair.getFirstState(), new WeightedTransition(ch, tr.getMax(), tr.getDest(), tr.getWeightInt())));
                 }
             }
         }

@@ -1,10 +1,5 @@
 package edu.boisestate.cs.automatonModel.operations.weighted;
 
-import dk.brics.automaton.Automaton;
-import dk.brics.automaton.State;
-import dk.brics.automaton.Transition;
-import dk.brics.string.charset.CharSet;
-import dk.brics.string.stringoperations.UnaryOperation;
 import edu.boisestate.cs.automaton.WeightedAutomaton;
 import edu.boisestate.cs.automaton.WeightedState;
 import edu.boisestate.cs.automaton.WeightedTransition;
@@ -45,7 +40,7 @@ public class WeightedIgnoreCase
                 char min = t.getMin();
                 char max = t.getMax();
                 WeightedState dest = t.getDest();
-                int weight = t.getWeight();
+                int weight = t.getWeightInt();
 
                 // if transition represents subset of characters
                 if (min != Character.MIN_VALUE || max != Character.MAX_VALUE) {

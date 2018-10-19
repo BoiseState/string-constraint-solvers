@@ -74,9 +74,9 @@ class WeightedTransitionComparator
 			}
 		}
 
-		if (t1.getWeight() < t2.getWeight()) {
+		if (t1.getWeightInt() < t2.getWeightInt()) {
 			return -1;
-		} else if (t1.getWeight() > t2.getWeight()) {
+		} else if (t1.getWeightInt() > t2.getWeightInt()) {
 			return 1;
 		}
 

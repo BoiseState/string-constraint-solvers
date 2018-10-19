@@ -72,7 +72,7 @@ public class WeightedPreciseSetCharAt
                     state.addTransition(new WeightedTransition(t.getMin(),
                                                                t.getMax(),
                                                                destination,
-                                                               t.getWeight()));
+                                                               t.getWeightInt()));
                 }
             }
 
@@ -95,7 +95,7 @@ public class WeightedPreciseSetCharAt
                             new WeightedTransition(charT.getMin(),
                                                    charT.getMax(),
                                                    t.getDest(),
-                                                   t.getWeight()));
+                                                   t.getWeightInt()));
                 }
             }
         }

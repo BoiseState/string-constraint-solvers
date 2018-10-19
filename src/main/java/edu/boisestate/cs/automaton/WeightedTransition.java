@@ -30,6 +30,7 @@
 package edu.boisestate.cs.automaton;
 
 import java.io.Serializable;
+import org.apache.commons.math3.fraction.Fraction;
 
 /**
  * <tt>Automaton</tt> transition.
@@ -50,7 +51,9 @@ public class WeightedTransition
     private char max;
     private char min;
     private WeightedState to;
-    private int weight;
+    private int weightInt;
+    
+    private Fraction weight;
 
     /**
      * Returns destination of this transition.
@@ -73,12 +76,20 @@ public class WeightedTransition
         return min;
     }
 
-    public int getWeight() {
-        return weight;
+    public int getWeightInt() {
+        return weightInt;
+    }
+    
+    public Fraction getWeight(){
+    	return weight;
     }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
+    public void setWeightInt(int weight) {
+        this.weightInt = weight;
+    }
+    
+    public void setWeight(Fraction newWeight){
+    	weight = newWeight;
     }
 
     public void setMin(char min) {
@@ -96,7 +107,8 @@ public class WeightedTransition
     public WeightedTransition(char c, WeightedState to) {
         min = max = c;
         this.to = to;
-        this.weight = 1;
+        this.weightInt = 1;
+        weight = new Fraction(1,1);
     }
 
     /**
@@ -112,7 +124,13 @@ public class WeightedTransition
     public WeightedTransition(char c, WeightedState to, int weight) {
         min = max = c;
         this.to = to;
-        this.weight = weight;
+        this.weightInt = weight;
+    }
+    
+    public  WeightedTransition(char c, WeightedState to, Fraction weight){
+    	min = max = c;
+    	this.to = to;
+    	this.weight = weight;
     }
 
     /**
@@ -135,7 +153,8 @@ public class WeightedTransition
         this.min = min;
         this.max = max;
         this.to = to;
-        this.weight = 1;
+        this.weightInt = 1;
+        weight = new Fraction(1,1);
     }
 
     /**
@@ -163,8 +182,25 @@ public class WeightedTransition
         this.min = min;
         this.max = max;
         this.to = to;
-        this.weight = weight;
+        this.weightInt = weight;
     }
+    
+    public WeightedTransition(char min,
+    		char max,
+    		WeightedState to,
+    		Fraction weight) {
+    	if (max < min) {
+    		char t = max;
+    		max = min;
+    		min = t;
+    	}
+    	this.min = min;
+    	this.max = max;
+    	this.to = to;
+    	this.weight = weight;
+    }
+
+    
 
     /**
      * Clones this transition.
@@ -196,7 +232,8 @@ public class WeightedTransition
             return t.min == min &&
                    t.max == max &&
                    t.to == to &&
-                   t.weight == weight;
+                   t.weightInt == weightInt &&
+            	   t.weight.equals(weight);
         } else {
             return false;
         }

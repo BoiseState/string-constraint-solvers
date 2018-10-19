@@ -31,6 +31,7 @@ package edu.boisestate.cs.automaton;
 
 import java.io.Serializable;
 import java.util.*;
+import org.apache.commons.math3.fraction.Fraction;
 
 /** 
  * <tt>Automaton</tt> state.
@@ -44,6 +45,8 @@ public class WeightedState
 	private Set<WeightedTransition> transitions;
 	
 	private int number;
+	
+	private Fraction w;
 
 	public int getNumber() {
 		return number;
@@ -54,6 +57,14 @@ public class WeightedState
 
 	public void setNumber(int number) {
 		this.number = number;
+	}
+	
+	public void setWeight(Fraction newWeight){
+		w = newWeight;
+	}
+	
+	public Fraction getWeight(){
+		return w;
 	}
 
 	public void setTransitions(Collection<WeightedTransition> transitions) {
@@ -67,6 +78,7 @@ public class WeightedState
 	public WeightedState() {
 		resetTransitions();
 		id = next_id++;
+		w = new Fraction(1,1);
 	}
 	
 	/** 
@@ -95,7 +107,7 @@ public class WeightedState
 			// remove existing duplicate transition
 			transitions.remove(t);
 			// double weight
-			t.setWeight(t.getWeight() * 2);
+			t.setWeightInt(t.getWeightInt() * 2);
 		}
 		transitions.add(t);
 	}
@@ -125,7 +137,7 @@ public class WeightedState
 	public StateWeight step(char c) {
 		for (WeightedTransition t : transitions)
 			if (t.getMin() <= c && c <= t.getMax())
-				return new StateWeight(t.getDest(), t.getWeight());
+				return new StateWeight(t.getDest(), t.getWeightInt());
 		return null;
 	}
 
@@ -138,7 +150,7 @@ public class WeightedState
 	public void step(char c, Collection<StateWeight> dest) {
 		for (WeightedTransition t : transitions)
 			if (t.getMin() <= c && c <= t.getMax())
-				dest.add(new StateWeight(t.getDest(), t.getWeight()));
+				dest.add(new StateWeight(t.getDest(), t.getWeightInt()));
 	}
 
 	void addEpsilon(WeightedState to) {
@@ -148,7 +160,7 @@ public class WeightedState
 		for (WeightedTransition t : to.transitions) {
 			if (transitions.contains(t)) {
 				transitions.remove(t);
-				int newWeight = t.getWeight() * 2;
+				int newWeight = t.getWeightInt() * 2;
 				transitions.add(new WeightedTransition(t.getMin(), t.getMax(), t.getDest(), newWeight));
 			} else {
 				transitions.add(t);
@@ -160,7 +172,7 @@ public class WeightedState
 		if (to.accept)
 			accept = true;
 		for (WeightedTransition t : to.transitions) {
-			int newWeight = t.getWeight() * weight;
+			int newWeight = t.getWeightInt() * weight;
 			transitions.add(new WeightedTransition(t.getMin(), t.getMax(), t.getDest(), newWeight));
 		}
 	}
@@ -189,7 +201,7 @@ public class WeightedState
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		b.append("state ").append(number);
+		b.append("state ").append(number).append(";").append(w);
 		if (accept)
 			b.append(" [accept]");
 		else

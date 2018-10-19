@@ -28,7 +28,7 @@ public class WeightedReplaceCharReplaceKnown
             Set<WeightedTransition> transitions = s.getTransitions();
             for (WeightedTransition t : new ArrayList<>(transitions)) {
                 WeightedState dest = t.getDest();
-                s.addTransition(new WeightedTransition(replace, dest, t.getWeight()));
+                s.addTransition(new WeightedTransition(replace, dest, t.getWeightInt()));
             }
         }
         b.setDeterministic(false);

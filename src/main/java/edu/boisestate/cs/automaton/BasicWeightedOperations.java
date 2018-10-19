@@ -146,10 +146,13 @@ final public class BasicWeightedOperations {
             a1 = a1.cloneExpandedIfRequired();
             a2 = a2.cloneExpandedIfRequired();
         }
+        System.out.println("a1 " + a1);
+        System.out.println("a2 " + a2);
         for (WeightedState s : a1.getAcceptStates()) {
             s.setAccept(false);
             s.addEpsilon(a2.initial);
         }
+        System.out.println("a1 new " + a1);
         a1.deterministic = deterministic;
         a1.clearHashCode();
         a1.checkMinimizeAlways();
@@ -279,7 +282,7 @@ final public class BasicWeightedOperations {
                         if (t.getMin() <= points[n] &&
                             points[n] <= t.getMax()) {
                             WeightedState dest = t.getDest();
-                            int weight = t.getWeight();
+                            int weight = t.getWeightInt();
                             if (weightMap.containsKey(dest)) {
                                 weight += weightMap.get(dest);
                             }
@@ -464,7 +467,7 @@ final public class BasicWeightedOperations {
                         char max = t1[n1].getMax() < t2[n2].getMax() ?
                                    t1[n1].getMax() :
                                    t2[n2].getMax();
-                        int weight = t1[n1].getWeight();
+                        int weight = t1[n1].getWeightInt();
                         p.s.getTransitions()
                            .add(new WeightedTransition(min, max, r.s, weight));
                     }

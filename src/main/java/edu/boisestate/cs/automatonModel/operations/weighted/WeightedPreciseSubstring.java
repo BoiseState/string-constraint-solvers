@@ -61,7 +61,7 @@ public class WeightedPreciseSubstring
                     WeightedState dest = t.getDest();
                     nextWeightedStates.add(dest);
                     int size = t.getMax() - t.getMin() + 1;
-                    int nextWeight = stateWeights.get(state) * t.getWeight() * size;
+                    int nextWeight = stateWeights.get(state) * t.getWeightInt() * size;
                     if (nextStateWeights.containsKey(dest)) {
                         nextWeight += nextStateWeights.get(dest);
                     }
@@ -114,7 +114,7 @@ public class WeightedPreciseSubstring
                             new WeightedTransition(transition.getMin(),
                                                    transition.getMax(),
                                                    destination,
-                                                   transition.getWeight());
+                                                   transition.getWeightInt());
                     state.addTransition(newTransition);
 
                     // update incoming state map

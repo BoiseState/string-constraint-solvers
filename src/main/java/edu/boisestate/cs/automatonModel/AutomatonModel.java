@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public abstract class AutomatonModel
+public abstract class AutomatonModel<T extends AutomatonModel>
         implements Cloneable {
 
     protected final Alphabet alphabet;
@@ -104,7 +104,7 @@ public abstract class AutomatonModel
 
     public abstract AutomatonModel assertStartsWith(AutomatonModel startingModel);
 
-    public abstract AutomatonModel concatenate(AutomatonModel arg);
+    public abstract AutomatonModel concatenate(T arg);
 
     public abstract boolean containsString(String actualValue);
 

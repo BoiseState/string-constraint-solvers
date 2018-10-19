@@ -133,7 +133,7 @@ public class StringModelCounter {
 
             // get number of chars represented by transition
             int transitionCount = maxChar - minChar + 1;
-            transitionCount = transitionCount * transition.getWeight();
+            transitionCount = transitionCount * transition.getWeightInt();
 
             // multiply initial model count by transition count
             // to get current model count

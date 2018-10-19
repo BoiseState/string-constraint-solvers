@@ -1037,7 +1037,7 @@ public class WeightedAutomaton
                 }
                 // store char weights in map
                 for (int i = t.getMin(); i <= t.getMax(); i++) {
-                    int charWeight = t.getWeight();
+                    int charWeight = t.getWeightInt();
                     char c = (char)i;
                     if (charMap.containsKey(c)) {
                         charWeight += charMap.get(c);

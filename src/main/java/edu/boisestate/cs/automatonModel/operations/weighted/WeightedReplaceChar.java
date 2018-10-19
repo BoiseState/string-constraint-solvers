@@ -30,12 +30,12 @@ public class WeightedReplaceChar
                 WeightedState dest = t.getDest();
                 if (min <= find && find <= max) {
                     transitions.remove(t);
-                    s.addTransition(new WeightedTransition(replace, dest, t.getWeight()));
+                    s.addTransition(new WeightedTransition(replace, dest, t.getWeightInt()));
                     if (min < find) {
-                        s.addTransition(new WeightedTransition(min, (char) (find - 1), dest, t.getWeight()));
+                        s.addTransition(new WeightedTransition(min, (char) (find - 1), dest, t.getWeightInt()));
                     }
                     if (find < max) {
-                        s.addTransition(new WeightedTransition((char) (find + 1), max, dest, t.getWeight()));
+                        s.addTransition(new WeightedTransition((char) (find + 1), max, dest, t.getWeightInt()));
                     }
                 }
             }

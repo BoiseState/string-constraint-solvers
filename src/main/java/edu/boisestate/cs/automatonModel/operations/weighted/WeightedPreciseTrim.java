@@ -34,7 +34,7 @@ public class WeightedPreciseTrim extends UnaryWeightedOperation {
                     min = '\u0021';
                 }
                 if (min <= max) {
-                    initial.addTransition(new WeightedTransition(min, max, t.getDest(), t.getWeight()));
+                    initial.addTransition(new WeightedTransition(min, max, t.getDest(), t.getWeightInt()));
                     Set<WeightedState> prevSet = normalPrevs.get(t.getDest());
                     if (prevSet == null) {
                         prevSet = new HashSet<>();
@@ -64,7 +64,7 @@ public class WeightedPreciseTrim extends UnaryWeightedOperation {
                                 min = '\u0021';
                             }
                             if (min <= max) {
-                                p.addTransition(new WeightedTransition(min, max, accept, t.getWeight()));
+                                p.addTransition(new WeightedTransition(min, max, accept, t.getWeightInt()));
                             }
                         }
                     }

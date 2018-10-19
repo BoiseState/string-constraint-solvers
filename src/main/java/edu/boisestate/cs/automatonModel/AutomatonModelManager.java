@@ -1,12 +1,6 @@
 package edu.boisestate.cs.automatonModel;
 
-import dk.brics.automaton.Automaton;
-import dk.brics.automaton.BasicAutomata;
-import dk.brics.string.stringoperations.UnaryOperation;
 import edu.boisestate.cs.Alphabet;
-
-import java.math.BigInteger;
-import java.util.Set;
 
 public abstract class AutomatonModelManager {
 
@@ -33,16 +27,39 @@ public abstract class AutomatonModelManager {
         } else if (modelVersion == 4) {
             WeightedAutomatonModelManager.setInstance(alphabet,
                                                       initialBoundLength);
+        } else if (modelVersion == 5) {
+        	AcyclicWeightedAutomatonModelManager.setInstance(alphabet, 
+        											initialBoundLength);
         }
 
         return instance;
     }
 
+    /**
+     * Create a new automaton model from a concrete string
+     * @param string
+     * @return
+     */
     public abstract AutomatonModel createString(String string);
 
+    /**
+     * Create a new symbolic string from 0 to up to a certain length
+     * @param initialBound the upper bound of the lenght (inlcusive)
+     * @return
+     */
     public abstract AutomatonModel createAnyString(int initialBound);
 
+    /**
+     * A string with no upper bound - for unbounded models
+     * @return
+     */
     public abstract AutomatonModel createAnyString();
 
+    /**
+     * Creates a symbolic string with length from min to max (both inclusive)
+     * @param min
+     * @param max
+     * @return
+     */
     public abstract AutomatonModel createAnyString(int min, int max);
 }

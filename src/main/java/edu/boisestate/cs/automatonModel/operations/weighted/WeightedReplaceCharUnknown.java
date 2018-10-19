@@ -21,7 +21,7 @@ public class WeightedReplaceCharUnknown extends UnaryWeightedOperation {
             for (WeightedTransition t : new ArrayList<>(transitions)) {
                 WeightedState dest = t.getDest();
                 transitions.remove(t);
-                s.addTransition(new WeightedTransition(Character.MIN_VALUE, Character.MAX_VALUE, dest, t.getWeight()));
+                s.addTransition(new WeightedTransition(Character.MIN_VALUE, Character.MAX_VALUE, dest, t.getWeightInt()));
             }
         }
         b.setDeterministic(false);

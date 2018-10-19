@@ -344,7 +344,7 @@ final public class SpecialWeightedOperations {
         }
         for (WeightedState r : states) {
             for (WeightedTransition t : r.getTransitions()) {
-                m.get(t.getDest()).add(new WeightedTransition(t.getMin(), t.getMax(), r, t.getWeight()));
+                m.get(t.getDest()).add(new WeightedTransition(t.getMin(), t.getMax(), r, t.getWeightInt()));
             }
         }
         for (WeightedState r : states) {

@@ -23,7 +23,7 @@ public class WeightedToUpperCase
                 char min = t.getMin();
                 char max = t.getMax();
                 WeightedState dest = t.getDest();
-                int weight = t.getWeight();
+                int weight = t.getWeightInt();
                 if (min != Character.MIN_VALUE || max != Character.MAX_VALUE) {
                     transitions.remove(t);
                     for (int c = min; c <= max; c++) {

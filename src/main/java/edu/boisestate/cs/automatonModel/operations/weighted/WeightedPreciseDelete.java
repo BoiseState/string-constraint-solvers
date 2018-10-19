@@ -84,7 +84,7 @@ public class WeightedPreciseDelete
                             new WeightedTransition(transition.getMin(),
                                                    transition.getMax(),
                                                    destination,
-                                                   transition.getWeight());
+                                                   transition.getWeightInt());
                     state.addTransition(newTransition);
 
                     // update incoming state map
@@ -135,7 +135,7 @@ public class WeightedPreciseDelete
                             WeightedState dest = t.getDest();
                             nextWeightedStates.add(dest);
                             int size = t.getMax() - t.getMin() + 1;
-                            int nextWeight = stateWeights.get(state) * t.getWeight() * size;
+                            int nextWeight = stateWeights.get(state) * t.getWeightInt() * size;
                             if (nextStateWeights.containsKey(dest)) {
                                 nextWeight += nextStateWeights.get(dest);
                             }
@@ -185,8 +185,8 @@ public class WeightedPreciseDelete
                     returnAutomaton.setNumEmptyStrings(removedWeight);
                 } else if (endWeightedState.getTransitions().isEmpty()) {
                     for (WeightedTransition t : incomingTransitionMap.get(state)) {
-                        int newWeight = t.getWeight() * removedWeight;
-                        t.setWeight(newWeight);
+                        int newWeight = t.getWeightInt() * removedWeight;
+                        t.setWeightInt(newWeight);
                     }
                 }
                 epsilons.add(new WeightedStatePair(state, endWeightedState, removedWeight));

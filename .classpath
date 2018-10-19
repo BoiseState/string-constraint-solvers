@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="main/resources/repo/|main/resources/|main/|main/java/|test/java/edu/boisestate/cs/|test/java/edu/boisestate/|test/java/edu/|test/java/|test/|test/java/" including="**/*.java" kind="src" path="src"/>
+	<classpathentry excluding="main/resources/repo/|main/resources/|main/|main/java/|test/java/edu/boisestate/cs/|test/java/edu/boisestate/|test/java/edu/|test/java/|test/" including="**/*.java" kind="src" path="src"/>
 	<classpathentry excluding="resources/repo/|resources/|java/edu/boisestate/cs/util/|java/edu/boisestate/cs/|java/edu/boisestate/|java/edu/|java/" kind="src" path="src/main"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java">
 		<attributes>
@@ -9,7 +9,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry excluding="java/edu/boisestate/cs/|java/edu/boisestate/|java/edu/|java/" kind="src" path="src/test"/>
-	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="/Users/elenasherman/Documents/research/BehavioralCoverage/PPCtools/lib/jgrapht-jdk1.6.jar"/>
 	<classpathentry kind="lib" path="/Users/elenasherman/git/string-constraint-solvers/src/main/resources/repo/dk/brics/string/2.1-1/string-2.1-1.jar"/>
 	<classpathentry kind="lib" path="/Users/elenasherman/Documents/libs/automaton.jar"/>

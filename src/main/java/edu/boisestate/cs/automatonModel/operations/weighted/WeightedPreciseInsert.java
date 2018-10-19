@@ -71,7 +71,7 @@ public class WeightedPreciseInsert
                     state.addTransition(new WeightedTransition(t.getMin(),
                                                                t.getMax(),
                                                                destination,
-                                                               t.getWeight()));
+                                                               t.getWeightInt()));
                 }
             }
 

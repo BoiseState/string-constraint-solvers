@@ -31,7 +31,7 @@ public class WeightedReplaceCharFindKnown
                 char max = t.getMax();
                 WeightedState dest = t.getDest();
                 if (min <= find && find <= max) {
-                    s.addTransition(new WeightedTransition(Character.MIN_VALUE, Character.MAX_VALUE, dest, t.getWeight()));
+                    s.addTransition(new WeightedTransition(Character.MIN_VALUE, Character.MAX_VALUE, dest, t.getWeightInt()));
                 }
             }
         }
