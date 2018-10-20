@@ -396,16 +396,22 @@ public class AutomatonModelSolver
 
         // get model
         AutomatonModel model = this.symbolicStringMap.get(id);
+        //why do we intersect? Why not just check whether 
+        //the automaton accepts the string?
+        return model.containsString(actualValue);
+        
+        /* eas 10-20-18 old code
 
         // get value model
         AutomatonModel value =
                 this.modelManager.createString(actualValue);
 
         // intersect models
-        AutomatonModel intersection = model.intersect(value);
+        AutomatonModel intersection = model.intersect(value);  
 
         // sound if intersection is not empty
         return !intersection.isEmpty();
+        */
     }
 
     @Override

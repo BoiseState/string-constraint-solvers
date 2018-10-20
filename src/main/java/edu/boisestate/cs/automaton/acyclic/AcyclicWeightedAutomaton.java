@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import edu.boisestate.cs.automaton.BasicWeightedOperations;
+
 public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 	
 	WeightedState initial;
@@ -171,8 +173,28 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 		return tr;
 	}
 
+	/**
+	 * Creates an automaton that repeats this one from min to max
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public AcyclicWeightedAutomaton repeat(int min, int max) {
 		
 		return BasicAcyclicWeightedOperations.repeat(this, min, max);
+	}
+
+	/**
+	 * Computes the intersection of two weighted automata
+	 * @param automaton
+	 * @return
+	 */
+	public AcyclicWeightedAutomaton intersection(AcyclicWeightedAutomaton a) {
+		return BasicAcyclicWeightedOperations.intersection(this, a);
+	}
+
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return BasicAcyclicWeightedOperations.isEmpty(this);
 	}
 }

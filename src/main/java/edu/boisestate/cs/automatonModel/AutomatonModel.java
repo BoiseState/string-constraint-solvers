@@ -66,85 +66,85 @@ public abstract class AutomatonModel<T extends AutomatonModel>
         return result;
     }
 
-    public abstract AutomatonModel assertContainedInOther(AutomatonModel containingModel);
+    public abstract T assertContainedInOther(T containingModel);
 
-    public abstract AutomatonModel assertContainsOther(AutomatonModel containedModel);
+    public abstract T assertContainsOther(T containedModel);
 
-    public abstract AutomatonModel assertEmpty();
+    public abstract T assertEmpty();
 
-    public abstract AutomatonModel assertEndsOther(AutomatonModel baseModel);
+    public abstract T assertEndsOther(T baseModel);
 
-    public abstract AutomatonModel assertEndsWith(AutomatonModel endingModel);
+    public abstract T assertEndsWith(T endingModel);
 
-    public abstract AutomatonModel assertEquals(AutomatonModel equalModel);
+    public abstract T assertEquals(T equalModel);
 
-    public abstract AutomatonModel assertEqualsIgnoreCase(AutomatonModel equalModel);
+    public abstract T assertEqualsIgnoreCase(T equalModel);
 
-    public abstract AutomatonModel assertHasLength(int min, int max);
+    public abstract T assertHasLength(int min, int max);
 
-    public abstract AutomatonModel assertNotContainedInOther(AutomatonModel notContainingModel);
+    public abstract T assertNotContainedInOther(T notContainingModel);
 
-    public abstract AutomatonModel assertNotContainsOther(AutomatonModel notContainedModel);
+    public abstract T assertNotContainsOther(T notContainedModel);
 
-    public abstract AutomatonModel assertNotEmpty();
+    public abstract T assertNotEmpty();
 
-    public abstract AutomatonModel assertNotEndsOther(AutomatonModel notEndingModel);
+    public abstract T assertNotEndsOther(T notEndingModel);
 
-    public abstract AutomatonModel assertNotEndsWith(AutomatonModel notEndingModel);
+    public abstract T assertNotEndsWith(T notEndingModel);
 
-    public abstract AutomatonModel assertNotEquals(AutomatonModel notEqualModel);
+    public abstract T assertNotEquals(T notEqualModel);
 
-    public abstract AutomatonModel assertNotEqualsIgnoreCase(AutomatonModel notEqualModel);
+    public abstract T assertNotEqualsIgnoreCase(T notEqualModel);
 
-    public abstract AutomatonModel assertNotStartsOther(AutomatonModel notStartingModel);
+    public abstract T assertNotStartsOther(T notStartingModel);
 
-    public abstract AutomatonModel assertNotStartsWith(AutomatonModel notStartsModel);
+    public abstract T assertNotStartsWith(T notStartsModel);
 
-    public abstract AutomatonModel assertStartsOther(AutomatonModel startingModel);
+    public abstract T assertStartsOther(T startingModel);
 
-    public abstract AutomatonModel assertStartsWith(AutomatonModel startingModel);
+    public abstract T assertStartsWith(T startingModel);
 
-    public abstract AutomatonModel concatenate(T arg);
+    public abstract T concatenate(T arg);
 
     public abstract boolean containsString(String actualValue);
 
-    public abstract AutomatonModel delete(int start, int end);
+    public abstract T delete(int start, int end);
 
-    public abstract boolean equals(AutomatonModel arg);
+    public abstract boolean equals(T arg);
 
-    public abstract AutomatonModel intersect(AutomatonModel arg);
+    public abstract T intersect(T arg);
 
-    public abstract AutomatonModel insert(int offset, AutomatonModel argModel);
+    public abstract T insert(int offset, T argModel);
 
     public abstract BigInteger modelCount();
 
-    public abstract AutomatonModel replace(char find, char replace);
+    public abstract T replace(char find, char replace);
 
-    public abstract AutomatonModel replace(String find, String replace);
+    public abstract T replace(String find, String replace);
 
-    public abstract AutomatonModel replaceChar();
+    public abstract T replaceChar();
 
-    public abstract AutomatonModel replaceFindKnown(char find);
+    public abstract T replaceFindKnown(char find);
 
-    public abstract AutomatonModel replaceReplaceKnown(char replace);
+    public abstract T replaceReplaceKnown(char replace);
 
-    public abstract AutomatonModel reverse();
+    public abstract T reverse();
 
-    public abstract AutomatonModel substring(int start, int end);
+    public abstract T substring(int start, int end);
 
-    public abstract AutomatonModel setCharAt(int offset, AutomatonModel argModel);
+    public abstract T setCharAt(int offset, T argModel);
 
-    public abstract AutomatonModel setLength(int length);
+    public abstract T setLength(int length);
 
-    public abstract AutomatonModel suffix(int start);
+    public abstract T suffix(int start);
 
-    public abstract AutomatonModel toLowercase();
+    public abstract T toLowercase();
 
-    public abstract AutomatonModel toUppercase();
+    public abstract T toUppercase();
 
-    public abstract AutomatonModel trim();
+    public abstract T trim();
 
-    public abstract AutomatonModel clone();
+    public abstract T clone();
 
     static Automaton getRequiredCharAutomaton(Automaton a, Alphabet alphabet, int boundLength) {
         // if initial state is accepting

@@ -47,115 +47,115 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	}
 
 	@Override
-	public AutomatonModel assertContainedInOther(AutomatonModel containingModel) {
+	public AcyclicWeightedAutomatonModel assertContainedInOther(AcyclicWeightedAutomatonModel containingModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertContainsOther(AutomatonModel containedModel) {
+	public AcyclicWeightedAutomatonModel assertContainsOther(AcyclicWeightedAutomatonModel containedModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertEmpty() {
+	public AcyclicWeightedAutomatonModel assertEmpty() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertEndsOther(AutomatonModel baseModel) {
+	public AcyclicWeightedAutomatonModel assertEndsOther(AcyclicWeightedAutomatonModel baseModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertEndsWith(AutomatonModel endingModel) {
+	public AcyclicWeightedAutomatonModel assertEndsWith(AcyclicWeightedAutomatonModel endingModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertEquals(AutomatonModel equalModel) {
+	public AcyclicWeightedAutomatonModel assertEquals(AcyclicWeightedAutomatonModel equalModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertEqualsIgnoreCase(AutomatonModel equalModel) {
+	public AcyclicWeightedAutomatonModel assertEqualsIgnoreCase(AcyclicWeightedAutomatonModel equalModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertHasLength(int min, int max) {
+	public AcyclicWeightedAutomatonModel assertHasLength(int min, int max) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertNotContainedInOther(AutomatonModel notContainingModel) {
+	public AcyclicWeightedAutomatonModel assertNotContainedInOther(AcyclicWeightedAutomatonModel notContainingModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertNotContainsOther(AutomatonModel notContainedModel) {
+	public AcyclicWeightedAutomatonModel assertNotContainsOther(AcyclicWeightedAutomatonModel notContainedModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertNotEmpty() {
+	public AcyclicWeightedAutomatonModel assertNotEmpty() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertNotEndsOther(AutomatonModel notEndingModel) {
+	public AcyclicWeightedAutomatonModel assertNotEndsOther(AcyclicWeightedAutomatonModel notEndingModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertNotEndsWith(AutomatonModel notEndingModel) {
+	public AcyclicWeightedAutomatonModel assertNotEndsWith(AcyclicWeightedAutomatonModel notEndingModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertNotEquals(AutomatonModel notEqualModel) {
+	public AcyclicWeightedAutomatonModel assertNotEquals(AcyclicWeightedAutomatonModel notEqualModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertNotEqualsIgnoreCase(AutomatonModel notEqualModel) {
+	public AcyclicWeightedAutomatonModel assertNotEqualsIgnoreCase(AcyclicWeightedAutomatonModel notEqualModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertNotStartsOther(AutomatonModel notStartingModel) {
+	public AcyclicWeightedAutomatonModel assertNotStartsOther(AcyclicWeightedAutomatonModel notStartingModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertNotStartsWith(AutomatonModel notStartsModel) {
+	public AcyclicWeightedAutomatonModel assertNotStartsWith(AcyclicWeightedAutomatonModel notStartsModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertStartsOther(AutomatonModel startingModel) {
+	public AcyclicWeightedAutomatonModel assertStartsOther(AcyclicWeightedAutomatonModel startingModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel assertStartsWith(AutomatonModel startingModel) {
+	public AcyclicWeightedAutomatonModel assertStartsWith(AcyclicWeightedAutomatonModel startingModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -173,25 +173,25 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	}
 
 	@Override
-	public AutomatonModel delete(int start, int end) {
+	public AcyclicWeightedAutomatonModel delete(int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean equals(AutomatonModel arg) {
+	public boolean equals(AcyclicWeightedAutomatonModel arg) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public AutomatonModel intersect(AutomatonModel arg) {
-		// TODO Auto-generated method stub
-		return null;
+	public AcyclicWeightedAutomatonModel intersect(AcyclicWeightedAutomatonModel arg) {
+		AcyclicWeightedAutomaton res = this.automaton.intersection(arg.automaton);
+		return new AcyclicWeightedAutomatonModel(res, alphabet);
 	}
 
 	@Override
-	public AutomatonModel insert(int offset, AutomatonModel argModel) {
+	public AcyclicWeightedAutomatonModel insert(int offset, AcyclicWeightedAutomatonModel argModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -203,85 +203,85 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	}
 
 	@Override
-	public AutomatonModel replace(char find, char replace) {
+	public AcyclicWeightedAutomatonModel replace(char find, char replace) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel replace(String find, String replace) {
+	public AcyclicWeightedAutomatonModel replace(String find, String replace) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel replaceChar() {
+	public AcyclicWeightedAutomatonModel replaceChar() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel replaceFindKnown(char find) {
+	public AcyclicWeightedAutomatonModel replaceFindKnown(char find) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel replaceReplaceKnown(char replace) {
+	public AcyclicWeightedAutomatonModel replaceReplaceKnown(char replace) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel reverse() {
+	public AcyclicWeightedAutomatonModel reverse() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel substring(int start, int end) {
+	public AcyclicWeightedAutomatonModel substring(int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel setCharAt(int offset, AutomatonModel argModel) {
+	public AcyclicWeightedAutomatonModel setCharAt(int offset, AcyclicWeightedAutomatonModel argModel) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel setLength(int length) {
+	public AcyclicWeightedAutomatonModel setLength(int length) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel suffix(int start) {
+	public AcyclicWeightedAutomatonModel suffix(int start) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel toLowercase() {
+	public AcyclicWeightedAutomatonModel toLowercase() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel toUppercase() {
+	public AcyclicWeightedAutomatonModel toUppercase() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel trim() {
+	public AcyclicWeightedAutomatonModel trim() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public AutomatonModel clone() {
+	public AcyclicWeightedAutomatonModel clone() {
 		// TODO Auto-generated method stub
 		return null;
 	}

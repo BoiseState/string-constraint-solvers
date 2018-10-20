@@ -358,4 +358,94 @@ public class BasicAcyclicWeightedOperations {
 		return ret;
 	}
 
+	/**
+	 * Returns an automaton that accepts the intersection of
+	 * the language of the given automata.
+	 * (A1 \cap A2) (s) = A1(s) x A2(s)
+	 * That is the count of number of times
+	 * s accepted by A1 should be multiplied
+	 * the number of times A2 accepted by s.
+	 * @param a1
+	 * @param a2
+	 * @return
+	 */
+	public static AcyclicWeightedAutomaton intersection(AcyclicWeightedAutomaton a1,
+			AcyclicWeightedAutomaton a2) {
+		AcyclicWeightedAutomaton ret;
+		if(a1.isEmpty() || a2.isEmpty()){
+			ret =  BasicAcyclicWeightedAutomaton.makeEmpty();
+		} else {
+			//the algorithm is the same as the traditional
+			//automaton, only the weights of the
+			//transitions and the weight of the final
+			//states should be multiplied.
+			
+			ret = new AcyclicWeightedAutomaton();
+			Map<Pair<WeightedState,WeightedState>, WeightedState> oldToNew = 
+					new HashMap<Pair<WeightedState,WeightedState>,WeightedState>();
+			Pair<WeightedState,WeightedState> sOld = 
+					new Pair<WeightedState,WeightedState>(a1.initial,a2.initial);
+			WeightedState sNew = new WeightedState();//newly discovered state
+			if(a1.initial.isAccept() && a2.initial.isAccept()){
+				sNew.setAccept(true);
+				sNew.setWeight(a1.initial.getWeight().multiply(a2.initial.getWeight()));
+			}
+			ret.initial = sNew;
+			//add to the queue
+			List<Pair<WeightedState,WeightedState>> queue = new ArrayList<Pair<WeightedState,WeightedState>>();
+			queue.add(sOld);
+			oldToNew.put(sOld, sNew);
+			while(!queue.isEmpty()){
+				//remove the elements
+				sOld = queue.remove(0);
+				//for the pair of edges with the same symbol
+				for(WeightedTransition t1 : sOld.getFirst().getTransitions()){
+					for(WeightedTransition t2: sOld.getSecond().getTransitions()){
+						if(t1.getSymb() == t2.getSymb()){
+							//the same symbols
+							//find toState for each
+							WeightedState t1ToState = t1.getToState();
+							WeightedState t2ToState = t2.getToState();
+							//create a pair and see if it is in the map
+							Pair<WeightedState,WeightedState> oldToState = 
+									new Pair<WeightedState,WeightedState>(t1ToState, t2ToState);
+							if(oldToNew.containsKey(oldToState)){
+								//this state already been seen
+								 sNew = oldToNew.get(oldToState);
+							} else {
+								//did not see it, add to the queue
+								//and to the map
+								sNew = new WeightedState();
+								//check if it should be an accept state
+								//and update its weight
+								if(t1ToState.isAccept() && t2ToState.isAccept()){
+									sNew.setAccept(true);
+									sNew.setWeight(t1ToState.getWeight().multiply(t2ToState.getWeight()));
+								}
+								//add to the map and to the queue
+								queue.add(oldToState);
+								oldToNew.put(oldToState, sNew);
+							}
+							
+							//add a weighted edge to sNew on that symbol
+							//where weights are multiplied
+							sNew.addTransition(new WeightedTransition(t1.getSymb(), 
+									oldToNew.get(sOld), t1.getWeight().multiply(t2.getWeight())));
+						}
+					}
+				}
+		
+				
+			}
+		}
+		return ret; 
+	}
+
+	public static boolean isEmpty(AcyclicWeightedAutomaton a) {
+		//conditions works when we have minimized automaton
+		//since the minimization algorithm would make one 
+		//accepting state
+		return !a.initial.isAccept() && a.initial.getTransitions().isEmpty();
+	}
+
 }
