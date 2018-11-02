@@ -1111,7 +1111,7 @@ public class Parser {
         // TODO: add starts with for sourceMap size 3 (two args)
         // assert the boolean constraint
         if (fName.equals("contains")) {
-
+        	
             solver.contains(result, base, arg);
 
         } else if (fName.equals("endsWith")) {

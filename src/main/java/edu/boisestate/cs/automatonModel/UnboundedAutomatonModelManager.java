@@ -68,7 +68,6 @@ public class UnboundedAutomatonModelManager
 
         // create string automaton
         Automaton stringAutomaton = BasicAutomata.makeString(string);
-
         // get string length as bound length
         int length = string.length();
 

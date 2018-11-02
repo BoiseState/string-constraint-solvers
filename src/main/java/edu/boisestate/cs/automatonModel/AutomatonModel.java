@@ -26,6 +26,7 @@ public abstract class AutomatonModel<T extends AutomatonModel>
     public int getBoundLength() {
         return boundLength;
     }
+    
 
     public abstract Set<String> getFiniteStrings();
 

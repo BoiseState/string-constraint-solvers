@@ -398,6 +398,7 @@ public class BasicAcyclicWeightedOperations {
 			while(!queue.isEmpty()){
 				//remove the elements
 				sOld = queue.remove(0);
+				WeightedState curr = sNew;
 				//for the pair of edges with the same symbol
 				for(WeightedTransition t1 : sOld.getFirst().getTransitions()){
 					for(WeightedTransition t2: sOld.getSecond().getTransitions()){
@@ -427,10 +428,11 @@ public class BasicAcyclicWeightedOperations {
 								oldToNew.put(oldToState, sNew);
 							}
 							
-							//add a weighted edge to sNew on that symbol
+							//add a weighted edge to curr on that symbol to the
+							//discovered state sNew
 							//where weights are multiplied
-							sNew.addTransition(new WeightedTransition(t1.getSymb(), 
-									oldToNew.get(sOld), t1.getWeight().multiply(t2.getWeight())));
+							curr.addTransition(new WeightedTransition(t1.getSymb(), 
+									sNew, t1.getWeight().multiply(t2.getWeight())));
 						}
 					}
 				}
@@ -446,6 +448,22 @@ public class BasicAcyclicWeightedOperations {
 		//since the minimization algorithm would make one 
 		//accepting state
 		return !a.initial.isAccept() && a.initial.getTransitions().isEmpty();
+	}
+
+	public static boolean run(AcyclicWeightedAutomaton a, String s) {
+		//we assume that our automaton is deterministic
+		WeightedState p = a.initial;
+		for(int i = 0; i < s.length() && p != null; i++){
+			for(WeightedTransition t : p.getTransitions()){
+				if(t.getSymb() == s.charAt(i)){
+					//assign the next state
+					p = t.getToState();
+					break;
+				}
+			}
+		}
+		boolean ret = p == null? false : p.isAccept();
+		return ret;
 	}
 
 }

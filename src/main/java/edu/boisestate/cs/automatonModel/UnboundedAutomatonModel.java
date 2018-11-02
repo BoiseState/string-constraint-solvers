@@ -587,7 +587,10 @@ public class UnboundedAutomatonModel
 
     @Override
     public boolean isEmpty() {
-        return this.automaton.isEmptyString();
+    	/* eas 10-31-18 why, why is EmptyString() ??? */
+        //return this.automaton.isEmptyString();
+    	//the correct code
+        return this.automaton.isEmpty();
     }
 
     @Override
@@ -813,10 +816,10 @@ public class UnboundedAutomatonModel
 
         // get arg automaton
         Automaton arg = getAutomatonFromUnboundedModel(argModel);
-
+System.out.println("this + " + automaton + " arg " + arg);
         // get intersection of automata
         Automaton result = this.automaton.intersection(arg);
-
+        System.out.println("res + " + result);
         // minimize result automaton
         result.minimize();
 

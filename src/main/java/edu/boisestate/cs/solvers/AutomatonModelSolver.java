@@ -58,9 +58,11 @@ public class AutomatonModelSolver
 
         // start timer
         BasicTimer.start();
-
+        System.out.println("bM " + baseModel + " aM " + argModel);
         // perform operation
         baseModel = baseModel.concatenate(argModel);
+        
+        System.out.println("Append " + baseModel + " id " + id);
 
         // stop timer
         BasicTimer.stop();
@@ -398,9 +400,20 @@ public class AutomatonModelSolver
         AutomatonModel model = this.symbolicStringMap.get(id);
         //why do we intersect? Why not just check whether 
         //the automaton accepts the string?
-        return model.containsString(actualValue);
+        System.out.println("M " + model + " id " + id + " val " + actualValue);
+        Boolean ret = true;
+        if(actualValue.equals("true")){
+        	//the intersected automaton should be nonempty
+        	ret = !model.isEmpty();
+        } else if(actualValue.equals("false")){
+        	//the intersected automaton should be empty
+        	ret = model.isEmpty();
+        } else {
+        	ret = model.containsString(actualValue);
+        }
+        return ret;
         
-        /* eas 10-20-18 old code
+        /* eas 10-20-18 old code 
 
         // get value model
         AutomatonModel value =
@@ -408,10 +421,10 @@ public class AutomatonModelSolver
 
         // intersect models
         AutomatonModel intersection = model.intersect(value);  
-
         // sound if intersection is not empty
         return !intersection.isEmpty();
         */
+     
     }
 
     @Override
@@ -443,7 +456,7 @@ public class AutomatonModelSolver
 
         // stop timer
         BasicTimer.stop();
-
+        System.out.println("M " + model + " id " + id);
         // store new model
         this.symbolicStringMap.put(id, model);
     }

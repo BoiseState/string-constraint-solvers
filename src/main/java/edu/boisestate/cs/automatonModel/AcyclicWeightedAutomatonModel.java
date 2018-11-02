@@ -48,9 +48,16 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel assertContainedInOther(AcyclicWeightedAutomatonModel containingModel) {
-		// TODO Auto-generated method stub
+		//a common approach is surround containedModel with all strings and then 
+		//take an intersection of this with that model
+		//here we limit to weighted automata with finite language, thus cannot append any string
+		//instead we surround with weighted automata with strings up to that max length
+		//of this automaton
+		//step 1 find max (or we can use number of states + 1 value, which might create larger automata)
+		this.automaton.getMaxLenght();
 		return null;
 	}
+
 
 	@Override
 	public AcyclicWeightedAutomatonModel assertContainsOther(AcyclicWeightedAutomatonModel containedModel) {
@@ -162,14 +169,15 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel concatenate(AcyclicWeightedAutomatonModel arg) {
-		
-		return null;
+		AcyclicWeightedAutomaton res = this.automaton.concatenate(arg.automaton);
+		//res.minimize();
+		return new AcyclicWeightedAutomatonModel(res, this.alphabet);
 	}
 
 	@Override
 	public boolean containsString(String actualValue) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		return automaton.run(actualValue);
 	}
 
 	@Override

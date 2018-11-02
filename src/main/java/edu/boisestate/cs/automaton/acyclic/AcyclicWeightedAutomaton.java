@@ -197,4 +197,30 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 		// TODO Auto-generated method stub
 		return BasicAcyclicWeightedOperations.isEmpty(this);
 	}
+
+	public boolean run(String s) {
+		// TODO Auto-generated method stub
+		return BasicAcyclicWeightedOperations.run(this, s);
+	}
+
+	/**
+	 * returns the max length of the accepted string.
+	 */
+	public int getMaxLenght() {
+		return traverseMaxLenght(initial,-1, -1);
+	}
+	
+	private int traverseMaxLenght(WeightedState curr, int currentMax, int currentLength){
+		currentLength++;
+		if(curr.isAccept()){
+			currentMax = currentLength;
+		}
+		for(WeightedTransition w : curr.getTransitions()){
+			int ret = traverseMaxLenght(w.getToState(), currentMax, currentLength);
+			if(ret > currentMax){
+				currentMax = ret;
+			}
+		}
+		return currentMax;
+	}
 }
