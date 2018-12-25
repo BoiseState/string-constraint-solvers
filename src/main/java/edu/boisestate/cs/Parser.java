@@ -68,16 +68,17 @@ public class Parser {
 //                                                       "solver");
                 }
             }
-
-            if (sourceMap.containsKey("s1")) {
-                int arg = sourceMap.get("s1");
-                if (!solver.isSound(arg, actualVal)) {
-                    System.err.println("Arg not sound:");
-                    System.err.println(solver.getValue(arg));
-//                    throw new IllegalArgumentException("Invalid arg in
-// solver");
-                }
-            }
+//eas 11-13-18: the actual value only recorded on the target, so
+            //the checks below do not make sense
+//            if (sourceMap.containsKey("s1")) {
+//                int arg = sourceMap.get("s1");
+//                if (!solver.isSound(arg, actualVal)) {
+//                    System.err.println("Arg not sound:");
+//                    System.err.println(solver.getValue(arg));
+////                    throw new IllegalArgumentException("Invalid arg in
+//// solver");
+//                }
+//            }
         }
 
 

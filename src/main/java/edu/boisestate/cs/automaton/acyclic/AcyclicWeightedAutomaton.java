@@ -1,12 +1,13 @@
 package edu.boisestate.cs.automaton.acyclic;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import edu.boisestate.cs.automaton.BasicWeightedOperations;
+import org.apache.commons.math3.fraction.Fraction;
 
 public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 	
@@ -104,7 +105,7 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 			for(WeightedState s : states){
 				WeightedState p = m.get(s);
 				for(WeightedTransition t : s.getTransitions()){
-					WeightedTransition r = new WeightedTransition(t.getSymb(), m.get(t.getToState()), t.getWeight());
+					WeightedTransition r = new WeightedTransition(p,t.getSymb(), m.get(t.getToState()), t.getWeight());
 					p.getTransitions().add(r);
 				}
 			}
@@ -145,6 +146,36 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
     		s.setNumber(number++);
     	}
     }
+    
+    /**
+    * Returns <a href="http://www.research.att.com/sw/tools/graphviz/"
+    * target="_top">Graphviz Dot</a> representation of this automaton.
+    */
+   public String toDot() {
+       StringBuilder b = new StringBuilder("digraph Automaton {\n");
+       b.append("  rankdir = LR;\n");
+       Set<WeightedState> states = getStates();
+       setStateNumbers(states);
+       for (WeightedState s : states) {
+           b.append("  ").append(s.getNumber());
+           if (s.isAccept()) {
+               b.append(" [shape=doubleoctagon");
+           } else {
+               b.append(" [shape=ellipse");
+           }
+           b.append(",label=\"").append(s.getNumber()).append(",").append(s.getWeight()).append("\"];\n");
+           if (s == initial) {
+               b.append("  initial [shape=plaintext,label=\"");
+               b.append("\"];\n");
+               b.append("  initial -> ").append(s.getNumber()).append("\n");
+           }
+           for (WeightedTransition t : s.getTransitions()) {
+               b.append("  ").append(s.getNumber());
+               t.appendDot(b);
+           }
+       }
+       return b.append("}\n").toString();
+   }
     
     
     
@@ -223,4 +254,28 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 		}
 		return currentMax;
 	}
+	
+	public BigInteger getStringCount(){
+		//currPrefixes are set to 1 due to the empty string
+		//System.out.println(this);
+		Fraction count = countStrings(initial, new Fraction(1));
+		//System.out.println(count);
+		return BigInteger.valueOf(count.longValue());
+	}
+	
+	private Fraction countStrings(WeightedState curr, Fraction currPrefixes){
+		Fraction currCount = new Fraction(0);
+		//System.out.println("In " + curr + " " + currCount + " " + currPrefixes);
+		if(curr.isAccept()){
+			currCount = currCount.add(currPrefixes.multiply(curr.getWeight()));
+		}
+		for(WeightedTransition w : curr.getTransitions()){
+			currCount = currCount.add(countStrings(w.getToState(), currPrefixes.multiply(w.getWeight())));
+		}
+		
+		//System.out.println("count " + currCount);
+		return currCount;
+	}
+	
+	
 }

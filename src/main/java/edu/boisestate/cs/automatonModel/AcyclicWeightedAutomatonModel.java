@@ -1,10 +1,15 @@
 package edu.boisestate.cs.automatonModel;
 
+import java.io.File;
 import java.math.BigInteger;
 import java.util.Set;
 
 import edu.boisestate.cs.Alphabet;
+import edu.boisestate.cs.automaton.WeightedState;
+import edu.boisestate.cs.automaton.WeightedTransition;
 import edu.boisestate.cs.automaton.acyclic.AcyclicWeightedAutomaton;
+import edu.boisestate.cs.automaton.acyclic.BasicAcyclicWeightedAutomaton;
+import edu.boisestate.cs.util.DotToGraph;
 
 public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeightedAutomatonModel>{
 	
@@ -48,21 +53,67 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel assertContainedInOther(AcyclicWeightedAutomatonModel containingModel) {
-		//a common approach is surround containedModel with all strings and then 
+	
+		return null;
+	}
+
+
+
+	@Override
+	public AcyclicWeightedAutomatonModel assertContainsOther(AcyclicWeightedAutomatonModel containedModel) {
+		//a common approach is to surround containedModel with all strings and then 
 		//take an intersection of this with that model
 		//here we limit to weighted automata with finite language, thus cannot append any string
 		//instead we surround with weighted automata with strings up to that max length
 		//of this automaton
 		//step 1 find max (or we can use number of states + 1 value, which might create larger automata)
-		this.automaton.getMaxLenght();
-		return null;
-	}
-
-
-	@Override
-	public AcyclicWeightedAutomatonModel assertContainsOther(AcyclicWeightedAutomatonModel containedModel) {
-		// TODO Auto-generated method stub
-		return null;
+		int maxLength = this.automaton.getMaxLenght();
+		automaton.determinize();
+		//automaton.normalize();
+		System.out.println("This: " + automaton);
+		DotToGraph.outputDotFile(automaton.toDot(), "this");
+		automaton.normalize();
+		DotToGraph.outputDotFile(automaton.toDot(), "thisN");
+		
+		System.out.println("Max L " + maxLength);
+		AcyclicWeightedAutomaton prefix = BasicAcyclicWeightedAutomaton.makeCharSet(alphabet.getCharSet()).repeat(0, maxLength);
+		prefix.determinize();
+		//prefix.normalize();
+		System.out.println("Prefix\n" + prefix);
+		DotToGraph.outputDotFile(prefix.toDot(), "prefix");
+		AcyclicWeightedAutomaton suffix = BasicAcyclicWeightedAutomaton.makeCharSet(alphabet.getCharSet()).repeat(0, maxLength);
+		suffix.determinize();
+		//suffix.normalize();
+		System.out.println("Suffix\n" + suffix);
+		DotToGraph.outputDotFile(suffix.toDot(), "suffix");
+		AcyclicWeightedAutomaton contained = containedModel.automaton;
+		contained.determinize();
+		//contained.normalize();
+		System.out.println("Other: " + contained);
+		DotToGraph.outputDotFile(contained.toDot(), "other");;
+		AcyclicWeightedAutomaton x = prefix.concatenate(contained);
+		x.determinize();
+		//x.normalize();
+		System.out.println("X1: " + x);
+		DotToGraph.outputDotFile(x.toDot(), "X1");
+		x = x.concatenate(suffix);
+		System.out.println("X2: " + x);
+		DotToGraph.outputDotFile(x.toDot(), "X2");
+		x.determinize();
+		//x.normalize();
+		System.out.println("X2D: " + x);
+		DotToGraph.outputDotFile(x.toDot(), "X2D");
+		x.normalize();
+		DotToGraph.outputDotFile(x.toDot(), "X2DN");
+		AcyclicWeightedAutomaton ret = this.automaton.intersection(x);
+		System.out.println("Ret: " + ret);
+		DotToGraph.outputDotFile(ret.toDot(), "RET");
+		ret.determinize();
+		ret.normalize();
+		DotToGraph.outputDotFile(ret.toDot(), "RET_DN");
+		System.out.println("Ret: " + ret);
+		System.exit(2);
+		return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
 	}
 
 	@Override
@@ -206,8 +257,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public BigInteger modelCount() {
-		// TODO Auto-generated method stub
-		return null;
+		return automaton.getStringCount();
 	}
 
 	@Override
@@ -293,5 +343,11 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getAutomaton() {
+		return automaton.toString();
+	}
+	
 
 }

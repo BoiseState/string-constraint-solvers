@@ -1092,4 +1092,9 @@ public class AggregateAutomataModel
         // return results
         return new Tuple<>(returnAutomata, returnFactors);
     }
+
+	@Override
+	public String getAutomaton() {
+		return automata.toString();
+	}
 }

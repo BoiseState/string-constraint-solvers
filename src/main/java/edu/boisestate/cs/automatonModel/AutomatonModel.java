@@ -20,7 +20,7 @@ public abstract class AutomatonModel<T extends AutomatonModel>
     protected final Alphabet alphabet;
     protected int boundLength;
     protected AutomatonModelManager modelManager;
-
+    
     public abstract String getAcceptedStringExample();
 
     public int getBoundLength() {
@@ -244,4 +244,6 @@ public abstract class AutomatonModel<T extends AutomatonModel>
         // return automaton
         return returnAutomaton;
     }
+    
+    public abstract String getAutomaton();
 }

@@ -14,8 +14,8 @@ public class UnboundedAutomatonModel
 
     private Automaton automaton;
 
-    Automaton getAutomaton() {
-        return this.automaton;
+   public String getAutomaton() {
+        return this.automaton.toString();
     }
 
     UnboundedAutomatonModel(Automaton automaton,

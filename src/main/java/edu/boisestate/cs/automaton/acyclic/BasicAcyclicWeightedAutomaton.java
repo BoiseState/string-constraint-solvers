@@ -35,7 +35,7 @@ final public class BasicAcyclicWeightedAutomaton {
 		//the weight should be default one 1/1
 		Set<WeightedTransition> s1Trans = s1.getTransitions();
 		for(int i=0; i < set.length(); i++){
-			s1Trans.add(new WeightedTransition(set.charAt(i), s2));
+			s1Trans.add(new WeightedTransition(s1,set.charAt(i), s2));
 		}
 		return ret;
 	}
@@ -78,7 +78,7 @@ final public class BasicAcyclicWeightedAutomaton {
 		for(int i=0; i < string.length(); i++){
 			WeightedState s2 = new WeightedState();
 			Set<WeightedTransition> s1Trans = s1.getTransitions();
-			s1Trans.add(new WeightedTransition(string.charAt(i), s2));
+			s1Trans.add(new WeightedTransition(s1,string.charAt(i), s2));
 			s1 = s2;
 		}
 		//the last state should be the final state

@@ -11,12 +11,13 @@ import java.util.Set;
 
 public class BoundedAutomatonModel
         extends AutomatonModel {
-
-    private Automaton automaton;
-
-    Automaton getAutomaton() {
-        return this.automaton;
-    }
+	
+	
+	private Automaton automaton;
+	
+	public String getAutomaton(){
+		return automaton.toString();
+	}
 
     BoundedAutomatonModel(Automaton automaton,
                           Alphabet alphabet,

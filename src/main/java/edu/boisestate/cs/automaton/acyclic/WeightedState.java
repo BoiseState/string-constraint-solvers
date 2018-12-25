@@ -99,7 +99,7 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 			//the weight of epsilon transition is always one
 			//thus newWeight is the weight of t.
 			Fraction newWeight = t.getWeight();
-			WeightedTransition newT = new WeightedTransition(t.getSymb(), t.getToState(), newWeight);
+			WeightedTransition newT = new WeightedTransition(this,t.getSymb(), t.getToState(), newWeight);
 			//right now we assume if there are other transitions to to.getToState() from this
 			//then we will have duplicate transitions.
 			transitions.add(newT);
@@ -125,30 +125,50 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 	 * concat operation
 	 * @param toState
 	 */
-	public void addEpsilonTransition(WeightedState toState){
+	public void addEpsilonTransition(Set<WeightedTransition> incoming, WeightedState toState){
 		//first create the transitions
-		for(WeightedTransition t : toState.getTransitions()){
-			//calculate the weight of the transition
-			//the weight of epsilon transition is always one
-			//thus newWeight is the weight of t.
-			Fraction newWeight = t.getWeight();
-			WeightedTransition newT = new WeightedTransition(t.getSymb(), t.getToState(), newWeight);
-			//right now we assume if there are other transitions to to.getToState() from this
-			//then we will have duplicate transitions.
-			transitions.add(newT);
-		}
-		
-		//update the weights if toState is final
-		if(toState.isAccept()){
-			if(accept){
-				w = w.multiply(toState.getWeight());
-			} else {
-				accept = true;
-				w = toState.getWeight();
+
+		//1. Scenario when tis state has no incoming transitions
+		if(incoming.isEmpty()){
+			for(WeightedTransition t : toState.getTransitions()){
+				//unless this state is final, then 
+				WeightedTransition newT = new WeightedTransition(this,t.getSymb(), t.getToState(),t.getWeight());
+				//right now we assume if there are other transitions to to.getToState() from this
+				//then we will have duplicate transitions.
+				transitions.add(newT);
+			}
+			//for general weighted automata should also update the incoming edges,
+			//but for acyclic no need to do so - for union we connect to the start
+			//states that have no incoming edges and for the concat
+			//we connect to the start state again.
+
+			//update the weights if toState is final
+			if(toState.isAccept()){
+				if(accept){
+					w = w.multiply(toState.getWeight());
+				} else {
+					accept = true;
+					w = toState.getWeight();
+				}
+			}
+		} else {
+			//2. Scenario when there are incoming transition
+			// Re-route them to toState and update the weight if this
+			//state is the final state
+			for(WeightedTransition in : incoming){
+				Fraction newWeight = in.getWeight();
+				if(accept){
+					//multiple the the weight by the weight of the
+					//accepting state
+					newWeight = newWeight.multiply(w);
+				}
+				WeightedTransition newT = new WeightedTransition(in.getFromState(), in.getSymb(), toState, newWeight);
+				//add the transition to the source of the incoming state
+				in.getFromState().addTransition(newT);
 			}
 		}
 	}
-	
+
 	/**
 	 * Adding a new transition, which might already
 	 * exists in the set

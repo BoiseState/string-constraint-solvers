@@ -27,16 +27,13 @@ public class BasicAcyclicWeightedOperations {
 		a2 = a2.clone();
 		//get accept states of a1
 		for(WeightedState s : a1.getAcceptStates()){
-			s.addEpsilonTransition(a2.initial);
-			//need to do it second since 
-			//if s is final then its new weight
-			//is calculated differently when a2.initial
-			//is also final.
-			//only going to set to false if a2.initial is
-			//not final, otherwise it will undo epsilon transition
-			//marking of s as final when a2.initial is final 
-			//i.e., final of a2 is pushed up to a1
-			if(!a2.initial.isAccept()){
+			Set<WeightedTransition> incoming = a1.getIncoming(s);
+			s.addEpsilonTransition(incoming, a2.initial);
+			//1. Scenario
+			//if a2.initial is final and no incoming edges for a1,
+			//then don't change s to not being final,
+			//otherwise Scenario 2 do
+			if(!incoming.isEmpty() || !a2.initial.isAccept()){
 				s.setAccept(false);
 			}
 		}
@@ -81,7 +78,8 @@ public class BasicAcyclicWeightedOperations {
 	 * @param a
 	 */
 	public static void determinize(AcyclicWeightedAutomaton a) {
-
+		//remove dead states
+		removeUnreachableStates(a);
 		WeightedState oldInit = a.getInitialState();
 
 		Map<Set<Pair<WeightedState, Fraction>>, WeightedState> waStates = 
@@ -118,7 +116,7 @@ public class BasicAcyclicWeightedOperations {
 					labelSet.add(t.getSymb());
 				}
 			}
-			System.out.println("labelSet: " + labelSet);
+			//System.out.println("labelSet: " + labelSet);
 			//for each input label on the transition of states in pP pairs
 			for(char label : labelSet){
 				//calculate the new weight of that label
@@ -128,7 +126,7 @@ public class BasicAcyclicWeightedOperations {
 				//now compute the new state, which is a set of pair
 				Set<Pair<WeightedState, Fraction>> qPPre = new HashSet<Pair<WeightedState, Fraction>>();
 				for(Pair<WeightedState, Fraction> pv : pP){
-					System.out.println("PV: " + pv);
+					//System.out.println("PV: " + pv);
 
 					//get the state
 					WeightedState p = pv.getFirst();
@@ -136,7 +134,7 @@ public class BasicAcyclicWeightedOperations {
 					Set<WeightedTransition> wt = p.getTransitions();
 					//for all transitions
 					for(WeightedTransition t : wt){
-						System.out.println("t: " + t + " " + wP);
+						//System.out.println("t: " + t + " " + wP);
 						//determine if label between min and max
 						if(t.getSymb() == label){
 							//get the weight and multiple by the fraction of s
@@ -149,7 +147,7 @@ public class BasicAcyclicWeightedOperations {
 						}
 					}//end for t:wt
 				}// end pv : pP for new trans weight calc
-				System.out.println("new trans weight: " + wP);
+				//System.out.println("new trans weight: " + wP);
 
 				//the new state
 				Set<Pair<WeightedState, Fraction>> qP = new HashSet<Pair<WeightedState, Fraction>>(); 
@@ -169,14 +167,14 @@ public class BasicAcyclicWeightedOperations {
 					waS = new WeightedState();
 					waStates.put(qP, waS);
 				}
-				System.out.println("New state: " + qP);
+				//System.out.println("New state: " + qP);
 				//now create a transition for between pP and qP
 				//make sure that the state is in the map
 				if(waStates.containsKey(pP)){
 					//get the state
 					WeightedState from = waStates.get(pP);
-					from.addTransition(new WeightedTransition(label,waS,wP));
-					System.out.println("New trans: " + from);
+					from.addTransition(new WeightedTransition(from,label,waS,wP));
+					//System.out.println("New trans: " + from);
 				} else{
 					System.err.println("cannot find state in the map!");
 				}
@@ -192,7 +190,7 @@ public class BasicAcyclicWeightedOperations {
 							finalW = finalW.add(qvP.getSecond().multiply(qvP.getFirst().getWeight()));
 						}
 					}
-					System.out.println("Final weight: " + finalW);
+					//System.out.println("Final weight: " + finalW);
 					if(finalW != Fraction.ZERO){
 						//means found at least one non-final state
 						waS.setAccept(true);
@@ -206,7 +204,27 @@ public class BasicAcyclicWeightedOperations {
 		}//end of while loop for queue
 	}
 	
+	private static void removeUnreachableStates(AcyclicWeightedAutomaton a){
+		//find all states that are non-final but have no outgoing transitions
+		boolean found = true;
+		while(found){
+			found = false;
+			for(WeightedState s : a.getStates()){
+				if(!s.isAccept() && s.getTransitions().isEmpty()){
+					found = true;//need to go more over all states.
+					for(WeightedTransition wt : a.getIncoming(s)){
+						//remove that transition for fromState to 
+						wt.getFromState().getTransitions().remove(wt);
+					}
+				}
+			}
+		}
+	}
+	
 	public static void normalize(AcyclicWeightedAutomaton a){
+		//make sure remove all dead states first
+		
+		
 		//BFS until reached a final state with no more transitions
 		//staring from the start state
 		List<WeightedState> queue = new ArrayList<WeightedState>();
@@ -228,12 +246,12 @@ public class BasicAcyclicWeightedOperations {
 				}
 			}
 		}
-		System.out.println(queue);
+		//System.out.println(queue);
 
 		while(!queue.isEmpty()){
 			//process a state and add it predecessors into the queue
 			WeightedState curr = queue.remove(queue.size()-1);
-			System.out.println("curr " + curr);
+			//System.out.println("curr " + curr);
 			//compute the factor
 			//call on the successors
 			Set<WeightedTransition> outs = curr.getTransitions();
@@ -254,12 +272,12 @@ public class BasicAcyclicWeightedOperations {
 			//collect fraction's denominators from outgoing edges
 			for(WeightedTransition tSucc : curr.getTransitions()){;
 				pushedWeights[i] = tSucc.getWeight().getDenominator();
-				System.out.println("pw " + pushedWeights[i]);
+				//System.out.println("pw " + pushedWeights[i]);
 				i++;
 			}
 			//find least common multiplier for all weights
 			int lcm = lcmArr(pushedWeights);
-			System.out.println("lcm: " + lcm);
+			//System.out.println("lcm: " + lcm);
 			
 			//update the weight of the incoming and the current weight
 			//if the state is final or the start state
@@ -273,7 +291,7 @@ public class BasicAcyclicWeightedOperations {
 			//get the incoming transitions and divide them by lcm
 			Set<WeightedTransition> ins = a.getIncoming(curr);
 			for(WeightedTransition inPred : ins){
-				System.out.println("inPred: " + inPred);
+				//System.out.println("inPred: " + inPred);
 				inPred.setWeight(inPred.getWeight().divide(lcm));
 			}
 		}
@@ -293,7 +311,6 @@ public class BasicAcyclicWeightedOperations {
 		int result = arr[0];
 		for(int i=1; i < arr.length; i++){
 			result = gcd(arr[i], result);
-			System.out.println(result);
 		}
 		return result;
 	}
@@ -344,14 +361,14 @@ public class BasicAcyclicWeightedOperations {
 			while(diff > 0){
 				AcyclicWeightedAutomaton temp1 = a.clone();
 				for(WeightedState p : temp1.getAcceptStates()){
-					p.addEpsilonTransition(temp2.initial);
+					p.addEpsilonTransition(a.getIncoming(p),temp2.initial);
 				}
 				temp2 = temp1;
 				diff--;
 			}
 			//attach temp2 to ret
 			for(WeightedState p : ret.getAcceptStates()){
-				p.addEpsilonTransition(temp2.initial);
+				p.addEpsilonTransition(a.getIncoming(p),temp2.initial);
 			}
 		}
 		
@@ -398,10 +415,15 @@ public class BasicAcyclicWeightedOperations {
 			while(!queue.isEmpty()){
 				//remove the elements
 				sOld = queue.remove(0);
-				WeightedState curr = sNew;
+				//System.out.println("Old " + sOld);
+				//get the corresponding state of the ret automaton
+				WeightedState curr = oldToNew.get(sOld);
 				//for the pair of edges with the same symbol
+				//System.out.println("Old " + sOld.getFirst());
 				for(WeightedTransition t1 : sOld.getFirst().getTransitions()){
+					//System.out.println("t1 " + t1 + "\n " + sOld.getSecond() + " T " + sOld.getSecond().getTransitions());
 					for(WeightedTransition t2: sOld.getSecond().getTransitions()){
+						//System.out.println("t2 " + t2);
 						if(t1.getSymb() == t2.getSymb()){
 							//the same symbols
 							//find toState for each
@@ -431,7 +453,7 @@ public class BasicAcyclicWeightedOperations {
 							//add a weighted edge to curr on that symbol to the
 							//discovered state sNew
 							//where weights are multiplied
-							curr.addTransition(new WeightedTransition(t1.getSymb(), 
+							curr.addTransition(new WeightedTransition(curr, t1.getSymb(), 
 									sNew, t1.getWeight().multiply(t2.getWeight())));
 						}
 					}
@@ -440,6 +462,7 @@ public class BasicAcyclicWeightedOperations {
 				
 			}
 		}
+		
 		return ret; 
 	}
 

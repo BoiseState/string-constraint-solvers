@@ -1214,4 +1214,10 @@ public class WeightedAutomatonModel extends AutomatonModel {
         // return automaton
         return returnAutomaton;
     }
+
+	@Override
+	public String getAutomaton() {
+		
+		return automata.toString();
+	}
 }
