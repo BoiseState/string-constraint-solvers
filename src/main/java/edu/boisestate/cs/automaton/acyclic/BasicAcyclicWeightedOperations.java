@@ -10,6 +10,8 @@ import java.util.Set;
 import org.apache.commons.math3.fraction.Fraction;
 import org.apache.commons.math3.util.Pair;
 
+import edu.boisestate.cs.util.DotToGraph;
+
 public class BasicAcyclicWeightedOperations {
 
 
@@ -366,11 +368,16 @@ public class BasicAcyclicWeightedOperations {
 				temp2 = temp1;
 				diff--;
 			}
+			
+			DotToGraph.outputDotFile(ret.toDot(), "ret");
+
+			DotToGraph.outputDotFile(temp2.toDot(), "temp2");
 			//attach temp2 to ret
 			for(WeightedState p : ret.getAcceptStates()){
-				p.addEpsilonTransition(a.getIncoming(p),temp2.initial);
+				p.addEpsilonTransition(ret.getIncoming(p),temp2.initial);
 			}
 		}
+		DotToGraph.outputDotFile(ret.toDot(), "retFinal");
 		
 		return ret;
 	}
@@ -464,6 +471,22 @@ public class BasicAcyclicWeightedOperations {
 		}
 		
 		return ret; 
+	}
+	
+	/**
+	 * Complement operation is not defined on Weighted Automata since
+	 * "negation is not defined for all semirings" ref. Mohri 
+	 * "Weighted Automata Algorithms" p. 19
+	 * So the incoming automata is flattened (all weights set to 1), 
+	 * completed (all alphabet symbols can be read from any state) and
+	 * complimented (final -> nonfinal and vice versa).
+	 * @param a
+	 * @return
+	 */
+	public static AcyclicWeightedAutomaton complement(AcyclicWeightedAutomaton a){
+		a = a.clone();
+		a.complement();
+		return a;
 	}
 
 	public static boolean isEmpty(AcyclicWeightedAutomaton a) {

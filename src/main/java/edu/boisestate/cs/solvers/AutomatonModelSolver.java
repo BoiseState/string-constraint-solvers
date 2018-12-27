@@ -111,6 +111,8 @@ public class AutomatonModelSolver
             BasicTimer.stop();
         }
 
+        System.out.println("base " + base + " m " + baseModel);
+        System.out.println("base " + arg + " m " + argModel);
         // store result models
         this.symbolicStringMap.put(base, baseModel);
         this.symbolicStringMap.put(arg, argModel);

@@ -123,12 +123,13 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 	/**
 	 * When adding one transition at a time, e.g.,
 	 * concat operation
-	 * @param toState
+	 * @param incoming - the transitions incoming into this state
+	 * @param toState - the state to create epsilong transtion to
 	 */
 	public void addEpsilonTransition(Set<WeightedTransition> incoming, WeightedState toState){
 		//first create the transitions
 
-		//1. Scenario when tis state has no incoming transitions
+		//1. Scenario when this state has no incoming transitions
 		if(incoming.isEmpty()){
 			for(WeightedTransition t : toState.getTransitions()){
 				//unless this state is final, then 
