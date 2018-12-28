@@ -212,7 +212,7 @@ public class BasicAcyclicWeightedOperations {
 		while(found){
 			found = false;
 			for(WeightedState s : a.getStates()){
-				if(!s.isAccept() && s.getTransitions().isEmpty()){
+				if(!s.isAccept() && s.getTransitions().isEmpty() && s != a.initial){
 					found = true;//need to go more over all states.
 					for(WeightedTransition wt : a.getIncoming(s)){
 						//remove that transition for fromState to 
@@ -223,9 +223,31 @@ public class BasicAcyclicWeightedOperations {
 		}
 	}
 	
+	/**
+	 * If performs minus operation on a1 and a2: a1 \cap \not a2
+	 *  If a2 is weighted, then
+	 * all weights are set to 1 when complement operations performed.
+	 * @param a1
+	 * @param a2
+	 * @return
+	 */
+	public static AcyclicWeightedAutomaton minus(AcyclicWeightedAutomaton a1, AcyclicWeightedAutomaton a2){
+		AcyclicWeightedAutomaton ret;
+		if(a1.isEmpty() || a1 == a2){
+			ret = BasicAcyclicWeightedAutomaton.makeEmpty();
+		} else if (a2.isEmpty()){
+			return a1.clone();
+		} else {
+			a2 = a2.complement();
+			ret = a1.intersection(a2);
+		}
+		return ret;
+	}
+	
 	public static void normalize(AcyclicWeightedAutomaton a){
 		//make sure remove all dead states first
-		
+		removeUnreachableStates(a);
+		if(a.isEmpty()) return;
 		
 		//BFS until reached a final state with no more transitions
 		//staring from the start state
@@ -480,13 +502,46 @@ public class BasicAcyclicWeightedOperations {
 	 * So the incoming automata is flattened (all weights set to 1), 
 	 * completed (all alphabet symbols can be read from any state) and
 	 * complimented (final -> nonfinal and vice versa).
+	 * 
+	 * Creates the complement of the flatten version
+	 * of this automaton. There is not definition
+	 * for the complement of weighted automaton since
+	 * not all semiring have negation defined.
+	 * eas: 12-27-18, negation is defined on rational
+	 * semiring Q, i.e., Q is a field, 
+	 * but more likely how one would deal with negative
+	 * weights? If we would know the "upper" limit, e.g,
+	 * 100 strings of "AA" is the max, and this automaton
+	 * accepts 25/1 of them, then the negated should accept 75/1 
+	 * of them. Simply using the negation of -25/1 does not
+	 * make any sense.
+	 * @return 
+	 */
+
+	public static AcyclicWeightedAutomaton complement(AcyclicWeightedAutomaton a){
+		AcyclicWeightedAutomaton ret  = a.flatten();
+				//negate accept to non-accept and vice versa
+				for(WeightedState s : ret.getStates()){
+					s.setAccept(!s.isAccept());
+				}
+		return ret;
+	}
+	
+	/**
+	 * Creates a flatten copy of the parameter
 	 * @param a
 	 * @return
 	 */
-	public static AcyclicWeightedAutomaton complement(AcyclicWeightedAutomaton a){
-		a = a.clone();
-		a.complement();
-		return a;
+	public static AcyclicWeightedAutomaton flatten (AcyclicWeightedAutomaton a){
+		AcyclicWeightedAutomaton ret = a.clone();
+		for(WeightedState s : ret.getStates()){
+			s.setWeight(new Fraction(1,1));
+			for(WeightedTransition t : s.getTransitions()){
+				t.setWeight(new Fraction(1,1));
+			}
+		}
+		
+		return ret;
 	}
 
 	public static boolean isEmpty(AcyclicWeightedAutomaton a) {
@@ -510,6 +565,86 @@ public class BasicAcyclicWeightedOperations {
 		}
 		boolean ret = p == null? false : p.isAccept();
 		return ret;
+	}
+
+	/**
+	 * Completes a by creating an equivalent automaton to a that all alphabet 
+	 * symbols can be read from any state up to the bound.
+	 * @param a - the automaton be competed
+	 * @param bound - the bound for the string length
+	 * @param symbols - the alphabet symbols.
+	 * @return
+	 */
+	public static AcyclicWeightedAutomaton complete(AcyclicWeightedAutomaton a, int bound,
+			String symbols) {
+		
+		AcyclicWeightedAutomaton ret = a.clone();
+		//1. create and automaton that accepts
+				//all strings up to the bound
+				//create a single one
+				AcyclicWeightedAutomaton compl = BasicAcyclicWeightedAutomaton.makeCharSet(symbols);
+				//DotToGraph.outputDotFile(compl.toDot(), "compl1");
+				//create set for abc
+				Set<Character> abc = new HashSet<Character>();
+				for(WeightedTransition t : compl.initial.getTransitions()){
+					abc.add(t.getSymb());
+				}
+				//repeat it bound times.
+				compl = compl.repeat(0, bound);
+				//DotToGraph.outputDotFile(compl.toDot(), "compl2");
+				//2. negate it
+				compl = compl.complement();
+				//DotToGraph.outputDotFile(compl.toDot(), "compl3");
+				//3. create a map that for each depth of compl records its state
+				Map<Integer, WeightedState> depthState = new HashMap<Integer, WeightedState>();
+				//there should only one single toState
+				WeightedState next = compl.initial;
+				//there will be bound+1 states, so from 0 to bound incl
+				for(int depthCount = 0; depthCount < bound; depthCount++){
+					depthState.put(depthCount, next);
+					//there should be no exception throws since we know the depth
+					next = next.getTransitions().iterator().next().getToState();
+				}
+				//add the last one that don't have transitions
+				depthState.put(bound, next);
+				//call recursive algorithm on this automaton
+				//System.out.println("map " + depthState);
+				completeDFS(depthState, 1, abc, ret.initial, new HashSet<WeightedState>());
+		return ret;
+	}
+	
+	private static void completeDFS(Map<Integer, WeightedState> depthState, int depth, Set<Character> abc, WeightedState s, Set<WeightedState> visited){
+		if(!visited.contains(s)){
+			//System.out.println(depth + " s " + s + " possible "  + depthState.get(depth));
+
+			//1. get all the symbols of the outgoing transition for s
+			//2. find the difference between two
+			//Do it by adding all elements of the alphabet and
+			//remove for which the state has transitions in place.
+			Set<Character> transSet = new HashSet<Character>();
+			transSet.addAll(abc);
+			for(WeightedTransition wt : s.getTransitions()){
+				transSet.remove(wt.getSymb());
+			}
+
+			//3. call recursively on its children at the greater depths
+			depth++;
+			for(WeightedTransition wt : s.getTransitions()){
+				//System.out.println("Next " + depth + " abc " + abc + " " + wt.getToState());
+				completeDFS(depthState, depth, abc, wt.getToState(), visited);
+			}
+			visited.add(s);
+			//now we can modify the transition set
+			//4. for the remaining symbols create the transitions to the appropriate depth state
+			//if not the max state
+			WeightedState toState = depthState.get(depth-1);
+			if(toState != null){
+				for(Character c : transSet){
+					WeightedTransition t = new WeightedTransition(s, c, toState);
+					s.addTransition(t);
+				}
+			}
+		}
 	}
 
 }

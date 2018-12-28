@@ -589,6 +589,7 @@ public abstract class ExtendedSolver<TSymbolicString> {
             lastArg = null;
             lastArgId = -1;
         }
+        
     }
 
     /**

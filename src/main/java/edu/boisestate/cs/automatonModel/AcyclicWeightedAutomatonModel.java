@@ -56,7 +56,8 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	     //this has substring of other
 		AcyclicWeightedAutomaton other = containingModel.automaton;
 		//eas: as of 12-26-18, return unchanged
-		return new AcyclicWeightedAutomatonModel(automaton, alphabet, boundLength);
+		DotToGraph.outputDotFile(automaton.toDot(), "containedInOtherRet");
+		return new AcyclicWeightedAutomatonModel(automaton.clone(), alphabet, boundLength);
 	}
 
 
@@ -72,10 +73,10 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		int maxLength = this.automaton.getMaxLenght();
 		automaton.determinize();
 		//automaton.normalize();
-		//System.out.println("This: " + automaton);
+		System.out.println("Here 1 ");
 		//DotToGraph.outputDotFile(automaton.toDot(), "this");
 		automaton.normalize();
-		//DotToGraph.outputDotFile(automaton.toDot(), "thisN");
+		//DotToGraph.outputDotFile(automaton.toDot(), "containsInBase");
 		
 		//System.out.println("Max L " + maxLength);
 		AcyclicWeightedAutomaton prefix = BasicAcyclicWeightedAutomaton.makeCharSet(alphabet.getCharSet()).repeat(0, maxLength);
@@ -108,15 +109,22 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		x.normalize();
 		//DotToGraph.outputDotFile(x.toDot(), "X2DN");
 		//for a just a single string we can remove the weights
-		x.flatten();
-		AcyclicWeightedAutomaton ret = this.automaton.intersection(x);
+		x = x.flatten();
+		//DotToGraph.outputDotFile(x.toDot(), "containsInArg");
+		//System.out.println("Here 2 ");
+		AcyclicWeightedAutomaton ret = automaton.intersection(x);
+		//System.out.println("Here 3 ");
 		//System.out.println("Ret: " + ret);
-		//DotToGraph.outputDotFile(ret.toDot(), "RET");
+		//System.out.println(ret.toDot());
+		DotToGraph.outputDotFile(ret.toDot(), "RET");
+		//System.out.println("Here 4 ");
 		ret.determinize();
+		//System.out.println("Here 5 ");
 		ret.normalize();
-		//DotToGraph.outputDotFile(ret.toDot(), "RET_DN");
+		DotToGraph.outputDotFile(ret.toDot(), "containsOtherRet");
 		//System.out.println("Ret: " + ret);
 		//System.exit(2);
+		
 		return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
 	}
 
@@ -157,22 +165,39 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	}
 
 	@Override
-	public AcyclicWeightedAutomatonModel assertNotContainedInOther(AcyclicWeightedAutomatonModel notContainingModel) {
+	public AcyclicWeightedAutomatonModel assertNotContainsOther(AcyclicWeightedAutomatonModel notContainingModel) {
 		//create the set minus of this and notContainingModel
 		//1. complete nonContainingModel
-		AcyclicWeightedAutomaton notContaining = notContainingModel.automaton;
-		notContaining.complete(automaton.getMaxLenght(), alphabet.getCharSet());
-		//2.
+		AcyclicWeightedAutomaton notContaining = notContainingModel.automaton.flatten();
+		//up to the maxLenght of notContaining should work since we will surround it
+		//with  .*
+		//System.out.println("ABC " + alphabet.getCharSet() + " length " + notContaining.getMaxLenght());
+		notContaining = notContaining.complete(notContaining.getMaxLenght(), alphabet.getCharSet());
+		//notContaining.determinize();
+		//DotToGraph.outputDotFile(notContaining.toDot(), "notContainsOtherArg1");
 		
-		this.automaton.
-		return new AcyclicWeightedAutomatonModel(automaton, alphabet, boundLength);
+		int maxLength = automaton.getMaxLenght();
+		//DotToGraph.outputDotFile(automaton.toDot(), "notContainsOtherBase");
+		
+		//2. concatenate it with .* on both sides
+		AcyclicWeightedAutomaton prefix = BasicAcyclicWeightedAutomaton.makeCharSet(alphabet.getCharSet()).repeat(0, maxLength);
+		prefix.determinize();
+		AcyclicWeightedAutomaton suffix = BasicAcyclicWeightedAutomaton.makeCharSet(alphabet.getCharSet()).repeat(0, maxLength);
+		suffix.determinize();
+		notContaining = prefix.concatenate(notContaining).concatenate(suffix);
+		notContaining.determinize();
+		//DotToGraph.outputDotFile(notContaining.toDot(), "notContainsInArg2");
+		AcyclicWeightedAutomaton ret = automaton.minus(notContaining);
+		DotToGraph.outputDotFile(ret.toDot(), "notContainsOtherRet");
+		return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
 	}
 
 	@Override
-	public AcyclicWeightedAutomatonModel assertNotContainsOther(AcyclicWeightedAutomatonModel notContainedModel) {
+	public AcyclicWeightedAutomatonModel assertNotContainedInOther(AcyclicWeightedAutomatonModel notContainedModel) {
 		// TODO Auto-generated method stub
 		// eas: as of 12-26-18 returns as is
-		return new AcyclicWeightedAutomatonModel(automaton, alphabet, boundLength);
+		DotToGraph.outputDotFile(automaton.toDot(), "notContainedInOtherRet");
+		return new AcyclicWeightedAutomatonModel(automaton.clone(), alphabet, boundLength);
 	}
 
 	@Override

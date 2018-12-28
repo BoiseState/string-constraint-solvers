@@ -4,6 +4,7 @@ import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.BasicTimer;
 import edu.boisestate.cs.automatonModel.AutomatonModel;
 import edu.boisestate.cs.automatonModel.AutomatonModelManager;
+import edu.boisestate.cs.util.DotToGraph;
 import edu.boisestate.cs.util.Tuple;
 
 public class AutomatonModelSolver
@@ -78,6 +79,8 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
+        System.out.println("base " + base + " m\t" + baseModel + "\tresult " + result);
+        System.out.println("arg " + arg + " m\t "  + argModel);
         // true branch
         if (result) {
 
@@ -86,10 +89,11 @@ public class AutomatonModelSolver
 
             // get satisfying base model
             baseModel = baseModel.assertContainsOther(argModel);
-
+            System.out.println("Done with baseModel");
             // get satisfying arg model
             argModel = argModel.assertContainedInOther(baseModel);
 
+            //System.exit(2);
             // stop timer
             BasicTimer.stop();
 
@@ -106,13 +110,12 @@ public class AutomatonModelSolver
 
             // set base model from temp
             baseModel = tempModel;
-
+            //System.exit(2);
             // stop timer
             BasicTimer.stop();
         }
 
-        System.out.println("base " + base + " m " + baseModel);
-        System.out.println("base " + arg + " m " + argModel);
+        
         // store result models
         this.symbolicStringMap.put(base, baseModel);
         this.symbolicStringMap.put(arg, argModel);
