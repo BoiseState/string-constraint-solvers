@@ -110,7 +110,7 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 				WeightedState p = m.get(s);
 				for(WeightedTransition t : s.getTransitions()){
 					WeightedTransition r = new WeightedTransition(p,t.getSymb(), m.get(t.getToState()), t.getWeight());
-					p.getTransitions().add(r);
+					p.addTransition(r);
 				}
 			}
 			return a;

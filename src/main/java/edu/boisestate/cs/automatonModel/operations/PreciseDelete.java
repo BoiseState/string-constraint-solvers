@@ -7,7 +7,6 @@ import dk.brics.automaton.*;
 import dk.brics.string.charset.CharSet;
 import dk.brics.string.stringoperations.UnaryOperation;
 
-import java.math.BigInteger;
 import java.util.*;
 
 @SuppressWarnings("Duplicates")
@@ -49,7 +48,7 @@ public class PreciseDelete
         Automaton clone = a.clone();
         
         //eas: even though start = end and per documentation the 
-        //string will not be changes, the shorter strings that
+        //string will not be changed, the shorter strings that
         //the automaton represents will throw an exception, thus
         //we have to remove those string from this DFA.
 
@@ -100,7 +99,7 @@ public class PreciseDelete
             }
 
             // update states with new states
-            states = nextStates;;
+            states = nextStates;
         }
 
         // initialize end states map

@@ -69,6 +69,8 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 		return w;
 	}
 	
+	
+	
 	/** 
 	 * Returns the set of outgoing transitions. 
 	 * Subsequent changes are reflected in the automaton.
@@ -121,6 +123,55 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 	}
 	
 	/**
+	 * 
+	 * @param incoming the incoming transition of this state
+	 * @param toState the destination of the epsilon transition from this state
+	 * @param weight the weight of the epsilon transition
+	 */
+	public void addEpsilonTransition(Set<WeightedTransition> incoming, WeightedState toState, Fraction weight) {
+		//1. Scenario when this state has no incoming transitions
+				if(incoming.isEmpty()){
+					for(WeightedTransition t : toState.getTransitions()){
+						//unless this state is final, then 
+						WeightedTransition newT = new WeightedTransition(this,t.getSymb(), t.getToState(),t.getWeight().multiply(weight));
+						//right now we assume if there are other transitions to to.getToState() from this
+						//then we will have duplicate transitions.
+						addTransition(newT);
+					}
+					//for general weighted automata should also update the incoming edges,
+					//but for acyclic no need to do so - for union we connect to the start
+					//states that have no incoming edges and for the concat
+					//we connect to the start state again.
+
+					//update the weights if toState is final
+					if(toState.isAccept()){
+						if(accept){
+							w = w.multiply(toState.getWeight());
+						} else {
+							accept = true;
+							w = toState.getWeight();
+						}
+					}
+				} else {
+					//2. Scenario when there are incoming transition
+					// Re-route them to toState and update the weight if this
+					//state is the final state
+					for(WeightedTransition in : incoming){
+						Fraction newWeight = in.getWeight();
+						if(accept){
+							//multiple the the weight by the weight of the
+							//accepting state
+							newWeight = newWeight.multiply(w);
+						}
+						WeightedTransition newT = new WeightedTransition(in.getFromState(), in.getSymb(), toState, newWeight.multiply(weight));
+						//add the transition to the source of the incoming state
+						in.getFromState().addTransition(newT);
+					}
+				}
+		
+	}
+	
+	/**
 	 * When adding one transition at a time, e.g.,
 	 * concat operation
 	 * @param incoming - the transitions incoming into this state
@@ -136,7 +187,7 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 				WeightedTransition newT = new WeightedTransition(this,t.getSymb(), t.getToState(),t.getWeight());
 				//right now we assume if there are other transitions to to.getToState() from this
 				//then we will have duplicate transitions.
-				transitions.add(newT);
+				addTransition(newT);
 			}
 			//for general weighted automata should also update the incoming edges,
 			//but for acyclic no need to do so - for union we connect to the start
@@ -169,7 +220,7 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 			}
 		}
 	}
-
+	
 	/**
 	 * Adding a new transition, which might already
 	 * exists in the set
@@ -267,5 +318,7 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 			b.append("  ").append(t.toString()).append("\n");
 		return b.toString();
 	}
+
+	
 
 }
