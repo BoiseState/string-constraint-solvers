@@ -129,6 +129,7 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 	 * @param weight the weight of the epsilon transition
 	 */
 	public void addEpsilonTransition(Set<WeightedTransition> incoming, WeightedState toState, Fraction weight) {
+		//System.out.println("Epsilon " + this + " with " + toState + " weight " + weight);
 		//1. Scenario when this state has no incoming transitions
 				if(incoming.isEmpty()){
 					for(WeightedTransition t : toState.getTransitions()){
@@ -146,10 +147,14 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 					//update the weights if toState is final
 					if(toState.isAccept()){
 						if(accept){
-							w = w.multiply(toState.getWeight());
+//							System.out.println("This is accept and toState is accept");
+//							System.out.println("This state is " + this);
+//							System.out.println("To state is " + toState);
+							//adding 1 because of two copies to accept epsilon transition
+							w = w.add(1).multiply(toState.getWeight()).multiply(weight);
 						} else {
 							accept = true;
-							w = toState.getWeight();
+							w = toState.getWeight().multiply(weight);
 						}
 					}
 				} else {
@@ -157,13 +162,13 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 					// Re-route them to toState and update the weight if this
 					//state is the final state
 					for(WeightedTransition in : incoming){
-						Fraction newWeight = in.getWeight();
+						Fraction newWeight = in.getWeight().multiply(weight);
 						if(accept){
 							//multiple the the weight by the weight of the
 							//accepting state
 							newWeight = newWeight.multiply(w);
 						}
-						WeightedTransition newT = new WeightedTransition(in.getFromState(), in.getSymb(), toState, newWeight.multiply(weight));
+						WeightedTransition newT = new WeightedTransition(in.getFromState(), in.getSymb(), toState, newWeight);
 						//add the transition to the source of the incoming state
 						in.getFromState().addTransition(newT);
 					}
@@ -197,7 +202,8 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 			//update the weights if toState is final
 			if(toState.isAccept()){
 				if(accept){
-					w = w.multiply(toState.getWeight());
+					//adding 1 because of two copies to accept epsilon transition
+					w = w.add(1).multiply(toState.getWeight());
 				} else {
 					accept = true;
 					w = toState.getWeight();

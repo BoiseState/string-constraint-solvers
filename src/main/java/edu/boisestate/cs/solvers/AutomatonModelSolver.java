@@ -59,11 +59,11 @@ public class AutomatonModelSolver
 
         // start timer
         BasicTimer.start();
-        System.out.println("bM " + baseModel.getAutomaton().toString() + " aM " + argModel.getAutomaton().toString());
+        //System.out.println("bM " + baseModel.getAutomaton().toString() + " aM " + argModel.getAutomaton().toString());
         // perform operation
         baseModel = baseModel.concatenate(argModel);
         
-        System.out.println("Append " + baseModel + " id " + id);
+        //System.out.println("Append " + baseModel + " id " + id);
 
         // stop timer
         BasicTimer.stop();
@@ -405,7 +405,7 @@ public class AutomatonModelSolver
         AutomatonModel model = this.symbolicStringMap.get(id);
         //why do we intersect? Why not just check whether 
         //the automaton accepts the string?
-        System.out.println("M " + model.getAutomaton() + " id " + id + " val " + actualValue);
+        //System.out.println("M " + model.getAutomaton() + " id " + id + " val " + actualValue);
         boolean ret = true;
         if(actualValue.equals("true") || actualValue.equals("false")){
         	//since the actual program execution went either true 
@@ -459,7 +459,7 @@ public class AutomatonModelSolver
 
         // stop timer
         BasicTimer.stop();
-        System.out.println("M " + model + " id " + id);
+        //System.out.println("M " + model + " id " + id);
         // store new model
         this.symbolicStringMap.put(id, model);
     }

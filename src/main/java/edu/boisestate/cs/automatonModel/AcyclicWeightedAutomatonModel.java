@@ -296,8 +296,8 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			//we will do dfs algorithm since we also need to count
 			//the weight of each "removed" substring
 			res = automaton.clone();
-			DotToGraph.outputDotFile(automaton.toDot(), "origRes");
-			System.out.println("RES " + res);
+			DotToGraph.outputDotFile(res.toDot(), "origRes");
+			//System.out.println("RES " + res);
 			WeightedState nextState = res.getInitialState();
 			int index = 0;//starting index
 			WeightedState connectFromState = null;//state to create epsilon transitions from
@@ -313,7 +313,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		res.normalize();
 		DotToGraph.outputDotFile(res.toDot(), "deleted");
 		//stop for now
-		if(start == 0 &&  end == 2){
+		if(start == 1 &&  end == 2){
 			System.exit(2);
 		}
 		return new AcyclicWeightedAutomatonModel(res, this.alphabet);
@@ -321,14 +321,14 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	private void deleteDFS(WeightedState currState, int start, int index, int end, WeightedState connectFromState,
 			Fraction weight) {
-		System.out.println("CurrState " + currState);
-		System.out.println("start " + start + "\tindex " + index + "\t end " + end + "\tconncectFrom " + connectFromState);
+		//System.out.println("CurrState " + currState);
+		//System.out.println("start " + start + "\tindex " + index + "\t end " + end + "\tconncectFrom " + connectFromState);
 		Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
 		tr.addAll(currState.getTransitions());
 		for(WeightedTransition t : tr){ 
 			
 			WeightedState toState  = t.getToState();
-			System.out.println("toState " + toState);
+			//System.out.println("toState " + toState);
 			if(start > index){
 				//have not reached the point where we need to remove the states
 				//thus create a non-final copy of a toState and explore it further, increment index
@@ -339,7 +339,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 				}
 				//remove the current transition for currState
 				currState.getTransitions().remove(t);
-				//add the transtion to tempState
+				//add the transition to tempState
 				currState.addTransition(new WeightedTransition(currState, t.getSymb(), tempState, t.getWeight()));
 				//class DFS
 				deleteDFS(tempState, start, index + 1, end, connectFromState, weight);
@@ -358,13 +358,17 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 				//the case for shorter strings that do have valid start but shorted than end
 				//we need to create an epsilon transition to a new final state with the same weight
 				//and no outgoing edges
-				if(toState.isAccept()){
+				if(index != end && toState.isAccept()){ //not the last state since we connect it differently
+//					//make connectFrom as accept
+//					connectFromState.setAccept(true);
+//					//update the weight
+//					connectFromState.setWeight(connectFromState.getWeight().add(weight.multiply(t.getWeight()).multiply(toState.getWeight())));
 					WeightedState tempState = new WeightedState();
 					tempState.setAccept(true);
 					tempState.setWeight(toState.getWeight());
-					System.out.println("Adding epsilon "+ connectFromState);
+//					System.out.println("Adding epsilon "+ connectFromState);
 					connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), tempState, weight.multiply(t.getWeight()));
-					System.out.println("Added epsilon "+ connectFromState);
+//					System.out.println("Added epsilon "+ connectFromState);
 				}
 			} else if (start < index && index < end){
 
@@ -376,6 +380,10 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 				//we need to create an epsilon transition to a new final state with the same weight
 				//and no outgoing edges
 				if(toState.isAccept()){
+//					//make connectFrom as accept
+//					connectFromState.setAccept(true);
+//					//update the weight
+//					connectFromState.setWeight(connectFromState.getWeight().add(weight.multiply(t.getWeight()).multiply(toState.getWeight())));
 					WeightedState tempState = new WeightedState();
 					tempState.setAccept(true);
 					tempState.setWeight(toState.getWeight());
@@ -386,7 +394,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			//check separately from other conditions
 			//the condition for string of length that contain the entire substring
 			if (index == end){
-				System.out.println("connectFrom " + connectFromState+ " \n toState " + toState + " w " + weight);
+				//System.out.println("connectFrom " + connectFromState+ " \n toState " + toState + " w " + weight);
 				
 				//do not call recursion on toState, instead create and epsilon transition with the given weight
 				connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), toState, weight);
