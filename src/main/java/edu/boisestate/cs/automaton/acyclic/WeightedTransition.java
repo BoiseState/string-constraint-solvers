@@ -65,4 +65,9 @@ public class WeightedTransition implements Serializable, Cloneable{
 		return fromState;
 	}
 
+	public void setToState(WeightedState tempState) {
+		toState = tempState;
+		
+	}
+
 }

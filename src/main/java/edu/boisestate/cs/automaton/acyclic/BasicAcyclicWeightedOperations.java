@@ -646,5 +646,4 @@ public class BasicAcyclicWeightedOperations {
 			}
 		}
 	}
-
 }

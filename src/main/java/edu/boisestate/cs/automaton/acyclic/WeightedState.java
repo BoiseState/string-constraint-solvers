@@ -325,6 +325,11 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 		return b.toString();
 	}
 
+	public void removeTransition(WeightedTransition t) {
+		this.transitions.remove(t);
+		
+	}
+
 	
 
 }

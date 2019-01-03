@@ -2,7 +2,10 @@ package edu.boisestate.cs.automatonModel;
 
 import java.io.File;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.math3.fraction.Fraction;
@@ -289,10 +292,20 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		if(start < 0 || start > end || automaton.isEmpty() || start > automaton.getMaxLenght()){
 			res = BasicAcyclicWeightedAutomaton.makeEmpty();
 		} else  if( start == end){
-			//return the unchanged automaton
+			//return automaton with string with
+			//greater or equal length than start
 			res = automaton.clone();
-		}
-		else {
+				WeightedState nextState = res.getInitialState();
+				if(start > 0){
+					//make nextState nonfinal since the empty string would throw an
+					//exception
+					nextState.setAccept(false);
+				}
+				//start - 2, the actual indices of the strings which toStates
+				//should be set to non-final
+				removeDFS(nextState, start - 2, 0);
+			
+		} else {
 			//we will do dfs algorithm since we also need to count
 			//the weight of each "removed" substring
 			res = automaton.clone();
@@ -303,7 +316,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			WeightedState connectFromState = null;//state to create epsilon transitions from
 			//the weight of the given path, start as 1
 			Fraction weight = new Fraction(1,1);
-			deleteDFS(nextState, start, index, end-1, connectFromState, weight);
+			deleteDFS1(nextState, start, index, end-1, connectFromState, weight);
 		}
 		
 		System.out.println("DELETE " + start + "\t" + end);
@@ -313,10 +326,150 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		res.normalize();
 		DotToGraph.outputDotFile(res.toDot(), "deleted");
 		//stop for now
-		if(start == 1 &&  end == 2){
-			System.exit(2);
-		}
+//		if(start == 1 &&  end == 2){
+//			System.exit(2);
+//		}
 		return new AcyclicWeightedAutomatonModel(res, this.alphabet);
+	}
+	
+	private void removeDFS(WeightedState currState, int depth, int index) {
+		if(depth >= index){
+			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
+			tr.addAll(currState.getTransitions());
+			for(WeightedTransition t : tr){
+				WeightedState toState = t.getToState();
+				if(toState.isAccept()){
+					//create an non-final version of it
+					WeightedState copy = new WeightedState();
+					//add the transitions to it
+					for(WeightedTransition tTo : toState.getTransitions()){
+						copy.addTransition(new WeightedTransition(copy, tTo.getSymb(),tTo.getToState(), tTo.getWeight()));
+					}
+					//update the transition
+					t.setToState(copy);
+					toState = copy;
+				} // end if toState accept
+				//call removeDFS on it again
+				removeDFS(toState, depth, index+1);
+			}
+		}
+		
+	}
+
+	private void deleteDFS1(WeightedState currState, int start, int index, int end, WeightedState connectFromState,
+			Fraction weight) {
+		//System.out.println("CurrState " + currState);
+		//System.out.println("start " + start + "\tindex " + index + "\t end " + end + "\tconncectFrom " + connectFromState);
+		if(start > index){
+			//have not reached the point where we need to remove the states
+			//thus create a non-final copy of a toState and explore it further, increment index
+			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
+			tr.addAll(currState.getTransitions());
+			//further optimizaition create a copyState per set of 
+			//transitions with the same toState
+			Map<WeightedState, Set<WeightedTransition>> copySet = new HashMap<WeightedState, Set<WeightedTransition>>();
+			for(WeightedTransition t : tr){
+				WeightedState toState = t.getToState();
+				Set<WeightedTransition> trSet = null;
+				if(copySet.containsKey(toState)){
+					trSet = copySet.get(toState);
+				} else {
+					trSet = new HashSet<WeightedTransition>();
+					copySet.put(toState, trSet);
+				}
+				//add the transition to it
+				trSet.add(t);
+				
+			}
+			//now create a new nonfinal state for each set
+			for(Entry<WeightedState, Set<WeightedTransition>> sTr : copySet.entrySet()){
+				WeightedState tempState = new WeightedState();
+				//however if the next index is actually start then conserve the acceptance
+				if(index + 1 == end){
+					tempState.setAccept(sTr.getKey().isAccept());
+				}
+				//add the transitions of toState
+				for(WeightedTransition tOld : sTr.getKey().getTransitions()){
+					tempState.addTransition(new WeightedTransition(tempState, tOld.getSymb(), tOld.getToState(), tOld.getWeight()));
+				}
+				//update the transitions for the currentState
+				for(WeightedTransition tCurr : sTr.getValue()){
+					//change toState toCurr
+					tCurr.setToState(tempState);
+				}
+				
+				//now call DFS on tempState, and increment the index count, i.e., the depth
+				deleteDFS1(tempState, start, index + 1, end, connectFromState, weight);
+			}
+		} else if (start == index && index != end){
+			//reached the point where we need to start skipping the states
+			connectFromState = currState;
+			//the case when the currentState is the staring state
+			//but its transition is not the ending state
+			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
+			tr.addAll(currState.getTransitions());
+			for(WeightedTransition t : tr){
+				WeightedState toState = t.getToState();
+				//remove the current outgoing transition from conncetFromState
+				connectFromState.getTransitions().remove(t);
+				//if toState is accepting then count as a middle transition
+				if(toState.isAccept()){
+					WeightedState tempState = new WeightedState();
+					tempState.setAccept(true);
+					tempState.setWeight(toState.getWeight());
+					connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), tempState, weight.multiply(t.getWeight()));
+					//System.out.println("ConnectFromUpdatedMiddle " + connectFromState);
+				}
+				
+				//just call on toState with updated weight
+				//if the skipped state happens to be final do not include its weight into
+				//the calculation - those are "short" strings, just perform the weight update
+				//base on the weight of the edges
+				deleteDFS1(toState, start, index+1, end, connectFromState, weight.multiply(t.getWeight()));
+			}
+			
+		} else if (start == index && index == end){
+			//delete the transition between the currentState and toState and
+			//add epsilon weighted transition between them
+			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
+			tr.addAll(currState.getTransitions());
+			for(WeightedTransition t : tr){
+				WeightedState toState = t.getToState();
+				currState.removeTransition(t);
+				currState.addEpsilonTransition(automaton.getIncoming(currState), toState, weight.multiply(t.getWeight()));
+			}
+			
+		} else if (start < index && index < end){
+			//in between
+			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
+			tr.addAll(currState.getTransitions());
+			for(WeightedTransition t : tr){
+				WeightedState toState = t.getToState();
+				//the case for shorter strings that do have valid start but shorter than end
+				//we need to create an epsilon transition to a new final state with the same weight
+				//and no outgoing edges
+				if(toState.isAccept()){
+					WeightedState tempState = new WeightedState();
+					tempState.setAccept(true);
+					tempState.setWeight(toState.getWeight());
+					connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), tempState, weight.multiply(t.getWeight()));
+				}
+				//System.out.println("ConnectFromUpdatedMiddle " + connectFromState);
+				deleteDFS1(toState, start, index+1, end, connectFromState, weight.multiply(t.getWeight()));
+			}
+			
+		} else if (start != index && index == end){
+			//the case when we found the last transitions
+			//all toStates should be epsilon connected with connectFromState
+			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
+			tr.addAll(currState.getTransitions());
+			for(WeightedTransition t : tr){
+				WeightedState toState = t.getToState();
+				connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), toState, weight.multiply(t.getWeight()));
+				//System.out.println("ConnectFromUpdatedEnd " + connectFromState);
+			}
+		}
+		//in all other cases return back
 	}
 
 	private void deleteDFS(WeightedState currState, int start, int index, int end, WeightedState connectFromState,

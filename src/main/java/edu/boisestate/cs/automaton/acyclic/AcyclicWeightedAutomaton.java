@@ -307,6 +307,8 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 	public AcyclicWeightedAutomaton minus(AcyclicWeightedAutomaton a) {
 		return BasicAcyclicWeightedOperations.minus(this, a);
 	}
+
+
 	
 	
 }
