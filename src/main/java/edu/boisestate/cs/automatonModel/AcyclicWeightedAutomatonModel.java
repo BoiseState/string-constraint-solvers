@@ -582,8 +582,30 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel replace(char find, char replace) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		AcyclicWeightedAutomaton res = automaton.clone();
+		res.determinize();
+		DotToGraph.outputDotFile(res.toDot(), "replaceBefore");
+		//find all transitions with that char
+		//remove from fromState and add it back with the updated 
+		//char
+		for(WeightedState s : res.getStates()){
+			Set<WeightedTransition> transSet = new HashSet<WeightedTransition>();
+			transSet.addAll(s.getTransitions());
+			for(WeightedTransition wt : transSet){
+				if(wt.getSymb() == find){
+					s.removeTransition(wt);
+					wt.setSybmol(replace);
+					s.addTransition(wt);
+				}
+			}
+		}
+		DotToGraph.outputDotFile(res.toDot(), "replaceAfter");
+		res.determinize();
+		//res.normalize();
+		DotToGraph.outputDotFile(res.toDot(), "replaceAfterDet");
+		System.exit(2);
+		return new AcyclicWeightedAutomatonModel(res, alphabet);
 	}
 
 	@Override

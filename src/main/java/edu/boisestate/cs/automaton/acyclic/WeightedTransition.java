@@ -70,4 +70,9 @@ public class WeightedTransition implements Serializable, Cloneable{
 		
 	}
 
+	public void setSybmol(char replace) {
+		symb = replace;
+		
+	}
+
 }
