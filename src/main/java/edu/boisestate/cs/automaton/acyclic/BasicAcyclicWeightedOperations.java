@@ -144,6 +144,14 @@ public class BasicAcyclicWeightedOperations {
 							wP = wP.add(vw);
 							//pre-compute first pairs and weight and then mult by w^{-1}
 							WeightedState q = t.getToState();
+							//need to check whether qPPre already has a pair with that state
+							for(Pair<WeightedState, Fraction> currP : qPPre){
+								if(currP.getFirst().equals(q)){
+									vw = vw.add(currP.getSecond());
+									qPPre.remove(currP);
+									break;
+								}
+							}
 							Pair<WeightedState, Fraction> qvP = new Pair<WeightedState, Fraction>(q, vw);
 							qPPre.add(qvP);
 						}

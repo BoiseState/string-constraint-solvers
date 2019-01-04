@@ -79,8 +79,8 @@ public class AutomatonModelSolver
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
 
-        System.out.println("base " + base + " m\t" + baseModel + "\tresult " + result);
-        System.out.println("arg " + arg + " m\t "  + argModel);
+       // System.out.println("base " + base + " m\t" + baseModel + "\tresult " + result);
+        //System.out.println("arg " + arg + " m\t "  + argModel);
         // true branch
         if (result) {
 
@@ -89,7 +89,7 @@ public class AutomatonModelSolver
 
             // get satisfying base model
             baseModel = baseModel.assertContainsOther(argModel);
-            System.out.println("Done with baseModel");
+           // System.out.println("Done with baseModel");
             // get satisfying arg model
             argModel = argModel.assertContainedInOther(baseModel);
 

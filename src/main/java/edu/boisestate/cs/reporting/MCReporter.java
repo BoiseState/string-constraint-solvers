@@ -141,18 +141,18 @@ public class MCReporter
         // store symbolic string values
         solver.setLast(base, arg);
 
-       System.out.printf("Asserting Negation of Predicate to determine disjoint branches for Constraint %d\n", base);
+       //System.out.printf("Asserting Negation of Predicate to determine disjoint branches for Constraint %d\n", base);
 
         parser.assertBooleanConstraint(!result, constraint);
 
-        System.out.printf("After assering for Constraint %d\n", base);
+        //System.out.printf("After assering for Constraint %d\n", base);
         // set yes or no for disjoint branches
         String disjoint = "yes";
         if (solver.isSatisfiable(base)) {
             disjoint = "no";
         }
 
-        System.out.printf("Calculating Disjoint MC for Constraint %d\n", base);
+       // System.out.printf("Calculating Disjoint MC for Constraint %d\n", base);
 
         // set yes or no for disjoint branches
         long overlap = this.modelCountSolver.getModelCount(base);
