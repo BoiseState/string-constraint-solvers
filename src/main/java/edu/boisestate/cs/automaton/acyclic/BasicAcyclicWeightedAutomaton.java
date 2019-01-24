@@ -60,7 +60,7 @@ final public class BasicAcyclicWeightedAutomaton {
 		AcyclicWeightedAutomaton ret = new AcyclicWeightedAutomaton();
 		WeightedState s1 = new WeightedState();
 		ret.initial = s1;
-		return null;
+		return ret;
 	}
 
 	/**

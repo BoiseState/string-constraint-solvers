@@ -30,7 +30,12 @@ public class BasicAcyclicWeightedOperations {
 		//get accept states of a1
 		for(WeightedState s : a1.getAcceptStates()){
 			Set<WeightedTransition> incoming = a1.getIncoming(s);
-			s.addEpsilonTransition(incoming, a2.initial);
+			if(incoming.isEmpty()){
+				s.addEpsilonTransition(incoming, a2.initial, s.getWeight());
+			} else {
+				s.addEpsilonTransition(incoming, a2.initial);
+			}
+			
 			//1. Scenario
 			//if a2.initial is final and no incoming edges for a1,
 			//then don't change s to not being final,
@@ -39,6 +44,8 @@ public class BasicAcyclicWeightedOperations {
 				s.setAccept(false);
 			}
 		}
+//		DotToGraph.outputDotFile(a1.toDot(), "concat");
+//		System.exit(2);
 		return a1;
 	}
 	
@@ -428,6 +435,7 @@ public class BasicAcyclicWeightedOperations {
 		AcyclicWeightedAutomaton ret;
 		if(a1.isEmpty() || a2.isEmpty()){
 			ret =  BasicAcyclicWeightedAutomaton.makeEmpty();
+			//System.out.println("Empty " + ret);
 		} else {
 			//the algorithm is the same as the traditional
 			//automaton, only the weights of the
@@ -498,6 +506,8 @@ public class BasicAcyclicWeightedOperations {
 		
 				
 			}
+			
+			//System.out.println("Normal " + ret);
 		}
 		
 		return ret; 

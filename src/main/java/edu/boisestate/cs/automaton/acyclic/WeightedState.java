@@ -151,7 +151,12 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 //							System.out.println("This state is " + this);
 //							System.out.println("To state is " + toState);
 							//adding 1 because of two copies to accept epsilon transition
-							w = w.add(1).multiply(toState.getWeight()).multiply(weight);
+//							w = w.add(1).multiply(toState.getWeight()).multiply(weight); <--- incorrect as of Jan 23'19
+							//the weight of epslion trans should be multiplied by the weight
+							//of the final state and added it to the weight of this state
+							//Basically the number w of copies could state in this state
+							//and the number of copies weight*toState.weight can go to toState
+							w = w.add(weight.multiply(toState.getWeight()));
 						} else {
 							accept = true;
 							w = toState.getWeight().multiply(weight);
@@ -203,7 +208,8 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 			if(toState.isAccept()){
 				if(accept){
 					//adding 1 because of two copies to accept epsilon transition
-					w = w.add(1).multiply(toState.getWeight());
+					//w = w.add(1).multiply(toState.getWeight());
+					w = w.add(toState.getWeight());
 				} else {
 					accept = true;
 					w = toState.getWeight();
