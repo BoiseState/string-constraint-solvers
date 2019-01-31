@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
 @SuppressWarnings({"Duplicates", "unchecked"})
 public class SolveMain {
 
@@ -142,7 +144,7 @@ public class SolveMain {
             // get constraint data from graph data
             List<Map<String, Object>> vertexData =
                     (List<Map<String, Object>>) graphData.get("vertices");
-
+            System.out.println("VD " + vertexData);
             for (Map<String, Object> obj : vertexData) {
 
                 // get constraint vertex data
@@ -211,7 +213,7 @@ public class SolveMain {
                 int targetId = (Integer) obj.get("target");
                 PrintConstraint target = constraintMap.get(targetId);
                 String type = (String) obj.get("type");
-
+                System.out.println(obj);
                 // create symbolic edge in graph from data
                 SymbolicEdge edge = graph.addEdge(source, target);
                 edge.setType(type);
