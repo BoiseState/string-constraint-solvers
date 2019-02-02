@@ -13,7 +13,7 @@ import java.util.Set;
  *
  */
 public class GenerateGraph {
-	static int nodeId = 1;
+
 	
 	public static void main(String[] args) {
 		char[] abc = {'a','b','c'};
@@ -29,38 +29,79 @@ public class GenerateGraph {
 		List<Node> concrSource = new ArrayList<Node>();
 		//a set of predicate nodes
 		Set<Node> predicateNodes = new HashSet<Node>();
-		//a map of nodes and its level
+		//a map of symbolicly designed nodes and its level
+		//level 0 is a special case ? or maybe not
 		Map<Integer, List<Node>> levelOperations = new HashMap<Integer, List<Node>>();
-
+		
+		//need to popular symbSource and concrete source
+		//concrete: create all strings up to size from abc
+		//right now just stop at size 1
+		for(char symb : abc){
+			Node concrN = new Node(String.valueOf(symb));
+			concrSource.add(concrN);
+		}
+		
+		//create several symbolic nodes up to the size
+		//should use combinatorial algorithms
+		Node sybNode = new SymbNode("abc");
+		symbSource.add(sybNode);
+		sybNode = new SymbNode("bab");
+		symbSource.add(sybNode);
+		sybNode = new SymbNode("aaa");
+		symbSource.add(sybNode);
+		
 		//for each level
 		for(int l = 0; l <= depth; l++){
 			//for each predicate
+			Node n;
+			List<Node> targets; //targets for that level
+			if(l == 0){
+				targets = symbSource;
+			} else {
+				targets = levelOperations.get(l);
+			}
 			for(String pred : predicates){
-				Node n;
-				List<Node> targets;
-				if(l == 0){
-					targets = symbSource;
-				} else {
-					targets = levelOperations.get(l);
-				}
+				
 				switch (pred){
 				case "contains" : 
 						
-						n = createContains(nodeId, l, targets, concrSource);
+						n = createContains(l, targets, concrSource);
 						;
+						
+				default: n = new Node(String.valueOf(abc[0]));
+				}
+				
+				predicateNodes.add(n);
+			}
+			
+			//create new operation nodes at that level;
+			for(String oper : operations){
+				switch(oper){
+				case "concat" : n = createConcat(l, targets, concrSource);
+					
 				}
 			}
 		}
 	}
 
-	private static Node createContains(int id, int level, List<Node> targets, List<Node> args) {
+	private static Node createConcat(int level, List<Node> targets, List<Node> concrSource) {
+		int tIndx = 0; // target index
+		Node target = targets.get(tIndx);
+		int aIndx = 0; // argument index
+		Node arg = targets.get(aIndx);
+		String actualVal = target.getActualValue().concat(arg.getActualValue());
+		Concat ret = new Concat(level, actualVal, target, arg);
+		return ret;
+	}
+
+	private static Node createContains( int level, List<Node> targets, List<Node> args) {
 		//get the indexes for target and arg nodes
-		int tIndx = 0;
+		int tIndx = 0; //can pick randomly
 		Node target = targets.get(tIndx);
 		int aIndx = 0;
 		Node arg = targets.get(aIndx);
 		String actualVal = target.getActualValue().contains(arg.getActualValue())?"true":"false";
-		Contains ret = new Contains(id, level, actualVal, target, arg);
+		Contains ret = new Contains(level, actualVal, target, arg);
 		return ret;
 	}
 

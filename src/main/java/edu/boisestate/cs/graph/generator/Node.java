@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
+	static int nodeId = 1;
 	
 	/* a unique id of the node */
 	protected int id;
@@ -23,11 +24,14 @@ public class Node {
 	//the print value of the constraint
 	protected String value;
 	
-	public Node(int id,  int level, String actualValue){
-		this.id = id;
-		this.level = level;
+	public Node(String actualValue){
+		level = 0;
+		this.id = nodeId;
+		nodeId++;
 		this.actualValue = actualValue;
 		incoming = new ArrayList<Node>();
+		//default value for the concrete init
+		value = "\"" + actualValue +"\"!:!<init>";
 	}
 	
 	/**

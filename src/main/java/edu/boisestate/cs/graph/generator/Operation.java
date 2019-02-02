@@ -9,8 +9,9 @@ public class Operation extends Node{
 	//any operation node must have a target;
 	protected Node target;
 	
-	public Operation(int id, int level, String actualValue, Node target){
-		super(id, level, actualValue);
+	public Operation( int level, String actualValue, Node target){
+		super(actualValue);
+		this.level = level;
 		addToIncoming(target);
 	}
 }

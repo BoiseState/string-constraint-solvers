@@ -13,8 +13,8 @@ public class Concat extends Operation {
 	//append has one argument;
 	private Node arg;
 	
-	public Concat(int id, int level, String actualValue, Node target, Node arg){
-		super(id, level, actualValue, target);
+	public Concat(int level, String actualValue, Node target, Node arg){
+		super(level, actualValue, target);
 		addToIncoming(arg);
 		value = "concat!!Ljava/lang/String;!:!0";
 	}

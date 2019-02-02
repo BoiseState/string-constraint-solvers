@@ -5,8 +5,9 @@ import java.util.List;
 public class Predicate extends Node {
 	protected Node target;
 	
-	public Predicate(int id, int level, String actualValue, Node target){
-		super(id, level, actualValue);
+	public Predicate(int level, String actualValue, Node target){
+		super(actualValue);
+		this.level = level;
 		this.target = target;
 		addToIncoming(target);
 	}
