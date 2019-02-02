@@ -144,7 +144,7 @@ public class SolveMain {
             // get constraint data from graph data
             List<Map<String, Object>> vertexData =
                     (List<Map<String, Object>>) graphData.get("vertices");
-            System.out.println("VD " + vertexData);
+            //System.out.println("VD " + vertexData);
             for (Map<String, Object> obj : vertexData) {
 
                 // get constraint vertex data
@@ -213,9 +213,11 @@ public class SolveMain {
                 int targetId = (Integer) obj.get("target");
                 PrintConstraint target = constraintMap.get(targetId);
                 String type = (String) obj.get("type");
-                System.out.println(obj);
+//                System.out.println("src " + source);
+//                System.out.println("trgt " + target);
                 // create symbolic edge in graph from data
                 SymbolicEdge edge = graph.addEdge(source, target);
+               // System.out.println(edge);
                 edge.setType(type);
             }
 

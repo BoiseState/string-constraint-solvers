@@ -4,7 +4,7 @@ public class SymbNode extends Node{
 
 	public SymbNode(String actualValue) {
 		super(actualValue);
-		value = "r"+id +"!:!getStringValue!";
+		value = "r"+id +"!:!getStringValue!!";
 	}
 
 }

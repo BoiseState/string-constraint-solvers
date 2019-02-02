@@ -31,7 +31,11 @@ public class Node {
 		this.actualValue = actualValue;
 		incoming = new ArrayList<Node>();
 		//default value for the concrete init
-		value = "\"" + actualValue +"\"!:!<init>";
+		value = "\\\"" + actualValue +"\\\"!:!<init>";
+	}
+	
+	public int getId(){
+		return id;
 	}
 	
 	/**
@@ -55,6 +59,32 @@ public class Node {
 	
 	protected void addToIncoming(Node n){
 		incoming.add(n);
+	}
+	
+	
+	@Override
+	public String toString(){
+		int timeStamp = (this instanceof Predicate ? 1482521433 : id);
+		//make in json format
+		String ret = "{\"num\": 0, \"actualValue\": \""+
+				actualValue +"\", \"incomingEdges\": "+getIncomingToString() +
+				", \"sourceConstraints\": [], \"timeStamp\": " + timeStamp + ", \"type\": 0, \"id\": "+
+				id+",\"value\": \""+value +"\"}";
+		
+		return ret;
+	}
+
+	private String getIncomingToString() {
+		StringBuilder ret = new StringBuilder("[");
+		for(int i=0; i < incoming.size(); i++){
+			Node n = incoming.get(i);
+			ret.append("{\"source\": " + n.getId()+", \"type\": \"" + (i==0?"t":"s"+i) +"\"}");
+			if(i + 1 < incoming.size()){
+				ret.append(", ");
+			}
+		}
+		ret.append("]");
+		return ret.toString();
 	}
 
 }

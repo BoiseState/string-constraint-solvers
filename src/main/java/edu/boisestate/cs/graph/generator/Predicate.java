@@ -1,7 +1,5 @@
 package edu.boisestate.cs.graph.generator;
 
-import java.util.List;
-
 public class Predicate extends Node {
 	protected Node target;
 	
