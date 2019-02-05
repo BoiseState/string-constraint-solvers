@@ -227,7 +227,7 @@ def get_graph_files(settings):
     #         graph_files.add(os.path.join(graph_dir_path, f))
 
     # for all matching files in synthetic graph directory
-    graph_dir_path = os.path.join(project_dir, 'graphs', 'synthetic')
+    graph_dir_path = os.path.join(project_dir, 'graphs', 'benchmarks')
     for f in os.listdir(graph_dir_path):
         for file_pattern in settings.graph_file_patterns:
             if os.path.isfile(os.path.join(graph_dir_path, f)) and \
