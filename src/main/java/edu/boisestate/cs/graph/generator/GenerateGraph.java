@@ -1,11 +1,18 @@
 package edu.boisestate.cs.graph.generator;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
+
+import edu.boisestate.cs.graph.generator.Node.NTYPE;
 
 /**
  * The main method for generating graphs
@@ -13,87 +20,100 @@ import java.util.Set;
  *
  */
 public class GenerateGraph {
-
+	private static Random rand = new Random(5);
 
 	public static void main(String[] args) {
 		char[] abc = {'A','B','C'};
-		int depth = 1; //min of zero and max of two operations on the target edge
+		int depth = 2; //min of zero and max of two operations on the target edge
 		int size = 2; //the max size of a concrete string
 		Set<String> operations = new HashSet<String>();
 		operations.add("concat");
+		operations.add("replace");
+		operations.add("delete");
 		Set<String> predicates = new HashSet<String>();
 		predicates.add("contains");
 		//a list of symbolic source nodes available
 		List<Node> symbSource = new ArrayList<Node>();
 		//a list of concrete nodes available
 		List<Node> concrSource = new ArrayList<Node>();
+		// a set of nodes that represent integer values (for delete args)
+		List<Node> intSource = new ArrayList<Node>();
 		//a set of predicate nodes
 		Set<Node> predicateNodes = new HashSet<Node>();
-		//a map of symbolicly designed nodes and its level
+		//a map of symbolically designed nodes and its level
 		//level 0 is a special case ? or maybe not
 		Map<Integer, List<Node>> levelOperations = new HashMap<Integer, List<Node>>();
 
 		//need to popular symbSource and concrete source
-		//concrete: create all strings up to size from abc
+		//concrete: create all strings up to size from the abc
 		//right now just stop at size 1
 		for(char symb : abc){
-			Node concrN = new Node(String.valueOf(symb));
+			Node concrN = new Node(String.valueOf(symb), NTYPE.CONCR);
 			concrSource.add(concrN);
-		}
+		}//late could also use generateString method
 
 		//create several symbolic nodes up to the size
 		//should use combinatorial algorithms
-		Node sybNode = new SymbNode("A");
-		symbSource.add(sybNode);
-		sybNode = new SymbNode("BA");
-		symbSource.add(sybNode);
-		sybNode = new SymbNode("AA");
-		symbSource.add(sybNode);
+		//how many symbolic nodes we would need?
+		//it should depend on the number of 
+		//operations because each operation
+		//would result in a chain, e.g, concat-> concat or concat->delete
+		//actually can do it with one single symbolic value, but it is ok 
+		//to have such more even distribution
+		for(int i=0; i < operations.size(); i++){
+			//generate a random string from the given abc up to length size
+			//smaller size might end up with UNSAT/UNSAT, e.g., deletion operations
+			String concreteVal = generateString(size, abc);
+			Node symbNode = new Node(concreteVal, NTYPE.SYMB);
+			symbSource.add(symbNode);
+		}
+		levelOperations.put(0, symbSource);
 
-		//for each level
-		for(int l = 0; l <= depth; l++){
-			//for each predicate
+		//for each level create a set of final
+		//symbolic values that one can use to
+		//query predicates
+		for(int l = 0; l < depth; l++){
 			Node n;
-			List<Node> targets; //targets for that level
-			if(l == 0){
-				targets = symbSource;
-			} else {
-				targets = levelOperations.get(l);
-			}
-			for(String pred : predicates){
-
-				switch (pred){
-				case "contains" : n = createContains(l, targets, concrSource);
-				break;
-				default: n = new Node(String.valueOf(abc[0]));
-				}
-
-				predicateNodes.add(n);
-			}
-
+			List<Node> targets = levelOperations.get(l);
 			//create new operation nodes at that level if needed
-			if(l  < depth){
+
 			List<Node> operSet = new ArrayList<Node>();
 			for(String oper : operations){
 				switch(oper){
-				case "concat" : n = createConcat(l, targets, concrSource);
+				case "concat" : n = createConcat(targets, concrSource);
 				break;
-				default: n = new Node(String.valueOf(abc[0]));
+				case "replace" : n = createReplace(targets, concrSource);
+				break;
+				case "delete" : n = createDelete(targets, intSource );
+				break;
+				default: n = new Node(String.valueOf(abc[0]), NTYPE.CONCR);
 				}
 				operSet.add(n);
-			}
 			//add operations to that level
 			levelOperations.put(Integer.valueOf(l+1), operSet);
 			}
 		}// end for depth
+		
+		//after generating operations add on predicates
+		for(int l = 0; l <= depth; l++){
+			//for each predicate
+			Node n;
+			List<Node> targets = levelOperations.get(l);
+		
+			for(String pred : predicates){
+				switch (pred){
+				case "contains" : n = createContains(targets, concrSource);
+				break;
+				default: n = new Node(String.valueOf(abc[0]), NTYPE.CONCR);
+				}
 
-		//now let print them out in json format
-		//		System.out.println(symbSource);
-		//		System.out.println(concrSource);
-		System.out.println(predicateNodes);
-		//build one list of all nodes
+				predicateNodes.add(n);
+			}
+		}
+
 		List<Node> allNodes = new ArrayList<Node>();
 		allNodes.addAll(concrSource);
+		allNodes.addAll(intSource);
 		allNodes.addAll(symbSource);
 		for(List<Node> listLevel : levelOperations.values()){
 			allNodes.addAll(listLevel);
@@ -112,27 +132,122 @@ public class GenerateGraph {
 		jsonStr.append(allNodes.toString() +"}");
 
 		System.out.println(jsonStr);
-
+		//need to write it to a file
+		String benchDirPath = String.format("graphs/benchmarks");
+		File benchDir = new File(benchDirPath);
+		if(benchDir.exists() && benchDir.isFile()){
+			benchDir.delete();
+			benchDir.mkdir();
+		} else if (! benchDir.exists()){
+			benchDir.mkdir();
+		}
+		
+		String used = "";
+		for(String op : operations){
+			used += op+"_";
+		}
+		
+		for(String pred: predicates){
+			used+= pred + "_";
+		}
+		String benchFileName = String.format("%s/%sl%d_d%d_bench.json", benchDirPath, used, size, depth);
+		
+		try{
+			Writer benchWriter = new FileWriter(benchFileName);
+			benchWriter.write(jsonStr.toString());
+			benchWriter.close();
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 	}
-
-	private static Node createConcat(int level, List<Node> targets, List<Node> args) {
-		int tIndx = 0; // target index
+	
+	private static Node createDelete(List<Node> targets, List<Node> intSource) {
+		//get a target randomly
+		int tIndx = rand.nextInt(targets.size()); // target index
 		Node target = targets.get(tIndx);
-		int aIndx = 0; // argument index
-		Node arg = args.get(aIndx);
-		String actualVal = target.getActualValue().concat(arg.getActualValue());
-		Concat ret = new Concat(level, actualVal, target, arg);
+		String targetVal = target.getActualValue();
+		//get its concrete value's size
+		int maxIndx = targetVal.length();
+		//generate two numbers for the delete args
+		int aIndx1 = rand.nextInt(maxIndx); // argument index
+		int aIndx2 = rand.nextInt(maxIndx); // argument index
+		while(aIndx1 > aIndx2){
+			aIndx2 = rand.nextInt(maxIndx);
+		}
+		StringBuffer actualVal = new StringBuffer(targetVal);
+		actualVal.delete(aIndx1, aIndx2);
+		String aStr1 = String.valueOf(aIndx1);
+		//find the appropriate nodes or create if none exist
+		Node arg1 = findOrAdd(aStr1, intSource, null);
+		String aStr2 = String.valueOf(aIndx2);
+		Node arg2 = findOrAdd(aStr2, intSource, arg1);//make sure a node is different for that one
+		InnerNode ret = new InnerNode(actualVal.toString(), NTYPE.DELETE, target, arg1, arg2);
+		return ret;
+	}
+	
+	private static Node findOrAdd(String val, List<Node> intSource, Node exclude){
+		Node ret = null;
+		for(Node n : intSource){
+			if(n.getActualValue().equals(val) && !n.equals(exclude)){
+				ret = n;
+				break;
+			}
+		}
+		if(ret == null){
+			//then create a new node and add it to the list
+			ret = new Node(val, NTYPE.CONCR);
+			intSource.add(ret);
+		}
+		
 		return ret;
 	}
 
-	private static Node createContains( int level, List<Node> targets, List<Node> args) {
-		//get the indexes for target and arg nodes
-		int tIndx = 0; //can pick randomly
+	private static String generateString(int size, char[] abc) {
+		StringBuilder ret = new StringBuilder();
+		for(int i=0; i <= size; i++){
+			//randomly pick a value from a the alphabet
+			ret.append(abc[rand.nextInt(abc.length)]);
+		}
+		return ret.toString();
+	}
+
+	private static Node createReplace(List<Node> targets, List<Node> args) {
+		int tIndx = rand.nextInt(targets.size()); // target index
 		Node target = targets.get(tIndx);
-		int aIndx = 0;
+		int aIndx1 = rand.nextInt(args.size()); // argument index
+		Node arg1 = args.get(aIndx1);
+		int aIndx2 = rand.nextInt(args.size()); // argument index
+		//make sure the indicies of two arguments are not the same
+		while(aIndx1 == aIndx2){
+			aIndx2 = rand.nextInt(args.size());
+		}
+		Node arg2 = args.get(aIndx2);
+		String actualVal = target.getActualValue().replace(arg1.getActualValue(), arg2.getActualValue());
+		InnerNode ret = new InnerNode(actualVal, NTYPE.REPLACE, target, arg1, arg2);
+		return ret;
+	}
+
+	
+
+	private static Node createConcat(List<Node> targets, List<Node> args) {
+		int tIndx = rand.nextInt(targets.size()); // target index
+		Node target = targets.get(tIndx);
+		int aIndx = rand.nextInt(args.size()); // argument index
 		Node arg = args.get(aIndx);
+		String actualVal = target.getActualValue().concat(arg.getActualValue());
+		InnerNode ret = new InnerNode(actualVal, NTYPE.CONCAT, target, arg);
+		return ret;
+	}
+
+	private static Node createContains(List<Node> targets, List<Node> args) {
+		//get the indexes for target and arg nodes
+		int tIndx = rand.nextInt(targets.size()); //can pick randomly
+		Node target = targets.get(tIndx);
+		int aIndx = rand.nextInt(args.size());
+		Node arg = args.get(aIndx);
+		//System.out.println(String.format("%d, %d, %d, %d", targets.size(), tIndx, args.size(), aIndx));
 		String actualVal = target.getActualValue().contains(arg.getActualValue())?"true":"false";
-		Contains ret = new Contains(level, actualVal, target, arg);
+		InnerNode ret = new InnerNode(actualVal, NTYPE.CONTAINS, target, arg);
 		return ret;
 	}
 

@@ -213,11 +213,11 @@ public class SolveMain {
                 int targetId = (Integer) obj.get("target");
                 PrintConstraint target = constraintMap.get(targetId);
                 String type = (String) obj.get("type");
-//                System.out.println("src " + source);
-//                System.out.println("trgt " + target);
+                //System.out.println("src " + source);
+                //System.out.println("trgt " + target);
                 // create symbolic edge in graph from data
                 SymbolicEdge edge = graph.addEdge(source, target);
-               // System.out.println(edge);
+              // System.out.println(edge);
                 edge.setType(type);
             }
 
