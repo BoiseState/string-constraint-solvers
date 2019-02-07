@@ -51,7 +51,10 @@ public class MCReporter
         boolean falseSat = false;
 
         // determine if symbolic strings are singletons
-        boolean argIsSingleton = solver.isSingleton(sourceMap.get("s1"));
+        boolean argIsSingleton = false;
+        if(arg != -1) {
+        	argIsSingleton = solver.isSingleton(sourceMap.get("s1"));
+        }
         if (solver.isSingleton(base, actualVal) &&
             (sourceMap.get("s1") == null || argIsSingleton)) {
             isSingleton = true;

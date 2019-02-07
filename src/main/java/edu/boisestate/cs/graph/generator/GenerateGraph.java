@@ -31,7 +31,8 @@ public class GenerateGraph {
 		operations.add("replace");
 		operations.add("delete");
 		Set<String> predicates = new HashSet<String>();
-		predicates.add("contains");
+		//predicates.add("contains");
+		predicates.add("isEmpty");
 		//a list of symbolic source nodes available
 		List<Node> symbSource = new ArrayList<Node>();
 		//a list of concrete nodes available
@@ -98,16 +99,19 @@ public class GenerateGraph {
 		for(int l = 0; l <= depth; l++){
 			//for each predicate
 			Node n;
-			List<Node> targets = levelOperations.get(l);
-		
-			for(String pred : predicates){
-				switch (pred){
-				case "contains" : n = createContains(targets, concrSource);
-				break;
-				default: n = new Node(String.valueOf(abc[0]), NTYPE.CONCR);
+			List<Node> targets = new ArrayList<Node>();
+			targets.addAll(levelOperations.get(l));
+			while(!targets.isEmpty()){
+				for(String pred : predicates){
+					switch (pred){
+					case "contains" : n = createContains(targets, concrSource);
+					break;
+					case "isEmpty" : n = createIsEmpty(targets);
+					break;
+					default: n = new Node(String.valueOf(abc[0]), NTYPE.CONCR);
+					}
+					predicateNodes.add(n);
 				}
-
-				predicateNodes.add(n);
 			}
 		}
 
@@ -161,6 +165,15 @@ public class GenerateGraph {
 		}
 	}
 	
+	private static Node createIsEmpty(List<Node> targets) {
+		int tIndx = rand.nextInt(targets.size()); // target index
+		Node target = targets.get(tIndx);
+		targets.remove(tIndx);
+		String actualVal = target.getActualValue().isEmpty()?"true":"false";
+		InnerNode ret = new InnerNode(actualVal, NTYPE.ISEMPTY, target);
+		return ret;
+	}
+
 	private static Node createDelete(List<Node> targets, List<Node> intSource) {
 		//get a target randomly
 		int tIndx = rand.nextInt(targets.size()); // target index
@@ -243,6 +256,7 @@ public class GenerateGraph {
 		//get the indexes for target and arg nodes
 		int tIndx = rand.nextInt(targets.size()); //can pick randomly
 		Node target = targets.get(tIndx);
+		targets.remove(tIndx);
 		int aIndx = rand.nextInt(args.size());
 		Node arg = args.get(aIndx);
 		//System.out.println(String.format("%d, %d, %d, %d", targets.size(), tIndx, args.size(), aIndx));

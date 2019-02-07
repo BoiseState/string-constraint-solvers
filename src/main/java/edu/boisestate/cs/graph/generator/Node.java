@@ -6,7 +6,7 @@ import java.util.List;
 public class Node {
 	static int nodeId = 1;
 	
-	enum NTYPE {CONCR, SYMB, CONCAT, CONTAINS, REPLACE, DELETE};
+	enum NTYPE {CONCR, SYMB, CONCAT, CONTAINS, REPLACE, DELETE, ISEMPTY};
 	
 	/* a unique id of the node */
 	protected int id;
@@ -47,6 +47,8 @@ public class Node {
 		case REPLACE:  value = "replace!!CC!:!0";
 		break;
 		case DELETE: value = "delete!!II!:!0";
+		break;
+		case ISEMPTY: value =  "isEmpty!!!:!0";
 		break;
 		}
 	}

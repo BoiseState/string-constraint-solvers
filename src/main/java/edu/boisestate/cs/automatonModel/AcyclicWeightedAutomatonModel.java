@@ -136,8 +136,10 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel assertEmpty() {
-		// TODO Auto-generated method stub
-		return null;
+		//do the intersection with an empty string (cannot just create an empty one, otherwise
+		//the empty string count could be of)
+		 AcyclicWeightedAutomaton ret = this.automaton.intersection(BasicAcyclicWeightedAutomaton.makeEmptyString());
+		 return new AcyclicWeightedAutomatonModel(ret, alphabet, 0);
 	}
 
 	@Override
@@ -154,8 +156,9 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel assertEquals(AcyclicWeightedAutomatonModel equalModel) {
-		// TODO Auto-generated method stub
-		return null;
+		//return the intersection of equlaModel and this
+		AcyclicWeightedAutomaton ret = this.automaton.intersection(equalModel.automaton);
+		return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
 	}
 
 	@Override
@@ -208,8 +211,15 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel assertNotEmpty() {
-		// TODO Auto-generated method stub
-		return null;
+		//get the empty string and complete it first since we will do the complement of it
+		AcyclicWeightedAutomaton arg = BasicAcyclicWeightedAutomaton.makeEmptyString();
+//		System.out.println("arg before");
+//		System.out.println(arg);
+		arg = arg.complete(automaton.getMaxLenght(), alphabet.getCharSet());
+//		System.out.println("arg complete");
+//		System.out.println(arg);
+		AcyclicWeightedAutomaton ret = this.automaton.minus(arg);
+		 return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
 	}
 
 	@Override
@@ -226,7 +236,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel assertNotEquals(AcyclicWeightedAutomatonModel notEqualModel) {
-		// TODO Auto-generated method stub
+		//start Thursday here
 		return null;
 	}
 

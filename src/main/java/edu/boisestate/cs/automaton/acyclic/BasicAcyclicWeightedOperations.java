@@ -253,7 +253,11 @@ public class BasicAcyclicWeightedOperations {
 		} else if (a2.isEmpty()){
 			return a1.clone();
 		} else {
+//			System.out.println("a2 before");
+//			System.out.println(a2);
 			a2 = a2.complement();
+//			System.out.println("a2 compl");
+//			System.out.println(a2);
 			ret = a1.intersection(a2);
 		}
 		return ret;
