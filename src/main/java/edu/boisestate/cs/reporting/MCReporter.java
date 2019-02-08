@@ -2,6 +2,7 @@ package edu.boisestate.cs.reporting;
 
 import edu.boisestate.cs.BasicTimer;
 import edu.boisestate.cs.Parser;
+import edu.boisestate.cs.automatonModel.AcyclicWeightedAutomatonModel;
 import edu.boisestate.cs.automatonModel.WeightedAutomatonModel;
 import edu.boisestate.cs.graph.PrintConstraint;
 import edu.boisestate.cs.graph.SymbolicEdge;
@@ -60,9 +61,9 @@ public class MCReporter
             isSingleton = true;
         }
 
-//        System.out.printf("%d Predicate: %s\n", base, constraint.getSplitValue().split("!!")[0]);
+        //System.out.printf("%d Predicate: %s\n", base, constraint.getSplitValue().split("!!")[0]);
 
-//        System.out.printf("Calculating IN MC for Constraint %d\n", base);
+        //System.out.printf("Calculating IN MC for Constraint %d\n", base);
 
         long initialCount = this.modelCountSolver.getModelCount(base);
         inMCTime = BasicTimer.getRunTime();
@@ -70,7 +71,7 @@ public class MCReporter
         // store symbolic string values
         solver.setLast(base, arg);
 
-//        System.out.printf("Asserting True Predicate for Constraint %d\n", base);
+        //System.out.printf("Asserting True Predicate for Constraint %d\n", base);
 
         // test if true branch is SAT
         parser.assertBooleanConstraint(true, constraint);
@@ -79,7 +80,7 @@ public class MCReporter
             trueSat = true;
         }
 
-//        System.out.printf("Calculating T MC for Constraint %d\n", base);
+       // System.out.printf("Calculating T MC for Constraint %d\n", base);
 
         long trueModelCount = this.modelCountSolver.getModelCount(base);
         tMCTime = BasicTimer.getRunTime();
@@ -90,7 +91,7 @@ public class MCReporter
         // store symbolic string values
         solver.setLast(base, arg);
 
-//        System.out.printf("Asserting False Predicate for Constraint %d\n", base);
+        //System.out.printf("Asserting False Predicate for Constraint %d\n", base);
 
         // test if false branch is SAT
         parser.assertBooleanConstraint(false, constraint);
@@ -99,7 +100,7 @@ public class MCReporter
             falseSat = true;
         }
 
-//        System.out.printf("Calculating F MC for Constraint %d\n", base);
+       // System.out.printf("Calculating F MC for Constraint %d\n", base);
 
         long falseModelCount = this.modelCountSolver.getModelCount(base);
         fMCTime = BasicTimer.getRunTime();
@@ -121,7 +122,7 @@ public class MCReporter
             result = false;
         }
 
-//        System.out.printf("Asserting Predicate to determine disjoint branches for Constraint %d\n", base);
+        //System.out.printf("Asserting Predicate to determine disjoint branches for Constraint %d\n", base);
 
         // branches disjoint?
         parser.assertBooleanConstraint(result, constraint);
@@ -144,7 +145,7 @@ public class MCReporter
         // store symbolic string values
         solver.setLast(base, arg);
 
-       //System.out.printf("Asserting Negation of Predicate to determine disjoint branches for Constraint %d\n", base);
+      // System.out.printf("Asserting Negation of Predicate to determine disjoint branches for Constraint %d\n", base);
 
         parser.assertBooleanConstraint(!result, constraint);
 
@@ -155,7 +156,7 @@ public class MCReporter
             disjoint = "no";
         }
 
-       // System.out.printf("Calculating Disjoint MC for Constraint %d\n", base);
+       //System.out.printf("Calculating Disjoint MC for Constraint %d\n", base);
 
         // set yes or no for disjoint branches
         long overlap = this.modelCountSolver.getModelCount(base);
@@ -227,6 +228,10 @@ public class MCReporter
 
         // output row
         System.out.println(row);
+        
+//        System.out.println(((AcyclicWeightedAutomatonModel) solver.getValue(base)).getAutomaton());
+//        System.out.println(((AcyclicWeightedAutomatonModel) solver.getValue(arg)).getAutomaton());
+//        System.exit(2);
     }
 
     @Override

@@ -196,7 +196,8 @@ public class AutomatonModelSolver
         // get models
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);
-
+//        System.out.println("argModel " + arg + "\n" + argModel.getAutomaton());
+//        System.out.println("result " + result);
         // perform equals
         if (result) {
 
@@ -438,11 +439,14 @@ public class AutomatonModelSolver
         // create new automaton model from string
         AutomatonModel model = this.modelManager.createString(string);
 
+        System.out.println("newConcreteString " + id + " : " + string);
         // stop timer
         BasicTimer.stop();
 
         // store new model
         this.symbolicStringMap.put(id, model);
+        
+        System.out.println("m " + "\n" + model.getAutomaton());
 
         // store string value
         this.concreteStringMap.put(id, string);

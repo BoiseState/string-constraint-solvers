@@ -212,7 +212,8 @@ public class ConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
         ConcreteValues argValues = this.symbolicStringMap.get(arg);
-
+        System.out.println("argModel " + arg + "\n" + argValues.toString());
+        System.out.println("result " + result);
         // true branch
         if (result) {
             // start timer

@@ -53,8 +53,8 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public boolean isSingleton() {
-		// TODO Auto-generated method stub
-		return false;
+		boolean ret = automaton.getStringCount().intValue() <= 1 ? true : false;
+		return ret;
 	}
 
 	@Override
@@ -158,6 +158,13 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	public AcyclicWeightedAutomatonModel assertEquals(AcyclicWeightedAutomatonModel equalModel) {
 		//return the intersection of equlaModel and this
 		AcyclicWeightedAutomaton ret = this.automaton.intersection(equalModel.automaton);
+
+//		if(ret.getStringCount().intValue() == 0){
+//			System.out.println("target1 " + automaton);
+//			System.out.println("arg1 " + equalModel.automaton);
+//			System.out.println("ret1 " + ret);
+//			//System.exit(2);
+//		}
 		return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
 	}
 
@@ -230,14 +237,31 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel assertNotEndsWith(AcyclicWeightedAutomatonModel notEndingModel) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public AcyclicWeightedAutomatonModel assertNotEquals(AcyclicWeightedAutomatonModel notEqualModel) {
-		//start Thursday here
-		return null;
+		//since we will have to do set minus, which requires the complement we should have a complete automaton
+		//System.out.println("assertNotEquals ");
+		//System.out.println(automaton.getMaxLenght() + " " + alphabet.getCharSet() );
+		//System.out.println("notEqual \n" + notEqualModel.automaton + "\n" + notEqualModel.automaton.getStringCount());
+		
+		//System.out.println("notEqual \n" + automaton + "\n" + automaton.getStringCount());
+		//can only perform minus operation if the argument is a singleton, otherwise 
+		//we over-approximate since it could be anything
+		AcyclicWeightedAutomaton ret;
+		if(notEqualModel.automaton.getStringCount().intValue() <= 1){
+		AcyclicWeightedAutomaton notEqual = notEqualModel.automaton.complete(automaton.getMaxLenght(), alphabet.getCharSet());
+		//System.out.println("notEqual \n" + notEqual);
+		 ret = automaton.minus(notEqual);
+		} else {
+			
+			ret = automaton.clone();
+		}
+		//System.out.println("ret \n" + ret);
+		return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
 	}
 
 	@Override

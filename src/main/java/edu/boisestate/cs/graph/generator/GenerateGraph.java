@@ -32,7 +32,8 @@ public class GenerateGraph {
 		operations.add("delete");
 		Set<String> predicates = new HashSet<String>();
 		//predicates.add("contains");
-		predicates.add("isEmpty");
+		//predicates.add("isEmpty");
+		predicates.add("equals");
 		//a list of symbolic source nodes available
 		List<Node> symbSource = new ArrayList<Node>();
 		//a list of concrete nodes available
@@ -108,6 +109,8 @@ public class GenerateGraph {
 					break;
 					case "isEmpty" : n = createIsEmpty(targets);
 					break;
+					case "equals" : n = createEquals(targets, concrSource);
+					break;
 					default: n = new Node(String.valueOf(abc[0]), NTYPE.CONCR);
 					}
 					predicateNodes.add(n);
@@ -165,6 +168,17 @@ public class GenerateGraph {
 		}
 	}
 	
+	private static Node createEquals(List<Node> targets, List<Node> concrSource) {
+		int tIndx = rand.nextInt(targets.size()); // target index
+		Node target = targets.get(tIndx);
+		targets.remove(tIndx);
+		int aIndx = rand.nextInt(concrSource.size()); // argument index
+		Node arg = concrSource.get(aIndx);
+		String actualVal = target.getActualValue().equals(arg.getActualValue()) ? "true":"false";
+		InnerNode ret = new InnerNode(actualVal, NTYPE.EQUALS, target, arg);
+		return ret;
+	}
+
 	private static Node createIsEmpty(List<Node> targets) {
 		int tIndx = rand.nextInt(targets.size()); // target index
 		Node target = targets.get(tIndx);
@@ -182,11 +196,13 @@ public class GenerateGraph {
 		//get its concrete value's size
 		int maxIndx = targetVal.length();
 		//generate two numbers for the delete args
-		int aIndx1 = rand.nextInt(maxIndx); // argument index
-		int aIndx2 = rand.nextInt(maxIndx); // argument index
-		while(aIndx1 > aIndx2){
-			aIndx2 = rand.nextInt(maxIndx);
-		}
+		int aIndx1 = rand.nextInt(maxIndx+1); // argument index can be the same as the length of the stirng
+//		int aIndx2 = rand.nextInt(maxIndx); // argument index
+//		while(aIndx1 > aIndx2){
+//			aIndx2 = rand.nextInt(maxIndx);
+//		}
+		//make sure the second index is a valid one
+		int aIndx2 = rand.nextInt(maxIndx + 1 - aIndx1) + aIndx1;
 		StringBuffer actualVal = new StringBuffer(targetVal);
 		actualVal.delete(aIndx1, aIndx2);
 		String aStr1 = String.valueOf(aIndx1);
