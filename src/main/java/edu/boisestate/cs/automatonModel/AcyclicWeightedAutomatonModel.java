@@ -18,7 +18,7 @@ import edu.boisestate.cs.automaton.acyclic.BasicAcyclicWeightedAutomaton;
 import edu.boisestate.cs.util.DotToGraph;
 
 public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeightedAutomatonModel>{
-	
+
 	private AcyclicWeightedAutomaton automaton;
 
 	protected AcyclicWeightedAutomatonModel(AcyclicWeightedAutomaton automaton, 
@@ -26,7 +26,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		super(alphabet, initialBoundLength);
 		this.automaton = automaton;
 	}
-	
+
 	protected AcyclicWeightedAutomatonModel(AcyclicWeightedAutomaton automaton, 
 			Alphabet alphabet) {
 		super(alphabet, 0);
@@ -59,7 +59,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel assertContainedInOther(AcyclicWeightedAutomatonModel containingModel) {
-	     //this has substring of other
+		//this has substring of other
 		AcyclicWeightedAutomaton other = containingModel.automaton;
 		//eas: as of 12-26-18, return unchanged
 		DotToGraph.outputDotFile(automaton.toDot(), "containedInOtherRet");
@@ -83,7 +83,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		//DotToGraph.outputDotFile(automaton.toDot(), "this");
 		automaton.normalize();
 		//DotToGraph.outputDotFile(automaton.toDot(), "containsInBase");
-		
+
 		//System.out.println("Max L " + maxLength);
 		AcyclicWeightedAutomaton prefix = BasicAcyclicWeightedAutomaton.makeCharSet(alphabet.getCharSet()).repeat(0, maxLength);
 		prefix.determinize();
@@ -130,7 +130,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		//DotToGraph.outputDotFile(ret.toDot(), "containsOtherRet");
 		//System.out.println("Ret: " + ret);
 		//System.exit(2);
-		
+
 		return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
 	}
 
@@ -138,8 +138,8 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	public AcyclicWeightedAutomatonModel assertEmpty() {
 		//do the intersection with an empty string (cannot just create an empty one, otherwise
 		//the empty string count could be of)
-		 AcyclicWeightedAutomaton ret = this.automaton.intersection(BasicAcyclicWeightedAutomaton.makeEmptyString());
-		 return new AcyclicWeightedAutomatonModel(ret, alphabet, 0);
+		AcyclicWeightedAutomaton ret = this.automaton.intersection(BasicAcyclicWeightedAutomaton.makeEmptyString());
+		return new AcyclicWeightedAutomatonModel(ret, alphabet, 0);
 	}
 
 	@Override
@@ -159,12 +159,12 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		//return the intersection of equlaModel and this
 		AcyclicWeightedAutomaton ret = this.automaton.intersection(equalModel.automaton);
 
-//		if(ret.getStringCount().intValue() == 0){
-//			System.out.println("target1 " + automaton);
-//			System.out.println("arg1 " + equalModel.automaton);
-//			System.out.println("ret1 " + ret);
-//			//System.exit(2);
-//		}
+		//		if(ret.getStringCount().intValue() == 0){
+		//			System.out.println("target1 " + automaton);
+		//			System.out.println("arg1 " + equalModel.automaton);
+		//			System.out.println("ret1 " + ret);
+		//			//System.exit(2);
+		//		}
 		return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
 	}
 
@@ -191,10 +191,10 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		notContaining = notContaining.complete(notContaining.getMaxLenght(), alphabet.getCharSet());
 		//notContaining.determinize();
 		//DotToGraph.outputDotFile(notContaining.toDot(), "notContainsOtherArg1");
-		
+
 		int maxLength = automaton.getMaxLenght();
 		//DotToGraph.outputDotFile(automaton.toDot(), "notContainsOtherBase");
-		
+
 		//2. concatenate it with .* on both sides
 		AcyclicWeightedAutomaton prefix = BasicAcyclicWeightedAutomaton.makeCharSet(alphabet.getCharSet()).repeat(0, maxLength);
 		prefix.determinize();
@@ -220,13 +220,13 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	public AcyclicWeightedAutomatonModel assertNotEmpty() {
 		//get the empty string and complete it first since we will do the complement of it
 		AcyclicWeightedAutomaton arg = BasicAcyclicWeightedAutomaton.makeEmptyString();
-//		System.out.println("arg before");
-//		System.out.println(arg);
+		//		System.out.println("arg before");
+		//		System.out.println(arg);
 		arg = arg.complete(automaton.getMaxLenght(), alphabet.getCharSet());
-//		System.out.println("arg complete");
-//		System.out.println(arg);
+		//		System.out.println("arg complete");
+		//		System.out.println(arg);
 		AcyclicWeightedAutomaton ret = this.automaton.minus(arg);
-		 return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
+		return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
 	}
 
 	@Override
@@ -237,7 +237,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel assertNotEndsWith(AcyclicWeightedAutomatonModel notEndingModel) {
-		
+
 		return null;
 	}
 
@@ -247,17 +247,17 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		//System.out.println("assertNotEquals ");
 		//System.out.println(automaton.getMaxLenght() + " " + alphabet.getCharSet() );
 		//System.out.println("notEqual \n" + notEqualModel.automaton + "\n" + notEqualModel.automaton.getStringCount());
-		
+
 		//System.out.println("notEqual \n" + automaton + "\n" + automaton.getStringCount());
 		//can only perform minus operation if the argument is a singleton, otherwise 
 		//we over-approximate since it could be anything
 		AcyclicWeightedAutomaton ret;
 		if(notEqualModel.automaton.getStringCount().intValue() <= 1){
-		AcyclicWeightedAutomaton notEqual = notEqualModel.automaton.complete(automaton.getMaxLenght(), alphabet.getCharSet());
-		//System.out.println("notEqual \n" + notEqual);
-		 ret = automaton.minus(notEqual);
+			AcyclicWeightedAutomaton notEqual = notEqualModel.automaton.complete(automaton.getMaxLenght(), alphabet.getCharSet());
+			//System.out.println("notEqual \n" + notEqual);
+			ret = automaton.minus(notEqual);
 		} else {
-			
+
 			ret = automaton.clone();
 		}
 		//System.out.println("ret \n" + ret);
@@ -307,7 +307,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public boolean containsString(String actualValue) {
-		
+
 		return automaton.run(actualValue);
 	}
 
@@ -324,7 +324,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		 * greater than length(), or greater than end.
 		 */
 		AcyclicWeightedAutomaton res = null;
-		
+
 		automaton.determinize();
 		automaton.normalize();
 		if(start < 0 || start > end || automaton.isEmpty() || start > automaton.getMaxLenght()){
@@ -333,16 +333,16 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			//return automaton with string with
 			//greater or equal length than start
 			res = automaton.clone();
-				WeightedState nextState = res.getInitialState();
-				if(start > 0){
-					//make nextState nonfinal since the empty string would throw an
-					//exception
-					nextState.setAccept(false);
-				}
-				//start - 2, the actual indices of the strings which toStates
-				//should be set to non-final
-				removeDFS(nextState, start - 2, 0);
-			
+			WeightedState nextState = res.getInitialState();
+			if(start > 0){
+				//make nextState nonfinal since the empty string would throw an
+				//exception
+				nextState.setAccept(false);
+			}
+			//start - 2, the actual indices of the strings which toStates
+			//should be set to non-final
+			removeDFS(nextState, start - 2, 0);
+
 		} else {
 			//we will do dfs algorithm since we also need to count
 			//the weight of each "removed" substring
@@ -359,20 +359,20 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			Fraction weight = new Fraction(1,1);
 			deleteDFS(nextState, start, index, end-1, connectFromState, weight);
 		}
-		
-//		System.out.println("DELETE " + start + "\t" + end + " " + res.getStringCount());
-//		DotToGraph.outputDotFile(automaton.toDot(), "orig");
-//		DotToGraph.outputDotFile(res.toDot(), "deletedOrig");
+
+		//		System.out.println("DELETE " + start + "\t" + end + " " + res.getStringCount());
+		//		DotToGraph.outputDotFile(automaton.toDot(), "orig");
+		//		DotToGraph.outputDotFile(res.toDot(), "deletedOrig");
 		res.determinize();
 		res.normalize();
-//		DotToGraph.outputDotFile(res.toDot(), "deleted");
-//stop for now
-//		if(start == 1 &&  end == 2 && res.getStringCount().intValue() < 12){
-//			System.exit(2);
-//		}
+		//		DotToGraph.outputDotFile(res.toDot(), "deleted");
+		//stop for now
+		//		if(start == 1 &&  end == 2 && res.getStringCount().intValue() < 12){
+		//			System.exit(2);
+		//		}
 		return new AcyclicWeightedAutomatonModel(res, this.alphabet);
 	}
-	
+
 	private void removeDFS(WeightedState currState, int depth, int index) {
 		if(depth >= index){
 			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
@@ -394,7 +394,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 				removeDFS(toState, depth, index+1);
 			}
 		}
-		
+
 	}
 
 	private void deleteDFS(WeightedState currState, int start, int index, int end, WeightedState connectFromState,
@@ -404,6 +404,8 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		if(start > index){
 			//have not reached the point where we need to remove the states
 			//thus create a non-final copy of a toState and explore it further, increment index
+			//a non-final copy represent Exception thrown by Java if the start index is greater
+			//then the length of the string
 			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
 			tr.addAll(currState.getTransitions());
 			//further optimizaition create a copyState per set of 
@@ -420,13 +422,13 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 				}
 				//add the transition to it
 				trSet.add(t);
-				
+
 			}
 			//now create a new nonfinal state for each set
 			for(Entry<WeightedState, Set<WeightedTransition>> sTr : copySet.entrySet()){
 				WeightedState tempState = new WeightedState();
 				//however if the next index is actually start then conserve the acceptance
-				if(index + 1 == end){
+				if(index + 1 == start){
 					if(sTr.getKey().isAccept()){
 						tempState.setAccept(true);
 						//and set the corresponding weight
@@ -442,7 +444,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 					//change toState toCurr
 					tCurr.setToState(tempState);
 				}
-				
+
 				//now call DFS on tempState, and increment the index count, i.e., the depth
 				deleteDFS(tempState, start, index + 1, end, connectFromState, weight);
 			}
@@ -465,14 +467,14 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 					connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), tempState, weight.multiply(t.getWeight()));
 					//System.out.println("ConnectFromUpdatedMiddle " + connectFromState);
 				}
-				
+
 				//just call on toState with updated weight
 				//if the skipped state happens to be final do not include its weight into
 				//the calculation - those are "short" strings, just perform the weight update
 				//base on the weight of the edges
 				deleteDFS(toState, start, index+1, end, connectFromState, weight.multiply(t.getWeight()));
 			}
-			
+
 		} else if (start == index && index == end){
 			//delete the transition between the currentState and toState and
 			//add epsilon weighted transition between them
@@ -483,7 +485,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 				currState.removeTransition(t);
 				currState.addEpsilonTransition(automaton.getIncoming(currState), toState, weight.multiply(t.getWeight()));
 			}
-			
+
 		} else if (start < index && index < end){
 			//in between
 			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
@@ -502,7 +504,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 				//System.out.println("ConnectFromUpdatedMiddle " + connectFromState);
 				deleteDFS(toState, start, index+1, end, connectFromState, weight.multiply(t.getWeight()));
 			}
-			
+
 		} else if (start != index && index == end){
 			//the case when we found the last transitions
 			//all toStates should be epsilon connected with connectFromState
@@ -542,10 +544,10 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel replace(char find, char replace) {
-		
+
 		AcyclicWeightedAutomaton res = automaton.clone();
 		res.determinize();
-		DotToGraph.outputDotFile(res.toDot(), "replaceBefore");
+		//DotToGraph.outputDotFile(res.toDot(), "replaceBefore");
 		//find all transitions with that char
 		//remove from fromState and add it back with the updated 
 		//char
@@ -554,16 +556,14 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			transSet.addAll(s.getTransitions());
 			for(WeightedTransition wt : transSet){
 				if(wt.getSymb() == find){
-					s.removeTransition(wt);
 					wt.setSybmol(replace);
-					s.addTransition(wt);
 				}
 			}
 		}
-		DotToGraph.outputDotFile(res.toDot(), "replaceAfter");
+		//DotToGraph.outputDotFile(res.toDot(), "replaceAfter");
 		res.determinize();
 		res.normalize();
-		DotToGraph.outputDotFile(res.toDot(), "replaceAfterDet");
+		//DotToGraph.outputDotFile(res.toDot(), "replaceAfterDet");
 		return new AcyclicWeightedAutomatonModel(res, alphabet);
 	}
 
@@ -599,8 +599,110 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel substring(int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
+		//check the indices, similar to delete
+		int maxLength = automaton.getMaxLenght();
+		AcyclicWeightedAutomaton res;
+		if(start > maxLength || start < 0 || start > end){
+			//create an empty one
+			res = BasicAcyclicWeightedAutomaton.makeEmpty();
+		} else { 
+
+			res = automaton.clone(); //perhaps there is not need for cloning since we building our own
+
+			Set<WeightedState> startStates = extractDFS(res.getInitialState(), 0, start, end-1);
+			res = BasicAcyclicWeightedAutomaton.makeEmpty();
+			WeightedState startState = res.getInitialState();
+			//now do epsilon connections
+			for(WeightedState s : startStates){
+				startState.addEpsilonTransition(res.getIncoming(startState), s);
+			}
+			res.determinize();
+			res.normalize();
+		}
+		return new AcyclicWeightedAutomatonModel(res, alphabet);
+	}
+
+	private Set<WeightedState> extractDFS(WeightedState from, int indx, int start, int end) {
+		Set<WeightedState> ret = new HashSet<WeightedState>();
+		if(indx < start){
+			//explore its children
+			for(WeightedTransition wt : from.getTransitions()){
+				ret.addAll(extractDFS(wt.getToState(), indx+1, start, end));
+			}
+
+		} else if (indx == start){
+			//then make from state a start state, i.e., return it
+			//create a copy of from
+			WeightedState newStart = new WeightedState();
+			if(from.isAccept()){
+				newStart.setAccept(true);
+				newStart.setWeight(from.getWeight());
+			}
+			ret.add(newStart);
+			if(start != end){
+				//explore its children, but do not add anything from it
+				for(WeightedTransition wt : from.getTransitions()){
+					//add the transitions to the new state too
+					//we need to create a copy of toState right here, otherwise
+					//the transition will still go to the old state
+					WeightedState newTo = new WeightedState();
+					WeightedState oldTo = wt.getToState();
+					if(oldTo.isAccept()){
+						newTo.setAccept(true);
+						newTo.setWeight(oldTo.getWeight());
+					}
+					//copy the transitions
+					for(WeightedTransition wtOldTo : oldTo.getTransitions()){
+						newTo.addTransition(new WeightedTransition(newTo, wtOldTo.getSymb(), wtOldTo.getToState(), wt.getWeight()));
+					}
+					newStart.addTransition(new WeightedTransition(newStart, wt.getSymb(), newTo, wt.getWeight()));
+					extractDFS(newTo, indx+1, start, end);
+				}
+			}
+		} else if (indx == end){
+			//from is already a copy of the original one
+			Set<WeightedTransition> wtFrom = new HashSet<WeightedTransition>();
+			wtFrom.addAll(from.getTransitions());
+
+			for(WeightedTransition wt : wtFrom){
+				WeightedState to = wt.getToState();
+				if(to.isAccept()){
+					WeightedState copyTo = new WeightedState();
+					copyTo.setAccept(true);
+					copyTo.setWeight(to.getWeight());
+					//only one reason to add the transition
+					//if the state if a final one
+				} else {
+					//remove the transition from fromState
+					//since it will not end up in the accepting
+					//string and we are done with the substring processing
+					from.getTransitions().remove(wt);
+				}
+			} 
+		} else {
+			//in between start and end
+			//create a copy of toState and explore further
+			//explore its children, but do not add anything from it
+			for(WeightedTransition wt : from.getTransitions()){
+				//add the transitions to the new state too
+				//we need to create a copy of toState right here, otherwise
+				//the transition will still go to the old state
+				WeightedState newTo = new WeightedState();
+				WeightedState oldTo = wt.getToState();
+				if(oldTo.isAccept()){
+					newTo.setAccept(true);
+					newTo.setWeight(oldTo.getWeight());
+				}
+				//copy the transitions
+				for(WeightedTransition wtOldTo : oldTo.getTransitions()){
+					newTo.addTransition(new WeightedTransition(newTo, wtOldTo.getSymb(), wtOldTo.getToState(), wt.getWeight()));
+				}
+				//update toState for this transition
+				wt.setToState(newTo);
+				extractDFS(newTo, indx+1, start, end);
+			}
+		}
+		return ret;
 	}
 
 	@Override
@@ -623,8 +725,22 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel toLowercase() {
-		// TODO Auto-generated method stub
-		return null;
+		AcyclicWeightedAutomaton res = automaton.clone();
+		for(WeightedState s : res.getStates()){
+			Set<WeightedTransition> transSet = new HashSet<WeightedTransition>();
+			transSet.addAll(s.getTransitions());
+			for(WeightedTransition wt : transSet){
+				String symb = String.valueOf(wt.getSymb());
+				String lowerCase = symb.toLowerCase();
+				if(!lowerCase.equals(symb)){
+					//if symb is not a lower case symbol then convert it
+					wt.setSybmol(lowerCase.charAt(0));
+				}
+			}
+		}
+		res.determinize();
+		res.normalize();
+		return new AcyclicWeightedAutomatonModel(res, alphabet);
 	}
 
 	@Override
@@ -649,6 +765,6 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	public String getAutomaton() {
 		return automaton.toString();
 	}
-	
+
 
 }

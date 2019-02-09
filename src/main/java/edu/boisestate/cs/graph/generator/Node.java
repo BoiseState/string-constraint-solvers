@@ -6,7 +6,7 @@ import java.util.List;
 public class Node {
 	static int nodeId = 1;
 	
-	enum NTYPE {CONCR, SYMB, CONCAT, CONTAINS, REPLACE, DELETE, ISEMPTY, EQUALS};
+	enum NTYPE {CONCR, SYMB, CONCAT, CONTAINS, REPLACE, DELETE, ISEMPTY, EQUALS, TOLOWER, SUBSTR12};
 	
 	/* a unique id of the node */
 	protected int id;
@@ -51,6 +51,10 @@ public class Node {
 		case ISEMPTY: value =  "isEmpty!!!:!0";
 		break;
 		case EQUALS: value = "equals!!Ljava/lang/Object;!:!0";
+		break;
+		case TOLOWER: value = "toLowerCase!!!:!0";
+		break;
+		case SUBSTR12: value = "substring!!II!:!0";
 		break;
 		}
 	}

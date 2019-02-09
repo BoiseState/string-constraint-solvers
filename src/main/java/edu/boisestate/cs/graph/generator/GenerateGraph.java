@@ -27,13 +27,15 @@ public class GenerateGraph {
 		int depth = 2; //min of zero and max of two operations on the target edge
 		int size = 2; //the max size of a concrete string
 		Set<String> operations = new HashSet<String>();
-		operations.add("concat");
-		operations.add("replace");
-		operations.add("delete");
+		//operations.add("concat");
+		//operations.add("replace");
+		//operations.add("delete");
+		//operations.add("toLowerCase");
+		operations.add("substring12");
 		Set<String> predicates = new HashSet<String>();
-		//predicates.add("contains");
+		predicates.add("contains");
 		//predicates.add("isEmpty");
-		predicates.add("equals");
+		//predicates.add("equals");
 		//a list of symbolic source nodes available
 		List<Node> symbSource = new ArrayList<Node>();
 		//a list of concrete nodes available
@@ -62,7 +64,7 @@ public class GenerateGraph {
 		//would result in a chain, e.g, concat-> concat or concat->delete
 		//actually can do it with one single symbolic value, but it is ok 
 		//to have such more even distribution
-		for(int i=0; i < operations.size(); i++){
+		for(int i=0; i < 5; i++){
 			//generate a random string from the given abc up to length size
 			//smaller size might end up with UNSAT/UNSAT, e.g., deletion operations
 			String concreteVal = generateString(size, abc);
@@ -80,22 +82,29 @@ public class GenerateGraph {
 			//create new operation nodes at that level if needed
 
 			List<Node> operSet = new ArrayList<Node>();
-			for(String oper : operations){
-				switch(oper){
-				case "concat" : n = createConcat(targets, concrSource);
-				break;
-				case "replace" : n = createReplace(targets, concrSource);
-				break;
-				case "delete" : n = createDelete(targets, intSource );
-				break;
-				default: n = new Node(String.valueOf(abc[0]), NTYPE.CONCR);
+			for(int i = 0 ; i < 10; i++){
+				for(String oper : operations){
+					switch(oper){
+					case "concat" : n = createConcat(targets, concrSource);
+					break;
+					case "replace" : n = createReplace(targets, concrSource);
+					break;
+					case "delete" : n = createDelete(targets, intSource);
+					break;
+					case "toLowerCase" : n = createToLowerCase(targets);
+					break;
+					case "substring12" : n = createSubstring12(targets, intSource);
+					break;
+					default: n = new Node(String.valueOf(abc[0]), NTYPE.CONCR);
+					}
+					operSet.add(n);
 				}
-				operSet.add(n);
-			//add operations to that level
-			levelOperations.put(Integer.valueOf(l+1), operSet);
+
+				//add operations to that level
+				levelOperations.put(Integer.valueOf(l+1), operSet);
 			}
 		}// end for depth
-		
+
 		//after generating operations add on predicates
 		for(int l = 0; l <= depth; l++){
 			//for each predicate
@@ -148,17 +157,17 @@ public class GenerateGraph {
 		} else if (! benchDir.exists()){
 			benchDir.mkdir();
 		}
-		
+
 		String used = "";
 		for(String op : operations){
 			used += op+"_";
 		}
-		
+
 		for(String pred: predicates){
 			used+= pred + "_";
 		}
 		String benchFileName = String.format("%s/%sl%d_d%d_bench.json", benchDirPath, used, size, depth);
-		
+
 		try{
 			Writer benchWriter = new FileWriter(benchFileName);
 			benchWriter.write(jsonStr.toString());
@@ -167,7 +176,34 @@ public class GenerateGraph {
 			e.printStackTrace();
 		}
 	}
-	
+
+	private static Node createSubstring12(List<Node> targets, List<Node> intSource) {
+		int tIndx = rand.nextInt(targets.size()); // target index
+		Node target = targets.get(tIndx);
+		String targetVal = target.getActualValue();
+		//get its concrete value's size
+		int maxIndx = targetVal.length();
+		//generate two numbers for the substring args
+		int aIndx1 = rand.nextInt(maxIndx+1); // argument index can be the same as the length of the stirng
+		int aIndx2 = rand.nextInt(maxIndx + 1 - aIndx1) + aIndx1;
+		String actualVal = targetVal.substring(aIndx1, aIndx2);
+		String aStr1 = String.valueOf(aIndx1);
+		//find the appropriate nodes or create if none exist
+		Node arg1 = findOrAdd(aStr1, intSource, null);
+		String aStr2 = String.valueOf(aIndx2);
+		Node arg2 = findOrAdd(aStr2, intSource, arg1);//make sure a node is different for that one
+		InnerNode ret = new InnerNode(actualVal, NTYPE.SUBSTR12, target, arg1, arg2);
+		return ret;
+	}
+
+	private static Node createToLowerCase(List<Node> targets) {
+		int tIndx = rand.nextInt(targets.size()); // target index
+		Node target = targets.get(tIndx);
+		String actualVal = target.getActualValue().toLowerCase();
+		InnerNode ret = new InnerNode(actualVal, NTYPE.TOLOWER, target);
+		return ret;
+	}
+
 	private static Node createEquals(List<Node> targets, List<Node> concrSource) {
 		int tIndx = rand.nextInt(targets.size()); // target index
 		Node target = targets.get(tIndx);
@@ -197,10 +233,10 @@ public class GenerateGraph {
 		int maxIndx = targetVal.length();
 		//generate two numbers for the delete args
 		int aIndx1 = rand.nextInt(maxIndx+1); // argument index can be the same as the length of the stirng
-//		int aIndx2 = rand.nextInt(maxIndx); // argument index
-//		while(aIndx1 > aIndx2){
-//			aIndx2 = rand.nextInt(maxIndx);
-//		}
+		//		int aIndx2 = rand.nextInt(maxIndx); // argument index
+		//		while(aIndx1 > aIndx2){
+		//			aIndx2 = rand.nextInt(maxIndx);
+		//		}
 		//make sure the second index is a valid one
 		int aIndx2 = rand.nextInt(maxIndx + 1 - aIndx1) + aIndx1;
 		StringBuffer actualVal = new StringBuffer(targetVal);
@@ -213,7 +249,7 @@ public class GenerateGraph {
 		InnerNode ret = new InnerNode(actualVal.toString(), NTYPE.DELETE, target, arg1, arg2);
 		return ret;
 	}
-	
+
 	private static Node findOrAdd(String val, List<Node> intSource, Node exclude){
 		Node ret = null;
 		for(Node n : intSource){
@@ -227,7 +263,7 @@ public class GenerateGraph {
 			ret = new Node(val, NTYPE.CONCR);
 			intSource.add(ret);
 		}
-		
+
 		return ret;
 	}
 
@@ -256,7 +292,7 @@ public class GenerateGraph {
 		return ret;
 	}
 
-	
+
 
 	private static Node createConcat(List<Node> targets, List<Node> args) {
 		int tIndx = rand.nextInt(targets.size()); // target index

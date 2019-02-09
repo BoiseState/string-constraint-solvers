@@ -439,14 +439,14 @@ public class AutomatonModelSolver
         // create new automaton model from string
         AutomatonModel model = this.modelManager.createString(string);
 
-        System.out.println("newConcreteString " + id + " : " + string);
+        //System.out.println("newConcreteString " + id + " : " + string);
         // stop timer
         BasicTimer.stop();
 
         // store new model
         this.symbolicStringMap.put(id, model);
         
-        System.out.println("m " + "\n" + model.getAutomaton());
+       // System.out.println("m " + "\n" + model.getAutomaton());
 
         // store string value
         this.concreteStringMap.put(id, string);
@@ -514,7 +514,6 @@ public class AutomatonModelSolver
 
         // start timer
         BasicTimer.start();
-
         // perform replace string operation
         baseModel = baseModel.replace(find, replace);
 
