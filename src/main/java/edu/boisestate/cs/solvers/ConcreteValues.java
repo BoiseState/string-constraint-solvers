@@ -109,12 +109,14 @@ public class ConcreteValues {
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder("( ");
+        if(!values.isEmpty()){
         for (String str : this.values.keySet()) {
             output.append(str).append("{")
                   .append(values.get(str))
                   .append("} | ");
         }
         output.delete(output.length() - 2, output.length());
+        }
         output.append(") ");
 
         return output.toString();
@@ -927,7 +929,6 @@ public class ConcreteValues {
                 this.exceptionCount += 1;
             }
         }
-
         // return new concrete values from result list
         return new ConcreteValues(alphabet, initialBoundLength, results);
     }

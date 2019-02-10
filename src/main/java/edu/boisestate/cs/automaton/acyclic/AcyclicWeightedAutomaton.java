@@ -267,6 +267,14 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 		return BigInteger.valueOf(count.longValue());
 	}
 	
+	public BigInteger getStringCountFromState(WeightedState from){
+		//currPrefixes are set to 1 due to the empty string
+		//System.out.println(this);
+		Fraction count = countStrings(from, new Fraction(1));
+		//System.out.println(count);
+		return BigInteger.valueOf(count.longValue());
+	}
+	
 	private Fraction countStrings(WeightedState curr, Fraction currPrefixes){
 		Fraction currCount = new Fraction(0);
 		//System.out.println("In " + curr + " " + currCount + " " + currPrefixes);

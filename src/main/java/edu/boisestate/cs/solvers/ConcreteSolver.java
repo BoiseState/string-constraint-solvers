@@ -90,7 +90,10 @@ public class ConcreteSolver
         // get concrete values
         ConcreteValues baseValues = this.symbolicStringMap.get(base);
         ConcreteValues argValues = this.symbolicStringMap.get(arg);
-
+//        if(arg == 2){
+//        	System.out.println(result);
+//        	System.out.println(baseValues + " " + argValues + " " + arg);
+//        }
         // true branch
         if (result) {
             // start timer
@@ -122,7 +125,11 @@ public class ConcreteSolver
             // start timer
             BasicTimer.stop();
         }
-
+//        if(arg == 2){
+//        	System.out.println(baseValues + " " + base);
+//        	System.out.println(argValues + " " + arg);
+//        	//System.exit(2);
+//        }
         // store resulting concrete values
         this.symbolicStringMap.put(base, baseValues);
         this.symbolicStringMap.put(arg, argValues);
