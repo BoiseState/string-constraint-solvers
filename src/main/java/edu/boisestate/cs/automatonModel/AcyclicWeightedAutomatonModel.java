@@ -628,8 +628,8 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel substring(int start, int end) {
-		if(start == 0 && end == 2){
-			System.out.println(automaton);
+		if(start == 0 && end == 0){
+			System.out.println("In \n" + automaton);
 			//System.exit(2);
 		}
 		//so for substring end cannot be greater than the length
@@ -661,7 +661,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			}
 			res.determinize();
 			res.normalize();
-			if(start == 0 && end == 2){
+			if(start == 0 && end == 0){
 				System.out.println("SS\n " + startStates);
 				System.out.println("res\n " + res);
 				//System.exit(2);
@@ -675,6 +675,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		if(indx < start){
 			//explore its children and keep the count of the weight, which should be multiplied
 			for(WeightedTransition wt : from.getTransitions()){
+				//can optimize here by figuring out when children go to the same state
 				ret.addAll(extractDFS(wt.getToState(), indx+1, start, end, weight.multiply(wt.getWeight())));
 			}
 
@@ -689,44 +690,65 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			if(start != end){
 				//explore its children, but do not add anything from it
 				for(WeightedTransition wt : from.getTransitions()){
+					
 					//add the transitions to the new state too
 					//we need to create a copy of toState right here, otherwise
 					//the transition will still go to the old state
 					WeightedState newTo = new WeightedState();
 					WeightedState oldTo = wt.getToState();
-					newStart.addTransition(new WeightedTransition(newStart, wt.getSymb(), newTo, wt.getWeight()));
+					System.out.println(wt.getSymb() + " -> " + oldTo);
+					newStart.addTransition(new WeightedTransition(newStart, wt.getSymb(), newTo, wt.getWeight().multiply(weight)));
 					//copy the transitions if we will explore further only
 					if(indx + 1 < end){
 						for(WeightedTransition wtOldTo : oldTo.getTransitions()){
-							newTo.addTransition(new WeightedTransition(newTo, wtOldTo.getSymb(), wtOldTo.getToState(), wt.getWeight()));
+							newTo.addTransition(new WeightedTransition(newTo, wtOldTo.getSymb(), wtOldTo.getToState(), wtOldTo.getWeight()));
 						}
-						extractDFS(newTo, indx+1, start, end, weight.multiply(wt.getWeight())); // check it here
-					} else {
+						extractDFS(newTo, indx+1, start, end, new Fraction(1)); // we stop considering the weight from now on
+					} else if (indx + 1 == end){
 						//finishing up here 
-						if(oldTo.isAccept()){
+						int tail = automaton.getStringCountFromState(oldTo).intValue();
+						System.out.println("tail is " + tail);
+						if(tail > 0){
+							//make state final and update its weight
+							//update the weight of the state
 							newTo.setAccept(true);
-							BigInteger tail = automaton.getStringCountFromState(oldTo);
-							Fraction newWeight = oldTo.getWeight().multiply(weight).multiply(tail.intValue());
+							Fraction newWeight = new Fraction(tail);
+							//if oldTo is accept then the algorithm will count 
+							//it too, so no need to add its weight bac kagain.
 							newTo.setWeight(newWeight);
 						}
+						System.out.println("newTo " + newTo);
 
+					} else {
+						//cannot be reached
+						System.out.println("Ivalid code location 1");
+						System.exit(2);
 					}
 				}
 			} else {
-				//case when the start and the end are the same
-				//it will accept all the strings that end at that point
-				//which should be all empty strings
-				if(from.isAccept()){
+				//setting accept based on the count and the accept state
+				int tail = automaton.getStringCountFromState(from).intValue();
+				if(tail > 0){
 					newStart.setAccept(true);
-					//compute new weight, which are all the weights before and all the weight after,
-					//that is all the string which this substring is part of
-					BigInteger tail = automaton.getStringCountFromState(from);
-					Fraction newWeight = from.getWeight().multiply(weight).multiply(tail.intValue());
+					Fraction newWeight = new Fraction(0);
+					if(!from.isAccept() && tail > 0){
+						//all the string that pass through it
+						newWeight = new Fraction(tail).multiply(weight);
+					} else if(from.isAccept()){ //if it is accept the tail will never be 0, it will count the empty string of from state
+						//remove the empty string of from state
+						Fraction tailNoEps = new Fraction(tail).subtract(from.getWeight());
+						//all the string that pass through it
+						newWeight = tailNoEps.multiply(weight);
+						//all the strings that end there
+						Fraction fromAccept = from.getWeight().multiply(weight);
+						newWeight = tailNoEps.add(fromAccept);
+					}
+					
+					//set the new weight
 					newStart.setWeight(newWeight);
 				}
-
 			}
-		} else if (indx < end ){
+		} else if (indx <= end ){
 			//in between start and end
 			//create a copy of toState and explore further
 			//explore its children, but do not add anything from it
@@ -741,11 +763,14 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 				wt.setToState(newTo);
 				//two cases: to stop reached the end
 				if(indx + 1 == end){
-					if(oldTo.isAccept()){
-						BigInteger tail = automaton.getStringCountFromState(oldTo);
-						Fraction newWeight = oldTo.getWeight().multiply(weight).multiply(tail.intValue());
+					//finishing up here 
+					int tail = automaton.getStringCountFromState(oldTo).intValue();
+					if(tail > 0){
+						//make state final and update its weight
+						//update the weight of the state
+						newTo.setAccept(true);
+						Fraction newWeight = new Fraction(tail);
 						newTo.setWeight(newWeight);
-						//newTo does not need any transition added
 					}
 				} else {
 					//if it is an intermediate state and oldTo happened to
@@ -755,7 +780,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 					for(WeightedTransition wtOldTo : oldTo.getTransitions()){
 						newTo.addTransition(new WeightedTransition(newTo, wtOldTo.getSymb(), wtOldTo.getToState(), wt.getWeight()));
 					}
-					extractDFS(newTo, indx+1, start, end, weight.multiply(wt.getWeight())); // check here too
+					extractDFS(newTo, indx+1, start, end, new Fraction(1)); // check here too
 				}
 			}
 		}
