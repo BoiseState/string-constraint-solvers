@@ -229,8 +229,24 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 	}
 
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return BasicAcyclicWeightedOperations.isEmpty(this);
+		//find at least one path from the start
+		return !findPathFrom(initial);
+		//return BasicAcyclicWeightedOperations.isEmpty(this);
+	}
+	
+	private boolean findPathFrom(WeightedState curr){
+		boolean ret = false;
+		if(curr.isAccept()){
+			ret = true;
+		} else {
+			for(WeightedTransition w : curr.getTransitions()){
+				ret = findPathFrom(w.getToState());
+				if(ret){ //found at least one path
+					break;
+				}
+			}
+		}
+		return ret;
 	}
 
 	public boolean run(String s) {
@@ -258,6 +274,7 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 		}
 		return currentMax;
 	}
+	
 	
 	public BigInteger getStringCount(){
 		//currPrefixes are set to 1 due to the empty string

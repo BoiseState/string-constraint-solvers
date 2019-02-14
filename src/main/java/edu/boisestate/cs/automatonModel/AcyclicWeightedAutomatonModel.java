@@ -12,6 +12,7 @@ import org.apache.commons.math3.fraction.Fraction;
 import edu.boisestate.cs.Alphabet;
 import edu.boisestate.cs.automaton.acyclic.WeightedState;
 import edu.boisestate.cs.automaton.acyclic.WeightedTransition;
+import edu.boisestate.cs.util.DotToGraph;
 import edu.boisestate.cs.automaton.acyclic.AcyclicWeightedAutomaton;
 import edu.boisestate.cs.automaton.acyclic.BasicAcyclicWeightedAutomaton;
 
@@ -77,6 +78,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	@Override
 	public AcyclicWeightedAutomatonModel assertContainsOther(AcyclicWeightedAutomatonModel containedModel) {
 		//System.out.println("assertContainsOther " + isEmpty() + " " + containedModel.isEmpty());
+		
 		//a bit of optimization, but still work
 		AcyclicWeightedAutomaton ret;
 		if(containedModel.isEmpty()){
@@ -89,12 +91,19 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			//of this automaton
 			//step 1 find max (or we can use number of states + 1 value, which might create larger automata)
 			int maxLength = this.automaton.getMaxLenght();
+//			System.out.println("This count 1: " + automaton.getStringCount());
+//			if(automaton.getStringCount().intValue() == 169){
+//				DotToGraph.outputDotFile(automaton.toDot(), "before169");
+//			}
 			automaton.determinize();
+			automaton.normalize();
+//			if(automaton.getStringCount().intValue() == 566){
+//				DotToGraph.outputDotFile(automaton.toDot(), "after566");
+//			}
 			//automaton.normalize();
 			//System.out.println("Here 1 ");
 			//DotToGraph.outputDotFile(automaton.toDot(), "this");
-			automaton.normalize();
-			//DotToGraph.outputDotFile(automaton.toDot(), "containsInBase");
+			DotToGraph.outputDotFile(automaton.toDot(), "containsInBase");
 
 			//System.out.println("Max L " + maxLength);
 			AcyclicWeightedAutomaton prefix = BasicAcyclicWeightedAutomaton.makeCharSet(alphabet.getCharSet()).repeat(0, maxLength);
@@ -108,10 +117,10 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			//System.out.println("Suffix\n" + suffix);
 			//DotToGraph.outputDotFile(suffix.toDot(), "suffix");
 			AcyclicWeightedAutomaton contained = containedModel.automaton;
+			//System.out.println("Other:\n" + contained + contained.getMaxLenght() + " \n" + automaton.getStringCount().intValue());
 			contained.determinize();
 			//contained.normalize();
-			//System.out.println("Other: " + contained);
-			//DotToGraph.outputDotFile(contained.toDot(), "other");;
+			DotToGraph.outputDotFile(contained.toDot(), "other");
 			AcyclicWeightedAutomaton x = prefix.concatenate(contained);
 			x.determinize();
 			//x.normalize();
@@ -128,20 +137,26 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			//DotToGraph.outputDotFile(x.toDot(), "X2DN");
 			//for a just a single string we can remove the weights
 			x = x.flatten();
-			//DotToGraph.outputDotFile(x.toDot(), "containsInArg");
+//			if(automaton.getStringCount().intValue() == 169){
+//				DotToGraph.outputDotFile(x.toDot(), "containsInArg");
+//			}
 			//System.out.println("Here 2 ");
 			ret  = automaton.intersection(x);
 			//System.out.println("Here 3 ");
 			//System.out.println("Ret: " + ret);
+			
 			//System.out.println(ret.toDot());
 			//DotToGraph.outputDotFile(ret.toDot(), "RET");
 			//System.out.println("Here 4 ");
 			ret.determinize();
 			//System.out.println("Here 5 ");
 			ret.normalize();
-			//DotToGraph.outputDotFile(ret.toDot(), "containsOtherRet");
-			//System.out.println("Ret: " + ret);
-			//System.exit(2);
+//			System.out.println("Other:\n" + contained + contained.getMaxLenght() + " \n" + automaton.getStringCount().intValue());
+//			if(automaton.getStringCount().intValue() == 566 && contained.getMaxLenght() == 0){
+//			 DotToGraph.outputDotFile(ret.toDot(), "containsOtherRet");
+//			 System.out.println("Ret: " + ret);
+//			 System.exit(2);
+//			}
 		}
 
 		return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
@@ -151,6 +166,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	public AcyclicWeightedAutomatonModel assertEmpty() {
 		//do the intersection with an empty string (cannot just create an empty one, otherwise
 		//the empty string count could be of)
+		//System.out.println("Assert Emtpy");
 		AcyclicWeightedAutomaton ret = this.automaton.intersection(BasicAcyclicWeightedAutomaton.makeEmptyString());
 		return new AcyclicWeightedAutomatonModel(ret, alphabet, 0);
 	}
@@ -628,10 +644,10 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel substring(int start, int end) {
-		if(start == 0 && end == 0){
-			System.out.println("In \n" + automaton);
-			//System.exit(2);
-		}
+//		if(start == 0 && end == 0){
+//			System.out.println("In \n" + automaton);
+//			//System.exit(2);
+//		}
 		//so for substring end cannot be greater than the length
 		//otherwise it will throw an exception, while
 		//in delete it will happened when the start is greater than the length
@@ -661,11 +677,11 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			}
 			res.determinize();
 			res.normalize();
-			if(start == 0 && end == 0){
-				System.out.println("SS\n " + startStates);
-				System.out.println("res\n " + res);
-				//System.exit(2);
-			}
+//			if(start == 0 && end == 0){
+//				System.out.println("SS\n " + startStates);
+//				System.out.println("res\n " + res);
+//				//System.exit(2);
+//			}
 		}
 		return new AcyclicWeightedAutomatonModel(res, alphabet);
 	}

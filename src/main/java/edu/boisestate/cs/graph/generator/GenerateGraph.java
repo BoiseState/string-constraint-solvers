@@ -27,15 +27,15 @@ public class GenerateGraph {
 		int depth = 2; //min of zero and max of two operations on the target edge
 		int size = 2; //the max size of a concrete string
 		Set<String> operations = new HashSet<String>();
-		//operations.add("concat");
+		operations.add("concat");
 		//operations.add("replace");
 		//operations.add("delete");
 		//operations.add("toLowerCase");
-		operations.add("substring12");
+		//operations.add("substring12");
 		Set<String> predicates = new HashSet<String>();
 		predicates.add("contains");
-		//predicates.add("isEmpty");
-		//predicates.add("equals");
+		predicates.add("isEmpty");
+		predicates.add("equals");
 		//a list of symbolic source nodes available
 		List<Node> symbSource = new ArrayList<Node>();
 		//a list of concrete nodes available
@@ -108,19 +108,21 @@ public class GenerateGraph {
 		//after generating operations add on predicates
 		for(int l = 0; l <= depth; l++){
 			//for each predicate
-			Node n;
+			Node n = null;
 			List<Node> targets = new ArrayList<Node>();
 			targets.addAll(levelOperations.get(l));
 			while(!targets.isEmpty()){
 				for(String pred : predicates){
+					if(!targets.isEmpty()){
 					switch (pred){
-					case "contains" : n = createContains(targets, concrSource);
+					case "contains" : n = createContains(targets, concrSource,abc);
 					break;
 					case "isEmpty" : n = createIsEmpty(targets);
 					break;
-					case "equals" : n = createEquals(targets, concrSource);
+					case "equals" : n = createEquals(targets, concrSource, abc);
 					break;
 					default: n = new Node(String.valueOf(abc[0]), NTYPE.CONCR);
+					}
 					}
 					predicateNodes.add(n);
 				}
@@ -204,14 +206,16 @@ public class GenerateGraph {
 		return ret;
 	}
 
-	private static Node createEquals(List<Node> targets, List<Node> concrSource) {
+	private static Node createEquals(List<Node> targets, List<Node> concrSource, char[] abc) {
 		int tIndx = rand.nextInt(targets.size()); // target index
 		Node target = targets.get(tIndx);
 		targets.remove(tIndx);
-		int aIndx = rand.nextInt(concrSource.size()); // argument index
-		Node arg = concrSource.get(aIndx);
-		String actualVal = target.getActualValue().equals(arg.getActualValue()) ? "true":"false";
-		InnerNode ret = new InnerNode(actualVal, NTYPE.EQUALS, target, arg);
+		//create a new concrete source for predicates, otherwise they will
+		//be overwritten, possible with the empty language
+		Node concrN = new Node(generateStringUpTo(2, abc), NTYPE.CONCR);
+		concrSource.add(concrN);
+		String actualVal = target.getActualValue().equals(concrN.getActualValue()) ? "true":"false";
+		InnerNode ret = new InnerNode(actualVal, NTYPE.EQUALS, target, concrN);
 		return ret;
 	}
 
@@ -269,11 +273,17 @@ public class GenerateGraph {
 
 	private static String generateString(int size, char[] abc) {
 		StringBuilder ret = new StringBuilder();
-		for(int i=0; i <= size; i++){
+		for(int i=0; i < size; i++){
 			//randomly pick a value from a the alphabet
 			ret.append(abc[rand.nextInt(abc.length)]);
 		}
 		return ret.toString();
+	}
+	
+	private static String generateStringUpTo(int maxSize, char[] abc){
+		//find a radnom number
+		int size = rand.nextInt(maxSize+1);
+		return generateString(size, abc);
 	}
 
 	private static Node createReplace(List<Node> targets, List<Node> args) {
@@ -297,23 +307,34 @@ public class GenerateGraph {
 	private static Node createConcat(List<Node> targets, List<Node> args) {
 		int tIndx = rand.nextInt(targets.size()); // target index
 		Node target = targets.get(tIndx);
-		int aIndx = rand.nextInt(args.size()); // argument index
-		Node arg = args.get(aIndx);
+		//symbolic or concrete
+		Node arg;
+		if(rand.nextBoolean()){
+			int aIndx = rand.nextInt(args.size()); // argument index
+			arg = args.get(aIndx);
+		} else {
+			int aIndx = rand.nextInt(targets.size()); // argument index
+			while(aIndx == tIndx){ // it is not a multi-graph: cannot have two edges between the same nodes.
+				aIndx = rand.nextInt(targets.size());
+			}
+			arg = targets.get(aIndx);
+		}
+		
 		String actualVal = target.getActualValue().concat(arg.getActualValue());
 		InnerNode ret = new InnerNode(actualVal, NTYPE.CONCAT, target, arg);
 		return ret;
 	}
 
-	private static Node createContains(List<Node> targets, List<Node> args) {
+	private static Node createContains(List<Node> targets, List<Node> args, char[] abc) {
 		//get the indexes for target and arg nodes
 		int tIndx = rand.nextInt(targets.size()); //can pick randomly
 		Node target = targets.get(tIndx);
 		targets.remove(tIndx);
-		int aIndx = rand.nextInt(args.size());
-		Node arg = args.get(aIndx);
+		Node concrN = new Node(generateStringUpTo(2, abc), NTYPE.CONCR);
+		args.add(concrN);
 		//System.out.println(String.format("%d, %d, %d, %d", targets.size(), tIndx, args.size(), aIndx));
-		String actualVal = target.getActualValue().contains(arg.getActualValue())?"true":"false";
-		InnerNode ret = new InnerNode(actualVal, NTYPE.CONTAINS, target, arg);
+		String actualVal = target.getActualValue().contains(concrN.getActualValue())?"true":"false";
+		InnerNode ret = new InnerNode(actualVal, NTYPE.CONTAINS, target, concrN);
 		return ret;
 	}
 

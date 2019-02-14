@@ -134,8 +134,9 @@ public class BasicAcyclicWeightedOperations {
 				Fraction wP = new Fraction(0,1);
 				//now compute the new state, which is a set of pair
 				Set<Pair<WeightedState, Fraction>> qPPre = new HashSet<Pair<WeightedState, Fraction>>();
+				//System.out.println("qPPre " + pP);
 				for(Pair<WeightedState, Fraction> pv : pP){
-					//System.out.println("PV: " + pv);
+					//System.out.println("PV: " + pv + "\n" + label);
 
 					//get the state
 					WeightedState p = pv.getFirst();
@@ -163,6 +164,7 @@ public class BasicAcyclicWeightedOperations {
 							qPPre.add(qvP);
 						}
 					}//end for t:wt
+					//System.out.println("weight " + wP);
 				}// end pv : pP for new trans weight calc
 				//System.out.println("new trans weight: " + wP);
 
@@ -174,15 +176,21 @@ public class BasicAcyclicWeightedOperations {
 					Pair<WeightedState, Fraction> updatedPair = new Pair<WeightedState, Fraction>(qvP.getFirst(), fr);
 					qP.add(updatedPair);
 				}// end qvP : qP new state calc
-
+				//System.out.println("new pair " + qP);
 				//check if the state already exists
 				//create a state for it
 				WeightedState waS = null;
+				//need to calculate the final weight of the state first before 
+				//checking it existence, because the default is the weight 1
+				boolean newState = false;
 				if(waStates.containsKey(qP)){
 					waS = waStates.get(qP);
+					//System.out.println("found");
 				} else {
 					waS = new WeightedState();
 					waStates.put(qP, waS);
+					newState = true;
+					//System.out.println("not found");
 				}
 				//System.out.println("New state: " + qP);
 				//now create a transition for between pP and qP
@@ -196,12 +204,15 @@ public class BasicAcyclicWeightedOperations {
 					System.err.println("cannot find state in the map!");
 				}
 
-				if(!queue.contains(qP)){
+				//not in the queue and has not been found yet.
+				//that is, a new state
+				if(newState /*!queue.contains(qP)*/){
 					//check if qP contains p that is a final state
 					//and compute its weight in case the string exists there
 					Fraction finalW = Fraction.ZERO;
 					for(Pair<WeightedState, Fraction> qvP : qP){
 						if(qvP.getFirst().isAccept()){
+							
 							//then qP's state is also accept
 							//ro is a weight function for the final states only
 							finalW = finalW.add(qvP.getSecond().multiply(qvP.getFirst().getWeight()));
@@ -221,7 +232,7 @@ public class BasicAcyclicWeightedOperations {
 		}//end of while loop for queue
 	}
 	
-	private static void removeUnreachableStates(AcyclicWeightedAutomaton a){
+	public static void removeUnreachableStates(AcyclicWeightedAutomaton a){
 		//find all states that are non-final but have no outgoing transitions
 		boolean found = true;
 		while(found){
@@ -437,9 +448,12 @@ public class BasicAcyclicWeightedOperations {
 	public static AcyclicWeightedAutomaton intersection(AcyclicWeightedAutomaton a1,
 			AcyclicWeightedAutomaton a2) {
 		AcyclicWeightedAutomaton ret;
+		//System.out.println("a22 " + a2);
 		if(a1.isEmpty() || a2.isEmpty()){
+			//System.out.println(a1.isEmpty() + " " + a2.isEmpty());
 			ret =  BasicAcyclicWeightedAutomaton.makeEmpty();
 			//System.out.println("Empty " + ret);
+			//System.exit(2);
 		} else {
 			//the algorithm is the same as the traditional
 			//automaton, only the weights of the
@@ -566,12 +580,18 @@ public class BasicAcyclicWeightedOperations {
 		return ret;
 	}
 
-	public static boolean isEmpty(AcyclicWeightedAutomaton a) {
-		//conditions works when we have minimized automaton
-		//since the minimization algorithm would make one 
-		//accepting state
-		return !a.initial.isAccept() && a.initial.getTransitions().isEmpty();
-	}
+//	public static boolean isEmpty(AcyclicWeightedAutomaton a) {
+//		//conditions works when we have minimized automaton
+//		//since the minimization algorithm would make one 
+//		//accepting state
+//		//System.out.println("Before R " + a);
+//		//a non empty if it can find at least one path from start to a final
+//		
+//		AcyclicWeightedAutomaton temp = a.clone();
+//		removeUnreachableStates(temp);
+//		//System.out.println("After R " + a);
+//		return !temp.initial.isAccept() && temp.initial.getTransitions().isEmpty();
+//	}
 
 	public static boolean run(AcyclicWeightedAutomaton a, String s) {
 		//we assume that our automaton is deterministic
