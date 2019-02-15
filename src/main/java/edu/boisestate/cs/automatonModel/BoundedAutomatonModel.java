@@ -755,7 +755,7 @@ public class BoundedAutomatonModel
         int newBoundLength = end - start;
 
         // return new model from resulting automaton
-        return new UnboundedAutomatonModel(result, this.alphabet, newBoundLength);
+        return new BoundedAutomatonModel(result, this.alphabet, newBoundLength);
     }
 
     @Override

@@ -65,12 +65,10 @@ public class UnboundedAutomatonModelManager
 
     @Override
     public AutomatonModel createString(String string) {
-
         // create string automaton
         Automaton stringAutomaton = BasicAutomata.makeString(string);
         // get string length as bound length
         int length = string.length();
-
         // return model from automaton
         return new UnboundedAutomatonModel(stringAutomaton,
                                            this.alphabet,

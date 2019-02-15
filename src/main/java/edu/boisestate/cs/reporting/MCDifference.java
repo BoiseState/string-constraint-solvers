@@ -10,7 +10,7 @@ public class MCDifference {
 
 	public static void main(String[] args) {
 		//takes in two file names
-		String fName = "replace_delete_concat_contains_l2_d2_bench.txt";
+		String fName = "delete_concat_l3.txt";
 		String f1Path = "./data/correctness/concrete/" + fName;
 		String f2Path = "./data/correctness/weightedAcyclic/" + fName;
 		

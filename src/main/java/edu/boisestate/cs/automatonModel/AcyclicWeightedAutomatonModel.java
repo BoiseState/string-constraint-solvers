@@ -78,7 +78,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 	@Override
 	public AcyclicWeightedAutomatonModel assertContainsOther(AcyclicWeightedAutomatonModel containedModel) {
 		//System.out.println("assertContainsOther " + isEmpty() + " " + containedModel.isEmpty());
-		
+
 		//a bit of optimization, but still work
 		AcyclicWeightedAutomaton ret;
 		if(containedModel.isEmpty()){
@@ -91,19 +91,19 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			//of this automaton
 			//step 1 find max (or we can use number of states + 1 value, which might create larger automata)
 			int maxLength = this.automaton.getMaxLenght();
-//			System.out.println("This count 1: " + automaton.getStringCount());
-//			if(automaton.getStringCount().intValue() == 169){
-//				DotToGraph.outputDotFile(automaton.toDot(), "before169");
-//			}
+			//			System.out.println("This count 1: " + automaton.getStringCount());
+			//			if(automaton.getStringCount().intValue() == 169){
+			//				DotToGraph.outputDotFile(automaton.toDot(), "before169");
+			//			}
 			automaton.determinize();
 			automaton.normalize();
-//			if(automaton.getStringCount().intValue() == 566){
-//				DotToGraph.outputDotFile(automaton.toDot(), "after566");
-//			}
+			//			if(automaton.getStringCount().intValue() == 566){
+			//				DotToGraph.outputDotFile(automaton.toDot(), "after566");
+			//			}
 			//automaton.normalize();
 			//System.out.println("Here 1 ");
 			//DotToGraph.outputDotFile(automaton.toDot(), "this");
-			DotToGraph.outputDotFile(automaton.toDot(), "containsInBase");
+			//DotToGraph.outputDotFile(automaton.toDot(), "containsInBase");
 
 			//System.out.println("Max L " + maxLength);
 			AcyclicWeightedAutomaton prefix = BasicAcyclicWeightedAutomaton.makeCharSet(alphabet.getCharSet()).repeat(0, maxLength);
@@ -120,7 +120,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			//System.out.println("Other:\n" + contained + contained.getMaxLenght() + " \n" + automaton.getStringCount().intValue());
 			contained.determinize();
 			//contained.normalize();
-			DotToGraph.outputDotFile(contained.toDot(), "other");
+			//DotToGraph.outputDotFile(contained.toDot(), "other");
 			AcyclicWeightedAutomaton x = prefix.concatenate(contained);
 			x.determinize();
 			//x.normalize();
@@ -137,26 +137,26 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			//DotToGraph.outputDotFile(x.toDot(), "X2DN");
 			//for a just a single string we can remove the weights
 			x = x.flatten();
-//			if(automaton.getStringCount().intValue() == 169){
-//				DotToGraph.outputDotFile(x.toDot(), "containsInArg");
-//			}
+			//			if(automaton.getStringCount().intValue() == 169){
+			//				DotToGraph.outputDotFile(x.toDot(), "containsInArg");
+			//			}
 			//System.out.println("Here 2 ");
 			ret  = automaton.intersection(x);
 			//System.out.println("Here 3 ");
 			//System.out.println("Ret: " + ret);
-			
+
 			//System.out.println(ret.toDot());
 			//DotToGraph.outputDotFile(ret.toDot(), "RET");
 			//System.out.println("Here 4 ");
 			ret.determinize();
 			//System.out.println("Here 5 ");
 			ret.normalize();
-//			System.out.println("Other:\n" + contained + contained.getMaxLenght() + " \n" + automaton.getStringCount().intValue());
-//			if(automaton.getStringCount().intValue() == 566 && contained.getMaxLenght() == 0){
-//			 DotToGraph.outputDotFile(ret.toDot(), "containsOtherRet");
-//			 System.out.println("Ret: " + ret);
-//			 System.exit(2);
-//			}
+			//			System.out.println("Other:\n" + contained + contained.getMaxLenght() + " \n" + automaton.getStringCount().intValue());
+			//			if(automaton.getStringCount().intValue() == 566 && contained.getMaxLenght() == 0){
+			//			 DotToGraph.outputDotFile(ret.toDot(), "containsOtherRet");
+			//			 System.out.println("Ret: " + ret);
+			//			 System.exit(2);
+			//			}
 		}
 
 		return new AcyclicWeightedAutomatonModel(ret, alphabet, boundLength);
@@ -402,7 +402,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			WeightedState connectFromState = null;//state to create epsilon transitions from
 			//the weight of the given path, start as 1
 			Fraction weight = new Fraction(1,1);
-			deleteDFS(nextState, start, index, end-1, connectFromState, weight);
+			deleteDFS(nextState, start, index, end, connectFromState, weight);
 		}
 
 		//		System.out.println("DELETE " + start + "\t" + end + " " + res.getStringCount());
@@ -410,7 +410,10 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 		//		DotToGraph.outputDotFile(res.toDot(), "deletedOrig");
 		res.determinize();
 		res.normalize();
-		//		DotToGraph.outputDotFile(res.toDot(), "deleted");
+//		System.out.println("resMC " + res.getStringCount());
+//		if(res.getStringCount().intValue() == 336){
+//			DotToGraph.outputDotFile(res.toDot(), "deleted");
+//		}
 		//stop for now
 		//		if(start == 1 &&  end == 2 && res.getStringCount().intValue() < 12){
 		//			System.exit(2);
@@ -442,11 +445,9 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	}
 
-	private void deleteDFS(WeightedState currState, int start, int index, int end, WeightedState connectFromState,
-			Fraction weight) {
-		//System.out.println("CurrState " + currState);
-		//System.out.println("start " + start + "\tindex " + index + "\t end " + end + "\tconncectFrom " + connectFromState);
+	private void deleteDFS(WeightedState currState, int start, int index, int end, WeightedState connectFromState, Fraction weight){
 		if(start > index){
+			//create copies of the explored states
 			//have not reached the point where we need to remove the states
 			//thus create a non-final copy of a toState and explore it further, increment index
 			//a non-final copy represent Exception thrown by Java if the start index is greater
@@ -467,102 +468,250 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 				}
 				//add the transition to it
 				trSet.add(t);
-
-			}
-			//now create a new nonfinal state for each set
-			for(Entry<WeightedState, Set<WeightedTransition>> sTr : copySet.entrySet()){
-				WeightedState tempState = new WeightedState();
-				//however if the next index is actually start then conserve the acceptance
-				if(index + 1 == start){
-					if(sTr.getKey().isAccept()){
-						tempState.setAccept(true);
-						//and set the corresponding weight
-						tempState.setWeight(sTr.getKey().getWeight());
+				for(Entry<WeightedState, Set<WeightedTransition>> sTr : copySet.entrySet()){
+					WeightedState newToState = new WeightedState();
+					WeightedState oldToState = sTr.getKey();
+					//if the next is the start then we have to make sure to preserve the acceptace
+					if(index + 1 == start){
+						if(oldToState.isAccept()){
+							newToState.setAccept(true);
+							newToState.setWeight(oldToState.getWeight());
+						}
 					}
-				}
-				//add the transitions of toState
-				for(WeightedTransition tOld : sTr.getKey().getTransitions()){
-					tempState.addTransition(new WeightedTransition(tempState, tOld.getSymb(), tOld.getToState(), tOld.getWeight()));
-				}
-				//update the transitions for the currentState
-				for(WeightedTransition tCurr : sTr.getValue()){
-					//change toState toCurr
-					tCurr.setToState(tempState);
-				}
 
-				//now call DFS on tempState, and increment the index count, i.e., the depth
-				deleteDFS(tempState, start, index + 1, end, connectFromState, weight);
+					for(WeightedTransition tOld : oldToState.getTransitions()){
+						newToState.addTransition(new WeightedTransition(newToState, tOld.getSymb(), tOld.getToState(), tOld.getWeight()));
+					}
+					//update the transitions for the currentState
+					for(WeightedTransition tCurr : sTr.getValue()){
+						//change toState toCurr
+						tCurr.setToState(newToState);
+					}
+
+					//now call DFS on tempState, and increment the index count, i.e., the depth
+					deleteDFS(newToState, start, index + 1, end, connectFromState, weight);
+				}
 			}
-		} else if (start == index && index != end){
-			//reached the point where we need to start skipping the states
+		} else if (start == index) {
+			//found the state from which to start to remove transitions
 			connectFromState = currState;
-			//the case when the currentState is the staring state
-			//but its transition is not the ending state
-			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
-			tr.addAll(currState.getTransitions());
-			for(WeightedTransition t : tr){
-				WeightedState toState = t.getToState();
-				//remove the current outgoing transition from conncetFromState
-				connectFromState.getTransitions().remove(t);
-				//if toState is accepting then count as a middle transition
-				if(toState.isAccept()){
-					WeightedState tempState = new WeightedState();
-					tempState.setAccept(true);
-					tempState.setWeight(toState.getWeight());
-					connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), tempState, weight.multiply(t.getWeight()));
-					//System.out.println("ConnectFromUpdatedMiddle " + connectFromState);
-				}
-
-				//just call on toState with updated weight
-				//if the skipped state happens to be final do not include its weight into
-				//the calculation - those are "short" strings, just perform the weight update
-				//base on the weight of the edges
-				deleteDFS(toState, start, index+1, end, connectFromState, weight.multiply(t.getWeight()));
-			}
-
-		} else if (start == index && index == end){
-			//delete the transition between the currentState and toState and
-			//add epsilon weighted transition between them
-			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
-			tr.addAll(currState.getTransitions());
-			for(WeightedTransition t : tr){
-				WeightedState toState = t.getToState();
-				currState.removeTransition(t);
-				currState.addEpsilonTransition(automaton.getIncoming(currState), toState, weight.multiply(t.getWeight()));
+			
+			//explore its transitions and propagate new weight and remove each transition to that toState
+			HashSet<WeightedTransition> wtSet  = new HashSet<WeightedTransition>();
+			wtSet.addAll(currState.getTransitions());
+			for(WeightedTransition wt : wtSet){
+				currState.removeTransition(wt);
+				deleteDFS(wt.getToState(), start, index + 1, end, connectFromState, weight.multiply(wt.getWeight()));
 			}
 
 		} else if (start < index && index < end){
-			//in between
-			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
-			tr.addAll(currState.getTransitions());
-			for(WeightedTransition t : tr){
-				WeightedState toState = t.getToState();
-				//the case for shorter strings that do have valid start but shorter than end
-				//we need to create an epsilon transition to a new final state with the same weight
-				//and no outgoing edges
-				if(toState.isAccept()){
-					WeightedState tempState = new WeightedState();
-					tempState.setAccept(true);
-					tempState.setWeight(toState.getWeight());
-					connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), tempState, weight.multiply(t.getWeight()));
+			//if currState is a final state then we need to set conncetFromState as a final state
+			//and update its weights using addition
+			if(currState.isAccept()){
+				Fraction newStateWeight = currState.getWeight().multiply(weight);
+				if(connectFromState.isAccept()){
+					connectFromState.setWeight(connectFromState.getWeight().add(newStateWeight));
+				} else {
+					connectFromState.setAccept(true);
+					connectFromState.setWeight(newStateWeight);
 				}
-				//System.out.println("ConnectFromUpdatedMiddle " + connectFromState);
-				deleteDFS(toState, start, index+1, end, connectFromState, weight.multiply(t.getWeight()));
+			}
+			//explore its transitions and propagate new weight
+			for(WeightedTransition wt : currState.getTransitions()){
+				deleteDFS(wt.getToState(), start, index + 1, end, connectFromState, weight.multiply(wt.getWeight()));
 			}
 
-		} else if (start != index && index == end){
-			//the case when we found the last transitions
-			//all toStates should be epsilon connected with connectFromState
-			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
-			tr.addAll(currState.getTransitions());
-			for(WeightedTransition t : tr){
-				WeightedState toState = t.getToState();
-				connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), toState, weight.multiply(t.getWeight()));
-				//System.out.println("ConnectFromUpdatedEnd " + connectFromState);
+		} else if (index == end){
+			//at this point currState is where the second part starts, thus we need to connect it to fromState
+			
+			if(currState.isAccept()){
+				Fraction newStateWeight = currState.getWeight().multiply(weight);
+				if(connectFromState.isAccept()){
+					connectFromState.setWeight(connectFromState.getWeight().add(newStateWeight));
+				} else {
+					connectFromState.setAccept(true);
+					connectFromState.setWeight(newStateWeight);
+				}
 			}
+//			if(start == 0 && end == 1){
+//				System.out.println(connectFromState.getWeight());
+//			}
+			//reconnect the transitions from currState
+			//connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), currState, weight);
+			//cannot use epsilon transitions
+			//copy the transitions from currState to connectFromState
+			for(WeightedTransition wt : currState.getTransitions()){
+				connectFromState.addTransition(new WeightedTransition(connectFromState, wt.getSymb(), wt.getToState(), weight.multiply(wt.getWeight())));
+			}
+			
+//			if(start == 0 && end == 1){
+//				System.out.println(connectFromState.getWeight());
+//			}
 		}
-		//in all other cases return back
 	}
+
+//	private void deleteDFS2(WeightedState currState, int start, int index, int end, WeightedState connectFromState,
+//			Fraction weight) {
+//		//System.out.println("CurrState " + currState);
+//		//System.out.println("start " + start + "\tindex " + index + "\t end " + end + "\tconncectFrom " + connectFromState);
+//		if(start > index){
+//			//have not reached the point where we need to remove the states
+//			//thus create a non-final copy of a toState and explore it further, increment index
+//			//a non-final copy represent Exception thrown by Java if the start index is greater
+//			//then the length of the string
+//			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
+//			tr.addAll(currState.getTransitions());
+//			//further optimizaition create a copyState per set of 
+//			//transitions with the same toState
+//			Map<WeightedState, Set<WeightedTransition>> copySet = new HashMap<WeightedState, Set<WeightedTransition>>();
+//			for(WeightedTransition t : tr){
+//				WeightedState toState = t.getToState();
+//				Set<WeightedTransition> trSet = null;
+//				if(copySet.containsKey(toState)){
+//					trSet = copySet.get(toState);
+//				} else {
+//					trSet = new HashSet<WeightedTransition>();
+//					copySet.put(toState, trSet);
+//				}
+//				//add the transition to it
+//				trSet.add(t);
+//
+//			}
+//			//now create a new nonfinal state for each set
+//			for(Entry<WeightedState, Set<WeightedTransition>> sTr : copySet.entrySet()){
+//				WeightedState tempState = new WeightedState();
+//				//however if the next index is actually start then conserve the acceptance
+//				if(index + 1 == start){
+//					if(sTr.getKey().isAccept()){
+//						tempState.setAccept(true);
+//						//and set the corresponding weight
+//						tempState.setWeight(sTr.getKey().getWeight());
+//					}
+//				}
+//				//add the transitions of toState
+//				for(WeightedTransition tOld : sTr.getKey().getTransitions()){
+//					tempState.addTransition(new WeightedTransition(tempState, tOld.getSymb(), tOld.getToState(), tOld.getWeight()));
+//				}
+//				//update the transitions for the currentState
+//				//calculate propagated weight
+//				//Fraction newWeight = new Fraction(0);
+//				for(WeightedTransition tCurr : sTr.getValue()){
+//					//change toState toCurr
+//					tCurr.setToState(tempState);
+//					//newWeight = newWeight.add(tCurr.getWeight());
+//				}
+//
+//				//System.out.println("weight\t"  +weight +  "\tnewWeight\t " + newWeight);
+//				//now call DFS on tempState, and increment the index count, i.e., the depth, should't we update the weight?
+//				deleteDFS(tempState, start, index + 1, end, connectFromState, weight);
+//			}
+//		} else if (start == index && index != end){
+//			//reached the point where we need to start skipping the states
+//			connectFromState = currState;
+//			//the case when the currentState is the staring state
+//			//but its transition is not the ending state
+//			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
+//			tr.addAll(currState.getTransitions());
+//			for(WeightedTransition t : tr){
+//				WeightedState toState = t.getToState();
+//				//remove the current outgoing transition from conncetFromState
+//				connectFromState.getTransitions().remove(t);
+//				//if toState is accepting then count as a middle transition
+//				//				if(toState.isAccept()){
+//				//					WeightedState tempState = new WeightedState();
+//				//					tempState.setAccept(true);
+//				//					tempState.setWeight(toState.getWeight());
+//				//					connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), tempState, weight.multiply(t.getWeight()));
+//				//					//System.out.println("ConnectFromUpdatedMiddle " + connectFromState);
+//				//				}
+//				if(toState.isAccept()){
+//					//just do changes here
+//					Fraction newConnectFromWeight = toState.getWeight().multiply(weight).multiply(t.getWeight());
+//					if(connectFromState.isAccept()){
+//						connectFromState.setWeight(connectFromState.getWeight().add(newConnectFromWeight));
+//					} else {
+//						connectFromState.setAccept(true);
+//						connectFromState.setWeight(newConnectFromWeight);
+//					}
+//				}
+//
+//				//just call on toState with updated weight
+//				//if the skipped state happens to be final do not include its weight into
+//				//the calculation - those are "short" strings, just perform the weight update
+//				//base on the weight of the edges
+//				deleteDFS(toState, start, index+1, end, connectFromState, weight.multiply(t.getWeight()));
+//			}
+//
+//		} else if (start == index && index == end){
+//			//delete the transition between the currentState and toState and
+//			//add epsilon weighted transition between them
+//			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
+//			tr.addAll(currState.getTransitions());
+//			for(WeightedTransition t : tr){
+//				WeightedState toState = t.getToState();
+//				currState.removeTransition(t);
+//				if(toState.isAccept()){
+//
+//				} else {
+//
+//				}
+//				//should be custom connection
+//				currState.addEpsilonTransition(automaton.getIncoming(currState), toState, weight.multiply(t.getWeight()));
+//				System.out.println("curr state " + currState.getWeight() );
+//			}
+//
+//		} else if (start < index && index < end){
+//			//in between
+//			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
+//			tr.addAll(currState.getTransitions());
+//			for(WeightedTransition t : tr){
+//				WeightedState toState = t.getToState();
+//				//the case for shorter strings that do have valid start but shorter than end
+//				//we need to create an epsilon transition to a new final state with the same weight
+//				//and no outgoing edges
+//				//				if(toState.isAccept()){
+//				//					WeightedState tempState = new WeightedState();
+//				//					tempState.setAccept(true);
+//				//					tempState.setWeight(toState.getWeight());
+//				//					connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), tempState, weight.multiply(t.getWeight()));
+//				//				}
+//				if(toState.isAccept()){
+//					//just do changes here
+//					Fraction newConnectFromWeight = toState.getWeight().multiply(weight).multiply(t.getWeight());
+//					if(connectFromState.isAccept()){
+//						connectFromState.setWeight(connectFromState.getWeight().add(newConnectFromWeight));
+//					} else {
+//						connectFromState.setAccept(true);
+//						connectFromState.setWeight(newConnectFromWeight);
+//					}
+//				}
+//				//System.out.println("ConnectFromUpdatedMiddle " + connectFromState);
+//				deleteDFS(toState, start, index+1, end, connectFromState, weight.multiply(t.getWeight()));
+//			}
+//
+//		} else if (start != index && index == end){
+//			//the case when we found the last transitions
+//			//all toStates should be epsilon connected with connectFromState
+//			Set<WeightedTransition> tr = new HashSet<WeightedTransition>();
+//			tr.addAll(currState.getTransitions());
+//			for(WeightedTransition t : tr){
+//				WeightedState toState = t.getToState();
+//				if(toState.isAccept()){
+//					//just do changes here
+//					Fraction newConnectFromWeight = toState.getWeight().multiply(weight).multiply(t.getWeight());
+//					if(connectFromState.isAccept()){
+//						connectFromState.setWeight(connectFromState.getWeight().add(newConnectFromWeight));
+//					} else {
+//						connectFromState.setAccept(true);
+//						connectFromState.setWeight(newConnectFromWeight);
+//					}
+//				}
+//				connectFromState.addEpsilonTransition(automaton.getIncoming(connectFromState), toState, weight.multiply(t.getWeight()));
+//				//System.out.println("ConnectFromUpdatedEnd " + connectFromState);
+//			}
+//		}
+//		//in all other cases return back
+//	}
 
 	@Override
 	public boolean equals(AcyclicWeightedAutomatonModel arg) {
@@ -644,10 +793,10 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 
 	@Override
 	public AcyclicWeightedAutomatonModel substring(int start, int end) {
-//		if(start == 0 && end == 0){
-//			System.out.println("In \n" + automaton);
-//			//System.exit(2);
-//		}
+		//		if(start == 0 && end == 0){
+		//			System.out.println("In \n" + automaton);
+		//			//System.exit(2);
+		//		}
 		//so for substring end cannot be greater than the length
 		//otherwise it will throw an exception, while
 		//in delete it will happened when the start is greater than the length
@@ -673,15 +822,29 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			WeightedState startState = res.getInitialState();
 			//now do epsilon connections
 			for(WeightedState s : startStates){
-				startState.addEpsilonTransition(res.getIncoming(startState), s);
+				//do additive epsilong transitions
+				//the weights should be added
+				if(s.isAccept()){
+					if(startState.isAccept()){
+						startState.setWeight(startState.getWeight().add(s.getWeight()));
+					} else {
+						startState.setAccept(true);
+						startState.setWeight(s.getWeight());
+					}
+				} 
+				for(WeightedTransition wt : s.getTransitions()){
+					//copy the transitions
+					startState.addTransition(new WeightedTransition(startState, wt.getSymb(), wt.getToState(), wt.getWeight()));
+				}
+				//startState.addEpsilonTransition(res.getIncoming(startState), s);
 			}
 			res.determinize();
 			res.normalize();
-//			if(start == 0 && end == 0){
-//				System.out.println("SS\n " + startStates);
-//				System.out.println("res\n " + res);
-//				//System.exit(2);
-//			}
+			//			if(start == 0 && end == 0){
+			//				System.out.println("SS\n " + startStates);
+			//				System.out.println("res\n " + res);
+			//				//System.exit(2);
+			//			}
 		}
 		return new AcyclicWeightedAutomatonModel(res, alphabet);
 	}
@@ -706,13 +869,13 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 			if(start != end){
 				//explore its children, but do not add anything from it
 				for(WeightedTransition wt : from.getTransitions()){
-					
+
 					//add the transitions to the new state too
 					//we need to create a copy of toState right here, otherwise
 					//the transition will still go to the old state
 					WeightedState newTo = new WeightedState();
 					WeightedState oldTo = wt.getToState();
-					System.out.println(wt.getSymb() + " -> " + oldTo);
+					//System.out.println(wt.getSymb() + " -> " + oldTo);
 					newStart.addTransition(new WeightedTransition(newStart, wt.getSymb(), newTo, wt.getWeight().multiply(weight)));
 					//copy the transitions if we will explore further only
 					if(indx + 1 < end){
@@ -723,7 +886,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 					} else if (indx + 1 == end){
 						//finishing up here 
 						int tail = automaton.getStringCountFromState(oldTo).intValue();
-						System.out.println("tail is " + tail);
+						//System.out.println("tail is " + tail);
 						if(tail > 0){
 							//make state final and update its weight
 							//update the weight of the state
@@ -733,7 +896,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 							//it too, so no need to add its weight bac kagain.
 							newTo.setWeight(newWeight);
 						}
-						System.out.println("newTo " + newTo);
+						//System.out.println("newTo " + newTo);
 
 					} else {
 						//cannot be reached
@@ -759,7 +922,7 @@ public class AcyclicWeightedAutomatonModel extends AutomatonModel<AcyclicWeighte
 						Fraction fromAccept = from.getWeight().multiply(weight);
 						newWeight = tailNoEps.add(fromAccept);
 					}
-					
+
 					//set the new weight
 					newStart.setWeight(newWeight);
 				}

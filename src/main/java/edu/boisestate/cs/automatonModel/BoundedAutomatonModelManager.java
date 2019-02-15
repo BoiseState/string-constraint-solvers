@@ -62,7 +62,6 @@ public class BoundedAutomatonModelManager
 
     @Override
     public AutomatonModel createString(String string) {
-
         // create string automaton
         Automaton stringAutomaton = BasicAutomata.makeString(string);
 

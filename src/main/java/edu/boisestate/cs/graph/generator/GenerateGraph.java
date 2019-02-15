@@ -24,12 +24,12 @@ public class GenerateGraph {
 
 	public static void main(String[] args) {
 		char[] abc = {'A','B','C'};
-		int depth = 2; //min of zero and max of two operations on the target edge
-		int size = 2; //the max size of a concrete string
+		int depth = 3; //min of zero and max of two operations on the target edge
+		int size = 3; //the max size of a concrete string
 		Set<String> operations = new HashSet<String>();
 		operations.add("concat");
 		//operations.add("replace");
-		//operations.add("delete");
+		operations.add("delete");
 		//operations.add("toLowerCase");
 		//operations.add("substring12");
 		Set<String> predicates = new HashSet<String>();
@@ -236,11 +236,7 @@ public class GenerateGraph {
 		//get its concrete value's size
 		int maxIndx = targetVal.length();
 		//generate two numbers for the delete args
-		int aIndx1 = rand.nextInt(maxIndx+1); // argument index can be the same as the length of the stirng
-		//		int aIndx2 = rand.nextInt(maxIndx); // argument index
-		//		while(aIndx1 > aIndx2){
-		//			aIndx2 = rand.nextInt(maxIndx);
-		//		}
+		int aIndx1 = rand.nextInt(maxIndx+1); // argument index can be the same as the length of the string
 		//make sure the second index is a valid one
 		int aIndx2 = rand.nextInt(maxIndx + 1 - aIndx1) + aIndx1;
 		StringBuffer actualVal = new StringBuffer(targetVal);

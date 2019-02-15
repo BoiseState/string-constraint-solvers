@@ -203,7 +203,7 @@ public class AutomatonModelSolver
 
             // start timer
             BasicTimer.start();
-
+            //System.out.println(baseModel + " id " + base);
             // get satisfying base model
             baseModel = baseModel.assertEquals(argModel);
 
@@ -439,7 +439,7 @@ public class AutomatonModelSolver
         // create new automaton model from string
         AutomatonModel model = this.modelManager.createString(string);
 
-        //System.out.println("newConcreteString " + id + " : " + string);
+        //System.out.println("newConcreteString " + id + " : " + string + " " + model.getClass());
         // stop timer
         BasicTimer.stop();
 

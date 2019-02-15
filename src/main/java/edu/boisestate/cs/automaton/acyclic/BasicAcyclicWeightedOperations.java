@@ -421,15 +421,15 @@ public class BasicAcyclicWeightedOperations {
 				diff--;
 			}
 			
-			DotToGraph.outputDotFile(ret.toDot(), "ret");
+			//DotToGraph.outputDotFile(ret.toDot(), "ret");
 
-			DotToGraph.outputDotFile(temp2.toDot(), "temp2");
+			//DotToGraph.outputDotFile(temp2.toDot(), "temp2");
 			//attach temp2 to ret
 			for(WeightedState p : ret.getAcceptStates()){
 				p.addEpsilonTransition(ret.getIncoming(p),temp2.initial);
 			}
 		}
-		DotToGraph.outputDotFile(ret.toDot(), "retFinal");
+		//DotToGraph.outputDotFile(ret.toDot(), "retFinal");
 		
 		return ret;
 	}

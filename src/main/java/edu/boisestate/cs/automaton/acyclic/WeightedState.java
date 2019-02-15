@@ -157,7 +157,8 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 							//Basically the number w of copies could state in this state
 							//and the number of copies weight*toState.weight can go to toState
 							//w = w.add(weight.multiply(toState.getWeight())); //still now working, just multiple 
-							w = w.multiply(weight).multiply(toState.getWeight());
+							w = w.multiply(weight).multiply(toState.getWeight()); // multiply is for concatenation
+							//I think regular epsilon transitions should be added
 						} else {
 							accept = true;
 							w = toState.getWeight().multiply(weight);
