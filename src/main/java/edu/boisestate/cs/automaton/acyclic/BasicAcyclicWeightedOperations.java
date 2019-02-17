@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.math3.fraction.Fraction;
@@ -30,11 +31,11 @@ public class BasicAcyclicWeightedOperations {
 		//get accept states of a1
 		for(WeightedState s : a1.getAcceptStates()){
 			Set<WeightedTransition> incoming = a1.getIncoming(s);
-			if(incoming.isEmpty()){
-				s.addEpsilonTransition(incoming, a2.initial, s.getWeight());
-			} else {
+//			if(incoming.isEmpty()){
+//				s.addEpsilonTransition(incoming, a2.initial, s.getWeight());
+//			} else {
 				s.addEpsilonTransition(incoming, a2.initial);
-			}
+//			}
 			
 			//1. Scenario
 			//if a2.initial is final and no incoming edges for a1,
@@ -266,10 +267,23 @@ public class BasicAcyclicWeightedOperations {
 		} else {
 //			System.out.println("a2 before");
 //			System.out.println(a2);
+//			System.out.println("Complement");
 			a2 = a2.complement();
+			//I can do the removal on the unreachable
+			//states of a2 since it happens after taking
+			//the complemented of completed automaton.
+			a2.determinize();
+			if(a2.isEmpty()){
+				//non-complimented a2 had all strings of that size
+				ret = BasicAcyclicWeightedAutomaton.makeEmpty();
+			} else {
 //			System.out.println("a2 compl");
 //			System.out.println(a2);
+//			DotToGraph.outputDotFile(a1.toDot(), "minusa1");
+//			DotToGraph.outputDotFile(a2.toDot(), "minusa2");
+//			System.out.println("Intersection");
 			ret = a1.intersection(a2);
+			}
 		}
 		return ret;
 	}
@@ -447,6 +461,8 @@ public class BasicAcyclicWeightedOperations {
 	 */
 	public static AcyclicWeightedAutomaton intersection(AcyclicWeightedAutomaton a1,
 			AcyclicWeightedAutomaton a2) {
+		removeUnreachableStates(a1);
+		removeUnreachableStates(a2);
 		AcyclicWeightedAutomaton ret;
 		//System.out.println("a22 " + a2);
 		if(a1.isEmpty() || a2.isEmpty()){
@@ -687,5 +703,183 @@ public class BasicAcyclicWeightedOperations {
 				}
 			}
 		}
+	}
+
+	public static void minimize(AcyclicWeightedAutomaton acyclicWeightedAutomaton) {
+		//divide into non-final and final states with the same weight
+		Set<Set<WeightedState>> groups = new HashSet<Set<WeightedState>>();
+		//add an empty one in case no symbols going anywhere
+//		Set<WeightedState> empty = new HashSet<WeightedState>();
+//		groups.add(empty);
+		Set<Pair<Character, Fraction>> symbols = new HashSet<Pair<Character, Fraction>>();
+		Set<WeightedState> currStates = acyclicWeightedAutomaton.getStates();
+		Map<Fraction, Set<WeightedState>> finalWeights = new HashMap<Fraction, Set<WeightedState>> ();
+		Set<WeightedState> nonFinalSet = new HashSet<WeightedState>();
+		for(WeightedState state : currStates){
+			if(state.isAccept()){
+				Fraction acceptW = state.getWeight();
+				if(finalWeights.containsKey(acceptW)){
+					finalWeights.get(acceptW).add(state);
+				} else {
+					//create a new set
+					Set<WeightedState> acceptSet = new HashSet<WeightedState>();
+					acceptSet.add(state);
+					finalWeights.put(acceptW, acceptSet);
+					//add to groups
+					groups.add(acceptSet);
+				}
+			} else {
+				System.out.println("nonfinal " + state);
+				//add to nonFinal states
+				nonFinalSet.add(state);
+			}
+			//track symbol, transition pair
+			for(WeightedTransition t : state.getTransitions()){
+				boolean found = false;
+				for(Pair<Character,Fraction> tPair : symbols){
+					if(tPair.getFirst() == t.getSymb() && tPair.getSecond().equals(t.getWeight())){
+						found = true;
+						break;
+					}
+				}
+				if(!found){
+					//add to the pair list
+					//add it
+					Pair<Character, Fraction> symb = new Pair<Character, Fraction>(t.getSymb(), t.getWeight());
+					symbols.add(symb);
+				}
+			}
+		}
+		
+		groups.add(nonFinalSet);
+		
+		System.out.println("Initial Groups " + groups);
+		//---------- 2nd part finding transitions on each symbol to what group
+		int i = 0;
+		while(!groups.isEmpty() && i < 10){
+			Set<WeightedState> group = groups.iterator().next();
+			System.out.println("Processing " + group);
+			//calculate groups each state goes to on each symbol
+			Map<Pair<WeightedState, Pair<Character,Fraction>>, Set<WeightedState>> transTable = new HashMap<Pair<WeightedState, Pair<Character,Fraction>>, Set<WeightedState>>();
+			for(WeightedState fromState : group){
+				for(WeightedTransition wt : fromState.getTransitions()){
+					Pair<Character,Fraction> symb = findPair(symbols, wt);
+					WeightedState toState = wt.getToState();
+					//find the group in which this state in
+					Set<WeightedState> toGroup = findGroup(groups, toState);
+					//create a tuple for it
+					Pair<WeightedState, Pair<Character,Fraction>> arg = new Pair<WeightedState, Pair<Character,Fraction>>(fromState,symb);
+					//add it to the map
+					transTable.put(arg, toGroup);	
+					
+				}
+			}
+			
+			//the table is now computed, check whether on the same symbols each group goes to the set of states
+			Set<Set<WeightedState>> oldGroups = new HashSet<Set<WeightedState>> ();
+			oldGroups.add(group);
+			System.out.println("oldGroups " + oldGroups);
+			for(Pair<Character, Fraction> symb : symbols){
+				System.out.println("on " + symb);
+				Map<Set<WeightedState>, Set<WeightedState>> groupToStates = new HashMap<Set<WeightedState>, Set<WeightedState>>();
+				//calculate all fromStates that go on the same symbol to the same group
+				for(WeightedState fromS : group){
+					Set<WeightedState> toGroup = getToGroup(symb, fromS, transTable);
+					System.out.println("toGroup " + toGroup);
+					//check if it is in the key
+					Set<WeightedState> addTo;
+					if(groupToStates.containsKey(toGroup)){
+						//add to the set
+						addTo = groupToStates.get(toGroup);
+					} else {
+						addTo = new HashSet<WeightedState>();
+						groupToStates.put(toGroup, addTo);
+					}
+					addTo.add(fromS);
+					
+				}
+				
+				System.out.println("groupToStates " + groupToStates);
+				
+				// at this point we will have a set of states that go to the same group on the same symbol
+				//as the values of groupsToStates
+				//we need to check whether they are the same groups
+				Set<Set<WeightedState>> updatedGroups = new HashSet<Set<WeightedState>>();
+				for(Set<WeightedState> oldGroup : oldGroups){
+					System.out.println("oldGroup " + oldGroup);
+					for(Set<WeightedState> newGroup : groupToStates.values()){
+						Set<WeightedState> splitGroup = new HashSet<WeightedState>();
+						splitGroup.addAll(newGroup);
+						splitGroup.retainAll(oldGroup);
+						updatedGroups.add(splitGroup);
+					}
+				}
+				//at the end update oldGroups to the new partition
+				oldGroups = updatedGroups;
+			}
+			//now we need to add oldGroups and remove group
+			System.out.println("Before " + groups);
+			System.out.println("Adding " + oldGroups);
+			groups.addAll(oldGroups);
+			Set<WeightedState> el = oldGroups.iterator().next();
+			System.out.println("el " + el +"\t" + el.getClass());
+			for(Set<WeightedState> inEl : groups){
+				System.out.println("inEl " + inEl +"\t" + inEl.getClass());
+				if(el.equals(inEl)){
+					System.out.println(true);
+				}
+			}
+			System.out.println("AfterA " + groups);
+			System.out.println("Removing " + group);
+			groups.remove(group); //so if the group did not split, it means they all go to the same groups on the same symbol
+			System.out.println("AfterR " + groups);
+			i++;
+		}//while groups are not empty
+		
+		//let's test it at least
+		System.out.println(groups);
+		
+	}
+
+	private static Set<WeightedState> getToGroup(Pair<Character, Fraction> symb, WeightedState fromS,
+			Map<Pair<WeightedState, Pair<Character, Fraction>>, Set<WeightedState>> transTable) {
+		Set<WeightedState> ret = new HashSet<WeightedState>();
+		for(Entry<Pair<WeightedState, Pair<Character, Fraction>>, Set<WeightedState>> entry : transTable.entrySet()){
+			if(entry.getKey().getFirst().equals(fromS) && entry.getKey().getSecond().equals(symb)){
+				ret = entry.getValue();
+			}
+		}
+		return ret;
+	}
+
+	private static Pair<Character, Fraction> findPair(Set<Pair<Character, Fraction>> symbols, WeightedTransition wt) {
+		Pair<Character, Fraction> ret = null;
+		for(Pair<Character, Fraction> symb : symbols){
+			if(symb.getFirst() == wt.getSymb() && symb.getSecond().equals(wt)){
+				ret = symb;
+				break;
+			}
+		}
+			
+			if(ret == null){
+				System.out.println("Cannot find a group in minimization alg");
+				System.exit(2);
+			}
+		return ret;
+	}
+
+	private static Set<WeightedState> findGroup(Set<Set<WeightedState>> groups, WeightedState toState) {
+		Set<WeightedState> ret = null;
+		for(Set<WeightedState> group : groups){
+			if(group.contains(toState)){
+				ret = group;
+				break;
+			}
+		}
+		if(ret == null){
+			System.out.println("Cannot find a group in minimization alg");
+			System.exit(2);
+		}
+		return ret;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.math3.fraction.Fraction;
@@ -190,6 +191,12 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
     public void normalize(){
     	BasicAcyclicWeightedOperations.normalize(this);
     }
+    
+    public void minimize(){
+    	//make sure it normalized first
+    	normalize();
+    	BasicAcyclicWeightedOperations.minimize(this);
+    }
 
     /**
      * Computes incoming edges of state s
@@ -298,8 +305,23 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 		if(curr.isAccept()){
 			currCount = currCount.add(currPrefixes.multiply(curr.getWeight()));
 		}
+		//figure out which are going to the same state and thus just multiply
+		//by the sum of their weights
+		HashMap<WeightedState, Fraction> theSameState = new HashMap<WeightedState, Fraction>();
 		for(WeightedTransition w : curr.getTransitions()){
-			currCount = currCount.add(countStrings(w.getToState(), currPrefixes.multiply(w.getWeight())));
+			WeightedState toState = w.getToState();
+			Fraction updatedWeight = w.getWeight();
+			if(theSameState.containsKey(toState)){
+				updatedWeight = theSameState.get(toState).add(updatedWeight);
+				
+			}
+				theSameState.put(toState, updatedWeight);
+		}
+		//now iterate over the entry and explore properly
+		for(Entry<WeightedState, Fraction> toState : theSameState.entrySet()){
+			
+			currCount = currCount.add(countStrings(toState.getKey(), currPrefixes.multiply(toState.getValue())));
+			//currCount = currCount.add(countStrings(w.getToState(), currPrefixes.multiply(w.getWeight())))
 		}
 		
 		//System.out.println("count " + currCount);

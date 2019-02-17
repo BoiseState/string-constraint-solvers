@@ -27,22 +27,22 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 	private int id;
 	/* what id to use for the new state */
 	private static int nextId;
-	
+
 	public WeightedState(){
 		this(new Fraction(1,1), false);
 	}
-	
+
 	public WeightedState(Fraction weight, boolean isFinal){
 		resetTransitions();
 		id = nextId++;
 		w = weight;
 		this.accept = isFinal;
 	}
-	
+
 	final void resetTransitions(){
 		transitions = new HashSet<WeightedTransition>();
 	}
-	
+
 	/**
 	 * Update the numbering of the state
 	 * Note - different from id, used
@@ -52,7 +52,7 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 	public void setNumber(int newNumber){
 		number = newNumber;
 	}
-	
+
 	/**
 	 * Set the weight of the state
 	 * @param newWeight
@@ -60,7 +60,7 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 	public void setWeight(Fraction newWeight){
 		w = newWeight;
 	}
-	
+
 	/**
 	 * Gets the weight of the state
 	 * @return
@@ -68,9 +68,9 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 	public Fraction getWeight(){
 		return w;
 	}
-	
-	
-	
+
+
+
 	/** 
 	 * Returns the set of outgoing transitions. 
 	 * Subsequent changes are reflected in the automaton.
@@ -79,7 +79,7 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 	public Set<WeightedTransition> getTransitions(){
 		return transitions;
 	}
-	
+
 	/**
 	 * Adding multiple e-transitions treats the update
 	 * of this's weight more careful when it is a final state
@@ -121,68 +121,78 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param incoming the incoming transition of this state
 	 * @param toState the destination of the epsilon transition from this state
 	 * @param weight the weight of the epsilon transition
 	 */
-	public void addEpsilonTransition(Set<WeightedTransition> incoming, WeightedState toState, Fraction weight) {
-		//System.out.println("Epsilon " + this + " with " + toState + " weight " + weight);
-		//1. Scenario when this state has no incoming transitions
-				if(incoming.isEmpty()){
-					for(WeightedTransition t : toState.getTransitions()){
-						//unless this state is final, then 
-						WeightedTransition newT = new WeightedTransition(this,t.getSymb(), t.getToState(),t.getWeight().multiply(weight));
-						//right now we assume if there are other transitions to to.getToState() from this
-						//then we will have duplicate transitions.
-						addTransition(newT);
-					}
-					//for general weighted automata should also update the incoming edges,
-					//but for acyclic no need to do so - for union we connect to the start
-					//states that have no incoming edges and for the concat
-					//we connect to the start state again.
+//	public void addEpsilonTransition(Set<WeightedTransition> incoming, WeightedState toState, Fraction weight) {
+//		//System.out.println("Epsilon " + this + " with " + toState + " weight " + weight);
+//		//1. Scenario when this state has no incoming transitions
+//		if(incoming.isEmpty()){
+//			for(WeightedTransition t : toState.getTransitions()){
+//				//unless this state is final, then 
+//				WeightedTransition newT = new WeightedTransition(this,t.getSymb(), t.getToState(),t.getWeight().multiply(weight));
+//				//right now we assume if there are other transitions to to.getToState() from this
+//				//then we will have duplicate transitions.
+//				addTransition(newT);
+//			}
+//			//for general weighted automata should also update the incoming edges,
+//			//but for acyclic no need to do so - for union we connect to the start
+//			//states that have no incoming edges and for the concat
+//			//we connect to the start state again.
+//
+//			//update the weights if toState is final
+//			if(toState.isAccept()){
+//				if(accept){
+//					//							System.out.println("This is accept and toState is accept");
+//					//							System.out.println("This state is " + this);
+//					//							System.out.println("To state is " + toState);
+//					//adding 1 because of two copies to accept epsilon transition
+//					//							w = w.add(1).multiply(toState.getWeight()).multiply(weight); <--- incorrect as of Jan 23'19
+//					//the weight of epslion trans should be multiplied by the weight
+//					//of the final state and added it to the weight of this state
+//					//Basically the number w of copies could state in this state
+//					//and the number of copies weight*toState.weight can go to toState
+//					//w = w.add(weight.multiply(toState.getWeight())); //still now working, just multiple 
+//					if(toState.getTransitions().isEmpty()){
+//						w = w.multiply(weight).multiply(toState.getWeight()); // multiply is for concatenation
+//						//I think regular epsilon transitions should be added
+//					} else {
+//						//already accounted for the weight by propagating it to the transitions.
+//						w = w.multiply(toState.getWeight());
+//					}
+//				} else {
+//					accept = true;
+//					if(toState.getTransitions().isEmpty()){
+//						w = toState.getWeight().multiply(weight);
+//					} else {
+//						//already accounted for weights by propagating them to the transitions
+//						w = toState.getWeight();
+//					}
+//				}
+//			}
+//		} else {
+//			//2. Scenario when there are incoming transition
+//			// Re-route them to toState and update the weight if this
+//			//state is the final state
+//			for(WeightedTransition in : incoming){
+//				Fraction newWeight = in.getWeight().multiply(weight);
+//				if(accept){
+//					//multiple the the weight by the weight of the
+//					//accepting state
+//					newWeight = newWeight.multiply(w);
+//				}
+//				WeightedTransition newT = new WeightedTransition(in.getFromState(), in.getSymb(), toState, newWeight);
+//				//add the transition to the source of the incoming state
+//				in.getFromState().addTransition(newT);
+//			}
+//		}
+//
+//	}
 
-					//update the weights if toState is final
-					if(toState.isAccept()){
-						if(accept){
-//							System.out.println("This is accept and toState is accept");
-//							System.out.println("This state is " + this);
-//							System.out.println("To state is " + toState);
-							//adding 1 because of two copies to accept epsilon transition
-//							w = w.add(1).multiply(toState.getWeight()).multiply(weight); <--- incorrect as of Jan 23'19
-							//the weight of epslion trans should be multiplied by the weight
-							//of the final state and added it to the weight of this state
-							//Basically the number w of copies could state in this state
-							//and the number of copies weight*toState.weight can go to toState
-							//w = w.add(weight.multiply(toState.getWeight())); //still now working, just multiple 
-							w = w.multiply(weight).multiply(toState.getWeight()); // multiply is for concatenation
-							//I think regular epsilon transitions should be added
-						} else {
-							accept = true;
-							w = toState.getWeight().multiply(weight);
-						}
-					}
-				} else {
-					//2. Scenario when there are incoming transition
-					// Re-route them to toState and update the weight if this
-					//state is the final state
-					for(WeightedTransition in : incoming){
-						Fraction newWeight = in.getWeight().multiply(weight);
-						if(accept){
-							//multiple the the weight by the weight of the
-							//accepting state
-							newWeight = newWeight.multiply(w);
-						}
-						WeightedTransition newT = new WeightedTransition(in.getFromState(), in.getSymb(), toState, newWeight);
-						//add the transition to the source of the incoming state
-						in.getFromState().addTransition(newT);
-					}
-				}
-		
-	}
-	
 	/**
 	 * When adding one transition at a time, e.g.,
 	 * concat operation
@@ -196,7 +206,11 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 		if(incoming.isEmpty()){
 			for(WeightedTransition t : toState.getTransitions()){
 				//unless this state is final, then 
-				WeightedTransition newT = new WeightedTransition(this,t.getSymb(), t.getToState(),t.getWeight());
+				Fraction transWeight = t.getWeight();
+				if(accept){
+					transWeight = t.getWeight().multiply(w);
+				}
+				WeightedTransition newT = new WeightedTransition(this,t.getSymb(), t.getToState(),transWeight);
 				//right now we assume if there are other transitions to to.getToState() from this
 				//then we will have duplicate transitions.
 				addTransition(newT);
@@ -235,7 +249,7 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 			}
 		}
 	}
-	
+
 	/**
 	 * Adding a new transition, which might already
 	 * exists in the set
@@ -243,13 +257,13 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 	 */
 	public void addTransition(WeightedTransition t){
 		/*in regular automaton we would
-		*just add to the set (override if
-		*one already exists)
-	    *However here we should be more careful
-	    *If transition already exists
-	    *then we need to add the weights
-	    *together
-	    */
+		 *just add to the set (override if
+		 *one already exists)
+		 *However here we should be more careful
+		 *If transition already exists
+		 *then we need to add the weights
+		 *together
+		 */
 		WeightedTransition update = null;
 		for(WeightedTransition wt : transitions){
 			//TODO - write equals method for transitions
@@ -260,7 +274,7 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 				update = wt;
 			}
 		}
-		
+
 		if(update == null){
 			//did not find the transition to the same state on
 			//the same symbol
@@ -272,11 +286,11 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 			update.setWeight(oldWeight.add(t.getWeight()));
 		}
 	}
-	
+
 	public int getNumber(){
 		return number;
 	}
-	
+
 	public void setAccept(boolean accept){
 		this.accept = accept;
 		if(!accept){
@@ -286,11 +300,11 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 			w = new Fraction(1,1);
 		}
 	}
-	
+
 	public boolean isAccept(){
 		return accept;
 	}
-	
+
 	/**
 	 * Compares this object with the specified object for order.
 	 * States are ordered by the time of construction.
@@ -314,7 +328,7 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 	public int hashCode() {
 		return super.hashCode();
 	}
-	
+
 	/** 
 	 * Returns string describing this state. Normally invoked via 
 	 * {@link WeightedAutomaton#toString()}.
@@ -336,9 +350,9 @@ public class WeightedState implements Serializable, Comparable<WeightedState>{
 
 	public void removeTransition(WeightedTransition t) {
 		this.transitions.remove(t);
-		
+
 	}
 
-	
+
 
 }

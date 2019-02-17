@@ -23,15 +23,15 @@ public class GenerateGraph {
 	private static Random rand = new Random(5);
 
 	public static void main(String[] args) {
-		char[] abc = {'A','B','C'};
+		char[] abc = {'A','B', 'C', 'a','b', 'c'};
 		int depth = 3; //min of zero and max of two operations on the target edge
 		int size = 3; //the max size of a concrete string
 		Set<String> operations = new HashSet<String>();
 		operations.add("concat");
-		//operations.add("replace");
+		operations.add("replace");
 		operations.add("delete");
-		//operations.add("toLowerCase");
-		//operations.add("substring12");
+		operations.add("toLowerCase");
+		operations.add("substring12");
 		Set<String> predicates = new HashSet<String>();
 		predicates.add("contains");
 		predicates.add("isEmpty");
