@@ -1,8 +1,6 @@
 package edu.boisestate.cs.reporting;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -11,6 +9,10 @@ public class MCDifference {
 	public static void main(String[] args) {
 		//takes in two file names
 		String fName = "delete_concat_l3.txt";
+		if(args.length != 0){
+			fName = args[0];
+		}
+		
 		String f1Path = "./data/correctness/concrete/" + fName;
 		String f2Path = "./data/correctness/weightedAcyclic/" + fName;
 		

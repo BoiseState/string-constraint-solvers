@@ -3,6 +3,7 @@ package edu.boisestate.cs.automaton.acyclic;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,9 +28,11 @@ public class BasicAcyclicWeightedOperations {
 			AcyclicWeightedAutomaton a2){
 		//create copies of a1 and a2
 		a1 = a1.clone();
-		a2 = a2.clone();
-		//get accept states of a1
-		for(WeightedState s : a1.getAcceptStates()){
+		//a2 = a2.clone();
+		//get accept states of the original machine sicne we 
+		//will modify its accepting states
+		Set<WeightedState> oldAcceptStates = a1.getAcceptStates();
+		for(WeightedState s : oldAcceptStates){
 			Set<WeightedTransition> incoming = a1.getIncoming(s);
 //			if(incoming.isEmpty()){
 //				s.addEpsilonTransition(incoming, a2.initial, s.getWeight());
@@ -416,6 +419,9 @@ public class BasicAcyclicWeightedOperations {
 			//if there are more, then append them in sequence
 			while(min > 0){
 				ret = concantenate(ret,a);
+//				ret.determinize();
+//				ret.normalize();
+//				ret.minimize();
 				min--;
 			}
 		}
@@ -431,6 +437,9 @@ public class BasicAcyclicWeightedOperations {
 				for(WeightedState p : temp1.getAcceptStates()){
 					p.addEpsilonTransition(a.getIncoming(p),temp2.initial);
 				}
+//				temp1.determinize();
+//				temp1.normalize();
+//				temp1.minimize();
 				temp2 = temp1;
 				diff--;
 			}
@@ -706,6 +715,11 @@ public class BasicAcyclicWeightedOperations {
 	}
 
 	public static void minimize(AcyclicWeightedAutomaton acyclicWeightedAutomaton) {
+//		if(true){
+//		System.out.println("Starting min with " + acyclicWeightedAutomaton.getStates().size() + "\t" + acyclicWeightedAutomaton.getStringCount());
+//		if(acyclicWeightedAutomaton.getStringCount().intValue() == 55944){
+//		DotToGraph.outputDotFile(acyclicWeightedAutomaton.toDot(), "minBefore");
+//		}
 		//divide into non-final and final states with the same weight
 		Set<Set<WeightedState>> groups = new HashSet<Set<WeightedState>>();
 		//add an empty one in case no symbols going anywhere
@@ -726,10 +740,10 @@ public class BasicAcyclicWeightedOperations {
 					acceptSet.add(state);
 					finalWeights.put(acceptW, acceptSet);
 					//add to groups
-					groups.add(acceptSet);
+					//groups.add(acceptSet); cannot add here - uses the current hash value that will be changed when the set is updated
 				}
 			} else {
-				System.out.println("nonfinal " + state);
+				//System.out.println("nonfinal " + state);
 				//add to nonFinal states
 				nonFinalSet.add(state);
 			}
@@ -750,15 +764,32 @@ public class BasicAcyclicWeightedOperations {
 				}
 			}
 		}
+		//add only non-empty sets
+		if(!nonFinalSet.isEmpty()){
+			groups.add(nonFinalSet); //add the set of non-final states
+		}
+		if(!finalWeights.values().isEmpty()){
+			groups.addAll(finalWeights.values()); //add the set of final states
+		}
 		
-		groups.add(nonFinalSet);
+		//System.out.println("symbols " + symbols);
 		
-		System.out.println("Initial Groups " + groups);
+		//System.out.println("Initial Groups " + groups);
+
 		//---------- 2nd part finding transitions on each symbol to what group
-		int i = 0;
-		while(!groups.isEmpty() && i < 10){
+		//int i = 0;
+		Set<Set<WeightedState>> processedGroups = new HashSet<Set<WeightedState>>();
+		while(!groups.equals(processedGroups)){
+			//copy the old elements
+			//prevGroups.addAll(groups);
+		//while(!groups.isEmpty() && i < 10){
+			//pick one that has not been processed
+			Iterator<Set<WeightedState>> inter = groups.iterator();
 			Set<WeightedState> group = groups.iterator().next();
-			System.out.println("Processing " + group);
+			while(processedGroups.contains(group)){
+				group = inter.next();
+			}
+			//System.out.println("Processing " + group);
 			//calculate groups each state goes to on each symbol
 			Map<Pair<WeightedState, Pair<Character,Fraction>>, Set<WeightedState>> transTable = new HashMap<Pair<WeightedState, Pair<Character,Fraction>>, Set<WeightedState>>();
 			for(WeightedState fromState : group){
@@ -776,16 +807,16 @@ public class BasicAcyclicWeightedOperations {
 			}
 			
 			//the table is now computed, check whether on the same symbols each group goes to the set of states
-			Set<Set<WeightedState>> oldGroups = new HashSet<Set<WeightedState>> ();
-			oldGroups.add(group);
-			System.out.println("oldGroups " + oldGroups);
+			Set<Set<WeightedState>> newGroups = new HashSet<Set<WeightedState>> ();
+			newGroups.add(group);
+			//System.out.println("newGroups " + newGroups);
 			for(Pair<Character, Fraction> symb : symbols){
-				System.out.println("on " + symb);
+				//System.out.println("on " + symb);
 				Map<Set<WeightedState>, Set<WeightedState>> groupToStates = new HashMap<Set<WeightedState>, Set<WeightedState>>();
 				//calculate all fromStates that go on the same symbol to the same group
 				for(WeightedState fromS : group){
 					Set<WeightedState> toGroup = getToGroup(symb, fromS, transTable);
-					System.out.println("toGroup " + toGroup);
+					//System.out.println("toGroup " + toGroup);
 					//check if it is in the key
 					Set<WeightedState> addTo;
 					if(groupToStates.containsKey(toGroup)){
@@ -799,47 +830,90 @@ public class BasicAcyclicWeightedOperations {
 					
 				}
 				
-				System.out.println("groupToStates " + groupToStates);
+				//System.out.println("groupToStates " + groupToStates);
 				
 				// at this point we will have a set of states that go to the same group on the same symbol
 				//as the values of groupsToStates
 				//we need to check whether they are the same groups
 				Set<Set<WeightedState>> updatedGroups = new HashSet<Set<WeightedState>>();
-				for(Set<WeightedState> oldGroup : oldGroups){
-					System.out.println("oldGroup " + oldGroup);
-					for(Set<WeightedState> newGroup : groupToStates.values()){
+				for(Set<WeightedState> newGroup : newGroups){
+					//System.out.println("oldGroup " + newGroup);
+					for(Set<WeightedState> newG : groupToStates.values()){
 						Set<WeightedState> splitGroup = new HashSet<WeightedState>();
-						splitGroup.addAll(newGroup);
-						splitGroup.retainAll(oldGroup);
+						splitGroup.addAll(newG);
+						splitGroup.retainAll(newGroup);
 						updatedGroups.add(splitGroup);
 					}
 				}
 				//at the end update oldGroups to the new partition
-				oldGroups = updatedGroups;
+				//System.out.println("Updated groups " + updatedGroups);
+				newGroups = updatedGroups;
 			}
+			
+			//remove the groups that just has been processed
+			//add the new group
 			//now we need to add oldGroups and remove group
-			System.out.println("Before " + groups);
-			System.out.println("Adding " + oldGroups);
-			groups.addAll(oldGroups);
-			Set<WeightedState> el = oldGroups.iterator().next();
-			System.out.println("el " + el +"\t" + el.getClass());
-			for(Set<WeightedState> inEl : groups){
-				System.out.println("inEl " + inEl +"\t" + inEl.getClass());
-				if(el.equals(inEl)){
-					System.out.println(true);
-				}
+//			System.out.println("Before " + groups + " " + groups.getClass());
+			//System.out.println("Adding " + newGroups);
+			if(newGroups.size() == 1 && newGroups.contains(group)){
+				//no split happened, then add to the processed
+				processedGroups.add(group);
+			} else {
+				//so a group has been changed, so the previous
+				//computations might be incorrect
+				//thus clear processedGroup and
+				//put them back into the queue
+				groups.addAll(processedGroups);
+				processedGroups.clear();
 			}
-			System.out.println("AfterA " + groups);
-			System.out.println("Removing " + group);
-			groups.remove(group); //so if the group did not split, it means they all go to the same groups on the same symbol
-			System.out.println("AfterR " + groups);
-			i++;
+			//remove the old group
+			groups.remove(group);
+			//add new groups
+			groups.addAll(newGroups);
+
+			//i++;
 		}//while groups are not empty
 		
+		//System.out.println("iters: " + i);
 		//let's test it at least
-		System.out.println(groups);
+		//System.out.println("Final " + groups);
 		
-	}
+		//now we have groups, thus we need to establish the start state
+		//final states and the transitions between them
+		Map<Set<WeightedState>, WeightedState> groupToState = new HashMap<Set<WeightedState>, WeightedState>();
+		WeightedState newStart = null;
+		for(Set<WeightedState> group : groups){
+			WeightedState newState = new WeightedState();
+			WeightedState equivState = group.iterator().next();
+			if(equivState.isAccept()){
+				newState.setAccept(true);
+				//set the same weight
+				newState.setWeight(equivState.getWeight());
+			}
+			if(group.contains(acyclicWeightedAutomaton.initial)){
+				newStart = newState;
+			}
+			//add to the map
+			groupToState.put(group, newState);
+		}
+		acyclicWeightedAutomaton.setInitialState(newStart);
+		//now add the transitions between them
+		for( Entry<Set<WeightedState>, WeightedState> entry : groupToState.entrySet()){
+			WeightedState equivState = entry.getKey().iterator().next(); // just get any state
+			for(WeightedTransition wt : equivState.getTransitions()){
+				WeightedState newToState = groupToState.get(findGroup(groups, wt.getToState()));
+				//add a transition between two states
+				entry.getValue().addTransition(new WeightedTransition(entry.getValue(), wt.getSymb(), newToState, wt.getWeight()));
+			}
+		}
+		}
+		//so we should done here
+		
+//		System.out.println("Ending min with " +  acyclicWeightedAutomaton.getStates().size() + "\t" + acyclicWeightedAutomaton.getStringCount());
+//		if(acyclicWeightedAutomaton.getStringCount().intValue() == 54864){
+//		DotToGraph.outputDotFile(acyclicWeightedAutomaton.toDot(), "minAfter");
+//		}
+	//}
 
 	private static Set<WeightedState> getToGroup(Pair<Character, Fraction> symb, WeightedState fromS,
 			Map<Pair<WeightedState, Pair<Character, Fraction>>, Set<WeightedState>> transTable) {
@@ -855,14 +929,14 @@ public class BasicAcyclicWeightedOperations {
 	private static Pair<Character, Fraction> findPair(Set<Pair<Character, Fraction>> symbols, WeightedTransition wt) {
 		Pair<Character, Fraction> ret = null;
 		for(Pair<Character, Fraction> symb : symbols){
-			if(symb.getFirst() == wt.getSymb() && symb.getSecond().equals(wt)){
+			if(symb.getFirst() == wt.getSymb() && symb.getSecond().equals(wt.getWeight())){
 				ret = symb;
 				break;
 			}
 		}
 			
 			if(ret == null){
-				System.out.println("Cannot find a group in minimization alg");
+				System.out.println("Cannot find a group in minimization alg for  " + wt.getSymb() +"\t" + wt.getWeight());
 				System.exit(2);
 			}
 		return ret;

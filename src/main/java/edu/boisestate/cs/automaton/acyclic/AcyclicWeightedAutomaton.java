@@ -300,6 +300,7 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 	}
 	
 	private Fraction countStrings(WeightedState curr, Fraction currPrefixes){
+		try {
 		Fraction currCount = new Fraction(0);
 		//System.out.println("In " + curr + " " + currCount + " " + currPrefixes);
 		if(curr.isAccept()){
@@ -323,9 +324,12 @@ public class AcyclicWeightedAutomaton implements Serializable, Cloneable{
 			currCount = currCount.add(countStrings(toState.getKey(), currPrefixes.multiply(toState.getValue())));
 			//currCount = currCount.add(countStrings(w.getToState(), currPrefixes.multiply(w.getWeight())))
 		}
+		return currCount;
+		} catch (Exception e){
+			return  new Fraction(Integer.MAX_VALUE);
+		}
 		
 		//System.out.println("count " + currCount);
-		return currCount;
 	}
 
 	/**
