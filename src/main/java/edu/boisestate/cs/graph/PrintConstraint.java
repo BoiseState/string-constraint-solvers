@@ -81,6 +81,11 @@ public class PrintConstraint implements Serializable,
         sourceConstraints = new ArrayList<PrintConstraint>();
         sourceConstraints.add(this);
     }
+    
+    
+    public long getTimeStamp(){
+    	return timeStamp;
+    }
 
     /**
      * Sets the source of this vertex in the flow graph.
@@ -190,9 +195,11 @@ public class PrintConstraint implements Serializable,
      * @return The last source of this vertex.
      */
     public PrintConstraint getSource() {
+        sourceConstraints.remove(null);
         Iterator<PrintConstraint> it = sourceConstraints.iterator();
         while (it.hasNext()) {
             PrintConstraint source = it.next();
+            //System.out.println("S " + source + " " + sourceConstraints + " glNum " + globalNum);
             if (globalNum > source.id) {
                 return source;
             }

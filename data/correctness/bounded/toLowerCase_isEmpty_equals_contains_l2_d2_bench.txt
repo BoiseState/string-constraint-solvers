@@ -1,0 +1,26 @@
+ID	ACT VAL	SING	TSAT	FSAT	DISJOINT	ACC IN TIME	IN ID	IN COUNT	IN TIME	T COUNT	T MC TIME	T PRED TIME	F COUNT	F MC TIME	F PRED TIME	OVERLAP	PREV OPS
+32	\"false\"	false	true	true	     yes	184	11	43	706	1	6	31	42	30	140	0	<S:11> = <init>{86} -> [32]<S:11>.isEmpty(){184}
+34	\"false\"	false	true	true	     yes	283	9	43	39	1	32	43	42	59	216	0	<S:9> = <init>{86} -> [34]<S:9>.equals(\"B\"){283}
+36	\"false\"	false	true	true	     yes	886	8	43	43	1	68	2048	42	93	894	0	<S:8> = <init>{115} -> [36]<S:8>.contains(\"ba\"){886}
+37	\"false\"	false	true	true	     yes	171	10	43	35	1	5	13	42	29	106	0	<S:10> = <init>{87} -> [37]<S:10>.isEmpty(){171}
+39	\"false\"	false	true	true	     yes	12752	7	43	52	1	10	10	42	34	91	0	<S:7> = <init>{12651} -> [39]<S:7>.equals(\"\"){12752}
+40	\"false\"	false	true	true	     yes	929	13	13	26	1	4	3	12	16	83	0	<S:10> = <init>{87} -> [13]<S:10>.toLowerCase(){772} -> [40]<S:13>.isEmpty(){929}
+42	\"false\"	false	true	true	     yes	3625	12	13	38	1	10	8	12	17	152	0	<S:8> = <init>{115} -> [12]<S:8>.toLowerCase(){3428} -> [42]<S:12>.equals(\"\"){3625}
+44	\"false\"	false	true	true	     yes	1377	14	13	23	1	38	1092	12	57	673	0	<S:9> = <init>{86} -> [14]<S:9>.toLowerCase(){630} -> [44]<S:14>.contains(\"bb\"){1377}
+45	\"false\"	false	true	true	     yes	806	21	13	20	1	5	4	12	16	73	0	<S:9> = <init>{86} -> [21]<S:9>.toLowerCase(){657} -> [45]<S:21>.isEmpty(){806}
+47	\"false\"	false	true	true	     yes	806	18	13	26	1	33	10	12	36	140	0	<S:10> = <init>{87} -> [18]<S:10>.toLowerCase(){622} -> [47]<S:18>.equals(\"c\"){806}
+49	\"false\"	false	false	true	     yes	13945	17	13	20	0	7	203	13	34	603	0	<S:7> = <init>{12651} -> [17]<S:7>.toLowerCase(){631} -> [49]<S:17>.contains(\"cA\"){13945}
+50	\"false\"	false	true	true	     yes	780	16	13	27	1	6	37	12	16	72	0	<S:10> = <init>{87} -> [16]<S:10>.toLowerCase(){632} -> [50]<S:16>.isEmpty(){780}
+52	\"false\"	false	true	true	     yes	13367	19	13	20	1	10	5	12	20	714	0	<S:7> = <init>{12651} -> [19]<S:7>.toLowerCase(){633} -> [52]<S:19>.equals(\"\"){13367}
+54	\"false\"	false	true	true	     yes	1288	20	13	27	1	25	887	12	31	570	0	<S:9> = <init>{86} -> [20]<S:9>.toLowerCase(){641} -> [54]<S:20>.contains(\"aa\"){1288}
+55	\"false\"	false	true	true	     yes	13346	15	13	25	1	5	6	12	16	61	0	<S:7> = <init>{12651} -> [15]<S:7>.toLowerCase(){624} -> [55]<S:15>.isEmpty(){13346}
+56	\"false\"	false	true	true	     yes	13721	30	13	25	1	5	3	12	17	62	0	<S:7> = <init>{12651} -> [17]<S:7>.toLowerCase(){631} -> [30]<S:17>.toLowerCase(){378} -> [56]<S:30>.isEmpty(){13721}
+58	\"false\"	false	true	true	     yes	3774	22	13	19	1	10	5	12	16	71	0	<S:9> = <init>{86} -> [20]<S:9>.toLowerCase(){641} -> [22]<S:20>.toLowerCase(){2986} -> [58]<S:22>.equals(\"\"){3774}
+60	\"false\"	false	false	true	     yes	4449	31	13	19	0	7	202	13	20	592	0	<S:8> = <init>{115} -> [12]<S:8>.toLowerCase(){3428} -> [31]<S:12>.toLowerCase(){406} -> [60]<S:31>.contains(\"AB\"){4449}
+61	\"false\"	false	true	true	     yes	1198	25	13	25	1	5	3	12	20	59	0	<S:10> = <init>{87} -> [18]<S:10>.toLowerCase(){622} -> [25]<S:18>.toLowerCase(){431} -> [61]<S:25>.isEmpty(){1198}
+63	\"false\"	false	true	true	     yes	4008	28	13	21	1	9	5	12	16	64	0	<S:8> = <init>{115} -> [12]<S:8>.toLowerCase(){3428} -> [28]<S:12>.toLowerCase(){396} -> [63]<S:28>.equals(\"\"){4008}
+65	\"false\"	false	false	true	     yes	14161	23	13	27	0	7	198	13	30	1141	0	<S:7> = <init>{12651} -> [17]<S:7>.toLowerCase(){631} -> [23]<S:17>.toLowerCase(){473} -> [65]<S:23>.contains(\"B\"){14161}
+66	\"false\"	false	true	true	     yes	13829	29	13	22	1	5	3	12	19	65	0	<S:7> = <init>{12651} -> [19]<S:7>.toLowerCase(){633} -> [29]<S:19>.toLowerCase(){486} -> [66]<S:29>.isEmpty(){13829}
+68	\"false\"	false	false	true	     yes	1242	24	13	25	0	6	5	13	20	91	0	<S:9> = <init>{86} -> [20]<S:9>.toLowerCase(){641} -> [24]<S:20>.toLowerCase(){431} -> [68]<S:24>.equals(\"BB\"){1242}
+70	\"false\"	false	false	true	     yes	2336	27	13	19	0	7	193	13	20	418	0	<S:9> = <init>{86} -> [14]<S:9>.toLowerCase(){630} -> [27]<S:14>.toLowerCase(){1234} -> [70]<S:27>.contains(\"A\"){2336}
+71	\"false\"	false	true	true	     yes	1354	26	13	23	1	5	3	12	16	59	0	<S:10> = <init>{87} -> [13]<S:10>.toLowerCase(){772} -> [26]<S:13>.toLowerCase(){433} -> [71]<S:26>.isEmpty(){1354}

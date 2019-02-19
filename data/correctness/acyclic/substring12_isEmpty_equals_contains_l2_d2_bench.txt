@@ -1,0 +1,26 @@
+ID	ACT VAL	SING	TSAT	FSAT	DISJOINT	ACC IN TIME	IN ID	IN COUNT	IN TIME	T COUNT	T MC TIME	T PRED TIME	F COUNT	F MC TIME	F PRED TIME	OVERLAP	PREV OPS
+35	\"false\"	false	true	true	     yes	207	8	13	684	1	6	22	12	19	116	0	<S:8> = <init>{101} -> [35]<S:8>.isEmpty(){207}
+37	\"false\"	false	true	true	     yes	230	7	13	25	1	38	41	12	39	182	0	<S:7> = <init>{104} -> [37]<S:7>.equals(\"A\"){230}
+39	\"false\"	false	true	true	     yes	634	5	13	23	6	42	1309	7	44	639	0	<S:5> = <init>{122} -> [39]<S:5>.contains(\"B\"){634}
+40	\"false\"	false	true	true	     yes	184	6	13	28	1	5	22	12	23	105	0	<S:6> = <init>{107} -> [40]<S:6>.isEmpty(){184}
+42	\"false\"	false	true	true	     yes	10497	4	13	28	1	42	19	12	51	165	0	<S:4> = <init>{10364} -> [42]<S:4>.equals(\"BB\"){10497}
+43	\"true\"	false	true	false	     yes	891	17	1	5	1	4	3	0	7	51	0	<S:7> = <init>{104} -> [17]<S:7>.substring(2, 2){784} -> [43]<S:17>.isEmpty(){891}
+45	\"true\"	false	true	false	     yes	805	22	1	5	1	4	5	0	7	81	0	<S:6> = <init>{107} -> [22]<S:6>.substring(2, 2){693} -> [45]<S:22>.equals(\"\"){805}
+47	\"true\"	false	true	false	     yes	5730	21	1	5	1	5	442	0	7	244	0	<S:6> = <init>{107} -> [21]<S:6>.substring(1, 1){5233} -> [47]<S:21>.contains(\"\"){5730}
+48	\"true\"	false	true	false	     yes	692	23	1	6	1	5	4	0	7	52	0	<S:7> = <init>{104} -> [23]<S:7>.substring(1, 1){585} -> [48]<S:23>.isEmpty(){692}
+50	\"false\"	false	false	true	     yes	3167	16	9	18	0	7	5	9	37	140	0	<S:6> = <init>{107} -> [16]<S:6>.substring(0, 2){2937} -> [50]<S:16>.equals(\"B\"){3167}
+52	\"true\"	false	true	false	     yes	11805	14	1	10	1	13	361	0	9	258	0	<S:4> = <init>{10364} -> [14]<S:4>.substring(2, 2){1080} -> [52]<S:14>.contains(\"\"){11805}
+53	\"false\"	false	false	true	     yes	2320	15	3	20	0	7	3	3	14	63	0	<S:7> = <init>{104} -> [15]<S:7>.substring(1, 2){2149} -> [53]<S:15>.isEmpty(){2320}
+55	\"false\"	false	false	true	     yes	1326	18	1	8	0	7	5	1	5	101	0	<S:6> = <init>{107} -> [18]<S:6>.substring(2, 2){1140} -> [55]<S:18>.equals(\"B\"){1326}
+57	\"true\"	false	true	false	     yes	8469	11	3	14	3	16	503	0	8	231	0	<S:5> = <init>{122} -> [11]<S:5>.substring(0, 1){7776} -> [57]<S:11>.contains(\"\"){8469}
+58	\"true\"	false	true	false	     yes	11148	19	1	5	1	4	4	0	7	52	0	<S:4> = <init>{10364} -> [19]<S:4>.substring(2, 2){781} -> [58]<S:19>.isEmpty(){11148}
+59	\"false\"	false	false	true	     yes	3031	30	3	14	0	6	2	3	15	59	0	<S:7> = <init>{104} -> [15]<S:7>.substring(1, 2){2149} -> [30]<S:15>.substring(0, 1){719} -> [59]<S:30>.isEmpty(){3031}
+61	\"false\"	false	false	true	     yes	2795	29	1	5	0	6	5	1	5	81	0	<S:7> = <init>{104} -> [15]<S:7>.substring(1, 2){2149} -> [29]<S:15>.substring(0, 0){467} -> [61]<S:29>.equals(\"A\"){2795}
+63	\"false\"	false	false	true	     yes	5943	34	1	5	0	8	165	1	6	259	0	<S:6> = <init>{107} -> [21]<S:6>.substring(1, 1){5233} -> [34]<S:21>.substring(0, 0){326} -> [63]<S:34>.contains(\"C\"){5943}
+64	\"true\"	false	true	false	     yes	5785	26	1	6	1	5	4	0	7	69	0	<S:6> = <init>{107} -> [21]<S:6>.substring(1, 1){5233} -> [26]<S:21>.substring(0, 0){442} -> [64]<S:26>.isEmpty(){5785}
+66	\"false\"	false	false	true	     yes	11997	32	1	6	0	7	6	1	5	91	0	<S:4> = <init>{10364} -> [14]<S:4>.substring(2, 2){1080} -> [32]<S:14>.substring(0, 0){465} -> [66]<S:32>.equals(\"BC\"){11997}
+68	\"true\"	false	true	false	     yes	8104	31	1	9	1	8	471	0	9	265	0	<S:6> = <init>{107} -> [21]<S:6>.substring(1, 1){5233} -> [31]<S:21>.substring(0, 0){2399} -> [68]<S:31>.contains(\"\"){8104}
+69	\"true\"	false	true	false	     yes	1629	28	1	6	1	5	4	0	7	48	0	<S:6> = <init>{107} -> [18]<S:6>.substring(2, 2){1140} -> [28]<S:18>.substring(0, 0){379} -> [69]<S:28>.isEmpty(){1629}
+71	\"false\"	false	false	true	     yes	1392	25	1	5	0	7	9	1	5	85	0	<S:7> = <init>{104} -> [17]<S:7>.substring(2, 2){784} -> [25]<S:17>.substring(0, 0){394} -> [71]<S:25>.equals(\"BB\"){1392}
+73	\"false\"	false	false	true	     yes	3048	27	1	7	0	7	155	1	6	245	0	<S:7> = <init>{104} -> [15]<S:7>.substring(1, 2){2149} -> [27]<S:15>.substring(1, 1){545} -> [73]<S:27>.contains(\"B\"){3048}
+74	\"true\"	false	true	false	     yes	1154	33	1	5	1	5	4	0	7	48	0	<S:6> = <init>{107} -> [22]<S:6>.substring(2, 2){693} -> [33]<S:22>.substring(0, 0){351} -> [74]<S:33>.isEmpty(){1154}

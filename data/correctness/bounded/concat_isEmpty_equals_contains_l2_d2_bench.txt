@@ -1,0 +1,26 @@
+ID	ACT VAL	SING	TSAT	FSAT	DISJOINT	ACC IN TIME	IN ID	IN COUNT	IN TIME	T COUNT	T MC TIME	T PRED TIME	F COUNT	F MC TIME	F PRED TIME	OVERLAP	PREV OPS
+29	\"false\"	false	true	true	     yes	184	7	13	685	1	7	30	12	18	528	0	<S:7> = <init>{75} -> [29]<S:7>.isEmpty(){184}
+31	\"false\"	false	true	true	     yes	256	8	13	21	1	24	38	12	41	182	0	<S:8> = <init>{69} -> [31]<S:8>.equals(\"B\"){256}
+33	\"false\"	false	true	true	     yes	669	5	13	21	6	34	1432	7	24	703	0	<S:5> = <init>{76} -> [33]<S:5>.contains(\"A\"){669}
+34	\"false\"	false	true	true	     yes	2739	4	13	28	1	5	9	12	16	80	0	<S:4> = <init>{2658} -> [34]<S:4>.isEmpty(){2739}
+36	\"false\"	false	true	true	     yes	203	6	13	47	1	14	21	12	37	156	0	<S:6> = <init>{77} -> [36]<S:6>.equals(\"B\"){203}
+37	\"false\"	false	false	true	     yes	543	12	13	54	0	2	3	13	62	145	0	<S:6> = <init>{77} -> [12]<S:6>.concat(\"C\"){362} -> [37]<S:12>.isEmpty(){543}
+39	\"false\"	false	true	true	     yes	447	13	121	30	1	18	10	120	46	110	0	<S:7> = <init>{75} -> [13]<S:7>.concat(<CS:5>){251} -> [39]<S:13>.equals(\"A\"){447}
+41	\"true\"	false	true	false	     yes	2993	9	13	134	13	166	4772	0	8	300	0	<S:5> = <init>{76} -> [9]<S:5>.concat(\"B\"){2043} -> [41]<S:9>.contains(\"\"){2993}
+42	\"false\"	false	false	true	     yes	498	18	13	66	0	2	3	13	52	87	0	<S:7> = <init>{75} -> [18]<S:7>.concat(\"C\"){341} -> [42]<S:18>.isEmpty(){498}
+44	\"false\"	false	true	true	     yes	722	11	121	36	1	10	9	120	30	74	0	<S:7> = <init>{75} -> [11]<S:7>.concat(<CS:6>){574} -> [44]<S:11>.equals(\"\"){722}
+46	\"true\"	false	true	false	     yes	7388	10	13	123	13	131	881	0	7	255	0	<S:4> = <init>{2658} -> [10]<S:4>.concat(\"B\"){571} -> [46]<S:10>.contains(\"\"){7388}
+47	\"false\"	false	false	true	     yes	3136	15	13	2074	0	3	4	13	63	193	0	<S:4> = <init>{2658} -> [15]<S:4>.concat(\"C\"){396} -> [47]<S:15>.isEmpty(){3136}
+49	\"false\"	false	true	true	     yes	425	16	121	29	1	25	6	120	49	128	0	<S:6> = <init>{77} -> [16]<S:6>.concat(<CS:4>){248} -> [49]<S:16>.equals(\"A\"){425}
+51	\"true\"	false	true	true	     yes	1166	14	121	34	33	131	990	88	135	605	0	<S:6> = <init>{77} -> [14]<S:6>.concat(<CS:4>){250} -> [51]<S:14>.contains(\"CB\"){1166}
+52	\"false\"	false	true	true	     yes	371	17	121	46	1	5	4	120	18	64	0	<S:5> = <init>{76} -> [17]<S:5>.concat(<CS:8>){238} -> [52]<S:17>.isEmpty(){371}
+53	\"false\"	false	false	true	     yes	831	27	13	97	0	2	2	13	75	80	0	<S:6> = <init>{77} -> [12]<S:6>.concat(\"C\"){362} -> [27]<S:12>.concat(\"C\"){315} -> [53]<S:27>.isEmpty(){831}
+55	\"false\"	false	true	true	     yes	3473	26	3025	109	1	12	6	3024	127	98	0	<S:4> = <init>{2658} -> [15]<S:4>.concat(\"C\"){396} -> [26]<S:15>.concat(<CS:14>){324} -> [55]<S:26>.equals(\"C\"){3473}
+57	\"true\"	false	true	false	     yes	2526	25	13	3126	13	117	933	0	7	355	0	<S:7> = <init>{75} -> [18]<S:7>.concat(\"C\"){341} -> [25]<S:18>.concat(\"A\"){327} -> [57]<S:25>.contains(\"C\"){2526}
+58	\"false\"	false	false	true	     yes	736	20	121	413	0	2	3	121	379	97	0	<S:5> = <init>{76} -> [17]<S:5>.concat(<CS:8>){238} -> [20]<S:17>.concat(\"B\"){338} -> [58]<S:20>.isEmpty(){736}
+60	\"false\"	false	false	true	     yes	6291	28	121	373	0	6	8	121	4393	96	0	<S:5> = <init>{76} -> [17]<S:5>.concat(<CS:8>){238} -> [28]<S:17>.concat(\"B\"){261} -> [60]<S:28>.equals(\"\"){6291}
+62	\"true\"	false	true	false	     yes	1602	23	301	46	301	39	843	0	3	207	0	<S:6> = <init>{77} -> [12]<S:6>.concat(\"C\"){362} -> [23]<S:12>.concat(<CS:18>){423} -> [62]<S:23>.contains(\"\"){1602}
+63	\"false\"	false	false	true	     yes	866	21	3025	34	0	1	3	3025	29	129	0	<S:6> = <init>{77} -> [12]<S:6>.concat(\"C\"){362} -> [21]<S:12>.concat(<CS:14>){350} -> [63]<S:21>.isEmpty(){866}
+65	\"false\"	false	false	true	     yes	2646	24	13	35	0	7	6	13	32	109	0	<S:5> = <init>{76} -> [9]<S:5>.concat(\"B\"){2043} -> [24]<S:9>.concat(\"C\"){419} -> [65]<S:24>.equals(\"B\"){2646}
+67	\"true\"	false	true	false	     yes	3808	19	13	32	13	38	3175	0	4	357	0	<S:5> = <init>{76} -> [9]<S:5>.concat(\"B\"){2043} -> [19]<S:9>.concat(\"A\"){811} -> [67]<S:19>.contains(\"B\"){3808}
+68	\"false\"	false	true	true	     yes	587	22	9841	20	1	2	4	9840	17	55	0	<S:6> = <init>{77} -> [14]<S:6>.concat(<CS:4>){250} -> [22]<S:14>.concat(<CS:16>){197} -> [68]<S:22>.isEmpty(){587}

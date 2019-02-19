@@ -53,6 +53,8 @@ public class AutomatonModelSolver
     @Override
     public void append(int id, int base, int arg) {
 
+//    	System.out.println(id + " " + base + " " + arg);
+//    	System.out.println("sybmolicStringMap " + symbolicStringMap);
         // get models
         AutomatonModel baseModel = this.symbolicStringMap.get(base);
         AutomatonModel argModel = this.symbolicStringMap.get(arg);

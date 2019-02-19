@@ -1,0 +1,15 @@
+~/devtools/apache-maven-3.5.2/bin/mvn
+
+elenas-imac:string-constraint-solvers elenasherman$ ls
+README.md	bin		graphs		properties.txt	src		temp
+SolverInterface	data		pom.xml		scripts		target		testOld
+
+~/devtools/apache-maven-3.5.2/bin/mvn dependency:build-classpath
+
+export CLASSPATH=/Users/elenasherman/.m2/repository/junit/junit/4.12/junit-4.12.jar:/Users/elenasherman/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/Users/elenasherman/.m2/repository/org/mockito/mockito-all/1.10.19/mockito-all-1.10.19.jar:/Users/elenasherman/.m2/repository/org/hamcrest/hamcrest-library/1.3/hamcrest-library-1.3.jar:/Users/elenasherman/.m2/repository/log4j/log4j/1.2.17/log4j-1.2.17.jar:/Users/elenasherman/.m2/repository/dk/brics/automaton/automaton/1.11-8/automaton-1.11-8.jar:/Users/elenasherman/.m2/repository/net/java/dev/jna/jna/4.2.1/jna-4.2.1.jar:/Users/elenasherman/.m2/repository/org/jgrapht/jgrapht-ext/0.9.1/jgrapht-ext-0.9.1.jar:/Users/elenasherman/.m2/repository/org/jgrapht/jgrapht-core/0.9.1/jgrapht-core-0.9.1.jar:/Users/elenasherman/.m2/repository/org/tinyjee/jgraphx/jgraphx/2.0.0.1/jgraphx-2.0.0.1.jar:/Users/elenasherman/.m2/repository/jgraph/jgraph/5.13.0.0/jgraph-5.13.0.0.jar:/Users/elenasherman/.m2/repository/eclipse-cpl/eclipse-cpl/1.0/eclipse-cpl-1.0.jar:/Users/elenasherman/.m2/repository/stranger/stranger/1.0/stranger-1.0.jar:/Users/elenasherman/.m2/repository/dk/brics/string/2.1-1/string-2.1-1.jar:/Users/elenasherman/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.7.2/jackson-databind-2.7.2.jar:/Users/elenasherman/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.7.0/jackson-annotations-2.7.0.jar:/Users/elenasherman/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.7.2/jackson-core-2.7.2.jar:/Users/elenasherman/.m2/repository/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar:/Users/elenasherman/.m2/repository/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar
+
+java -cp ./target/classes/:$CLASSPATH edu.boisestate.cs.SolveMain ./graphs/benchmarks/toLowerCase_concat_isEmpty_equals_contains_l3_d3_bench.json -l 3 -r model-count -s jsa  -v 5
+
+./graphs/benchmarks/toLowerCase_substring12_concat_isEmpty_equals_contains_l3_d3_bench.json  -l 3 -r model-count -s jsa  -v 5
+
+java -Xmx4g -cp ./target/classes/:$CLASSPATH edu.boisestate.cs.SolveMain ./graphs/benchmarks/toLowerCase_substring12_concat_isEmpty_equals_contains_l3_d2_bench.json -l 3 -r model-count -s concrete

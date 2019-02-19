@@ -524,8 +524,8 @@ public class Parser {
         // declare operation string
         String operation;
 
-        //System.out.println("processInit " + id + " val " + actualVals.get
-        // (id));
+        System.out.println("processInit " + id + " val " + actualVals.get
+         (id));
 
         // if target and source ids exist and actual target value
         // is the empty string
@@ -695,11 +695,13 @@ public class Parser {
      *         The constraint corresponding to the operation.
      */
     private void processPropagation(PrintConstraint constraint) {
+    	//System.out.println("Propagating " + constraint);
 
         // get constraint info as variables
         Map<String, Integer> sourceMap = constraint.getSourceMap();
         int id = constraint.getId();
         int base = sourceMap.get("t");
+        //System.out.println("Propagating " + constraint + " " + base +" to " + id);
 
         // get arg id from source map, -1 if none
         int arg = -1;

@@ -1,0 +1,26 @@
+ID	ACT VAL	SING	TSAT	FSAT	DISJOINT	ACC IN TIME	IN ID	IN COUNT	IN TIME	T COUNT	T MC TIME	T PRED TIME	F COUNT	F MC TIME	F PRED TIME	OVERLAP	PREV OPS
+29	\"false\"	false	true	true	     yes	232	4	13	28	1	63	63	12	56	56	0	<S:4> = <init>{166} -> [29]<S:4>.isEmpty(){232}
+31	\"false\"	false	true	true	     yes	298	8	13	17	1	292	292	12	73	73	0	<S:8> = <init>{66} -> [31]<S:8>.equals(\"B\"){298}
+33	\"false\"	false	true	true	     yes	145	5	13	2	1	116	116	12	90	90	0	<S:5> = <init>{75} -> [33]<S:5>.contains(\"BB\"){145}
+34	\"false\"	false	true	true	     yes	112	7	13	28	1	11	11	12	34	34	0	<S:7> = <init>{70} -> [34]<S:7>.isEmpty(){112}
+36	\"false\"	false	true	true	     yes	141	6	13	2	1	28	28	12	53	53	0	<S:6> = <init>{89} -> [36]<S:6>.equals(\"\"){141}
+37	\"false\"	false	true	true	     yes	620	10	13	21	1	9	9	12	44	44	0	<S:4> = <init>{166} -> [10]<S:4>.replace('C', 'B'){437} -> [37]<S:10>.isEmpty(){620}
+39	\"false\"	false	true	true	     yes	249	13	13	2	1	22	22	12	33	33	0	<S:7> = <init>{70} -> [13]<S:7>.replace('C', 'B'){145} -> [39]<S:13>.equals(\"\"){249}
+41	\"false\"	false	true	true	     yes	237	9	13	2	10	33	33	3	58	58	0	<S:5> = <init>{75} -> [9]<S:5>.replace('A', 'B'){133} -> [41]<S:9>.contains(\"B\"){237}
+42	\"false\"	false	true	true	     yes	246	16	13	12	1	12	12	12	16	16	0	<S:6> = <init>{89} -> [16]<S:6>.replace('B', 'C'){140} -> [42]<S:16>.isEmpty(){246}
+44	\"false\"	false	true	true	     yes	520	11	13	1	1	73	73	12	70	70	0	<S:7> = <init>{70} -> [11]<S:7>.replace('B', 'C'){407} -> [44]<S:11>.equals(\"\"){520}
+46	\"false\"	false	true	true	     yes	660	12	13	2	6	45	45	7	47	47	0	<S:6> = <init>{89} -> [12]<S:6>.replace('A', 'C'){526} -> [46]<S:12>.contains(\"B\"){660}
+47	\"false\"	false	true	true	     yes	269	14	13	15	1	10	10	12	23	23	0	<S:6> = <init>{89} -> [14]<S:6>.replace('C', 'A'){165} -> [47]<S:14>.isEmpty(){269}
+49	\"false\"	false	false	true	     yes	275	15	13	6	0	16	16	13	38	38	0	<S:4> = <init>{166} -> [15]<S:4>.replace('C', 'B'){61} -> [49]<S:15>.equals(\"CB\"){275}
+51	\"true\"	false	true	false	     yes	219	17	13	2	13	94	94	0	73	73	0	<S:5> = <init>{75} -> [17]<S:5>.replace('A', 'B'){42} -> [51]<S:17>.contains(\"\"){219}
+52	\"false\"	false	true	true	     yes	184	18	13	174	1	10	10	12	51	51	0	<S:7> = <init>{70} -> [18]<S:7>.replace('A', 'C'){40} -> [52]<S:18>.isEmpty(){184}
+53	\"false\"	false	true	true	     yes	262	28	13	23	1	18	18	12	19	19	0	<S:4> = <init>{166} -> [15]<S:4>.replace('C', 'B'){61} -> [28]<S:15>.replace('B', 'A'){28} -> [53]<S:28>.isEmpty(){262}
+55	\"false\"	false	false	true	     yes	306	21	13	1	0	12	12	13	32	32	0	<S:6> = <init>{89} -> [14]<S:6>.replace('C', 'A'){165} -> [21]<S:14>.replace('B', 'C'){27} -> [55]<S:21>.equals(\"BC\"){306}
+57	\"false\"	false	true	true	     yes	670	24	13	1	1	19	19	12	28	28	0	<S:4> = <init>{166} -> [10]<S:4>.replace('C', 'B'){437} -> [24]<S:10>.replace('C', 'A'){35} -> [57]<S:24>.contains(\"AA\"){670}
+58	\"false\"	false	true	true	     yes	166	23	13	11	1	8	8	12	66	66	0	<S:7> = <init>{70} -> [18]<S:7>.replace('A', 'C'){40} -> [23]<S:18>.replace('B', 'A'){42} -> [58]<S:23>.isEmpty(){166}
+60	\"false\"	false	true	true	     yes	270	19	13	1	4	21	21	9	20	20	0	<S:5> = <init>{75} -> [9]<S:5>.replace('A', 'B'){133} -> [19]<S:9>.replace('A', 'C'){43} -> [60]<S:19>.equals(\"BB\"){270}
+62	\"false\"	false	false	true	     yes	530	20	13	1	0	11	11	13	23	23	0	<S:7> = <init>{70} -> [11]<S:7>.replace('B', 'C'){407} -> [20]<S:11>.replace('B', 'C'){27} -> [62]<S:20>.contains(\"B\"){530}
+63	\"false\"	false	true	true	     yes	295	26	13	9	1	14	14	12	24	24	0	<S:6> = <init>{89} -> [14]<S:6>.replace('C', 'A'){165} -> [26]<S:14>.replace('A', 'C'){29} -> [63]<S:26>.isEmpty(){295}
+65	\"false\"	false	false	true	     yes	254	27	13	1	0	6	6	13	14	14	0	<S:7> = <init>{70} -> [13]<S:7>.replace('C', 'B'){145} -> [27]<S:13>.replace('A', 'B'){25} -> [65]<S:27>.equals(\"A\"){254}
+67	\"true\"	false	true	false	     yes	533	25	13	1	13	28	28	0	12	12	0	<S:6> = <init>{89} -> [16]<S:6>.replace('B', 'C'){140} -> [25]<S:16>.replace('C', 'B'){281} -> [67]<S:25>.contains(\"\"){533}
+68	\"false\"	false	true	true	     yes	504	22	13	23	1	6	6	12	7	7	0	<S:7> = <init>{70} -> [11]<S:7>.replace('B', 'C'){407} -> [22]<S:11>.replace('C', 'A'){21} -> [68]<S:22>.isEmpty(){504}
