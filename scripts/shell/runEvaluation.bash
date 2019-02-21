@@ -19,17 +19,17 @@ do
    fileName=(${bench//./ })
     outfileOrig=./data/evaluation/type/${fileName[0]}_l${len}.txt
 	
-	outfile=${outfileOrig//type/weightedAcyclic}
+	#outfile=${outfileOrig//type/weightedAcyclic}
 	#echo $outfile
-    echo "weighted"
-    java -Xmx4g -cp ./target/classes/:$CLASSPATH edu.boisestate.cs.SolveMain -l ${len} ${pathfile} -r model-count -s jsa  -v 5 > ${outfile}
+    #echo "weighted"
+    #java -Xmx4g -cp ./target/classes/:$CLASSPATH edu.boisestate.cs.SolveMain -l ${len} ${pathfile} -r model-count -s jsa  -v 5 > ${outfile}
     
     outfile=${outfileOrig//type/bounded}
     echo "bounded"
     java -Xmx4g -cp ./target/classes/:$CLASSPATH edu.boisestate.cs.SolveMain -l ${len} ${pathfile} -r model-count -s jsa  -v 1 > ${outfile}
     
-    outfile=${outfileOrig//type/acyclic}
-    echo "acyclic"
-    java -Xmx4g -cp ./target/classes/:$CLASSPATH edu.boisestate.cs.SolveMain -l ${len} ${pathfile} -r model-count -s jsa  -v 2 > ${outfile}
+    #outfile=${outfileOrig//type/acyclic}
+    #echo "acyclic"
+    #java -Xmx4g -cp ./target/classes/:$CLASSPATH edu.boisestate.cs.SolveMain -l ${len} ${pathfile} -r model-count -s jsa  -v 2 > ${outfile}
    fi
 done < $filename

@@ -1,5 +1,8 @@
 ~/devtools/apache-maven-3.5.2/bin/mvn
 
+#building jar with dependency
+~/devtools/apache-maven-3.5.2/bin/mvn package
+
 elenas-imac:string-constraint-solvers elenasherman$ ls
 README.md	bin		graphs		properties.txt	src		temp
 SolverInterface	data		pom.xml		scripts		target		testOld
@@ -13,3 +16,5 @@ java -cp ./target/classes/:$CLASSPATH edu.boisestate.cs.SolveMain ./graphs/bench
 ./graphs/benchmarks/toLowerCase_substring12_concat_isEmpty_equals_contains_l3_d3_bench.json  -l 3 -r model-count -s jsa  -v 5
 
 java -Xmx4g -cp ./target/classes/:$CLASSPATH edu.boisestate.cs.SolveMain ./graphs/benchmarks/toLowerCase_substring12_concat_isEmpty_equals_contains_l3_d2_bench.json -l 3 -r model-count -s concrete
+
+java -cp string-constraint-solvers-1.0-SNAPSHOT-jar-with-dependencies.jar edu.boisestate.cs.SolveMain -h
