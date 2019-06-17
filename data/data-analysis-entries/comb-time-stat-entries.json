@@ -4,7 +4,8 @@
     "acc_time": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for All Constraints",
-    "label": "comb_time_stat_all"
+    "label": "comb_time_stat_all",
+    "data_set": "all"
   },
   {
     "branch": true,
@@ -12,7 +13,8 @@
     "acc_time": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for \\textit{true} Branch Constraints",
-    "label": "comb_time_stat_true"
+    "label": "comb_time_stat_true",
+    "data_set": "true"
   },
   {
     "branch": false,
@@ -20,7 +22,8 @@
     "acc_time": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for \\textit{false} Branch Constraints",
-    "label": "comb_time_stat_false"
+    "label": "comb_time_stat_false",
+    "data_set": "false"
   },
   {
     "alphabet": "AB",
@@ -29,7 +32,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Where $|\\Sigma| = 2$",
-    "label": "comb_time_stat_alpha_AB"
+    "label": "comb_time_stat_alpha_AB",
+    "data_set": "alpha_AB"
   },
   {
     "alphabet": "AC",
@@ -38,7 +42,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Where $|\\Sigma| = 3$",
-    "label": "comb_time_stat_alpha_AC"
+    "label": "comb_time_stat_alpha_AC",
+    "data_set": "alpha_AC"
   },
   {
     "alphabet": "AD",
@@ -47,7 +52,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Where $|\\Sigma| = 4$",
-    "label": "comb_time_stat_alpha_AD"
+    "label": "comb_time_stat_alpha_AD",
+    "data_set": "alpha_AD"
   },
   {
     "alphabet": "AE",
@@ -56,7 +62,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Where $|\\Sigma| = 5$",
-    "label": "comb_time_stat_alpha_AE"
+    "label": "comb_time_stat_alpha_AE",
+    "data_set": "alpha_AE"
   },
   {
     "length": 1,
@@ -65,7 +72,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Following an Input String of Length 1",
-    "label": "comb_time_stat_len_1"
+    "label": "comb_time_stat_len_1",
+    "data_set": "len_1"
   },
   {
     "length": 2,
@@ -74,7 +82,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Following an Input String of Length 2",
-    "label": "comb_time_stat_len_2"
+    "label": "comb_time_stat_len_2",
+    "data_set": "len_2"
   },
   {
     "length": 3,
@@ -83,7 +92,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Following an Input String of Length 3",
-    "label": "comb_time_stat_len_3"
+    "label": "comb_time_stat_len_3",
+    "data_set": "len_3"
   },
   {
     "length": 4,
@@ -92,7 +102,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Following an Input String of Length 3",
-    "label": "comb_time_stat_len_4"
+    "label": "comb_time_stat_len_4",
+    "data_set": "len_4"
   },
   {
     "input_type": "Simple",
@@ -101,7 +112,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Following a \\textit{Simple} Input String",
-    "label": "comb_time_stat_simple"
+    "label": "comb_time_stat_simple",
+    "data_set": "simple"
   },
   {
     "input_type": "Even",
@@ -110,7 +122,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Following a \\textit{Even} Unknown Input String",
-    "label": "comb_time_stat_even"
+    "label": "comb_time_stat_even",
+    "data_set": "even"
   },
   {
     "input_type": "Uneven",
@@ -119,7 +132,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Following a \\textit{Uneven} Unknown Input String",
-    "label": "comb_time_stat_uneven"
+    "label": "comb_time_stat_uneven",
+    "data_set": "uneven"
   },
   {
     "operation": "concat",
@@ -128,7 +142,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Including $\\mathtt{concat}$ Operations",
-    "label": "comb_time_stat_incl_concat_all"
+    "label": "comb_time_stat_incl_concat_all",
+    "data_set": "incl_concat_all"
   },
   {
     "operation": "concat",
@@ -138,7 +153,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Including $\\mathtt{concat}(Simple)$ Operations",
-    "label": "comb_time_stat_incl_concat_simple"
+    "label": "comb_time_stat_incl_concat_simple",
+    "data_set": "incl_concat_simple"
   },
   {
     "operation": "concat",
@@ -148,7 +164,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Including $\\mathtt{concat}(Even)$ Operations",
-    "label": "comb_time_stat_incl_concat_even"
+    "label": "comb_time_stat_incl_concat_even",
+    "data_set": "incl_concat_even"
   },
   {
     "operation": "concat",
@@ -158,7 +175,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Including $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "comb_time_stat_incl_concat_uneven"
+    "label": "comb_time_stat_incl_concat_uneven",
+    "data_set": "incl_concat_uneven"
   },
   {
     "operation": "delete",
@@ -167,7 +185,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Including $\\mathtt{delete}$ Operations",
-    "label": "comb_time_stat_incl_delete_all"
+    "label": "comb_time_stat_incl_delete_all",
+    "data_set": "incl_delete_all"
   },
   {
     "operation": "delete",
@@ -177,7 +196,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Including $\\mathtt{delete}(same)$ Operations",
-    "label": "comb_time_stat_incl_delete_same"
+    "label": "comb_time_stat_incl_delete_same",
+    "data_set": "incl_delete_same"
   },
   {
     "operation": "delete",
@@ -187,7 +207,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Including $\\mathtt{delete}(diff)$ Operations",
-    "label": "comb_time_stat_incl_delete_diff"
+    "label": "comb_time_stat_incl_delete_diff",
+    "data_set": "incl_delete_diff"
   },
   {
     "operation": "replace",
@@ -196,7 +217,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Including $\\mathtt{replace}$ Operations",
-    "label": "comb_time_stat_incl_replace_all"
+    "label": "comb_time_stat_incl_replace_all",
+    "data_set": "incl_replace_all"
   },
   {
     "operation": "replace",
@@ -206,7 +228,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Including $\\mathtt{replace}(same)$ Operations",
-    "label": "comb_time_stat_incl_replace_same"
+    "label": "comb_time_stat_incl_replace_same",
+    "data_set": "incl_replace_same"
   },
   {
     "operation": "replace",
@@ -216,7 +239,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Including $\\mathtt{replace}(diff)$ Operations",
-    "label": "comb_time_stat_incl_replace_diff"
+    "label": "comb_time_stat_incl_replace_diff",
+    "data_set": "incl_replace_diff"
   },
   {
     "operation": "reverse",
@@ -225,7 +249,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Including $\\mathtt{reverse}$ Operations",
-    "label": "comb_time_stat_incl_reverse"
+    "label": "comb_time_stat_incl_reverse",
+    "data_set": "incl_reverse"
   },
   {
     "operation": "concat",
@@ -235,7 +260,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Only $\\mathtt{concat}$ Operations",
-    "label": "comb_time_stat_excl_concat_all"
+    "label": "comb_time_stat_excl_concat_all",
+    "data_set": "excl_concat_all"
   },
   {
     "operation": "concat",
@@ -246,7 +272,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Only $\\mathtt{concat}(Simple)$ Operations",
-    "label": "comb_time_stat_excl_concat_simple"
+    "label": "comb_time_stat_excl_concat_simple",
+    "data_set": "excl_concat_simple"
   },
   {
     "operation": "concat",
@@ -257,7 +284,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Only $\\mathtt{concat}(Even)$ Operations",
-    "label": "comb_time_stat_excl_concat_even"
+    "label": "comb_time_stat_excl_concat_even",
+    "data_set": "excl_concat_even"
   },
   {
     "operation": "concat",
@@ -268,7 +296,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Only $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "comb_time_stat_excl_concat_uneven"
+    "label": "comb_time_stat_excl_concat_uneven",
+    "data_set": "excl_concat_uneven"
   },
   {
     "operation": "delete",
@@ -278,7 +307,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Only $\\mathtt{delete}$ Operations",
-    "label": "comb_time_stat_excl_delete_all"
+    "label": "comb_time_stat_excl_delete_all",
+    "data_set": "excl_delete_all"
   },
   {
     "operation": "delete",
@@ -289,7 +319,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Only $\\mathtt{delete}(same)$ Operations",
-    "label": "comb_time_stat_excl_delete_same"
+    "label": "comb_time_stat_excl_delete_same",
+    "data_set": "excl_delete_same"
   },
   {
     "operation": "delete",
@@ -300,7 +331,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Only $\\mathtt{delete}(diff)$ Operations",
-    "label": "comb_time_stat_excl_delete_diff"
+    "label": "comb_time_stat_excl_delete_diff",
+    "data_set": "excl_delete_diff"
   },
   {
     "operation": "replace",
@@ -310,7 +342,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Only $\\mathtt{replace}$ Operations",
-    "label": "comb_time_stat_excl_replace_all"
+    "label": "comb_time_stat_excl_replace_all",
+    "data_set": "excl_replace_all"
   },
   {
     "operation": "replace",
@@ -321,7 +354,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Only $\\mathtt{replace}(same)$ Operations",
-    "label": "comb_time_stat_excl_replace_same"
+    "label": "comb_time_stat_excl_replace_same",
+    "data_set": "excl_replace_same"
   },
   {
     "operation": "replace",
@@ -332,7 +366,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Only $\\mathtt{replace}(diff)$ Operations",
-    "label": "comb_time_stat_excl_replace_diff"
+    "label": "comb_time_stat_excl_replace_diff",
+    "data_set": "excl_replace_diff"
   },
   {
     "operation": "reverse",
@@ -342,7 +377,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Only $\\mathtt{reverse}$ Operations",
-    "label": "comb_time_stat_excl_reverse"
+    "label": "comb_time_stat_excl_reverse",
+    "data_set": "excl_reverse"
   },
   {
     "predicate": "contains",
@@ -351,7 +387,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Ending in $\\mathtt{contains}$ Predicates",
-    "label": "comb_time_stat_contains_all"
+    "label": "comb_time_stat_contains_all",
+    "data_set": "contains_all"
   },
   {
     "predicate": "contains",
@@ -361,7 +398,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Ending in $\\mathtt{contains}(Simple)$ Predicates",
-    "label": "comb_time_stat_contains_simple"
+    "label": "comb_time_stat_contains_simple",
+    "data_set": "contains_simple"
   },
   {
     "predicate": "contains",
@@ -371,7 +409,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Ending in $\\mathtt{contains}(Even)$ Predicates",
-    "label": "comb_time_stat_contains_even"
+    "label": "comb_time_stat_contains_even",
+    "data_set": "contains_even"
   },
   {
     "predicate": "contains",
@@ -381,7 +420,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Ending in $\\mathtt{contains}(Uneven)$ Predicates",
-    "label": "comb_time_stat_contains_uneven"
+    "label": "comb_time_stat_contains_uneven",
+    "data_set": "contains_uneven"
   },
   {
     "predicate": "equals",
@@ -390,7 +430,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Ending in $\\mathtt{equals}$ Predicates",
-    "label": "comb_time_stat_equals_all"
+    "label": "comb_time_stat_equals_all",
+    "data_set": "equals_all"
   },
   {
     "predicate": "equals",
@@ -400,7 +441,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Ending in $\\mathtt{equals}(Simple)$ Predicates",
-    "label": "comb_time_stat_equals_simple"
+    "label": "comb_time_stat_equals_simple",
+    "data_set": "equals_simple"
   },
   {
     "predicate": "equals",
@@ -410,7 +452,8 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Ending in $\\mathtt{equals}(Even)$ Predicates",
-    "label": "comb_time_stat_equals_even"
+    "label": "comb_time_stat_equals_even",
+    "data_set": "equals_even"
   },
   {
     "predicate": "equals",
@@ -420,6 +463,7 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Combined Constraint Solving and Model Counting Time for Constraints Ending in $\\mathtt{equals}(Uneven)$ Predicates",
-    "label": "comb_time_stat_equals_uneven"
+    "label": "comb_time_stat_equals_uneven",
+    "data_set": "equals_uneven"
   }
 ]

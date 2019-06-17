@@ -1,202 +1,225 @@
 [
   {
     "agree": true,
-    "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for All Constraints",
-    "label": "agree_stat_all"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for All Constraints",
+    "label": "agree_stat_all",
+    "data_set": "all"
   },
   {
     "alphabet": "AB",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 2$",
-    "label": "agree_stat_alpha_AB"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 2$",
+    "label": "agree_stat_alpha_AB",
+    "data_set": "alpha_AB"
   },
   {
     "alphabet": "AC",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 3$",
-    "label": "agree_stat_alpha_AC"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 3$",
+    "label": "agree_stat_alpha_AC",
+    "data_set": "alpha_AC"
   },
   {
     "alphabet": "AD",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 4$",
-    "label": "agree_stat_alpha_AD"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 4$",
+    "label": "agree_stat_alpha_AD",
+    "data_set": "alpha_AD"
   },
   {
     "alphabet": "AE",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 5$",
-    "label": "agree_stat_alpha_AE"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Where $|\\Sigma| = 5$",
+    "label": "agree_stat_alpha_AE",
+    "data_set": "alpha_AE"
   },
   {
     "length": 1,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following an Input String of Length 1",
-    "label": "agree_stat_len_1"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Following an Input String of Length 1",
+    "label": "agree_stat_len_1",
+    "data_set": "len_1"
   },
   {
     "length": 2,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following an Input String of Length 2",
-    "label": "agree_stat_len_2"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Following an Input String of Length 2",
+    "label": "agree_stat_len_2",
+    "data_set": "len_2"
   },
   {
     "length": 3,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following an Input String of Length 3",
-    "label": "agree_stat_len_3"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Following an Input String of Length 3",
+    "label": "agree_stat_len_3",
+    "data_set": "len_3"
   },
   {
     "length": 4,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following an Input String of Length 3",
-    "label": "agree_stat_len_4"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Following an Input String of Length 3",
+    "label": "agree_stat_len_4",
+    "data_set": "len_4"
   },
   {
     "input_type": "Simple",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following a \\textit{Simple} Input String",
-    "label": "agree_stat_simple"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Following a \\textit{Simple} Input String",
+    "label": "agree_stat_simple",
+    "data_set": "simple"
   },
   {
     "input_type": "Even",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following a \\textit{Even} Unknown Input String",
-    "label": "agree_stat_even"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Following a \\textit{Even} Unknown Input String",
+    "label": "agree_stat_even",
+    "data_set": "even"
   },
   {
     "input_type": "Uneven",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Following a \\textit{Uneven} Unknown Input String",
-    "label": "agree_stat_uneven"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Following a \\textit{Uneven} Unknown Input String",
+    "label": "agree_stat_uneven",
+    "data_set": "uneven"
   },
   {
     "operation": "concat",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}$ Operations",
-    "label": "agree_stat_incl_concat_all"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}$ Operations",
+    "label": "agree_stat_incl_concat_all",
+    "data_set": "incl_concat_all"
   },
   {
     "operation": "concat",
     "op_arg_type": "Simple",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}(Simple)$ Operations",
-    "label": "agree_stat_incl_concat_simple"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}(Simple)$ Operations",
+    "label": "agree_stat_incl_concat_simple",
+    "data_set": "incl_concat_simple"
   },
   {
     "operation": "concat",
     "op_arg_type": "Even",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}(Even)$ Operations",
-    "label": "agree_stat_incl_concat_even"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}(Even)$ Operations",
+    "label": "agree_stat_incl_concat_even",
+    "data_set": "incl_concat_even"
   },
   {
     "operation": "concat",
     "op_arg_type": "Uneven",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "agree_stat_incl_concat_uneven"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Including $\\mathtt{concat}(Uneven)$ Operations",
+    "label": "agree_stat_incl_concat_uneven",
+    "data_set": "incl_concat_uneven"
   },
   {
     "operation": "delete",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{delete}$ Operations",
-    "label": "agree_stat_incl_delete_all"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Including $\\mathtt{delete}$ Operations",
+    "label": "agree_stat_incl_delete_all",
+    "data_set": "incl_delete_all"
   },
   {
     "operation": "delete",
     "op_arg_type": "same",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{delete}(same)$ Operations",
-    "label": "agree_stat_incl_delete_same"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Including $\\mathtt{delete}(same)$ Operations",
+    "label": "agree_stat_incl_delete_same",
+    "data_set": "incl_delete_same"
   },
   {
     "operation": "delete",
     "op_arg_type": "diff",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{delete}(diff)$ Operations",
-    "label": "agree_stat_incl_delete_diff"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Including $\\mathtt{delete}(diff)$ Operations",
+    "label": "agree_stat_incl_delete_diff",
+    "data_set": "incl_delete_diff"
   },
   {
     "operation": "replace",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{replace}$ Operations",
-    "label": "agree_stat_incl_replace_all"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Including $\\mathtt{replace}$ Operations",
+    "label": "agree_stat_incl_replace_all",
+    "data_set": "incl_replace_all"
   },
   {
     "operation": "replace",
     "op_arg_type": "same",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{replace}(same)$ Operations",
-    "label": "agree_stat_incl_replace_same"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Including $\\mathtt{replace}(same)$ Operations",
+    "label": "agree_stat_incl_replace_same",
+    "data_set": "incl_replace_same"
   },
   {
     "operation": "replace",
     "op_arg_type": "diff",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{replace}(diff)$ Operations",
-    "label": "agree_stat_incl_replace_diff"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Including $\\mathtt{replace}(diff)$ Operations",
+    "label": "agree_stat_incl_replace_diff",
+    "data_set": "incl_replace_diff"
   },
   {
     "operation": "reverse",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Including $\\mathtt{reverse}$ Operations",
-    "label": "agree_stat_incl_reverse"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Including $\\mathtt{reverse}$ Operations",
+    "label": "agree_stat_incl_reverse",
+    "data_set": "incl_reverse"
   },
   {
     "operation": "concat",
     "exclusive_op": true,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}$ Operations",
-    "label": "agree_stat_excl_concat_all"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}$ Operations",
+    "label": "agree_stat_excl_concat_all",
+    "data_set": "excl_concat_all"
   },
   {
     "operation": "concat",
@@ -204,9 +227,10 @@
     "exclusive_op": true,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}(Simple)$ Operations",
-    "label": "agree_stat_excl_concat_simple"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}(Simple)$ Operations",
+    "label": "agree_stat_excl_concat_simple",
+    "data_set": "excl_concat_simple"
   },
   {
     "operation": "concat",
@@ -214,9 +238,10 @@
     "exclusive_op": true,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}(Even)$ Operations",
-    "label": "agree_stat_excl_concat_even"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}(Even)$ Operations",
+    "label": "agree_stat_excl_concat_even",
+    "data_set": "excl_concat_even"
   },
   {
     "operation": "concat",
@@ -224,18 +249,20 @@
     "exclusive_op": true,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "agree_stat_excl_concat_uneven"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Only $\\mathtt{concat}(Uneven)$ Operations",
+    "label": "agree_stat_excl_concat_uneven",
+    "data_set": "excl_concat_uneven"
   },
   {
     "operation": "delete",
     "exclusive_op": true,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{delete}$ Operations",
-    "label": "agree_stat_excl_delete_all"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Only $\\mathtt{delete}$ Operations",
+    "label": "agree_stat_excl_delete_all",
+    "data_set": "excl_delete_all"
   },
   {
     "operation": "delete",
@@ -243,9 +270,10 @@
     "exclusive_op": true,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{delete}(same)$ Operations",
-    "label": "agree_stat_excl_delete_same"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Only $\\mathtt{delete}(same)$ Operations",
+    "label": "agree_stat_excl_delete_same",
+    "data_set": "excl_delete_same"
   },
   {
     "operation": "delete",
@@ -253,18 +281,20 @@
     "exclusive_op": true,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{delete}(diff)$ Operations",
-    "label": "agree_stat_excl_delete_diff"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Only $\\mathtt{delete}(diff)$ Operations",
+    "label": "agree_stat_excl_delete_diff",
+    "data_set": "excl_delete_diff"
   },
   {
     "operation": "replace",
     "exclusive_op": true,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{replace}$ Operations",
-    "label": "agree_stat_excl_replace_all"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Only $\\mathtt{replace}$ Operations",
+    "label": "agree_stat_excl_replace_all",
+    "data_set": "excl_replace_all"
   },
   {
     "operation": "replace",
@@ -272,9 +302,10 @@
     "exclusive_op": true,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{replace}(same)$ Operations",
-    "label": "agree_stat_excl_replace_same"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Only $\\mathtt{replace}(same)$ Operations",
+    "label": "agree_stat_excl_replace_same",
+    "data_set": "excl_replace_same"
   },
   {
     "operation": "replace",
@@ -282,87 +313,97 @@
     "exclusive_op": true,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{replace}(diff)$ Operations",
-    "label": "agree_stat_excl_replace_diff"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Only $\\mathtt{replace}(diff)$ Operations",
+    "label": "agree_stat_excl_replace_diff",
+    "data_set": "excl_replace_diff"
   },
   {
     "operation": "reverse",
     "exclusive_op": true,
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Only $\\mathtt{reverse}$ Operations",
-    "label": "agree_stat_excl_reverse"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Only $\\mathtt{reverse}$ Operations",
+    "label": "agree_stat_excl_reverse",
+    "data_set": "excl_reverse"
   },
   {
     "predicate": "contains",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}$ Predicates",
-    "label": "agree_stat_contains_all"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}$ Predicates",
+    "label": "agree_stat_contains_all",
+    "data_set": "contains_all"
   },
   {
     "predicate": "contains",
     "pred_arg_type": "Simple",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}(Simple)$ Predicates",
-    "label": "agree_stat_contains_simple"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}(Simple)$ Predicates",
+    "label": "agree_stat_contains_simple",
+    "data_set": "contains_simple"
   },
   {
     "predicate": "contains",
     "pred_arg_type": "Even",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}(Even)$ Predicates",
-    "label": "agree_stat_contains_even"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}(Even)$ Predicates",
+    "label": "agree_stat_contains_even",
+    "data_set": "contains_even"
   },
   {
     "predicate": "contains",
     "pred_arg_type": "Uneven",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}(Uneven)$ Predicates",
-    "label": "agree_stat_contains_uneven"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Ending in $\\mathtt{contains}(Uneven)$ Predicates",
+    "label": "agree_stat_contains_uneven",
+    "data_set": "contains_uneven"
   },
   {
     "predicate": "equals",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}$ Predicates",
-    "label": "agree_stat_equals_all"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}$ Predicates",
+    "label": "agree_stat_equals_all",
+    "data_set": "equals_all"
   },
   {
     "predicate": "equals",
     "pred_arg_type": "Simple",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}(Simple)$ Predicates",
-    "label": "agree_stat_equals_simple"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}(Simple)$ Predicates",
+    "label": "agree_stat_equals_simple",
+    "data_set": "equals_simple"
   },
   {
     "predicate": "equals",
     "pred_arg_type": "Even",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}(Even)$ Predicates",
-    "label": "agree_stat_equals_even"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}(Even)$ Predicates",
+    "label": "agree_stat_equals_even",
+    "data_set": "equals_even"
   },
   {
     "predicate": "equals",
     "pred_arg_type": "Uneven",
     "agree": true,
     "ind_var": true,
-    "chi_test": true,
-    "caption": "$\\chi^2$-test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}(Uneven)$ Predicates",
-    "label": "agree_stat_equals_uneven"
+    "t_test": true,
+    "caption": "Fisher's Exact Test of Branch Choice Agreement for Constraints Ending in $\\mathtt{equals}(Uneven)$ Predicates",
+    "label": "agree_stat_equals_uneven",
+    "data_set": "equals_uneven"
   }
 ]

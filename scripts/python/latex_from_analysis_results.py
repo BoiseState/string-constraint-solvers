@@ -300,36 +300,11 @@ def read_csv_data(file_path):
                                 quotechar='|',
                                 lineterminator='\n')
         for row in reader:
+            normalize_row(row)
             rows.append(row)
 
     # return rows data
     return rows
-
-
-def get_mc_data_from_collected_results():
-    # initialize data lists
-    const_count_data = list()
-    const_time_data = list()
-
-    # get count data
-    file_pattern = 'const-count-' + GLOB.get('Settings').file_pattern
-    for f in os.listdir(data_dir):
-        test_path = os.path.join(data_dir, f)
-        if os.path.isfile(test_path) and fnmatch.fnmatch(f, file_pattern):
-            const_count_data.extend(read_csv_data(test_path))
-
-    # get count data
-    file_pattern = 'const-time' + GLOB.get('Settings').file_pattern
-    for f in os.listdir(data_dir):
-        test_path = os.path.join(data_dir, f)
-        if os.path.isfile(test_path) and fnmatch.fnmatch(f, file_pattern):
-            const_time_data.extend(read_csv_data(test_path))
-
-    # merge data from both input files
-    for i in range(len(const_count_data)):
-
-
-    return return_data
 
 
 def read_data_files(file_pattern):
@@ -348,6 +323,10 @@ def read_data_files(file_pattern):
 def get_entries():
     GLOB['entries'] = dict()
 
+    # def filter_entries(entry):
+    #     return ('alphabet' not in entry or entry.get('alphabet') != 'AE') \
+    #            and ('length' not in entry or entry.get('length') < 4)
+
     for e in GLOB['Settings'].entries:
         entry_file_path = os.path.join(project_dir,
                                        'data',
@@ -355,6 +334,7 @@ def get_entries():
                                        '{0}-entries.json'.format(e))
         with open(entry_file_path, 'r') as entry_file:
             entries = json.load(entry_file)
+            # entries = filter(filter_entries, entries)
             GLOB['entries'][e] = entries
 
 
@@ -381,22 +361,9 @@ def normalize_row(row):
 
 
 def get_data():
-    # initialize data lists as none
-    mc_data = None
-    op_data = None
-
-    # check if mc data file exists
-    mc_data_file = os.path.join(project_dir, 'data', 'mc_data.csv')
-    if os.path.isfile(mc_data_file):
-        mc_data = read_csv_data(mc_data_file)
-    else:
-    # get mc data from collected result files
-    mc_data = get_mc_data_from collected_results()
-
-    # check if mc data file exists
-    op_data_file = os.path.join(project_dir, 'data', 'mc_data.csv')
-
-    # get operation data from collected result files
+    # get lists of data files
+    mc_data = read_data_files('mc-' + GLOB['Settings'].file_pattern)
+    mc_time_data = read_data_files('mc-time-' + GLOB['Settings'].file_pattern)
     op_time_data = read_data_files('op-time-' + GLOB['Settings'].file_pattern)
 
     # return data
@@ -1969,25 +1936,26 @@ def perform_analysis(mc_rows, mc_time_rows, op_time_rows):
     return tables, files
 
 
-def output_results(results):
-    pass
+def output_results(tables, files):
+    output_plot_files(files)
+    output_latex(tables, files)
 
 
 def main(arguments):
     # set options from args
     set_options(arguments)
 
-    # get data
+    # read data
     mc_data, mc_time_data, op_time_data = get_data()
 
     # get analysis entries
     get_entries()
 
     # perform analysis
-    results = perform_analysis(mc_data, mc_time_data, op_time_data)
+    tables, files = perform_analysis(mc_data, mc_time_data, op_time_data)
 
     # output results
-    output_results(results)
+    output_results(tables, files)
 
 
 if __name__ == '__main__':

@@ -32,61 +32,7 @@ GLOB = dict()
 GLOB['Settings'] = None
 GLOB['uneven-ids'] = set()
 
-VERIFICATION_MATRICIES = {
-    'concat': (('-', '-', '>', '>', '='),
-               ('-', '-', '>', '>', '-'),
-               ('<', '<', '-', '=', '<'),
-               ('<', '<', '=', '-', '<'),
-               ('=', '-', '>', '>', '-')),
-    'delete': (('-', '>', '>', '>', '='),
-               ('<', '-', '=', '<', '<'),
-               ('<', '=', '-', '<', '<'),
-               ('<', '>', '>', '-', '<'),
-               ('=', '>', '>', '>', '-')),
-    'insert': (('-', '-', '>', '>', '='),
-               ('-', '-', '>', '>', '-'),
-               ('<', '<', '-', '=', '<'),
-               ('<', '<', '=', '-', '<'),
-               ('=', '-', '>', '>', '-')),
-    'injective': (('-', '=', '=', '=', '='),
-                  ('=', '-', '=', '=', '='),
-                  ('=', '=', '-', '=', '='),
-                  ('=', '=', '=', '-', '='),
-                  ('=', '=', '=', '=', '-')),
-    'replace': (('-', '>', '>', '>', '='),
-                ('<', '-', '=', '=', '<'),
-                ('<', '=', '-', '=', '<'),
-                ('<', '=', '=', '-', '<'),
-                ('=', '>', '>', '>', '-')),
-    'setCharAt': (('-', '>', '>', '>', '='),
-                  ('<', '-', '=', '=', '<'),
-                  ('<', '=', '-', '=', '<'),
-                  ('<', '=', '=', '-', '<'),
-                  ('=', '>', '>', '>', '-')),
-    'setLength': (('-', '>', '>', '>', '='),
-                  ('<', '-', '=', '=', '<'),
-                  ('<', '=', '-', '<', '<'),
-                  ('<', '=', '>', '-', '<'),
-                  ('=', '>', '>', '>', '-')),
-    'substring': (('-', '-', '>', '>', '='),
-                  ('-', '-', '>', '-', '-'),
-                  ('<', '<', '-', '<', '<'),
-                  ('<', '-', '>', '-', '<'),
-                  ('=', '-', '>', '>', '-')),
-    'trim': (('-', '>', '>', '>', '='),
-             ('<', '-', '=', '<', '<'),
-             ('<', '=', '-', '<', '<'),
-             ('<', '>', '>', '-', '<'),
-             ('=', '>', '>', '>', '-'))
-}
-
-SOLVER_ORDER = {
-    'concrete': 1,
-    'unbounded': 2,
-    'bounded': 3,
-    'aggregate': 4,
-    'weighted': 5
-}
+SOLVER_ORDER = ('concrete', 'unbounded', 'bounded', 'aggregate', 'weighted')
 
 OP_GROUPS = {
     'Injective': [
@@ -248,9 +194,9 @@ def set_options(arguments):
 
 
 def get_solver_key(x):
-    if x in SOLVER_ORDER.keys():
-        return SOLVER_ORDER[x]
-    else:
+    try:
+        return SOLVER_ORDER.index(x)
+    except ValueError:
         return 6
 
 
@@ -731,10 +677,10 @@ def gather_results(f_name, file_set):
     csv_rows = dict()
 
     # output mc data
-    csv_rows['mc'] = produce_mc_csv_data(data_map, solvers)
+    csv_rows['const-count'] = produce_mc_csv_data(data_map, solvers)
 
     # output mc time data
-    csv_rows['mc-time'] = produce_mc_time_csv_data(data_map, solvers)
+    csv_rows['const-time'] = produce_mc_time_csv_data(data_map, solvers)
 
     # output time data
     csv_rows['op-time'] = produce_op_time_csv_data(data_map, solvers)
@@ -793,11 +739,11 @@ def output_csv_files(csv_data, solvers):
         mc_time_rows = list()
         op_time_rows = list()
         for f_name in csv_data.keys():
-            for row in csv_data.get(f_name).get('mc'):
+            for row in csv_data.get(f_name).get('const-count'):
                 row['File'] = f_name
                 mc_rows.append(row)
 
-            for row in csv_data.get(f_name).get('mc-time'):
+            for row in csv_data.get(f_name).get('const-time'):
                 row['File'] = f_name
                 mc_time_rows.append(row)
 
@@ -806,17 +752,18 @@ def output_csv_files(csv_data, solvers):
                 op_time_rows.append(row)
 
         f_name = next(iter(csv_data.keys()))
-        output_csv_file(mc_rows, mc_field_names, 'mc-' + f_name)
-        output_csv_file(mc_time_rows, mc_time_field_names, 'mc-time-' + f_name)
+        output_csv_file(mc_rows, mc_field_names, 'const-count-' + f_name)
+        output_csv_file(mc_time_rows, mc_time_field_names,
+                        'const-time-' + f_name)
         output_csv_file(op_time_rows, op_time_field_names, 'op-time-' + f_name)
     else:
         for f_name in csv_data.keys():
-            mc_rows = csv_data.get(f_name).get('mc')
-            mc_time_rows = csv_data.get(f_name).get('mc-time')
+            mc_rows = csv_data.get(f_name).get('const-count')
+            mc_time_rows = csv_data.get(f_name).get('const-time')
             op_time_rows = csv_data.get(f_name).get('op-time')
-            output_csv_file(mc_rows, mc_field_names, 'mc-' + f_name)
+            output_csv_file(mc_rows, mc_field_names, 'const-count-' + f_name)
             output_csv_file(mc_time_rows, mc_time_field_names,
-                            'mc-time-' + f_name)
+                            'const-time-' + f_name)
             output_csv_file(op_time_rows, op_time_field_names,
                             'op-time-' + f_name)
 

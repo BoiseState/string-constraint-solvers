@@ -1,113 +1,136 @@
 [
   {
-    "Selection": "All"
+    "Selection": "All",
+    "data_set": "all"
   },
   {
     "is_blank": true
   },
   {
     "alphabet": "AB",
-    "Selection": "$|\\Sigma| = 2$"
+    "Selection": "$|\\Sigma| = 2$",
+    "data_set": "alpha_AB"
   },
   {
     "alphabet": "AC",
-    "Selection": "$|\\Sigma| = 3$"
+    "Selection": "$|\\Sigma| = 3$",
+    "data_set": "alpha_AC"
   },
   {
     "alphabet": "AD",
-    "Selection": "$|\\Sigma| = 4$"
+    "Selection": "$|\\Sigma| = 4$",
+    "data_set": "alpha_AD"
   },
   {
     "alphabet": "AE",
-    "Selection": "$|\\Sigma| = 5$"
+    "Selection": "$|\\Sigma| = 5$",
+    "data_set": "alpha_AE"
   },
   {
     "is_blank": true
   },
   {
     "length": 1,
-    "Selection": "Length 1"
+    "Selection": "Length 1",
+    "data_set": "len_1"
   },
   {
     "length": 2,
-    "Selection": "Length 2"
+    "Selection": "Length 2",
+    "data_set": "len_2"
   },
   {
     "length": 3,
-    "Selection": "Length 3"
+    "Selection": "Length 3",
+    "data_set": "len_3"
   },
   {
     "length": 4,
-    "Selection": "Length 4"
+    "Selection": "Length 4",
+    "data_set": "len_4"
   },
   {
     "is_blank": true
   },
   {
     "input_type": "Simple",
-    "Selection": "\\textit{Simple}"
+    "Selection": "\\textit{Simple}",
+    "data_set": "simple"
   },
   {
     "input_type": "Even",
-    "Selection": "\\textit{Even}"
+    "Selection": "\\textit{Even}",
+    "data_set": "even"
   },
   {
     "input_type": "Uneven",
-    "Selection": "\\textit{Uneven}"
+    "Selection": "\\textit{Uneven}",
+    "data_set": "uneven"
   },
   {
     "is_blank": true
   },
   {
     "operation": "concat",
-    "Selection": "Includes $\\mathtt{concat}$"
+    "Selection": "Includes $\\mathtt{concat}$",
+    "data_set": "incl_concat_all"
   },
   {
     "operation": "concat",
     "op_arg_type": "Simple",
-    "Selection": "Includes $\\mathtt{concat}(Simple)$"
+    "Selection": "Includes $\\mathtt{concat}(Simple)$",
+    "data_set": "incl_concat_simple"
   },
   {
     "operation": "concat",
     "op_arg_type": "Even",
-    "Selection": "Includes $\\mathtt{concat}(Even)$"
+    "Selection": "Includes $\\mathtt{concat}(Even)$",
+    "data_set": "incl_concat_even"
   },
   {
     "operation": "concat",
     "op_arg_type": "Uneven",
-    "Selection": "Includes $\\mathtt{concat}(Uneven)$"
+    "Selection": "Includes $\\mathtt{concat}(Uneven)$",
+    "data_set": "incl_concat_uneven"
   },
   {
     "operation": "delete",
-    "Selection": "Includes $\\mathtt{delete}$"
+    "Selection": "Includes $\\mathtt{delete}$",
+    "data_set": "incl_delete_all"
   },
   {
     "operation": "delete",
     "op_arg_type": "same",
-    "Selection": "Includes $\\mathtt{delete}(same)$"
+    "Selection": "Includes $\\mathtt{delete}(same)$",
+    "data_set": "incl_delete_same"
   },
   {
     "operation": "delete",
     "op_arg_type": "diff",
-    "Selection": "Includes $\\mathtt{delete}(diff)$"
+    "Selection": "Includes $\\mathtt{delete}(diff)$",
+    "data_set": "incl_delete_diff"
   },
   {
     "operation": "replace",
-    "Selection": "Includes $\\mathtt{replace}$"
+    "Selection": "Includes $\\mathtt{replace}$",
+    "data_set": "incl_replace_all"
   },
   {
     "operation": "replace",
     "op_arg_type": "same",
-    "Selection": "Includes $\\mathtt{replace}(same)$"
+    "Selection": "Includes $\\mathtt{replace}(same)$",
+    "data_set": "incl_replace_same"
   },
   {
     "operation": "replace",
     "op_arg_type": "diff",
-    "Selection": "Includes $\\mathtt{replace}(diff)$"
+    "Selection": "Includes $\\mathtt{replace}(diff)$",
+    "data_set": "incl_replace_diff"
   },
   {
     "operation": "reverse",
-    "Selection": "Includes $\\mathtt{reverse}$"
+    "Selection": "Includes $\\mathtt{reverse}$",
+    "data_set": "incl_reverse"
   },
   {
     "is_blank": true
@@ -115,104 +138,123 @@
   {
     "operation": "concat",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{concat}$"
+    "Selection": "Only $\\mathtt{concat}$",
+    "data_set": "excl_concat_all"
   },
   {
     "operation": "concat",
     "op_arg_type": "Simple",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{concat}(Simple)$"
+    "Selection": "Only $\\mathtt{concat}(Simple)$",
+    "data_set": "excl_concat_simple"
   },
   {
     "operation": "concat",
     "op_arg_type": "Even",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{concat}(Even)$"
+    "Selection": "Only $\\mathtt{concat}(Even)$",
+    "data_set": "excl_concat_even"
   },
   {
     "operation": "concat",
     "op_arg_type": "Uneven",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{concat}(Uneven)$"
+    "Selection": "Only $\\mathtt{concat}(Uneven)$",
+    "data_set": "excl_concat_uneven"
   },
   {
     "operation": "delete",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{delete}$"
+    "Selection": "Only $\\mathtt{delete}$",
+    "data_set": "excl_delete_all"
   },
   {
     "operation": "delete",
     "op_arg_type": "same",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{delete}(same)$"
+    "Selection": "Only $\\mathtt{delete}(same)$",
+    "data_set": "excl_delete_same"
   },
   {
     "operation": "delete",
     "op_arg_type": "diff",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{delete}(diff)$"
+    "Selection": "Only $\\mathtt{delete}(diff)$",
+    "data_set": "excl_delete_diff"
   },
   {
     "operation": "replace",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{replace}$"
+    "Selection": "Only $\\mathtt{replace}$",
+    "data_set": "excl_replace_all"
   },
   {
     "operation": "replace",
     "op_arg_type": "same",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{replace}(same)$"
+    "Selection": "Only $\\mathtt{replace}(same)$",
+    "data_set": "excl_replace_same"
   },
   {
     "operation": "replace",
     "op_arg_type": "diff",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{replace}(diff)$"
+    "Selection": "Only $\\mathtt{replace}(diff)$",
+    "data_set": "excl_replace_diff"
   },
   {
     "operation": "reverse",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{reverse}$"
+    "Selection": "Only $\\mathtt{reverse}$",
+    "data_set": "excl_reverse"
   },
   {
     "is_blank": true
   },
   {
     "predicate": "contains",
-    "Selection": "$\\mathtt{contains}$"
+    "Selection": "$\\mathtt{contains}$",
+    "data_set": "contains_all"
   },
   {
     "predicate": "contains",
     "pred_arg_type": "Simple",
-    "Selection": "$\\mathtt{contains}(Simple)$"
+    "Selection": "$\\mathtt{contains}(Simple)$",
+    "data_set": "contains_simple"
   },
   {
     "predicate": "contains",
     "pred_arg_type": "Even",
-    "Selection": "$\\mathtt{contains}(Even)$"
+    "Selection": "$\\mathtt{contains}(Even)$",
+    "data_set": "contains_even"
   },
   {
     "predicate": "contains",
     "pred_arg_type": "Uneven",
-    "Selection": "$\\mathtt{contains}(Uneven)$"
+    "Selection": "$\\mathtt{contains}(Uneven)$",
+    "data_set": "contains_uneven"
   },
   {
     "predicate": "equals",
-    "Selection": "$\\mathtt{equals}$"
+    "Selection": "$\\mathtt{equals}$",
+    "data_set": "equals_all"
   },
   {
     "predicate": "equals",
     "pred_arg_type": "Simple",
-    "Selection": "$\\mathtt{equals}(Simple)$"
+    "Selection": "$\\mathtt{equals}(Simple)$",
+    "data_set": "equals_simple"
   },
   {
     "predicate": "equals",
     "pred_arg_type": "Even",
-    "Selection": "$\\mathtt{equals}(Even)$"
+    "Selection": "$\\mathtt{equals}(Even)$",
+    "data_set": "equals_even"
   },
   {
     "predicate": "equals",
     "pred_arg_type": "Uneven",
-    "Selection": "$\\mathtt{equals}(Uneven)$"
+    "Selection": "$\\mathtt{equals}(Uneven)$",
+    "data_set": "equals_uneven"
   }
 ]

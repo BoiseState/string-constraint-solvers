@@ -1,296 +1,340 @@
 [
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "Selection": "All",
-    "label": "per_diff_vs_mc_time_all"
+    "label": "per_diff_vs_mc_time_all",
+    "data_set": "all"
   },
   {
     "branch": true,
-    "mc_time_branch": "true",
+    "mc_time": true,
     "Selection": "\\textit{true} Branches",
-    "label": "per_diff_vs_mc_time_true"
+    "label": "per_diff_vs_mc_time_true",
+    "data_set": "true"
   },
   {
     "branch": false,
-    "mc_time_branch": "false",
+    "mc_time": true,
     "Selection": "\\textit{false} Branches",
-    "label": "per_diff_vs_mc_time_false"
+    "label": "per_diff_vs_mc_time_false",
+    "data_set": "false"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "alphabet": "AB",
     "Selection": "$|\\Sigma| = 2$",
-    "label": "per_diff_vs_mc_time_alpha_AB"
+    "label": "per_diff_vs_mc_time_alpha_AB",
+    "data_set": "alpha_AB"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "alphabet": "AC",
     "Selection": "$|\\Sigma| = 3$",
-    "label": "per_diff_vs_mc_time_alpha_AC"
+    "label": "per_diff_vs_mc_time_alpha_AC",
+    "data_set": "alpha_AC"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "alphabet": "AD",
     "Selection": "$|\\Sigma| = 4$",
-    "label": "per_diff_vs_mc_time_alpha_AD"
+    "label": "per_diff_vs_mc_time_alpha_AD",
+    "data_set": "alpha_AD"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "alphabet": "AE",
     "Selection": "$|\\Sigma| = 5$",
-    "label": "per_diff_vs_mc_time_alpha_AE"
+    "label": "per_diff_vs_mc_time_alpha_AE",
+    "data_set": "alpha_AE"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "length": 1,
     "Selection": "Length 1",
-    "label": "per_diff_vs_mc_time_len_1"
+    "label": "per_diff_vs_mc_time_len_1",
+    "data_set": "len_1"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "length": 2,
     "Selection": "Length 2",
-    "label": "per_diff_vs_mc_time_len_2"
+    "label": "per_diff_vs_mc_time_len_2",
+    "data_set": "len_2"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "length": 3,
     "Selection": "Length 3",
-    "label": "per_diff_vs_mc_time_len_3"
+    "label": "per_diff_vs_mc_time_len_3",
+    "data_set": "len_3"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "length": 4,
     "Selection": "Length 4",
-    "label": "per_diff_vs_mc_time_len_4"
+    "label": "per_diff_vs_mc_time_len_4",
+    "data_set": "len_4"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "input_type": "Simple",
     "Selection": "\\textit{Simple}",
-    "label": "per_diff_vs_mc_time_simple"
+    "label": "per_diff_vs_mc_time_simple",
+    "data_set": "simple"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "input_type": "Even",
     "Selection": "\\textit{Even}",
-    "label": "per_diff_vs_mc_time_even"
+    "label": "per_diff_vs_mc_time_even",
+    "data_set": "even"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "input_type": "Uneven",
     "Selection": "\\textit{Uneven}",
-    "label": "per_diff_vs_mc_time_uneven"
+    "label": "per_diff_vs_mc_time_uneven",
+    "data_set": "uneven"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "concat",
     "Selection": "Includes $\\mathtt{concat}$",
-    "label": "per_diff_vs_mc_time_incl_concat_all"
+    "label": "per_diff_vs_mc_time_incl_concat_all",
+    "data_set": "incl_concat_all"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "concat",
     "op_arg_type": "Simple",
     "Selection": "Includes $\\mathtt{concat}(Simple)$",
-    "label": "per_diff_vs_mc_time_incl_concat_simple"
+    "label": "per_diff_vs_mc_time_incl_concat_simple",
+    "data_set": "incl_concat_simple"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "concat",
     "op_arg_type": "Even",
     "Selection": "Includes $\\mathtt{concat}(Even)$",
-    "label": "per_diff_vs_mc_time_incl_concat_even"
+    "label": "per_diff_vs_mc_time_incl_concat_even",
+    "data_set": "incl_concat_even"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "concat",
     "op_arg_type": "Uneven",
     "Selection": "Includes $\\mathtt{concat}(Uneven)$",
-    "label": "per_diff_vs_mc_time_incl_concat_uneven"
+    "label": "per_diff_vs_mc_time_incl_concat_uneven",
+    "data_set": "incl_concat_uneven"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "delete",
     "Selection": "Includes $\\mathtt{delete}$",
-    "label": "per_diff_vs_mc_time_incl_delete_all"
+    "label": "per_diff_vs_mc_time_incl_delete_all",
+    "data_set": "incl_delete_all"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "delete",
     "op_arg_type": "same",
     "Selection": "Includes $\\mathtt{delete}(same)$",
-    "label": "per_diff_vs_mc_time_incl_delete_same"
+    "label": "per_diff_vs_mc_time_incl_delete_same",
+    "data_set": "incl_delete_same"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "delete",
     "op_arg_type": "diff",
     "Selection": "Includes $\\mathtt{delete}(diff)$",
-    "label": "per_diff_vs_mc_time_incl_delete_diff"
+    "label": "per_diff_vs_mc_time_incl_delete_diff",
+    "data_set": "incl_delete_diff"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "replace",
     "Selection": "Includes $\\mathtt{replace}$",
-    "label": "per_diff_vs_mc_time_incl_replace_all"
+    "label": "per_diff_vs_mc_time_incl_replace_all",
+    "data_set": "incl_replace_all"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "replace",
     "op_arg_type": "same",
     "Selection": "Includes $\\mathtt{replace}(same)$",
-    "label": "per_diff_vs_mc_time_incl_replace_same"
+    "label": "per_diff_vs_mc_time_incl_replace_same",
+    "data_set": "incl_replace_same"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "replace",
     "op_arg_type": "diff",
     "Selection": "Includes $\\mathtt{replace}(diff)$",
-    "label": "per_diff_vs_mc_time_incl_replace_diff"
+    "label": "per_diff_vs_mc_time_incl_replace_diff",
+    "data_set": "incl_replace_diff"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "reverse",
     "Selection": "Includes $\\mathtt{reverse}$",
-    "label": "per_diff_vs_mc_time_incl_reverse"
+    "label": "per_diff_vs_mc_time_incl_reverse",
+    "data_set": "incl_reverse"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "concat",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{concat}$",
-    "label": "per_diff_vs_mc_time_excl_concat_all"
+    "label": "per_diff_vs_mc_time_excl_concat_all",
+    "data_set": "excl_concat_all"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "concat",
     "op_arg_type": "Simple",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{concat}(Simple)$",
-    "label": "per_diff_vs_mc_time_excl_concat_simple"
+    "label": "per_diff_vs_mc_time_excl_concat_simple",
+    "data_set": "excl_concat_simple"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "concat",
     "op_arg_type": "Even",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{concat}(Even)$",
-    "label": "per_diff_vs_mc_time_excl_concat_even"
+    "label": "per_diff_vs_mc_time_excl_concat_even",
+    "data_set": "excl_concat_even"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "concat",
     "op_arg_type": "Uneven",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{concat}(Uneven)$",
-    "label": "per_diff_vs_mc_time_excl_concat_uneven"
+    "label": "per_diff_vs_mc_time_excl_concat_uneven",
+    "data_set": "excl_concat_uneven"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "delete",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{delete}$",
-    "label": "per_diff_vs_mc_time_excl_delete_all"
+    "label": "per_diff_vs_mc_time_excl_delete_all",
+    "data_set": "excl_delete_all"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "delete",
     "op_arg_type": "same",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{delete}(same)$",
-    "label": "per_diff_vs_mc_time_excl_delete_same"
+    "label": "per_diff_vs_mc_time_excl_delete_same",
+    "data_set": "excl_delete_same"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "delete",
     "op_arg_type": "diff",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{delete}(diff)$",
-    "label": "per_diff_vs_mc_time_excl_delete_diff"
+    "label": "per_diff_vs_mc_time_excl_delete_diff",
+    "data_set": "excl_delete_diff"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "replace",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{replace}$",
-    "label": "per_diff_vs_mc_time_excl_replace_all"
+    "label": "per_diff_vs_mc_time_excl_replace_all",
+    "data_set": "excl_replace_all"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "replace",
     "op_arg_type": "same",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{replace}(same)$",
-    "label": "per_diff_vs_mc_time_excl_replace_same"
+    "label": "per_diff_vs_mc_time_excl_replace_same",
+    "data_set": "excl_replace_same"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "replace",
     "op_arg_type": "diff",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{replace}(diff)$",
-    "label": "per_diff_vs_mc_time_excl_replace_diff"
+    "label": "per_diff_vs_mc_time_excl_replace_diff",
+    "data_set": "excl_replace_diff"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "operation": "reverse",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{reverse}$",
-    "label": "per_diff_vs_mc_time_excl_reverse"
+    "label": "per_diff_vs_mc_time_excl_reverse",
+    "data_set": "excl_reverse"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "predicate": "contains",
     "Selection": "$\\mathtt{contains}$",
-    "label": "per_diff_vs_mc_time_contains_all"
+    "label": "per_diff_vs_mc_time_contains_all",
+    "data_set": "contains_all"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "predicate": "contains",
     "pred_arg_type": "Simple",
     "Selection": "$\\mathtt{contains}(Simple)$",
-    "label": "per_diff_vs_mc_time_contains_simple"
+    "label": "per_diff_vs_mc_time_contains_simple",
+    "data_set": "contains_simple"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "predicate": "contains",
     "pred_arg_type": "Even",
     "Selection": "$\\mathtt{contains}(Even)$",
-    "label": "per_diff_vs_mc_time_contains_even"
+    "label": "per_diff_vs_mc_time_contains_even",
+    "data_set": "contains_even"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "predicate": "contains",
     "pred_arg_type": "Uneven",
     "Selection": "$\\mathtt{contains}(Uneven)$",
-    "label": "per_diff_vs_mc_time_contains_uneven"
+    "label": "per_diff_vs_mc_time_contains_uneven",
+    "data_set": "contains_uneven"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "predicate": "equals",
     "Selection": "$\\mathtt{equals}$",
-    "label": "per_diff_vs_mc_time_equals_all"
+    "label": "per_diff_vs_mc_time_equals_all",
+    "data_set": "equals_all"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "predicate": "equals",
     "pred_arg_type": "Simple",
     "Selection": "$\\mathtt{equals}(Simple)$",
-    "label": "per_diff_vs_mc_time_equals_simple"
+    "label": "per_diff_vs_mc_time_equals_simple",
+    "data_set": "equals_simple"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "predicate": "equals",
     "pred_arg_type": "Even",
     "Selection": "$\\mathtt{equals}(Even)$",
-    "label": "per_diff_vs_mc_time_equals_even"
+    "label": "per_diff_vs_mc_time_equals_even",
+    "data_set": "equals_even"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "predicate": "equals",
     "pred_arg_type": "Uneven",
     "Selection": "$\\mathtt{equals}(Uneven)$",
-    "label": "per_diff_vs_mc_time_equals_uneven"
+    "label": "per_diff_vs_mc_time_equals_uneven",
+    "data_set": "equals_uneven"
   }
 ]

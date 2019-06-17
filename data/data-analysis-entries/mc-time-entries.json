@@ -1,74 +1,87 @@
 [
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "Selection": "All Constraints",
-    "label": "mc_time_all"
+    "label": "mc_time_all",
+    "data_set": "all"
   },
   {
     "is_blank": true
   },
   {
-    "mc_time_branch": "true",
+    "mc_time": true,
+    "branch": true,
     "Selection": "\\textit{true} Branches",
-    "label": "mc_time_true"
+    "label": "mc_time_true",
+    "data_set": "true"
   },
   {
-    "mc_time_branch": "false",
+    "mc_time": true,
+    "branch": false,
     "Selection": "\\textit{false} Branches",
-    "label": "mc_time_false"
+    "label": "mc_time_false",
+    "data_set": "false"
   },
   {
     "is_blank": true
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "alphabet": "AB",
     "Selection": "$|\\Sigma| = 2$",
-    "label": "mc_time_alpha_AB"
+    "label": "mc_time_alpha_AB",
+    "data_set": "alpha_AB"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "alphabet": "AC",
     "Selection": "$|\\Sigma| = 3$",
-    "label": "mc_time_alpha_AC"
+    "label": "mc_time_alpha_AC",
+    "data_set": "alpha_AC"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "alphabet": "AD",
     "Selection": "$|\\Sigma| = 4$",
-    "label": "mc_time_alpha_AD"
+    "label": "mc_time_alpha_AD",
+    "data_set": "alpha_AD"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "alphabet": "AE",
     "Selection": "$|\\Sigma| = 5$",
-    "label": "mc_time_alpha_AE"
+    "label": "mc_time_alpha_AE",
+    "data_set": "alpha_AE"
   },
   {
     "is_blank": true
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "length": 1,
     "Selection": "Length 1",
-    "label": "mc_time_len_1"
+    "label": "mc_time_len_1",
+    "data_set": "len_1"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "length": 2,
     "Selection": "Length 2",
-    "label": "mc_time_len_2"
+    "label": "mc_time_len_2",
+    "data_set": "len_2"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "length": 3,
     "Selection": "Length 3",
-    "label": "mc_time_len_3"
+    "label": "mc_time_len_3",
+    "data_set": "len_3"
   },
   {
-    "mc_time_branch": "both",
+    "mc_time": true,
     "length": 4,
     "Selection": "Length 4",
-    "label": "mc_time_len_4"
+    "label": "mc_time_len_4",
+    "data_set": "len_4"
   }
 ]

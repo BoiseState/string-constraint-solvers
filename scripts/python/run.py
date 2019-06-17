@@ -49,6 +49,23 @@ RESULT_GROUPS = {
         'gather': [
             '--result-files', 'all*',
             '--single-out-file'
+        ],
+        'analyze': [
+            'all*',
+            '--analysis-list',
+            'agree',
+            'agree-stat',
+            'comb-time',
+            'comb-time-stat',
+            'mc-time',
+            'mc-time-stat',
+            'per-diff',
+            'per-diff-stat',
+            'per-diff-vs-comb-time',
+            'per-diff-vs-mc-time',
+            'per-diff-vs-solve-time',
+            'solve-time',
+            'solve-time-stat'
         ]
     },
     'all-AC': {
@@ -69,6 +86,23 @@ RESULT_GROUPS = {
         'gather': [
             '--result-files', 'all*',
             '--single-out-file'
+        ],
+        'analyze': [
+            'all*',
+            '--analysis-list',
+            'agree',
+            'agree-stat',
+            'comb-time',
+            'comb-time-stat',
+            'mc-time',
+            'mc-time-stat',
+            'per-diff',
+            'per-diff-stat',
+            'per-diff-vs-comb-time',
+            'per-diff-vs-mc-time',
+            'per-diff-vs-solve-time',
+            'solve-time',
+            'solve-time-stat'
         ]
     },
     'all-AD': {
@@ -89,6 +123,23 @@ RESULT_GROUPS = {
         'gather': [
             '--result-files', 'all*',
             '--single-out-file'
+        ],
+        'analyze': [
+            'all*',
+            '--analysis-list',
+            'agree',
+            'agree-stat',
+            'comb-time',
+            'comb-time-stat',
+            'mc-time',
+            'mc-time-stat',
+            'per-diff',
+            'per-diff-stat',
+            'per-diff-vs-comb-time',
+            'per-diff-vs-mc-time',
+            'per-diff-vs-solve-time',
+            'solve-time',
+            'solve-time-stat'
         ]
     },
     'all-AE': {
@@ -109,6 +160,23 @@ RESULT_GROUPS = {
         'gather': [
             '--result-files', 'all*',
             '--single-out-file'
+        ],
+        'analyze': [
+            'all*',
+            '--analysis-list',
+            'agree',
+            'agree-stat',
+            'comb-time',
+            'comb-time-stat',
+            'mc-time',
+            'mc-time-stat',
+            'per-diff',
+            'per-diff-stat',
+            'per-diff-vs-comb-time',
+            'per-diff-vs-mc-time',
+            'per-diff-vs-solve-time',
+            'solve-time',
+            'solve-time-stat'
         ]
     }
 }
