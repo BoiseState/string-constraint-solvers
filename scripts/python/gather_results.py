@@ -30,7 +30,7 @@ log.addHandler(ch)
 # Global Values
 GLOB = dict()
 GLOB['Settings'] = None
-GLOB['uneven-ids'] = set()
+GLOB['complex-ids'] = set()
 
 VERIFICATION_MATRICIES = {
     'concat': (('-', '-', '>', '>', '='),
@@ -128,30 +128,30 @@ OP_GROUPS = {
 }
 
 INPUT_TYPES = (
+    'Literal',
     'Simple',
-    'Even',
-    'Uneven'
+    'Complex'
 )
 
 OP_TYPES = (
+    'Injective(<Literal>)',
     'Injective(<Simple>)',
-    'Injective(<Even>)',
-    'Injective(<Uneven>)',
+    'Injective(<Complex>)',
+    'P_Struct_Alt(<Literal>,<Literal>)',
+    'P_Struct_Alt(<Literal>,<Simple>)',
+    'P_Struct_Alt(<Literal>,<Complex>)',
+    'P_Struct_Alt(<Simple>,<Literal>)',
     'P_Struct_Alt(<Simple>,<Simple>)',
-    'P_Struct_Alt(<Simple>,<Even>)',
-    'P_Struct_Alt(<Simple>,<Uneven>)',
-    'P_Struct_Alt(<Even>,<Simple>)',
-    'P_Struct_Alt(<Even>,<Even>)',
-    'P_Struct_Alt(<Even>,<Uneven>)',
-    'P_Struct_Alt(<Uneven>,<Simple>)',
-    'P_Struct_Alt(<Uneven>,<Even>)',
-    'P_Struct_Alt(<Uneven>,<Uneven>)',
+    'P_Struct_Alt(<Simple>,<Complex>)',
+    'P_Struct_Alt(<Complex>,<Literal>)',
+    'P_Struct_Alt(<Complex>,<Simple>)',
+    'P_Struct_Alt(<Complex>,<Complex>)',
+    'N_Struct_Alt(<Literal>)',
     'N_Struct_Alt(<Simple>)',
-    'N_Struct_Alt(<Even>)',
-    'N_Struct_Alt(<Uneven>)',
+    'N_Struct_Alt(<Complex>)',
+    'Substitution(<Literal>)',
     'Substitution(<Simple>)',
-    'Substitution(<Even>)',
-    'Substitution(<Uneven>)'
+    'Substitution(<Complex>)'
 )
 
 REGEX = dict()
@@ -206,11 +206,11 @@ class Operation:
 
 
 class OperationArgument:
-    def __init__(self, arg_type, arg_id=None, value=None, uneven=None):
+    def __init__(self, arg_type, arg_id=None, value=None, complex=None):
         self.arg_id = arg_id
         self.arg_type = arg_type
         self.value = value
-        self.uneven = uneven
+        self.complex = complex
 
     def get_string(self):
         val = self.value if self.value is not None else self.arg_id
@@ -269,11 +269,11 @@ def get_op_string(ops_list=None, op_num=None, op=None):
         # arg
         if op_str in ['concat', 'contains', 'equals']:
             if op.args[0].value is not None:
-                op_arg_str = "Simple"
-            elif op.args[0].arg_id in GLOB['uneven-ids']:
-                op_arg_str = "Uneven"
+                op_arg_str = "Literal"
+            elif op.args[0].arg_id in GLOB['complex-ids']:
+                op_arg_str = "Complex"
             else:
-                op_arg_str = "Even"
+                op_arg_str = "Simple"
         elif op_str == 'delete':
             if op.args[0].value == op.args[1].value:
                 op_arg_str = 'same'
@@ -296,11 +296,11 @@ def get_predicate(ops_list):
     pred_args = ops_list[-1].args
     if len(pred_args) > 0:
         if pred_args[0].value is not None:
-            pred_arg_str = "Simple"
-        elif pred_args[0].arg_id in GLOB['uneven-ids']:
-            pred_arg_str = "Uneven"
+            pred_arg_str = "Literal"
+        elif pred_args[0].arg_id in GLOB['complex-ids']:
+            pred_arg_str = "Complex"
         else:
-            pred_arg_str = "Even"
+            pred_arg_str = "Simple"
 
     return pred_str, pred_arg_str
 
@@ -309,13 +309,13 @@ def get_operations(x):
     # initialize operations list
     ops_list = list()
 
-    input_type = 'Simple'
+    input_type = 'Literal'
     op_strings = x.split('->')
     # parse initial operation string
     match_init = REGEX['init_known'].match(op_strings[0].strip())
     if not match_init:
         match_init = REGEX['init_unknown'].match(op_strings[0].strip())
-        input_type = 'Even'
+        input_type = 'Simple'
     base_id = match_init.group('id')
     time = match_init.group('time')
     ops_list.append(Operation(base_id, 'init', time, input_type))
@@ -351,7 +351,7 @@ def get_operations(x):
                 arg_list.append(OperationArgument('num', value=value))
 
         if i == 0 and op == 'contains':
-            input_type = 'Uneven'
+            input_type = 'Complex'
 
         ops_list.append(Operation(const_id,
                                   op,
@@ -407,14 +407,14 @@ def get_all_op_data(data_map, solvers):
     return return_data
 
 
-def identify_uneven_args(data_map):
+def identify_complex_args(data_map):
     # for each constraint id
     for const_id in data_map.get('unbounded').keys():
         prev_ops = data_map.get('unbounded').get(const_id).get('PREV OPS')
         ops_list = get_operations(prev_ops)
 
         if len(ops_list) == 2 and ops_list[1].op == 'contains':
-            GLOB['uneven-ids'].add(ops_list[0].op_id)
+            GLOB['complex-ids'].add(ops_list[0].op_id)
 
 
 def get_result_files(dir_path, file_pattern):
@@ -726,7 +726,7 @@ def gather_results(f_name, file_set):
     # get data map from files
     data_map = get_data_map_from_csv_files(f_name, file_set)
 
-    identify_uneven_args(data_map)
+    identify_complex_args(data_map)
 
     csv_rows = dict()
 

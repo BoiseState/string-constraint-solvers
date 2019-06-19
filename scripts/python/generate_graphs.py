@@ -76,10 +76,10 @@ class RootValue:
 
 # operation node
 class OperationValue:
-    def __init__(self, op, op_args=None, num=0, uneven=False):
+    def __init__(self, op, op_args=None, num=0, complex=False):
         self.op = op
         self.num = num
-        self.uneven = uneven
+        self.complex = complex
 
         self.op_args = list()
         if op_args is not None:
@@ -95,12 +95,12 @@ class OperationValue:
 
 # boolean constraint node
 class PredicateValue:
-    def __init__(self, op, op_args=None, num=0, result=False, uneven=False):
+    def __init__(self, op, op_args=None, num=0, result=False, complex=False):
         self.op = op
         self.op_args = list() if op_args is None else op_args
         self.num = num
         self.result = result
-        self.uneven = uneven
+        self.complex = complex
 
         self.args_known = dict()
         for x in op_args:
@@ -168,9 +168,9 @@ class Settings:
             self.inputs.append(in_str)
         if options.empty_string:
             self.inputs.append('')
-        self.uneven = False
-        if options.uneven:
-            self.uneven = True
+        self.complex = False
+        if options.complex:
+            self.complex = True
             self.inputs.append(chr(0))
         # use unknown string if no other inputs specified
         if len(self.inputs) == 0 or options.unknown_string:
@@ -218,8 +218,8 @@ def add_append_operations(ops):
     for c in args:
         ops.append(OperationValue('append!!Ljava/lang/String;', [c]))
 
-    # add unknown string concatenation for uneven inputs
-    if GLOB['settings'].uneven:
+    # add unknown string concatenation for complex inputs
+    if GLOB['settings'].complex:
         ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)]))
 
 
@@ -230,7 +230,7 @@ def add_concat_operations(ops, needed_ops):
         create_ops = (
             lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [random_char()])),
             lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)])),
-            lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)], uneven=True))
+            lambda: ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)], complex=True))
         )
         while num_ops > 0:
             if num_ops >= 3:
@@ -245,7 +245,7 @@ def add_concat_operations(ops, needed_ops):
             ops.append(OperationValue('concat!!Ljava/lang/String;', [c]))
         ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)])),
         ops.append(OperationValue('concat!!Ljava/lang/String;', [chr(0)],
-                                  uneven=True))
+                                  complex=True))
 
 
 def add_delete_char_at_operations(ops):
@@ -442,9 +442,9 @@ def add_contains_predicates(constraints, length=None):
     constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=True))
     constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=False))
 
-    # uneven unknown args
-    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=True, uneven=True))
-    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=False, uneven=True))
+    # complex unknown args
+    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=True, complex=True))
+    constraints.append(PredicateValue('contains!!Ljava/lang/CharSequence;', [chr(0)], result=False, complex=True))
 
 
 def add_ends_with_predicates(constraints):
@@ -473,9 +473,9 @@ def add_equals_predicates(constraints):
     constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=True))
     constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=False))
 
-    # uneven unknown args
-    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=True, uneven=True))
-    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=False, uneven=True))
+    # complex unknown args
+    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=True, complex=True))
+    constraints.append(PredicateValue('equals!!Ljava/lang/Object;', [chr(0)], result=False, complex=True))
 
 
 def add_equals_ignore_case_predicates(constraints):
@@ -1304,8 +1304,8 @@ def add_operation(t, countdown, v_list):
             arg_vertex = Vertex(arg_val, arg, generate_id(arg_val))
             arg_ids.append(arg_vertex.node_id)
 
-            # make argument uneven unknown
-            if op.uneven:
+            # make argument complex unknown
+            if op.complex:
                 contains_predicates = list()
                 add_contains_predicates(contains_predicates)
                 contains_predicates = contains_predicates[:1]
@@ -1372,8 +1372,8 @@ def add_bool_constraint(t, v_list, allow_duplicates=False, predicate_list=None):
             arg_vertex = Vertex(arg_val, arg, generate_id(arg_val, force=do_force))
             arg_ids.append(arg_vertex.node_id)
 
-            # make argument uneven unknown
-            if pred.uneven:
+            # make argument complex unknown
+            if pred.complex:
                 contains_predicates = list()
                 add_contains_predicates(contains_predicates)
                 contains_predicates = contains_predicates[:1]
@@ -1425,8 +1425,8 @@ def get_options(arguments):
                                       'in "A-D".')
 
     generate_parser.add_argument('-c',
-                                 '--uneven',
-                                 help='Include uneven string before all '
+                                 '--complex',
+                                 help='Include complex string before all '
                                       'subsequent string operations '
                                       '(contains predicate).',
                                  action='store_true')
@@ -1672,7 +1672,7 @@ def get_root_verticies(settings_inst):
         val = root_value.get_value()
         vertex = Vertex(val, root_value.string, generate_id(val))
         GLOB['vertices'].append(vertex)
-    # TODO: Add contains vertex for uneven initial string
+    # TODO: Add contains vertex for complex initial string
 
 
 def main(arguments):
@@ -1721,7 +1721,7 @@ def main(arguments):
         init_v_list = list()
         GLOB['vertices'].append(init_v_list)
 
-        if GLOB['settings'].uneven \
+        if GLOB['settings'].complex \
                 and len(value) == 1 \
                 and ord(value) == 0:
             contains_predicates = list()
@@ -1736,10 +1736,10 @@ def main(arguments):
         add_operation(root_vertex, GLOB['settings'].depth, init_v_list)
 
         # add bool contraints for initial string
-        if GLOB['settings'].uneven \
+        if GLOB['settings'].complex \
                 and len(value) == 1 \
                 and ord(value) == 0:
-            GLOB['settings'].uneven = False
+            GLOB['settings'].complex = False
 
         log.debug('*** {0} Operations Added ***'.format(GLOB['settings'].op_counter))
         num_v = 0

@@ -44,16 +44,16 @@
     "is_blank": true
   },
   {
+    "input_type": "Literal",
+    "Selection": "\\textit{Literal}"
+  },
+  {
     "input_type": "Simple",
     "Selection": "\\textit{Simple}"
   },
   {
-    "input_type": "Even",
-    "Selection": "\\textit{Even}"
-  },
-  {
-    "input_type": "Uneven",
-    "Selection": "\\textit{Uneven}"
+    "input_type": "Complex",
+    "Selection": "\\textit{Complex}"
   },
   {
     "is_blank": true
@@ -64,18 +64,18 @@
   },
   {
     "operation": "concat",
+    "op_arg_type": "Literal",
+    "Selection": "Includes $\\mathtt{concat}(Literal)$"
+  },
+  {
+    "operation": "concat",
     "op_arg_type": "Simple",
     "Selection": "Includes $\\mathtt{concat}(Simple)$"
   },
   {
     "operation": "concat",
-    "op_arg_type": "Even",
-    "Selection": "Includes $\\mathtt{concat}(Even)$"
-  },
-  {
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "Selection": "Includes $\\mathtt{concat}(Uneven)$"
+    "op_arg_type": "Complex",
+    "Selection": "Includes $\\mathtt{concat}(Complex)$"
   },
   {
     "operation": "delete",
@@ -119,21 +119,21 @@
   },
   {
     "operation": "concat",
+    "op_arg_type": "Literal",
+    "exclusive_op": true,
+    "Selection": "Only $\\mathtt{concat}(Literal)$"
+  },
+  {
+    "operation": "concat",
     "op_arg_type": "Simple",
     "exclusive_op": true,
     "Selection": "Only $\\mathtt{concat}(Simple)$"
   },
   {
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "exclusive_op": true,
-    "Selection": "Only $\\mathtt{concat}(Even)$"
-  },
-  {
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "exclusive_op": true,
-    "Selection": "Only $\\mathtt{concat}(Uneven)$"
+    "Selection": "Only $\\mathtt{concat}(Complex)$"
   },
   {
     "operation": "delete",
@@ -183,22 +183,27 @@
   },
   {
     "predicate": "contains",
+    "pred_arg_type": "Literal",
+    "Selection": "$\\mathtt{contains}(Literal)$"
+  },
+  {
+    "predicate": "contains",
     "pred_arg_type": "Simple",
     "Selection": "$\\mathtt{contains}(Simple)$"
   },
   {
     "predicate": "contains",
-    "pred_arg_type": "Even",
-    "Selection": "$\\mathtt{contains}(Even)$"
-  },
-  {
-    "predicate": "contains",
-    "pred_arg_type": "Uneven",
-    "Selection": "$\\mathtt{contains}(Uneven)$"
+    "pred_arg_type": "Complex",
+    "Selection": "$\\mathtt{contains}(Complex)$"
   },
   {
     "predicate": "equals",
     "Selection": "$\\mathtt{equals}$"
+  },
+  {
+    "predicate": "equals",
+    "pred_arg_type": "Literal",
+    "Selection": "$\\mathtt{equals}(Literal)$"
   },
   {
     "predicate": "equals",
@@ -207,12 +212,7 @@
   },
   {
     "predicate": "equals",
-    "pred_arg_type": "Even",
-    "Selection": "$\\mathtt{equals}(Even)$"
-  },
-  {
-    "predicate": "equals",
-    "pred_arg_type": "Uneven",
-    "Selection": "$\\mathtt{equals}(Uneven)$"
+    "pred_arg_type": "Complex",
+    "Selection": "$\\mathtt{equals}(Complex)$"
   }
 ]

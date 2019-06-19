@@ -66,27 +66,34 @@
   },
   {
     "mc_time_branch": "both",
+    "input_type": "Literal",
+    "Selection": "\\textit{Literal}",
+    "label": "per_diff_vs_mc_time_literal"
+  },
+  {
+    "mc_time_branch": "both",
     "input_type": "Simple",
     "Selection": "\\textit{Simple}",
     "label": "per_diff_vs_mc_time_simple"
   },
   {
     "mc_time_branch": "both",
-    "input_type": "Even",
-    "Selection": "\\textit{Even}",
-    "label": "per_diff_vs_mc_time_even"
-  },
-  {
-    "mc_time_branch": "both",
-    "input_type": "Uneven",
-    "Selection": "\\textit{Uneven}",
-    "label": "per_diff_vs_mc_time_uneven"
+    "input_type": "Complex",
+    "Selection": "\\textit{Complex}",
+    "label": "per_diff_vs_mc_time_complex"
   },
   {
     "mc_time_branch": "both",
     "operation": "concat",
     "Selection": "Includes $\\mathtt{concat}$",
     "label": "per_diff_vs_mc_time_incl_concat_all"
+  },
+  {
+    "mc_time_branch": "both",
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "Selection": "Includes $\\mathtt{concat}(Literal)$",
+    "label": "per_diff_vs_mc_time_incl_concat_literal"
   },
   {
     "mc_time_branch": "both",
@@ -98,16 +105,9 @@
   {
     "mc_time_branch": "both",
     "operation": "concat",
-    "op_arg_type": "Even",
-    "Selection": "Includes $\\mathtt{concat}(Even)$",
-    "label": "per_diff_vs_mc_time_incl_concat_even"
-  },
-  {
-    "mc_time_branch": "both",
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "Selection": "Includes $\\mathtt{concat}(Uneven)$",
-    "label": "per_diff_vs_mc_time_incl_concat_uneven"
+    "op_arg_type": "Complex",
+    "Selection": "Includes $\\mathtt{concat}(Complex)$",
+    "label": "per_diff_vs_mc_time_incl_concat_complex"
   },
   {
     "mc_time_branch": "both",
@@ -165,6 +165,14 @@
   {
     "mc_time_branch": "both",
     "operation": "concat",
+    "op_arg_type": "Literal",
+    "exclusive_op": true,
+    "Selection": "Includes $\\mathtt{concat}(Literal)$",
+    "label": "per_diff_vs_mc_time_excl_concat_literal"
+  },
+  {
+    "mc_time_branch": "both",
+    "operation": "concat",
     "op_arg_type": "Simple",
     "exclusive_op": true,
     "Selection": "Includes $\\mathtt{concat}(Simple)$",
@@ -173,18 +181,10 @@
   {
     "mc_time_branch": "both",
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "exclusive_op": true,
-    "Selection": "Includes $\\mathtt{concat}(Even)$",
-    "label": "per_diff_vs_mc_time_excl_concat_even"
-  },
-  {
-    "mc_time_branch": "both",
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "exclusive_op": true,
-    "Selection": "Includes $\\mathtt{concat}(Uneven)$",
-    "label": "per_diff_vs_mc_time_excl_concat_uneven"
+    "Selection": "Includes $\\mathtt{concat}(Complex)$",
+    "label": "per_diff_vs_mc_time_excl_concat_complex"
   },
   {
     "mc_time_branch": "both",
@@ -248,6 +248,13 @@
   {
     "mc_time_branch": "both",
     "predicate": "contains",
+    "pred_arg_type": "Literal",
+    "Selection": "$\\mathtt{contains}(Literal)$",
+    "label": "per_diff_vs_mc_time_contains_literal"
+  },
+  {
+    "mc_time_branch": "both",
+    "predicate": "contains",
     "pred_arg_type": "Simple",
     "Selection": "$\\mathtt{contains}(Simple)$",
     "label": "per_diff_vs_mc_time_contains_simple"
@@ -255,22 +262,22 @@
   {
     "mc_time_branch": "both",
     "predicate": "contains",
-    "pred_arg_type": "Even",
-    "Selection": "$\\mathtt{contains}(Even)$",
-    "label": "per_diff_vs_mc_time_contains_even"
-  },
-  {
-    "mc_time_branch": "both",
-    "predicate": "contains",
-    "pred_arg_type": "Uneven",
-    "Selection": "$\\mathtt{contains}(Uneven)$",
-    "label": "per_diff_vs_mc_time_contains_uneven"
+    "pred_arg_type": "Complex",
+    "Selection": "$\\mathtt{contains}(Complex)$",
+    "label": "per_diff_vs_mc_time_contains_complex"
   },
   {
     "mc_time_branch": "both",
     "predicate": "equals",
     "Selection": "$\\mathtt{equals}$",
     "label": "per_diff_vs_mc_time_equals_all"
+  },
+  {
+    "mc_time_branch": "both",
+    "predicate": "equals",
+    "pred_arg_type": "Literal",
+    "Selection": "$\\mathtt{equals}(Literal)$",
+    "label": "per_diff_vs_mc_time_equals_literal"
   },
   {
     "mc_time_branch": "both",
@@ -282,15 +289,8 @@
   {
     "mc_time_branch": "both",
     "predicate": "equals",
-    "pred_arg_type": "Even",
-    "Selection": "$\\mathtt{equals}(Even)$",
-    "label": "per_diff_vs_mc_time_equals_even"
-  },
-  {
-    "mc_time_branch": "both",
-    "predicate": "equals",
-    "pred_arg_type": "Uneven",
-    "Selection": "$\\mathtt{equals}(Uneven)$",
-    "label": "per_diff_vs_mc_time_equals_uneven"
+    "pred_arg_type": "Complex",
+    "Selection": "$\\mathtt{equals}(Complex)$",
+    "label": "per_diff_vs_mc_time_equals_complex"
   }
 ]

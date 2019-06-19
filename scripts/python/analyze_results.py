@@ -119,6 +119,8 @@ class Settings:
 
         # determine analysis entries
         self.entries = list()
+        self.entries.append('const')
+        self.entries.append('op')
         for a in ANALYSIS_LIST:
             if a in options.analysis_list:
                 self.entries.append(a)

@@ -269,6 +269,29 @@
       "mc_time",
       "comb_time"
     ],
+    "input_type": "Literal",
+    "data_set": "literal"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
     "input_type": "Simple",
     "data_set": "simple"
   },
@@ -292,31 +315,8 @@
       "mc_time",
       "comb_time"
     ],
-    "input_type": "Even",
-    "data_set": "even"
-  },
-  {
-    "stats": [
-      "per_diff",
-      "agree",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "box_plots": [
-      "per_diff",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "histograms": [
-      "per_diff",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "input_type": "Uneven",
-    "data_set": "uneven"
+    "input_type": "Complex",
+    "data_set": "complex"
   },
   {
     "stats": [
@@ -340,6 +340,30 @@
     ],
     "operation": "concat",
     "data_set": "incl_concat_all"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "data_set": "incl_concat_literal"
   },
   {
     "stats": [
@@ -386,32 +410,8 @@
       "comb_time"
     ],
     "operation": "concat",
-    "op_arg_type": "Even",
-    "data_set": "incl_concat_even"
-  },
-  {
-    "stats": [
-      "per_diff",
-      "agree",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "box_plots": [
-      "per_diff",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "histograms": [
-      "per_diff",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "data_set": "incl_concat_uneven"
+    "op_arg_type": "Complex",
+    "data_set": "incl_concat_complex"
   },
   {
     "stats": [
@@ -623,6 +623,31 @@
       "comb_time"
     ],
     "operation": "concat",
+    "op_arg_type": "Literal",
+    "exclusive_op": true,
+    "data_set": "excl_concat_literal"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "operation": "concat",
     "op_arg_type": "Simple",
     "exclusive_op": true,
     "data_set": "excl_concat_simple"
@@ -648,34 +673,9 @@
       "comb_time"
     ],
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "exclusive_op": true,
-    "data_set": "excl_concat_even"
-  },
-  {
-    "stats": [
-      "per_diff",
-      "agree",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "box_plots": [
-      "per_diff",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "histograms": [
-      "per_diff",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "exclusive_op": true,
-    "data_set": "excl_concat_uneven"
+    "data_set": "excl_concat_complex"
   },
   {
     "stats": [
@@ -893,6 +893,30 @@
       "comb_time"
     ],
     "predicate": "contains",
+    "pred_arg_type": "Literal",
+    "data_set": "contains_literal"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "predicate": "contains",
     "pred_arg_type": "Simple",
     "data_set": "contains_simple"
   },
@@ -917,32 +941,8 @@
       "comb_time"
     ],
     "predicate": "contains",
-    "pred_arg_type": "Even",
-    "data_set": "contains_even"
-  },
-  {
-    "stats": [
-      "per_diff",
-      "agree",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "box_plots": [
-      "per_diff",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "histograms": [
-      "per_diff",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "predicate": "contains",
-    "pred_arg_type": "Uneven",
-    "data_set": "contains_uneven"
+    "pred_arg_type": "Complex",
+    "data_set": "contains_complex"
   },
   {
     "stats": [
@@ -966,6 +966,30 @@
     ],
     "predicate": "equals",
     "data_set": "equals_all"
+  },
+  {
+    "stats": [
+      "per_diff",
+      "agree",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "box_plots": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "histograms": [
+      "per_diff",
+      "solve_time",
+      "mc_time",
+      "comb_time"
+    ],
+    "predicate": "equals",
+    "pred_arg_type": "Literal",
+    "data_set": "equals_literal"
   },
   {
     "stats": [
@@ -1012,32 +1036,8 @@
       "comb_time"
     ],
     "predicate": "equals",
-    "pred_arg_type": "Even",
-    "data_set": "equals_even"
-  },
-  {
-    "stats": [
-      "per_diff",
-      "agree",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "box_plots": [
-      "per_diff",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "histograms": [
-      "per_diff",
-      "solve_time",
-      "mc_time",
-      "comb_time"
-    ],
-    "predicate": "equals",
-    "pred_arg_type": "Uneven",
-    "data_set": "equals_uneven"
+    "pred_arg_type": "Complex",
+    "data_set": "equals_complex"
   },
   {
     "stats": ["per_diff"],
@@ -1126,6 +1126,14 @@
     "stats": ["per_diff"],
     "box_plots": ["per_diff"],
     "histograms": ["per_diff"],
+    "input_type": "Literal",
+    "only_agree": true,
+    "data_set": "agree_literal"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
     "input_type": "Simple",
     "only_agree": true,
     "data_set": "agree_simple"
@@ -1134,17 +1142,9 @@
     "stats": ["per_diff"],
     "box_plots": ["per_diff"],
     "histograms": ["per_diff"],
-    "input_type": "Even",
+    "input_type": "Complex",
     "only_agree": true,
-    "data_set": "agree_even"
-  },
-  {
-    "stats": ["per_diff"],
-    "box_plots": ["per_diff"],
-    "histograms": ["per_diff"],
-    "input_type": "Uneven",
-    "only_agree": true,
-    "data_set": "agree_uneven"
+    "data_set": "agree_complex"
   },
   {
     "stats": ["per_diff"],
@@ -1153,6 +1153,15 @@
     "operation": "concat",
     "only_agree": true,
     "data_set": "agree_incl_concat_all"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "only_agree": true,
+    "data_set": "agree_incl_concat_literal"
   },
   {
     "stats": ["per_diff"],
@@ -1168,18 +1177,9 @@
     "box_plots": ["per_diff"],
     "histograms": ["per_diff"],
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "only_agree": true,
-    "data_set": "agree_incl_concat_even"
-  },
-  {
-    "stats": ["per_diff"],
-    "box_plots": ["per_diff"],
-    "histograms": ["per_diff"],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "only_agree": true,
-    "data_set": "agree_incl_concat_uneven"
+    "data_set": "agree_incl_concat_complex"
   },
   {
     "stats": ["per_diff"],
@@ -1255,6 +1255,16 @@
     "box_plots": ["per_diff"],
     "histograms": ["per_diff"],
     "operation": "concat",
+    "op_arg_type": "Literal",
+    "exclusive_op": true,
+    "only_agree": true,
+    "data_set": "agree_excl_concat_literal"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "operation": "concat",
     "op_arg_type": "Simple",
     "exclusive_op": true,
     "only_agree": true,
@@ -1265,20 +1275,10 @@
     "box_plots": ["per_diff"],
     "histograms": ["per_diff"],
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "exclusive_op": true,
     "only_agree": true,
-    "data_set": "agree_excl_concat_even"
-  },
-  {
-    "stats": ["per_diff"],
-    "box_plots": ["per_diff"],
-    "histograms": ["per_diff"],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "exclusive_op": true,
-    "only_agree": true,
-    "data_set": "agree_excl_concat_uneven"
+    "data_set": "agree_excl_concat_complex"
   },
   {
     "stats": ["per_diff"],
@@ -1360,6 +1360,15 @@
     "box_plots": ["per_diff"],
     "histograms": ["per_diff"],
     "predicate": "contains",
+    "pred_arg_type": "Literal",
+    "only_agree": true,
+    "data_set": "agree_contains_literal"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "predicate": "contains",
     "pred_arg_type": "Simple",
     "only_agree": true,
     "data_set": "agree_contains_simple"
@@ -1369,18 +1378,9 @@
     "box_plots": ["per_diff"],
     "histograms": ["per_diff"],
     "predicate": "contains",
-    "pred_arg_type": "Even",
+    "pred_arg_type": "Complex",
     "only_agree": true,
-    "data_set": "agree_contains_even"
-  },
-  {
-    "stats": ["per_diff"],
-    "box_plots": ["per_diff"],
-    "histograms": ["per_diff"],
-    "predicate": "contains",
-    "pred_arg_type": "Uneven",
-    "only_agree": true,
-    "data_set": "agree_contains_uneven"
+    "data_set": "agree_contains_complex"
   },
   {
     "stats": ["per_diff"],
@@ -1389,6 +1389,15 @@
     "predicate": "equals",
     "only_agree": true,
     "data_set": "agree_equals_all"
+  },
+  {
+    "stats": ["per_diff"],
+    "box_plots": ["per_diff"],
+    "histograms": ["per_diff"],
+    "predicate": "equals",
+    "pred_arg_type": "Literal",
+    "only_agree": true,
+    "data_set": "agree_equals_literal"
   },
   {
     "stats": ["per_diff"],
@@ -1404,17 +1413,8 @@
     "box_plots": ["per_diff"],
     "histograms": ["per_diff"],
     "predicate": "equals",
-    "pred_arg_type": "Even",
+    "pred_arg_type": "Complex",
     "only_agree": true,
-    "data_set": "agree_equals_even"
-  },
-  {
-    "stats": ["per_diff"],
-    "box_plots": ["per_diff"],
-    "histograms": ["per_diff"],
-    "predicate": "equals",
-    "pred_arg_type": "Uneven",
-    "only_agree": true,
-    "data_set": "agree_equals_uneven"
+    "data_set": "agree_equals_complex"
   }
 ]

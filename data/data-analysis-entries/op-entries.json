@@ -78,6 +78,89 @@
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "concat",
+    "op_arg_type": "Literal",
+    "data_set": "concat_literal_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "alphabet": "AB",
+    "data_set": "concat_literal_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "alphabet": "AC",
+    "data_set": "concat_literal_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "alphabet": "AD",
+    "data_set": "concat_literal_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "alphabet": "AE",
+    "data_set": "concat_literal_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "length": 1,
+    "data_set": "concat_literal_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "length": 2,
+    "data_set": "concat_literal_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "length": 3,
+    "data_set": "concat_literal_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "length": 4,
+    "data_set": "concat_literal_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "concat",
     "op_arg_type": "Simple",
     "data_set": "concat_simple_all"
   },
@@ -161,163 +244,80 @@
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "concat",
-    "op_arg_type": "Even",
-    "data_set": "concat_even_all"
+    "op_arg_type": "Complex",
+    "data_set": "concat_complex_all"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "alphabet": "AB",
-    "data_set": "concat_even_alpha_AB"
+    "data_set": "concat_complex_alpha_AB"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "alphabet": "AC",
-    "data_set": "concat_even_alpha_AC"
+    "data_set": "concat_complex_alpha_AC"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "alphabet": "AD",
-    "data_set": "concat_even_alpha_AD"
+    "data_set": "concat_complex_alpha_AD"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "alphabet": "AE",
-    "data_set": "concat_even_alpha_AE"
+    "data_set": "concat_complex_alpha_AE"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "length": 1,
-    "data_set": "concat_even_len_1"
+    "data_set": "concat_complex_len_1"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "length": 2,
-    "data_set": "concat_even_len_2"
+    "data_set": "concat_complex_len_2"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "length": 3,
-    "data_set": "concat_even_len_3"
+    "data_set": "concat_complex_len_3"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "length": 4,
-    "data_set": "concat_even_len_4"
-  },
-  {
-    "is_blank": true
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "data_set": "concat_uneven_all"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "alphabet": "AB",
-    "data_set": "concat_uneven_alpha_AB"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "alphabet": "AC",
-    "data_set": "concat_uneven_alpha_AC"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "alphabet": "AD",
-    "data_set": "concat_uneven_alpha_AD"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "alphabet": "AE",
-    "data_set": "concat_uneven_alpha_AE"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "length": 1,
-    "data_set": "concat_uneven_len_1"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "length": 2,
-    "data_set": "concat_uneven_len_2"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "length": 3,
-    "data_set": "concat_uneven_len_3"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "length": 4,
-    "data_set": "concat_uneven_len_4"
+    "data_set": "concat_complex_len_4"
   },
   {
     "is_blank": true
@@ -955,80 +955,80 @@
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Simple",
-    "data_set": "contains_simple_all"
+    "op_arg_type": "Literal",
+    "data_set": "contains_literal_all"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Simple",
+    "op_arg_type": "Literal",
     "alphabet": "AB",
-    "data_set": "contains_simple_alpha_AB"
+    "data_set": "contains_literal_alpha_AB"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Simple",
+    "op_arg_type": "Literal",
     "alphabet": "AC",
-    "data_set": "contains_simple_alpha_AC"
+    "data_set": "contains_literal_alpha_AC"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Simple",
+    "op_arg_type": "Literal",
     "alphabet": "AD",
-    "data_set": "contains_simple_alpha_AD"
+    "data_set": "contains_literal_alpha_AD"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Simple",
+    "op_arg_type": "Literal",
     "alphabet": "AE",
-    "data_set": "contains_simple_alpha_AE"
+    "data_set": "contains_literal_alpha_AE"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Simple",
+    "op_arg_type": "Literal",
     "length": 1,
-    "data_set": "contains_simple_len_1"
+    "data_set": "contains_literal_len_1"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Simple",
+    "op_arg_type": "Literal",
     "length": 2,
-    "data_set": "contains_simple_len_2"
+    "data_set": "contains_literal_len_2"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Simple",
+    "op_arg_type": "Literal",
     "length": 3,
-    "data_set": "contains_simple_len_3"
+    "data_set": "contains_literal_len_3"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Simple",
+    "op_arg_type": "Literal",
     "length": 4,
-    "data_set": "contains_simple_len_4"
+    "data_set": "contains_literal_len_4"
   },
   {
     "is_blank": true
@@ -1038,80 +1038,80 @@
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Even",
-    "data_set": "contains_Even_all"
+    "op_arg_type": "Simple",
+    "data_set": "contains_Simple_all"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Even",
+    "op_arg_type": "Simple",
     "alphabet": "AB",
-    "data_set": "contains_Even_alpha_AB"
+    "data_set": "contains_Simple_alpha_AB"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Even",
+    "op_arg_type": "Simple",
     "alphabet": "AC",
-    "data_set": "contains_Even_alpha_AC"
+    "data_set": "contains_Simple_alpha_AC"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Even",
+    "op_arg_type": "Simple",
     "alphabet": "AD",
-    "data_set": "contains_Even_alpha_AD"
+    "data_set": "contains_Simple_alpha_AD"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Even",
+    "op_arg_type": "Simple",
     "alphabet": "AE",
-    "data_set": "contains_Even_alpha_AE"
+    "data_set": "contains_Simple_alpha_AE"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Even",
+    "op_arg_type": "Simple",
     "length": 1,
-    "data_set": "contains_Even_len_1"
+    "data_set": "contains_Simple_len_1"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Even",
+    "op_arg_type": "Simple",
     "length": 2,
-    "data_set": "contains_Even_len_2"
+    "data_set": "contains_Simple_len_2"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Even",
+    "op_arg_type": "Simple",
     "length": 3,
-    "data_set": "contains_Even_len_3"
+    "data_set": "contains_Simple_len_3"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Even",
+    "op_arg_type": "Simple",
     "length": 4,
-    "data_set": "contains_Even_len_4"
+    "data_set": "contains_Simple_len_4"
   },
   {
     "is_blank": true
@@ -1121,80 +1121,80 @@
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Uneven",
-    "data_set": "contains_uneven_all"
+    "op_arg_type": "Complex",
+    "data_set": "contains_complex_all"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Uneven",
+    "op_arg_type": "Complex",
     "alphabet": "AB",
-    "data_set": "contains_uneven_alpha_AB"
+    "data_set": "contains_complex_alpha_AB"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Uneven",
+    "op_arg_type": "Complex",
     "alphabet": "AC",
-    "data_set": "contains_uneven_alpha_AC"
+    "data_set": "contains_complex_alpha_AC"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Uneven",
+    "op_arg_type": "Complex",
     "alphabet": "AD",
-    "data_set": "contains_uneven_alpha_AD"
+    "data_set": "contains_complex_alpha_AD"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Uneven",
+    "op_arg_type": "Complex",
     "alphabet": "AE",
-    "data_set": "contains_uneven_alpha_AE"
+    "data_set": "contains_complex_alpha_AE"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Uneven",
+    "op_arg_type": "Complex",
     "length": 1,
-    "data_set": "contains_uneven_len_1"
+    "data_set": "contains_complex_len_1"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Uneven",
+    "op_arg_type": "Complex",
     "length": 2,
-    "data_set": "contains_uneven_len_2"
+    "data_set": "contains_complex_len_2"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Uneven",
+    "op_arg_type": "Complex",
     "length": 3,
-    "data_set": "contains_uneven_len_3"
+    "data_set": "contains_complex_len_3"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "contains",
-    "op_arg_type": "Uneven",
+    "op_arg_type": "Complex",
     "length": 4,
-    "data_set": "contains_uneven_len_4"
+    "data_set": "contains_complex_len_4"
   },
   {
     "is_blank": true
@@ -1269,6 +1269,89 @@
     "operation": "equals",
     "length": 4,
     "data_set": "equals_len_4"
+  },
+  {
+    "is_blank": true
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Literal",
+    "data_set": "equals_literal_all"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Literal",
+    "alphabet": "AB",
+    "data_set": "equals_literal_alpha_AB"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Literal",
+    "alphabet": "AC",
+    "data_set": "equals_literal_alpha_AC"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Literal",
+    "alphabet": "AD",
+    "data_set": "equals_literal_alpha_AD"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Literal",
+    "alphabet": "AE",
+    "data_set": "equals_literal_alpha_AE"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Literal",
+    "length": 1,
+    "data_set": "equals_literal_len_1"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Literal",
+    "length": 2,
+    "data_set": "equals_literal_len_2"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Literal",
+    "length": 3,
+    "data_set": "equals_literal_len_3"
+  },
+  {
+    "stats": ["op_time"],
+    "box_plots": ["op_time"],
+    "histograms": ["op_time"],
+    "operation": "equals",
+    "op_arg_type": "Literal",
+    "length": 4,
+    "data_set": "equals_literal_len_4"
   },
   {
     "is_blank": true
@@ -1361,162 +1444,79 @@
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "equals",
-    "op_arg_type": "Even",
-    "data_set": "equals_even_all"
+    "op_arg_type": "Complex",
+    "data_set": "equals_complex_all"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "equals",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "alphabet": "AB",
-    "data_set": "equals_even_alpha_AB"
+    "data_set": "equals_complex_alpha_AB"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "equals",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "alphabet": "AC",
-    "data_set": "equals_even_alpha_AC"
+    "data_set": "equals_complex_alpha_AC"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "equals",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "alphabet": "AD",
-    "data_set": "equals_even_alpha_AD"
+    "data_set": "equals_complex_alpha_AD"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "equals",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "alphabet": "AE",
-    "data_set": "equals_even_alpha_AE"
+    "data_set": "equals_complex_alpha_AE"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "equals",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "length": 1,
-    "data_set": "equals_even_len_1"
+    "data_set": "equals_complex_len_1"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "equals",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "length": 2,
-    "data_set": "equals_even_len_2"
+    "data_set": "equals_complex_len_2"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "equals",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "length": 3,
-    "data_set": "equals_even_len_3"
+    "data_set": "equals_complex_len_3"
   },
   {
     "stats": ["op_time"],
     "box_plots": ["op_time"],
     "histograms": ["op_time"],
     "operation": "equals",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "length": 4,
-    "data_set": "equals_even_len_4"
-  },
-  {
-    "is_blank": true
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "equals",
-    "op_arg_type": "Uneven",
-    "data_set": "equals_uneven_all"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "equals",
-    "op_arg_type": "Uneven",
-    "alphabet": "AB",
-    "data_set": "equals_uneven_alpha_AB"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "equals",
-    "op_arg_type": "Uneven",
-    "alphabet": "AC",
-    "data_set": "equals_uneven_alpha_AC"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "equals",
-    "op_arg_type": "Uneven",
-    "alphabet": "AD",
-    "data_set": "equals_uneven_alpha_AD"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "equals",
-    "op_arg_type": "Uneven",
-    "alphabet": "AE",
-    "data_set": "equals_uneven_alpha_AE"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "equals",
-    "op_arg_type": "Uneven",
-    "length": 1,
-    "data_set": "equals_uneven_len_1"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "equals",
-    "op_arg_type": "Uneven",
-    "length": 2,
-    "data_set": "equals_uneven_len_2"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "equals",
-    "op_arg_type": "Uneven",
-    "length": 3,
-    "data_set": "equals_uneven_len_3"
-  },
-  {
-    "stats": ["op_time"],
-    "box_plots": ["op_time"],
-    "histograms": ["op_time"],
-    "operation": "equals",
-    "op_arg_type": "Uneven",
-    "length": 4,
-    "data_set": "equals_uneven_len_4"
+    "data_set": "equals_complex_len_4"
   }
 ]

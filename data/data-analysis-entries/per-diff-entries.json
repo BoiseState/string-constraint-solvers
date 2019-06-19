@@ -54,24 +54,30 @@
     "label": "acc_diff_len_4"
   },
   {
+    "input_type": "Literal",
+    "caption": "Frequency of Accuracy Difference for Constraints Following a \\textit{Literal} Input String",
+    "label": "acc_diff_literal"
+  },
+  {
     "input_type": "Simple",
-    "caption": "Frequency of Accuracy Difference for Constraints Following a \\textit{Simple} Input String",
+    "caption": "Frequency of Accuracy Difference for Constraints Following a \\textit{Simple} Unknown Input String",
     "label": "acc_diff_simple"
   },
   {
-    "input_type": "Even",
-    "caption": "Frequency of Accuracy Difference for Constraints Following a \\textit{Even} Unknown Input String",
-    "label": "acc_diff_even"
-  },
-  {
-    "input_type": "Uneven",
-    "caption": "Frequency of Accuracy Difference for Constraints Following a \\textit{Uneven} Unknown Input String",
-    "label": "acc_diff_uneven"
+    "input_type": "Complex",
+    "caption": "Frequency of Accuracy Difference for Constraints Following a \\textit{Complex} Unknown Input String",
+    "label": "acc_diff_complex"
   },
   {
     "operation": "concat",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{concat}$ Operations",
     "label": "acc_diff_incl_concat_all"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{concat}(Literal)$ Operations",
+    "label": "acc_diff_incl_concat_literal"
   },
   {
     "operation": "concat",
@@ -81,15 +87,9 @@
   },
   {
     "operation": "concat",
-    "op_arg_type": "Even",
-    "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{concat}(Even)$ Operations",
-    "label": "acc_diff_incl_concat_even"
-  },
-  {
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "acc_diff_incl_concat_uneven"
+    "op_arg_type": "Complex",
+    "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{concat}(Complex)$ Operations",
+    "label": "acc_diff_incl_concat_complex"
   },
   {
     "operation": "delete",
@@ -138,6 +138,13 @@
   },
   {
     "operation": "concat",
+    "op_arg_type": "Literal",
+    "exclusive_op": true,
+    "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{concat}(Literal)$ Operations",
+    "label": "acc_diff_excl_concat_literal"
+  },
+  {
+    "operation": "concat",
     "op_arg_type": "Simple",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{concat}(Simple)$ Operations",
@@ -145,17 +152,10 @@
   },
   {
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "exclusive_op": true,
-    "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{concat}(Even)$ Operations",
-    "label": "acc_diff_excl_concat_even"
-  },
-  {
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "exclusive_op": true,
-    "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "acc_diff_excl_concat_uneven"
+    "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{concat}(Complex)$ Operations",
+    "label": "acc_diff_excl_concat_complex"
   },
   {
     "operation": "delete",
@@ -210,26 +210,32 @@
   },
   {
     "predicate": "contains",
+    "pred_arg_type": "Literal",
+    "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Literal)$ Predicates",
+    "label": "acc_diff_contains_literal"
+  },
+  {
+    "predicate": "contains",
     "pred_arg_type": "Simple",
     "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Simple)$ Predicates",
     "label": "acc_diff_contains_simple"
   },
   {
     "predicate": "contains",
-    "pred_arg_type": "Even",
-    "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Even)$ Predicates",
-    "label": "acc_diff_contains_even"
-  },
-  {
-    "predicate": "contains",
-    "pred_arg_type": "Uneven",
-    "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Uneven)$ Predicates",
-    "label": "acc_diff_contains_uneven"
+    "pred_arg_type": "Complex",
+    "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Complex)$ Predicates",
+    "label": "acc_diff_contains_complex"
   },
   {
     "predicate": "equals",
     "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{equals}$ Predicates",
     "label": "acc_diff_equals_all"
+  },
+  {
+    "predicate": "equals",
+    "pred_arg_type": "Literal",
+    "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Literal)$ Predicates",
+    "label": "acc_diff_equals_literal"
   },
   {
     "predicate": "equals",
@@ -239,15 +245,9 @@
   },
   {
     "predicate": "equals",
-    "pred_arg_type": "Even",
-    "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Even)$ Predicates",
-    "label": "acc_diff_equals_even"
-  },
-  {
-    "predicate": "equals",
-    "pred_arg_type": "Uneven",
-    "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Uneven)$ Predicates",
-    "label": "acc_diff_equals_uneven"
+    "pred_arg_type": "Complex",
+    "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Complex)$ Predicates",
+    "label": "acc_diff_equals_complex"
   },
   {
     "disagree": false,
@@ -315,28 +315,35 @@
     "label": "acc_diff_agree_len_4"
   },
   {
+    "input_type": "Literal",
+    "disagree": false,
+    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following a \\textit{Literal} Input String",
+    "label": "acc_diff_agree_literal"
+  },
+  {
     "input_type": "Simple",
     "disagree": false,
-    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following a \\textit{Simple} Input String",
+    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following a \\textit{Simple} Unknown Input String",
     "label": "acc_diff_agree_simple"
   },
   {
-    "input_type": "Even",
+    "input_type": "Complex",
     "disagree": false,
-    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following a \\textit{Even} Unknown Input String",
-    "label": "acc_diff_agree_even"
-  },
-  {
-    "input_type": "Uneven",
-    "disagree": false,
-    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following a \\textit{Uneven} Unknown Input String",
-    "label": "acc_diff_agree_uneven"
+    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following a \\textit{Complex} Unknown Input String",
+    "label": "acc_diff_agree_complex"
   },
   {
     "operation": "concat",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{concat}$ Operations",
     "label": "acc_diff_agree_incl_concat_all"
+  },
+  {
+    "operation": "concat",
+    "op_arg_type": "Literal",
+    "disagree": false,
+    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{concat}(Literal)$ Operations",
+    "label": "acc_diff_agree_incl_concat_literal"
   },
   {
     "operation": "concat",
@@ -347,17 +354,10 @@
   },
   {
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "disagree": false,
-    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{concat}(Even)$ Operations",
-    "label": "acc_diff_agree_incl_concat_even"
-  },
-  {
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "disagree": false,
-    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "acc_diff_agree_incl_concat_uneven"
+    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{concat}(Complex)$ Operations",
+    "label": "acc_diff_agree_incl_concat_complex"
   },
   {
     "operation": "delete",
@@ -414,6 +414,14 @@
   },
   {
     "operation": "concat",
+    "op_arg_type": "Literal",
+    "exclusive_op": true,
+    "disagree": false,
+    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{concat}(Literal)$ Operations",
+    "label": "acc_diff_agree_excl_concat_literal"
+  },
+  {
+    "operation": "concat",
     "op_arg_type": "Simple",
     "exclusive_op": true,
     "disagree": false,
@@ -422,19 +430,11 @@
   },
   {
     "operation": "concat",
-    "op_arg_type": "Even",
+    "op_arg_type": "Complex",
     "exclusive_op": true,
     "disagree": false,
-    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{concat}(Even)$ Operations",
-    "label": "acc_diff_agree_excl_concat_even"
-  },
-  {
-    "operation": "concat",
-    "op_arg_type": "Uneven",
-    "exclusive_op": true,
-    "disagree": false,
-    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "acc_diff_agree_excl_concat_uneven"
+    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{concat}(Complex)$ Operations",
+    "label": "acc_diff_agree_excl_concat_complex"
   },
   {
     "operation": "delete",
@@ -497,6 +497,13 @@
   },
   {
     "predicate": "contains",
+    "pred_arg_type": "Literal",
+    "disagree": false,
+    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Literal)$ Predicates",
+    "label": "acc_diff_agree_contains_literal"
+  },
+  {
+    "predicate": "contains",
     "pred_arg_type": "Simple",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Simple)$ Predicates",
@@ -504,23 +511,23 @@
   },
   {
     "predicate": "contains",
-    "pred_arg_type": "Even",
+    "pred_arg_type": "Complex",
     "disagree": false,
-    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Even)$ Predicates",
-    "label": "acc_diff_agree_contains_even"
-  },
-  {
-    "predicate": "contains",
-    "pred_arg_type": "Uneven",
-    "disagree": false,
-    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Uneven)$ Predicates",
-    "label": "acc_diff_agree_contains_uneven"
+    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Complex)$ Predicates",
+    "label": "acc_diff_agree_contains_complex"
   },
   {
     "predicate": "equals",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{equals}$ Predicates",
     "label": "acc_diff_agree_equals_all"
+  },
+  {
+    "predicate": "equals",
+    "pred_arg_type": "Literal",
+    "disagree": false,
+    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Literal)$ Predicates",
+    "label": "acc_diff_agree_equals_literal"
   },
   {
     "predicate": "equals",
@@ -531,16 +538,9 @@
   },
   {
     "predicate": "equals",
-    "pred_arg_type": "Even",
+    "pred_arg_type": "Complex",
     "disagree": false,
-    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Even)$ Predicates",
-    "label": "acc_diff_agree_equals_even"
-  },
-  {
-    "predicate": "equals",
-    "pred_arg_type": "Uneven",
-    "disagree": false,
-    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Uneven)$ Predicates",
-    "label": "acc_diff_agree_equals_uneven"
+    "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Complex)$ Predicates",
+    "label": "acc_diff_agree_equals_complex"
   }
 ]

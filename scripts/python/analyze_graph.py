@@ -252,14 +252,14 @@ def split_graph(vertices):
     # split vertices
     non_split_vertices = list()
     non_split_vertices.append(root_v)
-    uneven_vertex = None
+    complex_vertex = None
     predicates = list()
     for dest_id, dest_type in out_edges.get(root_v.get('id')):
         dest_v = v_map.get(dest_id)
-        # check for uneven contains creation predicate
+        # check for complex contains creation predicate
         if dest_v.get('value').startswith('contains') \
                 and dest_id == root_v.get('id') + 2:
-            uneven_vertex = dest_v
+            complex_vertex = dest_v
         elif dest_v.get('value').split('!:!')[0] in PREDICATES:
             add_subgraph_to_vertices(dest_v, predicates, out_edges,
                                      v_map, non_split_vertices)
@@ -276,9 +276,9 @@ def split_graph(vertices):
                 add_subgraph_to_vertices(child_v, sg_vertices, out_edges, v_map)
                 vertices_list.append(sg_vertices)
 
-    # add any uneven vertices to unsplit vertices
-    if uneven_vertex is not None:
-        non_split_vertices.append(uneven_vertex)
+    # add any complex vertices to unsplit vertices
+    if complex_vertex is not None:
+        non_split_vertices.append(complex_vertex)
         non_split_vertices.append(v_map.get(root_v.get('id') + 1))
 
     # add non split vertices to each subgraph

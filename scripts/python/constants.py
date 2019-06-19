@@ -1,23 +1,23 @@
 #! /usr/bin/env python
 
 ANALYSIS_LIST = (
-    'const',
-    'op'
-    # 'agree',
-    # 'agree-stat',
-    # 'comb-time',
-    # 'comb-time-stat',
-    # 'mc-time',
-    # 'mc-time-stat',
-    # 'op-time',
-    # 'op-time-stat',
-    # 'per-diff',
-    # 'per-diff-stat',
-    # 'per-diff-vs-solve-time',
-    # 'per-diff-vs-mc-time',
-    # 'per-diff-vs-comb-time',
-    # 'solve-time'
-    # 'solve-time-stat'
+    # 'const',
+    # 'op',
+    'agree',
+    'agree-stat',
+    'comb-time',
+    'comb-time-stat',
+    'mc-time',
+    'mc-time-stat',
+    'op-time',
+    'op-time-stat',
+    'per-diff',
+    'per-diff-stat',
+    'per-diff-vs-solve-time',
+    'per-diff-vs-mc-time',
+    'per-diff-vs-comb-time',
+    'solve-time',
+    'solve-time-stat'
 )
 
 MEASUREMENTS = (
@@ -227,13 +227,13 @@ DATA_SETS = (
     'len_2',
     'len_3',
     'len_4',  # 10
+    'literal',
     'simple',
-    'even',
-    'uneven',
+    'complex',
     'incl_concat_all',
+    'incl_concat_literal',
     'incl_concat_simple',
-    'incl_concat_even',
-    'incl_concat_uneven',
+    'incl_concat_complex',
     'incl_delete_all',
     'incl_delete_same',
     'incl_delete_diff',  # 20
@@ -242,9 +242,9 @@ DATA_SETS = (
     'incl_replace_diff',
     'incl_reverse',
     'excl_concat_all',
+    'excl_concat_literal',
     'excl_concat_simple',
-    'excl_concat_even',
-    'excl_concat_uneven',
+    'excl_concat_complex',
     'excl_delete_all',
     'excl_delete_same',  # 30
     'excl_delete_diff',
@@ -253,13 +253,13 @@ DATA_SETS = (
     'excl_replace_diff',
     'excl_reverse',
     'contains_all',
+    'contains_literal',
     'contains_simple',
-    'contains_even',
-    'contains_uneven',
+    'contains_complex',
     'equals_all',  # 40
+    'equals_literal',
     'equals_simple',
-    'equals_even',
-    'equals_uneven',
+    'equals_complex',
     'agree_all',
     'agree_true',
     'agree_false',
@@ -271,13 +271,13 @@ DATA_SETS = (
     'agree_len_2',
     'agree_len_3',
     'agree_len_4',
+    'agree_literal',
     'agree_simple',
-    'agree_even',
-    'agree_uneven',
+    'agree_complex',
     'agree_incl_concat_all',
-    'agree_incl_concat_simple',
-    'agree_incl_concat_even',  # 60
-    'agree_incl_concat_uneven',
+    'agree_incl_concat_literal',
+    'agree_incl_concat_simple',  # 60
+    'agree_incl_concat_complex',
     'agree_incl_delete_all',
     'agree_incl_delete_same',
     'agree_incl_delete_diff',
@@ -286,9 +286,9 @@ DATA_SETS = (
     'agree_incl_replace_diff',
     'agree_incl_reverse',
     'agree_excl_concat_all',
-    'agree_excl_concat_simple',  # 70
-    'agree_excl_concat_even',
-    'agree_excl_concat_uneven',
+    'agree_excl_concat_literal',  # 70
+    'agree_excl_concat_simple',
+    'agree_excl_concat_complex',
     'agree_excl_delete_all',
     'agree_excl_delete_same',
     'agree_excl_delete_diff',
@@ -297,13 +297,13 @@ DATA_SETS = (
     'agree_excl_replace_diff',
     'agree_excl_reverse',
     'agree_contains_all',  # 80
+    'agree_contains_literal',
     'agree_contains_simple',
-    'agree_contains_even',
-    'agree_contains_uneven',
+    'agree_contains_complex',
     'agree_equals_all',
+    'agree_equals_literal',
     'agree_equals_simple',
-    'agree_equals_even',
-    'agree_equals_uneven',
+    'agree_equals_complex',
     'concat_all',
     'concat_alpha_AB',
     'concat_alpha_AC',  # 90
@@ -313,33 +313,33 @@ DATA_SETS = (
     'concat_len_2',
     'concat_len_3',
     'concat_len_4',
+    'concat_literal_all',
+    'concat_literal_alpha_AB',
+    'concat_literal_alpha_AC',
+    'concat_literal_alpha_AD',  # 100
+    'concat_literal_alpha_AE',
+    'concat_literal_len_1',
+    'concat_literal_len_2',
+    'concat_literal_len_3',
+    'concat_literal_len_4',
     'concat_simple_all',
     'concat_simple_alpha_AB',
     'concat_simple_alpha_AC',
-    'concat_simple_alpha_AD',  # 100
-    'concat_simple_alpha_AE',
+    'concat_simple_alpha_AD',
+    'concat_simple_alpha_AE',  # 110
     'concat_simple_len_1',
     'concat_simple_len_2',
     'concat_simple_len_3',
     'concat_simple_len_4',
-    'concat_even_all',
-    'concat_even_alpha_AB',
-    'concat_even_alpha_AC',
-    'concat_even_alpha_AD',
-    'concat_even_alpha_AE',  # 110
-    'concat_even_len_1',
-    'concat_even_len_2',
-    'concat_even_len_3',
-    'concat_even_len_4',
-    'concat_uneven_all',
-    'concat_uneven_alpha_AB',
-    'concat_uneven_alpha_AC',
-    'concat_uneven_alpha_AD',
-    'concat_uneven_alpha_AE',
-    'concat_uneven_len_1',  # 120
-    'concat_uneven_len_2',
-    'concat_uneven_len_3',
-    'concat_uneven_len_4',
+    'concat_complex_all',
+    'concat_complex_alpha_AB',
+    'concat_complex_alpha_AC',
+    'concat_complex_alpha_AD',
+    'concat_complex_alpha_AE',
+    'concat_complex_len_1',  # 120
+    'concat_complex_len_2',
+    'concat_complex_len_3',
+    'concat_complex_len_4',
     'delete_all',
     'delete_alpha_AB',
     'delete_alpha_AC',
@@ -412,33 +412,33 @@ DATA_SETS = (
     'contains_len_2',
     'contains_len_3',
     'contains_len_4',
-    'contains_simple_all',
-    'contains_simple_alpha_AB',
-    'contains_simple_alpha_AC',
-    'contains_simple_alpha_AD',
-    'contains_simple_alpha_AE',  # 200
-    'contains_simple_len_1',
-    'contains_simple_len_2',
-    'contains_simple_len_3',
-    'contains_simple_len_4',
-    'contains_Even_all',
-    'contains_Even_alpha_AB',
-    'contains_Even_alpha_AC',
-    'contains_Even_alpha_AD',
-    'contains_Even_alpha_AE',
-    'contains_Even_len_1',  # 210
-    'contains_Even_len_2',
-    'contains_Even_len_3',
-    'contains_Even_len_4',
-    'contains_uneven_all',
-    'contains_uneven_alpha_AB',
-    'contains_uneven_alpha_AC',
-    'contains_uneven_alpha_AD',
-    'contains_uneven_alpha_AE',
-    'contains_uneven_len_1',
-    'contains_uneven_len_2',  # 220
-    'contains_uneven_len_3',
-    'contains_uneven_len_4',
+    'contains_literal_all',
+    'contains_literal_alpha_AB',
+    'contains_literal_alpha_AC',
+    'contains_literal_alpha_AD',
+    'contains_literal_alpha_AE',  # 200
+    'contains_literal_len_1',
+    'contains_literal_len_2',
+    'contains_literal_len_3',
+    'contains_literal_len_4',
+    'contains_Simple_all',
+    'contains_Simple_alpha_AB',
+    'contains_Simple_alpha_AC',
+    'contains_Simple_alpha_AD',
+    'contains_Simple_alpha_AE',
+    'contains_Simple_len_1',  # 210
+    'contains_Simple_len_2',
+    'contains_Simple_len_3',
+    'contains_Simple_len_4',
+    'contains_complex_all',
+    'contains_complex_alpha_AB',
+    'contains_complex_alpha_AC',
+    'contains_complex_alpha_AD',
+    'contains_complex_alpha_AE',
+    'contains_complex_len_1',
+    'contains_complex_len_2',  # 220
+    'contains_complex_len_3',
+    'contains_complex_len_4',
     'equals_all',
     'equals_alpha_AB',
     'equals_alpha_AC',
@@ -448,6 +448,15 @@ DATA_SETS = (
     'equals_len_2',
     'equals_len_3',  # 230
     'equals_len_4',
+    'equals_literal_all',
+    'equals_literal_alpha_AB',
+    'equals_literal_alpha_AC',
+    'equals_literal_alpha_AD',
+    'equals_literal_alpha_AE',
+    'equals_literal_len_1',
+    'equals_literal_len_2',
+    'equals_literal_len_3',
+    'equals_literal_len_4',  # 240
     'equals_simple_all',
     'equals_simple_alpha_AB',
     'equals_simple_alpha_AC',
@@ -456,25 +465,16 @@ DATA_SETS = (
     'equals_simple_len_1',
     'equals_simple_len_2',
     'equals_simple_len_3',
-    'equals_simple_len_4',  # 240
-    'equals_even_all',
-    'equals_even_alpha_AB',
-    'equals_even_alpha_AC',
-    'equals_even_alpha_AD',
-    'equals_even_alpha_AE',
-    'equals_even_len_1',
-    'equals_even_len_2',
-    'equals_even_len_3',
-    'equals_even_len_4',
-    'equals_uneven_all',  # 250
-    'equals_uneven_alpha_AB',
-    'equals_uneven_alpha_AC',
-    'equals_uneven_alpha_AD',
-    'equals_uneven_alpha_AE',
-    'equals_uneven_len_1',
-    'equals_uneven_len_2',
-    'equals_uneven_len_3',
-    'equals_uneven_len_4'
+    'equals_simple_len_4',
+    'equals_complex_all',  # 250
+    'equals_complex_alpha_AB',
+    'equals_complex_alpha_AC',
+    'equals_complex_alpha_AD',
+    'equals_complex_alpha_AE',
+    'equals_complex_len_1',
+    'equals_complex_len_2',
+    'equals_complex_len_3',
+    'equals_complex_len_4'
 )
 
 ALPHABETS = (
@@ -505,28 +505,28 @@ OPS_AND_PREDS = (
 IN_AND_ARG_TYPE = (
     '',
     'none',
+    'Literal',
     'Simple',
-    'Even',
-    'Uneven',
+    'Complex',
     'same',
     'diff'
 )
 
 OP_NORMS = {
     'concat': {
-        'Simple': {
+        'Literal': {
             'AB': {1: 30, 2: 30, 3: 30, 4: 30},
             'AC': {1: 20, 2: 20, 3: 20, 4: 20},
             'AD': {1: 15, 2: 15, 3: 15, 4: 15},
             'AE': {1: 12, 2: 12, 3: 12, 4: 12}
         },
-        'Even': {
+        'Simple': {
             'AB': {1: 60, 2: 60, 3: 60, 4: 60},
             'AC': {1: 60, 2: 60, 3: 60, 4: 60},
             'AD': {1: 60, 2: 60, 3: 60, 4: 60},
             'AE': {1: 60, 2: 60, 3: 60, 4: 60}
         },
-        'Uneven': {
+        'Complex': {
             'AB': {1: 60, 2: 60, 3: 60, 4: 60},
             'AC': {1: 60, 2: 60, 3: 60, 4: 60},
             'AD': {1: 60, 2: 60, 3: 60, 4: 60},
@@ -570,19 +570,19 @@ OP_NORMS = {
         }
     },
     'contains': {
-        'Simple': {
+        'Literal': {
             'AB': {1: 30, 2: 30, 3: 30, 4: 30},
             'AC': {1: 20, 2: 20, 3: 20, 4: 20},
             'AD': {1: 15, 2: 15, 3: 15, 4: 15},
             'AE': {1: 12, 2: 12, 3: 12, 4: 12}
         },
-        'Even': {
+        'Simple': {
             'AB': {1: 60, 2: 60, 3: 60, 4: 60},
             'AC': {1: 60, 2: 60, 3: 60, 4: 60},
             'AD': {1: 60, 2: 60, 3: 60, 4: 60},
             'AE': {1: 60, 2: 60, 3: 60, 4: 60}
         },
-        'Uneven': {
+        'Complex': {
             'AB': {1: 60, 2: 60, 3: 60, 4: 60},
             'AC': {1: 60, 2: 60, 3: 60, 4: 60},
             'AD': {1: 60, 2: 60, 3: 60, 4: 60},
@@ -590,19 +590,19 @@ OP_NORMS = {
         }
     },
     'equals': {
-        'Simple': {
+        'Literal': {
             'AB': {1: 30, 2: 30, 3: 30, 4: 30},
             'AC': {1: 20, 2: 20, 3: 20, 4: 20},
             'AD': {1: 15, 2: 15, 3: 15, 4: 15},
             'AE': {1: 12, 2: 12, 3: 12, 4: 12}
         },
-        'Even': {
+        'Simple': {
             'AB': {1: 60, 2: 60, 3: 60, 4: 60},
             'AC': {1: 60, 2: 60, 3: 60, 4: 60},
             'AD': {1: 60, 2: 60, 3: 60, 4: 60},
             'AE': {1: 60, 2: 60, 3: 60, 4: 60}
         },
-        'Uneven': {
+        'Complex': {
             'AB': {1: 60, 2: 60, 3: 60, 4: 60},
             'AC': {1: 60, 2: 60, 3: 60, 4: 60},
             'AD': {1: 60, 2: 60, 3: 60, 4: 60},

@@ -414,10 +414,11 @@ release.properties
 
 ### Project Specfic Ignores
 
-data/tables.*
+data/*.npy
 data/plot-data/
 data/plots/
-data/*.npy
+data/stats.csv
+data/tables.*
 graphs/dot/
 graphs/png/
 graphs/synthetic/
