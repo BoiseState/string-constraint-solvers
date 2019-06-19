@@ -3,24 +3,21 @@
     "acc_time": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for All Constraints",
-    "label": "solve_time_stat_all",
-    "data_set": "all"
+    "label": "solve_time_stat_all"
   },
   {
     "branch": true,
     "acc_time": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for \\textit{true} Branch Constraints",
-    "label": "solve_time_stat_true",
-    "data_set": "true"
+    "label": "solve_time_stat_true"
   },
   {
     "branch": false,
     "acc_time": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for \\textit{false} Branch Constraints",
-    "label": "solve_time_stat_false",
-    "data_set": "false"
+    "label": "solve_time_stat_false"
   },
   {
     "alphabet": "AB",
@@ -28,8 +25,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Where $|\\Sigma| = 2$",
-    "label": "solve_time_stat_alpha_AB",
-    "data_set": "alpha_AB"
+    "label": "solve_time_stat_alpha_AB"
   },
   {
     "alphabet": "AC",
@@ -37,8 +33,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Where $|\\Sigma| = 3$",
-    "label": "solve_time_stat_alpha_AC",
-    "data_set": "alpha_AC"
+    "label": "solve_time_stat_alpha_AC"
   },
   {
     "alphabet": "AD",
@@ -46,8 +41,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Where $|\\Sigma| = 4$",
-    "label": "solve_time_stat_alpha_AD",
-    "data_set": "alpha_AD"
+    "label": "solve_time_stat_alpha_AD"
   },
   {
     "alphabet": "AE",
@@ -55,8 +49,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Where $|\\Sigma| = 5$",
-    "label": "solve_time_stat_alpha_AE",
-    "data_set": "alpha_AE"
+    "label": "solve_time_stat_alpha_AE"
   },
   {
     "length": 1,
@@ -64,8 +57,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Following an Input String of Length 1",
-    "label": "solve_time_stat_len_1",
-    "data_set": "len_1"
+    "label": "solve_time_stat_len_1"
   },
   {
     "length": 2,
@@ -73,8 +65,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Following an Input String of Length 2",
-    "label": "solve_time_stat_len_2",
-    "data_set": "len_2"
+    "label": "solve_time_stat_len_2"
   },
   {
     "length": 3,
@@ -82,8 +73,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Following an Input String of Length 3",
-    "label": "solve_time_stat_len_3",
-    "data_set": "len_3"
+    "label": "solve_time_stat_len_3"
   },
   {
     "length": 4,
@@ -91,8 +81,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Following an Input String of Length 3",
-    "label": "solve_time_stat_len_4",
-    "data_set": "len_4"
+    "label": "solve_time_stat_len_4"
   },
   {
     "input_type": "Simple",
@@ -100,8 +89,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Following a \\textit{Simple} Input String",
-    "label": "solve_time_stat_simple",
-    "data_set": "simple"
+    "label": "solve_time_stat_simple"
   },
   {
     "input_type": "Even",
@@ -109,8 +97,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Following a \\textit{Even} Unknown Input String",
-    "label": "solve_time_stat_even",
-    "data_set": "even"
+    "label": "solve_time_stat_even"
   },
   {
     "input_type": "Uneven",
@@ -118,8 +105,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Following a \\textit{Uneven} Unknown Input String",
-    "label": "solve_time_stat_uneven",
-    "data_set": "uneven"
+    "label": "solve_time_stat_uneven"
   },
   {
     "operation": "concat",
@@ -127,8 +113,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Including $\\mathtt{concat}$ Operations",
-    "label": "solve_time_stat_incl_concat_all",
-    "data_set": "incl_concat_all"
+    "label": "solve_time_stat_incl_concat_all"
   },
   {
     "operation": "concat",
@@ -137,8 +122,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Including $\\mathtt{concat}(Simple)$ Operations",
-    "label": "solve_time_stat_incl_concat_simple",
-    "data_set": "incl_concat_simple"
+    "label": "solve_time_stat_incl_concat_simple"
   },
   {
     "operation": "concat",
@@ -147,8 +131,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Including $\\mathtt{concat}(Even)$ Operations",
-    "label": "solve_time_stat_incl_concat_even",
-    "data_set": "incl_concat_even"
+    "label": "solve_time_stat_incl_concat_even"
   },
   {
     "operation": "concat",
@@ -157,8 +140,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Including $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "solve_time_stat_incl_concat_uneven",
-    "data_set": "incl_concat_uneven"
+    "label": "solve_time_stat_incl_concat_uneven"
   },
   {
     "operation": "delete",
@@ -166,8 +148,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Including $\\mathtt{delete}$ Operations",
-    "label": "solve_time_stat_incl_delete_all",
-    "data_set": "incl_delete_all"
+    "label": "solve_time_stat_incl_delete_all"
   },
   {
     "operation": "delete",
@@ -176,8 +157,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Including $\\mathtt{delete}(same)$ Operations",
-    "label": "solve_time_stat_incl_delete_same",
-    "data_set": "incl_delete_same"
+    "label": "solve_time_stat_incl_delete_same"
   },
   {
     "operation": "delete",
@@ -186,8 +166,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Including $\\mathtt{delete}(diff)$ Operations",
-    "label": "solve_time_stat_incl_delete_diff",
-    "data_set": "incl_delete_diff"
+    "label": "solve_time_stat_incl_delete_diff"
   },
   {
     "operation": "replace",
@@ -195,8 +174,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Including $\\mathtt{replace}$ Operations",
-    "label": "solve_time_stat_incl_replace_all",
-    "data_set": "incl_replace_all"
+    "label": "solve_time_stat_incl_replace_all"
   },
   {
     "operation": "replace",
@@ -205,8 +183,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Including $\\mathtt{replace}(same)$ Operations",
-    "label": "solve_time_stat_incl_replace_same",
-    "data_set": "incl_replace_same"
+    "label": "solve_time_stat_incl_replace_same"
   },
   {
     "operation": "replace",
@@ -215,8 +192,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Including $\\mathtt{replace}(diff)$ Operations",
-    "label": "solve_time_stat_incl_replace_diff",
-    "data_set": "incl_replace_diff"
+    "label": "solve_time_stat_incl_replace_diff"
   },
   {
     "operation": "reverse",
@@ -224,8 +200,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Including $\\mathtt{reverse}$ Operations",
-    "label": "solve_time_stat_incl_reverse",
-    "data_set": "incl_reverse"
+    "label": "solve_time_stat_incl_reverse"
   },
   {
     "operation": "concat",
@@ -234,8 +209,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Only $\\mathtt{concat}$ Operations",
-    "label": "solve_time_stat_excl_concat_all",
-    "data_set": "excl_concat_all"
+    "label": "solve_time_stat_excl_concat_all"
   },
   {
     "operation": "concat",
@@ -245,8 +219,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Only $\\mathtt{concat}(Simple)$ Operations",
-    "label": "solve_time_stat_excl_concat_simple",
-    "data_set": "excl_concat_simple"
+    "label": "solve_time_stat_excl_concat_simple"
   },
   {
     "operation": "concat",
@@ -256,8 +229,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Only $\\mathtt{concat}(Even)$ Operations",
-    "label": "solve_time_stat_excl_concat_even",
-    "data_set": "excl_concat_even"
+    "label": "solve_time_stat_excl_concat_even"
   },
   {
     "operation": "concat",
@@ -267,8 +239,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Only $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "solve_time_stat_excl_concat_uneven",
-    "data_set": "excl_concat_uneven"
+    "label": "solve_time_stat_excl_concat_uneven"
   },
   {
     "operation": "delete",
@@ -277,8 +248,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Only $\\mathtt{delete}$ Operations",
-    "label": "solve_time_stat_excl_delete_all",
-    "data_set": "excl_delete_all"
+    "label": "solve_time_stat_excl_delete_all"
   },
   {
     "operation": "delete",
@@ -288,8 +258,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Only $\\mathtt{delete}(same)$ Operations",
-    "label": "solve_time_stat_excl_delete_same",
-    "data_set": "excl_delete_same"
+    "label": "solve_time_stat_excl_delete_same"
   },
   {
     "operation": "delete",
@@ -299,8 +268,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Only $\\mathtt{delete}(diff)$ Operations",
-    "label": "solve_time_stat_excl_delete_diff",
-    "data_set": "excl_delete_diff"
+    "label": "solve_time_stat_excl_delete_diff"
   },
   {
     "operation": "replace",
@@ -309,8 +277,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Only $\\mathtt{replace}$ Operations",
-    "label": "solve_time_stat_excl_replace_all",
-    "data_set": "excl_replace_all"
+    "label": "solve_time_stat_excl_replace_all"
   },
   {
     "operation": "replace",
@@ -320,8 +287,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Only $\\mathtt{replace}(same)$ Operations",
-    "label": "solve_time_stat_excl_replace_same",
-    "data_set": "excl_replace_same"
+    "label": "solve_time_stat_excl_replace_same"
   },
   {
     "operation": "replace",
@@ -331,8 +297,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Only $\\mathtt{replace}(diff)$ Operations",
-    "label": "solve_time_stat_excl_replace_diff",
-    "data_set": "excl_replace_diff"
+    "label": "solve_time_stat_excl_replace_diff"
   },
   {
     "operation": "reverse",
@@ -341,8 +306,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Only $\\mathtt{reverse}$ Operations",
-    "label": "solve_time_stat_excl_reverse",
-    "data_set": "excl_reverse"
+    "label": "solve_time_stat_excl_reverse"
   },
   {
     "predicate": "contains",
@@ -350,8 +314,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Ending in $\\mathtt{contains}$ Predicates",
-    "label": "solve_time_stat_contains_all",
-    "data_set": "contains_all"
+    "label": "solve_time_stat_contains_all"
   },
   {
     "predicate": "contains",
@@ -360,8 +323,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Ending in $\\mathtt{contains}(Simple)$ Predicates",
-    "label": "solve_time_stat_contains_simple",
-    "data_set": "contains_simple"
+    "label": "solve_time_stat_contains_simple"
   },
   {
     "predicate": "contains",
@@ -370,8 +332,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Ending in $\\mathtt{contains}(Even)$ Predicates",
-    "label": "solve_time_stat_contains_even",
-    "data_set": "contains_even"
+    "label": "solve_time_stat_contains_even"
   },
   {
     "predicate": "contains",
@@ -380,8 +341,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Ending in $\\mathtt{contains}(Uneven)$ Predicates",
-    "label": "solve_time_stat_contains_uneven",
-    "data_set": "contains_uneven"
+    "label": "solve_time_stat_contains_uneven"
   },
   {
     "predicate": "equals",
@@ -389,8 +349,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Ending in $\\mathtt{equals}$ Predicates",
-    "label": "solve_time_stat_equals_all",
-    "data_set": "equals_all"
+    "label": "solve_time_stat_equals_all"
   },
   {
     "predicate": "equals",
@@ -399,8 +358,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Ending in $\\mathtt{equals}(Simple)$ Predicates",
-    "label": "solve_time_stat_equals_simple",
-    "data_set": "equals_simple"
+    "label": "solve_time_stat_equals_simple"
   },
   {
     "predicate": "equals",
@@ -409,8 +367,7 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Ending in $\\mathtt{equals}(Even)$ Predicates",
-    "label": "solve_time_stat_equals_even",
-    "data_set": "equals_even"
+    "label": "solve_time_stat_equals_even"
   },
   {
     "predicate": "equals",
@@ -419,7 +376,6 @@
     "t_test": true,
     "ind_var": true,
     "caption": "\\textit{t}-test of Constraint Solving Time for Constraints Ending in $\\mathtt{equals}(Uneven)$ Predicates",
-    "label": "solve_time_stat_equals_uneven",
-    "data_set": "equals_uneven"
+    "label": "solve_time_stat_equals_uneven"
   }
 ]

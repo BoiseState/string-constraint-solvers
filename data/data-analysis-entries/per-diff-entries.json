@@ -1,810 +1,546 @@
 [
   {
-    "per_diff": true,
     "caption": "Frequency of Accuracy Difference for All Constraints",
-    "label": "acc_diff_all",
-    "Selection": "All",
-    "data_set": "all"
+    "label": "acc_diff_all"
   },
   {
-    "per_diff": true,
     "branch": true,
     "caption": "Frequency of Accuracy Difference for \\textit{true} Branch Constraints",
-    "label": "acc_diff_true",
-    "Selection": "\\textit{true} Branches",
-    "data_set": "true"
+    "label": "acc_diff_true"
   },
   {
-    "per_diff": true,
     "branch": false,
     "caption": "Frequency of Accuracy Difference for \\textit{false} Branch Constraints",
-    "label": "acc_diff_false",
-    "Selection": "\\textit{false} Branches",
-    "data_set": "false"
+    "label": "acc_diff_false"
   },
   {
-    "per_diff": true,
     "alphabet": "AB",
     "caption": "Frequency of Accuracy Difference for Constraints Where $|\\Sigma| = 2$",
-    "label": "acc_diff_alpha_AB",
-    "Selection": "$|\\Sigma| = 2$",
-    "data_set": "alpha_AB"
+    "label": "acc_diff_alpha_AB"
   },
   {
-    "per_diff": true,
     "alphabet": "AC",
     "caption": "Frequency of Accuracy Difference for Constraints Where $|\\Sigma| = 3$",
-    "label": "acc_diff_alpha_AC",
-    "Selection": "$|\\Sigma| = 3$",
-    "data_set": "alpha_AC"
+    "label": "acc_diff_alpha_AC"
   },
   {
-    "per_diff": true,
     "alphabet": "AD",
     "caption": "Frequency of Accuracy Difference for Constraints Where $|\\Sigma| = 4$",
-    "label": "acc_diff_alpha_AD",
-    "Selection": "$|\\Sigma| = 4$",
-    "data_set": "alpha_AD"
+    "label": "acc_diff_alpha_AD"
   },
   {
-    "per_diff": true,
     "alphabet": "AE",
     "caption": "Frequency of Accuracy Difference for Constraints Where $|\\Sigma| = 5$",
-    "label": "acc_diff_alpha_AE",
-    "Selection": "$|\\Sigma| = 5$",
-    "data_set": "alpha_AE"
+    "label": "acc_diff_alpha_AE"
   },
   {
-    "per_diff": true,
     "length": 1,
     "caption": "Frequency of Accuracy Difference for Constraints Following an Input String of Length 1",
-    "label": "acc_diff_len_1",
-    "Selection": "Length 1",
-    "data_set": "len_1"
+    "label": "acc_diff_len_1"
   },
   {
-    "per_diff": true,
     "length": 2,
     "caption": "Frequency of Accuracy Difference for Constraints Following an Input String of Length 2",
-    "label": "acc_diff_len_2",
-    "Selection": "Length 2",
-    "data_set": "len_2"
+    "label": "acc_diff_len_2"
   },
   {
-    "per_diff": true,
     "length": 3,
     "caption": "Frequency of Accuracy Difference for Constraints Following an Input String of Length 3",
-    "label": "acc_diff_len_3",
-    "Selection": "Length 3",
-    "data_set": "len_3"
+    "label": "acc_diff_len_3"
   },
   {
-    "per_diff": true,
     "length": 4,
     "caption": "Frequency of Accuracy Difference for Constraints Following an Input String of Length 3",
-    "label": "acc_diff_len_4",
-    "Selection": "Length 4",
-    "data_set": "len_4"
+    "label": "acc_diff_len_4"
   },
   {
-    "per_diff": true,
     "input_type": "Simple",
     "caption": "Frequency of Accuracy Difference for Constraints Following a \\textit{Simple} Input String",
-    "label": "acc_diff_simple",
-    "Selection": "\\textit{Simple}",
-    "data_set": "simple"
+    "label": "acc_diff_simple"
   },
   {
-    "per_diff": true,
     "input_type": "Even",
     "caption": "Frequency of Accuracy Difference for Constraints Following a \\textit{Even} Unknown Input String",
-    "label": "acc_diff_even",
-    "Selection": "\\textit{Even}",
-    "data_set": "even"
+    "label": "acc_diff_even"
   },
   {
-    "per_diff": true,
     "input_type": "Uneven",
     "caption": "Frequency of Accuracy Difference for Constraints Following a \\textit{Uneven} Unknown Input String",
-    "label": "acc_diff_uneven",
-    "Selection": "\\textit{Uneven}",
-    "data_set": "uneven"
+    "label": "acc_diff_uneven"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{concat}$ Operations",
-    "label": "acc_diff_incl_concat_all",
-    "Selection": "Includes $\\mathtt{concat}$",
-    "data_set": "incl_concat_all"
+    "label": "acc_diff_incl_concat_all"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Simple",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{concat}(Simple)$ Operations",
-    "label": "acc_diff_incl_concat_simple",
-    "Selection": "Includes $\\mathtt{concat}(Simple)$",
-    "data_set": "incl_concat_simple"
+    "label": "acc_diff_incl_concat_simple"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Even",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{concat}(Even)$ Operations",
-    "label": "acc_diff_incl_concat_even",
-    "Selection": "Includes $\\mathtt{concat}(Even)$",
-    "data_set": "incl_concat_even"
+    "label": "acc_diff_incl_concat_even"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Uneven",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "acc_diff_incl_concat_uneven",
-    "Selection": "Includes $\\mathtt{concat}(Uneven)$",
-    "data_set": "incl_concat_uneven"
+    "label": "acc_diff_incl_concat_uneven"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{delete}$ Operations",
-    "label": "acc_diff_incl_delete_all",
-    "Selection": "Includes $\\mathtt{delete}$",
-    "data_set": "incl_delete_all"
+    "label": "acc_diff_incl_delete_all"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "op_arg_type": "same",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{delete}(same)$ Operations",
-    "label": "acc_diff_incl_delete_same",
-    "Selection": "Includes $\\mathtt{delete}(same)$",
-    "data_set": "incl_delete_same"
+    "label": "acc_diff_incl_delete_same"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "op_arg_type": "diff",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{delete}(diff)$ Operations",
-    "label": "acc_diff_incl_delete_diff",
-    "Selection": "Includes $\\mathtt{delete}(diff)$",
-    "data_set": "incl_delete_diff"
+    "label": "acc_diff_incl_delete_diff"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{replace}$ Operations",
-    "label": "acc_diff_incl_replace_all",
-    "Selection": "Includes $\\mathtt{replace}$",
-    "data_set": "incl_replace_all"
+    "label": "acc_diff_incl_replace_all"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "op_arg_type": "same",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{replace}(same)$ Operations",
-    "label": "acc_diff_incl_replace_same",
-    "Selection": "Includes $\\mathtt{replace}(same)$",
-    "data_set": "incl_replace_same"
+    "label": "acc_diff_incl_replace_same"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "op_arg_type": "diff",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{replace}(diff)$ Operations",
-    "label": "acc_diff_incl_replace_diff",
-    "Selection": "Includes $\\mathtt{replace}(diff)$",
-    "data_set": "incl_replace_diff"
+    "label": "acc_diff_incl_replace_diff"
   },
   {
-    "per_diff": true,
     "operation": "reverse",
     "caption": "Frequency of Accuracy Difference for Constraints Including $\\mathtt{reverse}$ Operations",
-    "label": "acc_diff_incl_reverse",
-    "Selection": "Includes $\\mathtt{reverse}$",
-    "data_set": "incl_reverse"
+    "label": "acc_diff_incl_reverse"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{concat}$ Operations",
-    "label": "acc_diff_excl_concat_all",
-    "Selection": "Only $\\mathtt{concat}$",
-    "data_set": "excl_concat_all"
+    "label": "acc_diff_excl_concat_all"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Simple",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{concat}(Simple)$ Operations",
-    "label": "acc_diff_excl_concat_simple",
-    "Selection": "Only $\\mathtt{concat}(Simple)$",
-    "data_set": "excl_concat_simple"
+    "label": "acc_diff_excl_concat_simple"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Even",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{concat}(Even)$ Operations",
-    "label": "acc_diff_excl_concat_even",
-    "Selection": "Only $\\mathtt{concat}(Even)$",
-    "data_set": "excl_concat_even"
+    "label": "acc_diff_excl_concat_even"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Uneven",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "acc_diff_excl_concat_uneven",
-    "Selection": "Only $\\mathtt{concat}(Uneven)$",
-    "data_set": "excl_concat_uneven"
+    "label": "acc_diff_excl_concat_uneven"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{delete}$ Operations",
-    "label": "acc_diff_excl_delete_all",
-    "Selection": "Only $\\mathtt{delete}$",
-    "data_set": "excl_delete_all"
+    "label": "acc_diff_excl_delete_all"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "op_arg_type": "same",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{delete}(same)$ Operations",
-    "label": "acc_diff_excl_delete_same",
-    "Selection": "Only $\\mathtt{delete}(same)$",
-    "data_set": "excl_delete_same"
+    "label": "acc_diff_excl_delete_same"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "op_arg_type": "diff",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{delete}(diff)$ Operations",
-    "label": "acc_diff_excl_delete_diff",
-    "Selection": "Only $\\mathtt{delete}(diff)$",
-    "data_set": "excl_delete_diff"
+    "label": "acc_diff_excl_delete_diff"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{replace}$ Operations",
-    "label": "acc_diff_excl_replace_all",
-    "Selection": "Only $\\mathtt{replace}$",
-    "data_set": "excl_replace_all"
+    "label": "acc_diff_excl_replace_all"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "op_arg_type": "same",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{replace}(same)$ Operations",
-    "label": "acc_diff_excl_replace_same",
-    "Selection": "Only $\\mathtt{replace}(same)$",
-    "data_set": "excl_replace_same"
+    "label": "acc_diff_excl_replace_same"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "op_arg_type": "diff",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{replace}(diff)$ Operations",
-    "label": "acc_diff_excl_replace_diff",
-    "Selection": "Only $\\mathtt{replace}(diff)$",
-    "data_set": "excl_replace_diff"
+    "label": "acc_diff_excl_replace_diff"
   },
   {
-    "per_diff": true,
     "operation": "reverse",
     "exclusive_op": true,
     "caption": "Frequency of Accuracy Difference for Constraints Only $\\mathtt{reverse}$ Operations",
-    "label": "acc_diff_excl_reverse",
-    "Selection": "Only $\\mathtt{reverse}$",
-    "data_set": "excl_reverse"
+    "label": "acc_diff_excl_reverse"
   },
   {
-    "per_diff": true,
     "predicate": "contains",
     "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{contains}$ Predicates",
-    "label": "acc_diff_contains_all",
-    "Selection": "$\\mathtt{contains}$",
-    "data_set": "contains_all"
+    "label": "acc_diff_contains_all"
   },
   {
-    "per_diff": true,
     "predicate": "contains",
     "pred_arg_type": "Simple",
     "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Simple)$ Predicates",
-    "label": "acc_diff_contains_simple",
-    "Selection": "$\\mathtt{contains}(Simple)$",
-    "data_set": "contains_simple"
+    "label": "acc_diff_contains_simple"
   },
   {
-    "per_diff": true,
     "predicate": "contains",
     "pred_arg_type": "Even",
     "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Even)$ Predicates",
-    "label": "acc_diff_contains_even",
-    "Selection": "$\\mathtt{contains}(Even)$",
-    "data_set": "contains_even"
+    "label": "acc_diff_contains_even"
   },
   {
-    "per_diff": true,
     "predicate": "contains",
     "pred_arg_type": "Uneven",
     "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Uneven)$ Predicates",
-    "label": "acc_diff_contains_uneven",
-    "Selection": "$\\mathtt{contains}(Uneven)$",
-    "data_set": "contains_uneven"
+    "label": "acc_diff_contains_uneven"
   },
   {
-    "per_diff": true,
     "predicate": "equals",
     "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{equals}$ Predicates",
-    "label": "acc_diff_equals_all",
-    "Selection": "$\\mathtt{equals}$",
-    "data_set": "equals_all"
+    "label": "acc_diff_equals_all"
   },
   {
-    "per_diff": true,
     "predicate": "equals",
     "pred_arg_type": "Simple",
     "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Simple)$ Predicates",
-    "label": "acc_diff_equals_simple",
-    "Selection": "$\\mathtt{equals}(Simple)$",
-    "data_set": "equals_simple"
+    "label": "acc_diff_equals_simple"
   },
   {
-    "per_diff": true,
     "predicate": "equals",
     "pred_arg_type": "Even",
     "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Even)$ Predicates",
-    "label": "acc_diff_equals_even",
-    "Selection": "$\\mathtt{equals}(Even)$",
-    "data_set": "equals_even"
+    "label": "acc_diff_equals_even"
   },
   {
-    "per_diff": true,
     "predicate": "equals",
     "pred_arg_type": "Uneven",
     "caption": "Frequency of Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Uneven)$ Predicates",
-    "label": "acc_diff_equals_uneven",
-    "Selection": "$\\mathtt{equals}(Uneven)$",
-    "data_set": "equals_uneven"
+    "label": "acc_diff_equals_uneven"
   },
   {
-    "per_diff": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for All Constraints",
-    "label": "acc_diff_agree_all",
-    "Selection": "Agree All",
-    "data_set": "agree_all"
+    "label": "acc_diff_agree_all"
   },
   {
-    "per_diff": true,
     "branch": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for \\textit{true} Branch Constraints",
-    "label": "acc_diff_agree_true",
-    "Selection": "Agree \\textit{true} Branches",
-    "data_set": "agree_true"
+    "label": "acc_diff_agree_true"
   },
   {
-    "per_diff": true,
     "branch": false,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for \\textit{false} Branch Constraints",
-    "label": "acc_diff_agree_false",
-    "Selection": "Agree \\textit{false} Branches",
-    "data_set": "agree_false"
+    "label": "acc_diff_agree_false"
   },
   {
-    "per_diff": true,
     "alphabet": "AB",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Where $|\\Sigma| = 2$",
-    "label": "acc_diff_agree_alpha_AB",
-    "Selection": "Agree $|\\Sigma| = 2$",
-    "data_set": "agree_alpha_AB"
+    "label": "acc_diff_agree_alpha_AB"
   },
   {
-    "per_diff": true,
     "alphabet": "AC",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Where $|\\Sigma| = 3$",
-    "label": "acc_diff_agree_alpha_AC",
-    "Selection": "Agree $|\\Sigma| = 3$",
-    "data_set": "agree_alpha_AC"
+    "label": "acc_diff_agree_alpha_AC"
   },
   {
-    "per_diff": true,
     "alphabet": "AD",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Where $|\\Sigma| = 4$",
-    "label": "acc_diff_agree_alpha_AD",
-    "Selection": "Agree $|\\Sigma| = 4$",
-    "data_set": "agree_alpha_AD"
+    "label": "acc_diff_agree_alpha_AD"
   },
   {
-    "per_diff": true,
     "alphabet": "AE",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Where $|\\Sigma| = 5$",
-    "label": "acc_diff_agree_alpha_AE",
-    "Selection": "Agree $|\\Sigma| = 5$",
-    "data_set": "agree_alpha_AE"
+    "label": "acc_diff_agree_alpha_AE"
   },
   {
-    "per_diff": true,
     "length": 1,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following an Input String of Length 1",
-    "label": "acc_diff_agree_len_1",
-    "Selection": "Agree Length 1",
-    "data_set": "agree_len_1"
+    "label": "acc_diff_agree_len_1"
   },
   {
-    "per_diff": true,
     "length": 2,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following an Input String of Length 2",
-    "label": "acc_diff_agree_len_2",
-    "Selection": "Agree Length 2",
-    "data_set": "agree_len_2"
+    "label": "acc_diff_agree_len_2"
   },
   {
-    "per_diff": true,
     "length": 3,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following an Input String of Length 3",
-    "label": "acc_diff_agree_len_3",
-    "Selection": "Agree Length 3",
-    "data_set": "agree_len_3"
+    "label": "acc_diff_agree_len_3"
   },
   {
-    "per_diff": true,
     "length": 4,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following an Input String of Length 3",
-    "label": "acc_diff_agree_len_4",
-    "Selection": "Agree Length 4",
-    "data_set": "agree_len_4"
+    "label": "acc_diff_agree_len_4"
   },
   {
-    "per_diff": true,
     "input_type": "Simple",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following a \\textit{Simple} Input String",
-    "label": "acc_diff_agree_simple",
-    "Selection": "Agree \\textit{Simple}",
-    "data_set": "agree_simple"
+    "label": "acc_diff_agree_simple"
   },
   {
-    "per_diff": true,
     "input_type": "Even",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following a \\textit{Even} Unknown Input String",
-    "label": "acc_diff_agree_even",
-    "Selection": "Agree \\textit{Even}",
-    "data_set": "agree_even"
+    "label": "acc_diff_agree_even"
   },
   {
-    "per_diff": true,
     "input_type": "Uneven",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Following a \\textit{Uneven} Unknown Input String",
-    "label": "acc_diff_agree_uneven",
-    "Selection": "Agree \\textit{Uneven}",
-    "data_set": "agree_uneven"
+    "label": "acc_diff_agree_uneven"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{concat}$ Operations",
-    "label": "acc_diff_agree_incl_concat_all",
-    "Selection": "Agree Includes $\\mathtt{concat}$",
-    "data_set": "agree_incl_concat_all"
+    "label": "acc_diff_agree_incl_concat_all"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Simple",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{concat}(Simple)$ Operations",
-    "label": "acc_diff_agree_incl_concat_simple",
-    "Selection": "Agree Includes $\\mathtt{concat}(Simple)$",
-    "data_set": "agree_incl_concat_simple"
+    "label": "acc_diff_agree_incl_concat_simple"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Even",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{concat}(Even)$ Operations",
-    "label": "acc_diff_agree_incl_concat_even",
-    "Selection": "Agree Includes $\\mathtt{concat}(Even)$",
-    "data_set": "agree_incl_concat_even"
+    "label": "acc_diff_agree_incl_concat_even"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Uneven",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "acc_diff_agree_incl_concat_uneven",
-    "Selection": "Agree Includes $\\mathtt{concat}(Uneven)$",
-    "data_set": "agree_incl_concat_uneven"
+    "label": "acc_diff_agree_incl_concat_uneven"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{delete}$ Operations",
-    "label": "acc_diff_agree_incl_delete_all",
-    "Selection": "Agree Includes $\\mathtt{delete}$",
-    "data_set": "agree_incl_delete_all"
+    "label": "acc_diff_agree_incl_delete_all"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "op_arg_type": "same",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{delete}(same)$ Operations",
-    "label": "acc_diff_agree_incl_delete_same",
-    "Selection": "Agree Includes $\\mathtt{delete}(same)$",
-    "data_set": "agree_incl_delete_same"
+    "label": "acc_diff_agree_incl_delete_same"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "op_arg_type": "diff",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{delete}(diff)$ Operations",
-    "label": "acc_diff_agree_incl_delete_diff",
-    "Selection": "Agree Includes $\\mathtt{delete}(diff)$",
-    "data_set": "agree_incl_delete_diff"
+    "label": "acc_diff_agree_incl_delete_diff"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{replace}$ Operations",
-    "label": "acc_diff_agree_incl_replace_all",
-    "Selection": "Agree Includes $\\mathtt{replace}$",
-    "data_set": "agree_incl_replace_all"
+    "label": "acc_diff_agree_incl_replace_all"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "op_arg_type": "same",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{replace}(same)$ Operations",
-    "label": "acc_diff_agree_incl_replace_same",
-    "Selection": "Agree Includes $\\mathtt{replace}(same)$",
-    "data_set": "agree_incl_replace_same"
+    "label": "acc_diff_agree_incl_replace_same"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "op_arg_type": "diff",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{replace}(diff)$ Operations",
-    "label": "acc_diff_agree_incl_replace_diff",
-    "Selection": "Agree Includes $\\mathtt{replace}(diff)$",
-    "data_set": "agree_incl_replace_diff"
+    "label": "acc_diff_agree_incl_replace_diff"
   },
   {
-    "per_diff": true,
     "operation": "reverse",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Including $\\mathtt{reverse}$ Operations",
-    "label": "acc_diff_agree_incl_reverse",
-    "Selection": "Agree Includes $\\mathtt{reverse}$",
-    "data_set": "agree_incl_reverse"
+    "label": "acc_diff_agree_incl_reverse"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "exclusive_op": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{concat}$ Operations",
-    "label": "acc_diff_agree_excl_concat_all",
-    "Selection": "Agree Only $\\mathtt{concat}$",
-    "data_set": "agree_excl_concat_all"
+    "label": "acc_diff_agree_excl_concat_all"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Simple",
     "exclusive_op": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{concat}(Simple)$ Operations",
-    "label": "acc_diff_agree_excl_concat_simple",
-    "Selection": "Agree Only $\\mathtt{concat}(Simple)$",
-    "data_set": "agree_excl_concat_simple"
+    "label": "acc_diff_agree_excl_concat_simple"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Even",
     "exclusive_op": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{concat}(Even)$ Operations",
-    "label": "acc_diff_agree_excl_concat_even",
-    "Selection": "Agree Only $\\mathtt{concat}(Even)$",
-    "data_set": "agree_excl_concat_even"
+    "label": "acc_diff_agree_excl_concat_even"
   },
   {
-    "per_diff": true,
     "operation": "concat",
     "op_arg_type": "Uneven",
     "exclusive_op": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{concat}(Uneven)$ Operations",
-    "label": "acc_diff_agree_excl_concat_uneven",
-    "Selection": "Agree Only $\\mathtt{concat}(Uneven)$",
-    "data_set": "agree_excl_concat_uneven"
+    "label": "acc_diff_agree_excl_concat_uneven"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "exclusive_op": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{delete}$ Operations",
-    "label": "acc_diff_agree_excl_delete_all",
-    "Selection": "Agree Only $\\mathtt{delete}$",
-    "data_set": "agree_excl_delete_all"
+    "label": "acc_diff_agree_excl_delete_all"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "op_arg_type": "same",
     "exclusive_op": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{delete}(same)$ Operations",
-    "label": "acc_diff_agree_excl_delete_same",
-    "Selection": "Agree Only $\\mathtt{delete}(same)$",
-    "data_set": "agree_excl_delete_same"
+    "label": "acc_diff_agree_excl_delete_same"
   },
   {
-    "per_diff": true,
     "operation": "delete",
     "op_arg_type": "diff",
     "exclusive_op": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{delete}(diff)$ Operations",
-    "label": "acc_diff_agree_excl_delete_diff",
-    "Selection": "Agree Only $\\mathtt{delete}(diff)$",
-    "data_set": "agree_excl_delete_diff"
+    "label": "acc_diff_agree_excl_delete_diff"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "exclusive_op": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{replace}$ Operations",
-    "label": "acc_diff_agree_excl_replace_all",
-    "Selection": "Agree Only $\\mathtt{replace}$",
-    "data_set": "agree_excl_replace_all"
+    "label": "acc_diff_agree_excl_replace_all"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "op_arg_type": "same",
     "exclusive_op": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{replace}(same)$ Operations",
-    "label": "acc_diff_agree_excl_replace_same",
-    "Selection": "Agree Only $\\mathtt{replace}(same)$",
-    "data_set": "agree_excl_replace_same"
+    "label": "acc_diff_agree_excl_replace_same"
   },
   {
-    "per_diff": true,
     "operation": "replace",
     "op_arg_type": "diff",
     "exclusive_op": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{replace}(diff)$ Operations",
-    "label": "acc_diff_agree_excl_replace_diff",
-    "Selection": "Agree Only $\\mathtt{replace}(diff)$",
-    "data_set": "agree_excl_replace_diff"
+    "label": "acc_diff_agree_excl_replace_diff"
   },
   {
-    "per_diff": true,
     "operation": "reverse",
     "exclusive_op": true,
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Only $\\mathtt{reverse}$ Operations",
-    "label": "acc_diff_agree_excl_reverse",
-    "Selection": "Agree Only $\\mathtt{reverse}$",
-    "data_set": "agree_excl_reverse"
+    "label": "acc_diff_agree_excl_reverse"
   },
   {
-    "per_diff": true,
     "predicate": "contains",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{contains}$ Predicates",
-    "label": "acc_diff_agree_contains_all",
-    "Selection": "Agree $\\mathtt{contains}$",
-    "data_set": "agree_contains_all"
+    "label": "acc_diff_agree_contains_all"
   },
   {
-    "per_diff": true,
     "predicate": "contains",
     "pred_arg_type": "Simple",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Simple)$ Predicates",
-    "label": "acc_diff_agree_contains_simple",
-    "Selection": "Agree $\\mathtt{contains}(Simple)$",
-    "data_set": "agree_contains_simple"
+    "label": "acc_diff_agree_contains_simple"
   },
   {
-    "per_diff": true,
     "predicate": "contains",
     "pred_arg_type": "Even",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Even)$ Predicates",
-    "label": "acc_diff_agree_contains_even",
-    "Selection": "Agree $\\mathtt{contains}(Even)$",
-    "data_set": "agree_contains_even"
+    "label": "acc_diff_agree_contains_even"
   },
   {
-    "per_diff": true,
     "predicate": "contains",
     "pred_arg_type": "Uneven",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{contains}(Uneven)$ Predicates",
-    "label": "acc_diff_agree_contains_uneven",
-    "Selection": "Agree $\\mathtt{contains}(Uneven)$",
-    "data_set": "agree_contains_uneven"
+    "label": "acc_diff_agree_contains_uneven"
   },
   {
-    "per_diff": true,
     "predicate": "equals",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{equals}$ Predicates",
-    "label": "acc_diff_agree_equals_all",
-    "Selection": "Agree $\\mathtt{equals}$",
-    "data_set": "agree_equals_all"
+    "label": "acc_diff_agree_equals_all"
   },
   {
-    "per_diff": true,
     "predicate": "equals",
     "pred_arg_type": "Simple",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Simple)$ Predicates",
-    "label": "acc_diff_agree_equals_simple",
-    "Selection": "Agree $\\mathtt{equals}(Simple)$",
-    "data_set": "agree_equals_simple"
+    "label": "acc_diff_agree_equals_simple"
   },
   {
-    "per_diff": true,
     "predicate": "equals",
     "pred_arg_type": "Even",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Even)$ Predicates",
-    "label": "acc_diff_agree_equals_even",
-    "Selection": "Agree $\\mathtt{equals}(Even)$",
-    "data_set": "agree_equals_even"
+    "label": "acc_diff_agree_equals_even"
   },
   {
-    "per_diff": true,
     "predicate": "equals",
     "pred_arg_type": "Uneven",
     "disagree": false,
     "caption": "Frequency of Agreeing Accuracy Difference for Constraints Ending in $\\mathtt{equals}(Uneven)$ Predicates",
-    "label": "acc_diff_agree_equals_uneven",
-    "Selection": "Agree $\\mathtt{equals}(Uneven)$",
-    "data_set": "agree_equals_uneven"
+    "label": "acc_diff_agree_equals_uneven"
   }
 ]

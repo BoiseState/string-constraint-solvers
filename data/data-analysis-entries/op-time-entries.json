@@ -3,72 +3,63 @@
     "op_time": true,
     "operation": "concat",
     "Selection": "$\\mathtt{concat}$",
-    "label": "op_time_concat_all",
-    "data_set": "concat_all"
+    "label": "op_time_concat_all"
   },
   {
     "op_time": true,
     "operation": "concat",
     "alphabet": "AB",
     "Selection": "$\\mathtt{concat}$ where $|\\Sigma| = 2$",
-    "label": "op_time_concat_alpha_AB",
-    "data_set": "concat_alpha_AB"
+    "label": "op_time_concat_alpha_AB"
   },
   {
     "op_time": true,
     "operation": "concat",
     "alphabet": "AC",
     "Selection": "$\\mathtt{concat}$ where $|\\Sigma| = 3$",
-    "label": "op_time_concat_alpha_AC",
-    "data_set": "concat_alpha_AC"
+    "label": "op_time_concat_alpha_AC"
   },
   {
     "op_time": true,
     "operation": "concat",
     "alphabet": "AD",
     "Selection": "$\\mathtt{concat}$ where $|\\Sigma| = 4$",
-    "label": "op_time_concat_alpha_AD",
-    "data_set": "concat_alpha_AD"
+    "label": "op_time_concat_alpha_AD"
   },
   {
     "op_time": true,
     "operation": "concat",
     "alphabet": "AE",
     "Selection": "$\\mathtt{concat}$ where $|\\Sigma| = 5$",
-    "label": "op_time_concat_alpha_AE",
-    "data_set": "concat_alpha_AE"
+    "label": "op_time_concat_alpha_AE"
   },
   {
     "op_time": true,
     "operation": "concat",
     "length": 1,
     "Selection": "$\\mathtt{concat}$ for Length 1",
-    "label": "op_time_concat_len_1",
-    "data_set": "concat_len_1"
+    "label": "op_time_concat_len_1"
   },
   {
     "op_time": true,
     "operation": "concat",
     "length": 2,
     "Selection": "$\\mathtt{concat}$ for Length 2",
-    "label": "op_time_concat_len_2",
-    "data_set": "concat_len_2"
+    "label": "op_time_concat_len_2"
   },
   {
     "op_time": true,
     "operation": "concat",
     "length": 3,
     "Selection": "$\\mathtt{concat}$ for Length 3",
-    "label": "op_time_concat_len_3",
-    "data_set": "concat_len_3"
+    "label": "op_time_concat_len_3"
   },
   {
     "op_time": true,
     "operation": "concat",
     "length": 4,
     "Selection": "$\\mathtt{concat}$ for Length 4",
-    "label": "op_time_concat_len_4",
-    "data_set": "concat_len_4"
+    "label": "op_time_concat_len_4"
   },
   {
     "is_blank": true
@@ -78,8 +69,7 @@
     "operation": "concat",
     "op_arg_type": "Simple",
     "Selection": "$\\mathtt{concat}(Simple)$",
-    "label": "op_time_concat_simple_all",
-    "data_set": "concat_simple_all"
+    "label": "op_time_concat_simple_all"
   },
   {
     "op_time": true,
@@ -87,8 +77,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AB",
     "Selection": "$\\mathtt{concat}(Simple)$ where $|\\Sigma| = 2$",
-    "label": "op_time_concat_simple_alpha_AB",
-    "data_set": "concat_simple_alpha_AB"
+    "label": "op_time_concat_simple_alpha_AB"
   },
   {
     "op_time": true,
@@ -96,8 +85,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AC",
     "Selection": "$\\mathtt{concat}(Simple)$ where $|\\Sigma| = 3$",
-    "label": "op_time_concat_simple_alpha_AC",
-    "data_set": "concat_simple_alpha_AC"
+    "label": "op_time_concat_simple_alpha_AC"
   },
   {
     "op_time": true,
@@ -105,8 +93,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AD",
     "Selection": "$\\mathtt{concat}(Simple)$ where $|\\Sigma| = 4$",
-    "label": "op_time_concat_simple_alpha_AD",
-    "data_set": "concat_simple_alpha_AD"
+    "label": "op_time_concat_simple_alpha_AD"
   },
   {
     "op_time": true,
@@ -114,8 +101,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AE",
     "Selection": "$\\mathtt{concat}(Simple)$ where $|\\Sigma| = 5$",
-    "label": "op_time_concat_simple_alpha_AE",
-    "data_set": "concat_simple_alpha_AE"
+    "label": "op_time_concat_simple_alpha_AE"
   },
   {
     "op_time": true,
@@ -123,8 +109,7 @@
     "op_arg_type": "Simple",
     "length": 1,
     "Selection": "$\\mathtt{concat}(Simple)$ for Length 1",
-    "label": "op_time_concat_simple_len_1",
-    "data_set": "concat_simple_len_1"
+    "label": "op_time_concat_simple_len_1"
   },
   {
     "op_time": true,
@@ -132,8 +117,7 @@
     "op_arg_type": "Simple",
     "length": 2,
     "Selection": "$\\mathtt{concat}(Simple)$ for Length 2",
-    "label": "op_time_concat_simple_len_2",
-    "data_set": "concat_simple_len_2"
+    "label": "op_time_concat_simple_len_2"
   },
   {
     "op_time": true,
@@ -141,8 +125,7 @@
     "op_arg_type": "Simple",
     "length": 3,
     "Selection": "$\\mathtt{concat}(Simple)$ for Length 3",
-    "label": "op_time_concat_simple_len_3",
-    "data_set": "concat_simple_len_3"
+    "label": "op_time_concat_simple_len_3"
   },
   {
     "op_time": true,
@@ -150,8 +133,7 @@
     "op_arg_type": "Simple",
     "length": 4,
     "Selection": "$\\mathtt{concat}(Simple)$ for Length 4",
-    "label": "op_time_concat_simple_len_4",
-    "data_set": "concat_simple_len_4"
+    "label": "op_time_concat_simple_len_4"
   },
   {
     "is_blank": true
@@ -161,8 +143,7 @@
     "operation": "concat",
     "op_arg_type": "Even",
     "Selection": "$\\mathtt{concat}(Even)$",
-    "label": "op_time_concat_even_all",
-    "data_set": "concat_even_all"
+    "label": "op_time_concat_even_all"
   },
   {
     "op_time": true,
@@ -170,8 +151,7 @@
     "op_arg_type": "Even",
     "alphabet": "AB",
     "Selection": "$\\mathtt{concat}(Even)$ where $|\\Sigma| = 2$",
-    "label": "op_time_concat_even_alpha_AB",
-    "data_set": "concat_even_alpha_AB"
+    "label": "op_time_concat_even_alpha_AB"
   },
   {
     "op_time": true,
@@ -179,8 +159,7 @@
     "op_arg_type": "Even",
     "alphabet": "AC",
     "Selection": "$\\mathtt{concat}(Even)$ where $|\\Sigma| = 3$",
-    "label": "op_time_concat_even_alpha_AC",
-    "data_set": "concat_even_alpha_AC"
+    "label": "op_time_concat_even_alpha_AC"
   },
   {
     "op_time": true,
@@ -188,8 +167,7 @@
     "op_arg_type": "Even",
     "alphabet": "AD",
     "Selection": "$\\mathtt{concat}(Even)$ where $|\\Sigma| = 4$",
-    "label": "op_time_concat_even_alpha_AD",
-    "data_set": "concat_even_alpha_AD"
+    "label": "op_time_concat_even_alpha_AD"
   },
   {
     "op_time": true,
@@ -197,8 +175,7 @@
     "op_arg_type": "Even",
     "alphabet": "AE",
     "Selection": "$\\mathtt{concat}(Even)$ where $|\\Sigma| = 5$",
-    "label": "op_time_concat_even_alpha_AE",
-    "data_set": "concat_even_alpha_AE"
+    "label": "op_time_concat_even_alpha_AE"
   },
   {
     "op_time": true,
@@ -206,8 +183,7 @@
     "op_arg_type": "Even",
     "length": 1,
     "Selection": "$\\mathtt{concat}(Even)$ for Length 1",
-    "label": "op_time_concat_even_len_1",
-    "data_set": "concat_even_len_1"
+    "label": "op_time_concat_even_len_1"
   },
   {
     "op_time": true,
@@ -215,8 +191,7 @@
     "op_arg_type": "Even",
     "length": 2,
     "Selection": "$\\mathtt{concat}(Even)$ for Length 2",
-    "label": "op_time_concat_even_len_2",
-    "data_set": "concat_even_len_2"
+    "label": "op_time_concat_even_len_2"
   },
   {
     "op_time": true,
@@ -224,8 +199,7 @@
     "op_arg_type": "Even",
     "length": 3,
     "Selection": "$\\mathtt{concat}(Even)$ for Length 3",
-    "label": "op_time_concat_even_len_3",
-    "data_set": "concat_even_len_3"
+    "label": "op_time_concat_even_len_3"
   },
   {
     "op_time": true,
@@ -233,8 +207,7 @@
     "op_arg_type": "Even",
     "length": 4,
     "Selection": "$\\mathtt{concat}(Even)$ for Length 4",
-    "label": "op_time_concat_even_len_4",
-    "data_set": "concat_even_len_4"
+    "label": "op_time_concat_even_len_4"
   },
   {
     "is_blank": true
@@ -244,8 +217,7 @@
     "operation": "concat",
     "op_arg_type": "Uneven",
     "Selection": "$\\mathtt{concat}(Uneven)$",
-    "label": "op_time_concat_uneven_all",
-    "data_set": "concat_uneven_all"
+    "label": "op_time_concat_uneven_all"
   },
   {
     "op_time": true,
@@ -253,8 +225,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AB",
     "Selection": "$\\mathtt{concat}(Uneven)$ where $|\\Sigma| = 2$",
-    "label": "op_time_concat_uneven_alpha_AB",
-    "data_set": "concat_uneven_alpha_AB"
+    "label": "op_time_concat_uneven_alpha_AB"
   },
   {
     "op_time": true,
@@ -262,8 +233,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AC",
     "Selection": "$\\mathtt{concat}(Uneven)$ where $|\\Sigma| = 3$",
-    "label": "op_time_concat_uneven_alpha_AC",
-    "data_set": "concat_uneven_alpha_AC"
+    "label": "op_time_concat_uneven_alpha_AC"
   },
   {
     "op_time": true,
@@ -271,8 +241,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AD",
     "Selection": "$\\mathtt{concat}(Uneven)$ where $|\\Sigma| = 4$",
-    "label": "op_time_concat_uneven_alpha_AD",
-    "data_set": "concat_uneven_alpha_AD"
+    "label": "op_time_concat_uneven_alpha_AD"
   },
   {
     "op_time": true,
@@ -280,8 +249,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AE",
     "Selection": "$\\mathtt{concat}(Uneven)$ where $|\\Sigma| = 5$",
-    "label": "op_time_concat_uneven_alpha_AE",
-    "data_set": "concat_uneven_alpha_AE"
+    "label": "op_time_concat_uneven_alpha_AE"
   },
   {
     "op_time": true,
@@ -289,8 +257,7 @@
     "op_arg_type": "Uneven",
     "length": 1,
     "Selection": "$\\mathtt{concat}(Uneven)$ for Length 1",
-    "label": "op_time_concat_uneven_len_1",
-    "data_set": "concat_uneven_len_1"
+    "label": "op_time_concat_uneven_len_1"
   },
   {
     "op_time": true,
@@ -298,8 +265,7 @@
     "op_arg_type": "Uneven",
     "length": 2,
     "Selection": "$\\mathtt{concat}(Uneven)$ for Length 2",
-    "label": "op_time_concat_uneven_len_2",
-    "data_set": "concat_uneven_len_2"
+    "label": "op_time_concat_uneven_len_2"
   },
   {
     "op_time": true,
@@ -307,8 +273,7 @@
     "op_arg_type": "Uneven",
     "length": 3,
     "Selection": "$\\mathtt{concat}(Uneven)$ for Length 3",
-    "label": "op_time_concat_uneven_len_3",
-    "data_set": "concat_uneven_len_3"
+    "label": "op_time_concat_uneven_len_3"
   },
   {
     "op_time": true,
@@ -316,8 +281,7 @@
     "op_arg_type": "Uneven",
     "length": 4,
     "Selection": "$\\mathtt{concat}(Uneven)$ for Length 4",
-    "label": "op_time_concat_uneven_len_4",
-    "data_set": "concat_uneven_len_4"
+    "label": "op_time_concat_uneven_len_4"
   },
   {
     "is_blank": true
@@ -326,72 +290,63 @@
     "op_time": true,
     "operation": "delete",
     "Selection": "$\\mathtt{delete}$",
-    "label": "op_time_delete_all",
-    "data_set": "delete_all"
+    "label": "op_time_delete_all"
   },
   {
     "op_time": true,
     "operation": "delete",
     "alphabet": "AB",
     "Selection": "$\\mathtt{delete}$ where $|\\Sigma| = 2$",
-    "label": "op_time_delete_alpha_AB",
-    "data_set": "delete_alpha_AB"
+    "label": "op_time_delete_alpha_AB"
   },
   {
     "op_time": true,
     "operation": "delete",
     "alphabet": "AC",
     "Selection": "$\\mathtt{delete}$ where $|\\Sigma| = 3$",
-    "label": "op_time_delete_alpha_AC",
-    "data_set": "delete_alpha_AC"
+    "label": "op_time_delete_alpha_AC"
   },
   {
     "op_time": true,
     "operation": "delete",
     "alphabet": "AD",
     "Selection": "$\\mathtt{delete}$ where $|\\Sigma| = 4$",
-    "label": "op_time_delete_alpha_AD",
-    "data_set": "delete_alpha_AD"
+    "label": "op_time_delete_alpha_AD"
   },
   {
     "op_time": true,
     "operation": "delete",
     "alphabet": "AE",
     "Selection": "$\\mathtt{delete}$ where $|\\Sigma| = 5$",
-    "label": "op_time_delete_alpha_AE",
-    "data_set": "delete_alpha_AE"
+    "label": "op_time_delete_alpha_AE"
   },
   {
     "op_time": true,
     "operation": "delete",
     "length": 1,
     "Selection": "$\\mathtt{delete}$ for Length 1",
-    "label": "op_time_delete_len_1",
-    "data_set": "delete_len_1"
+    "label": "op_time_delete_len_1"
   },
   {
     "op_time": true,
     "operation": "delete",
     "length": 2,
     "Selection": "$\\mathtt{delete}$ for Length 2",
-    "label": "op_time_delete_len_2",
-    "data_set": "delete_len_2"
+    "label": "op_time_delete_len_2"
   },
   {
     "op_time": true,
     "operation": "delete",
     "length": 3,
     "Selection": "$\\mathtt{delete}$ for Length 3",
-    "label": "op_time_delete_len_3",
-    "data_set": "delete_len_3"
+    "label": "op_time_delete_len_3"
   },
   {
     "op_time": true,
     "operation": "delete",
     "length": 4,
     "Selection": "$\\mathtt{delete}$ for Length 4",
-    "label": "op_time_delete_len_4",
-    "data_set": "delete_len_4"
+    "label": "op_time_delete_len_4"
   },
   {
     "is_blank": true
@@ -401,8 +356,7 @@
     "operation": "delete",
     "op_arg_type": "same",
     "Selection": "$\\mathtt{delete}(same)$",
-    "label": "op_time_delete_same_all",
-    "data_set": "delete_same_all"
+    "label": "op_time_delete_same_all"
   },
   {
     "op_time": true,
@@ -410,8 +364,7 @@
     "op_arg_type": "same",
     "alphabet": "AB",
     "Selection": "$\\mathtt{delete}(same)$ where $|\\Sigma| = 2$",
-    "label": "op_time_delete_same_alpha_AB",
-    "data_set": "delete_same_alpha_AB"
+    "label": "op_time_delete_same_alpha_AB"
   },
   {
     "op_time": true,
@@ -419,8 +372,7 @@
     "op_arg_type": "same",
     "alphabet": "AC",
     "Selection": "$\\mathtt{delete}(same)$ where $|\\Sigma| = 3$",
-    "label": "op_time_delete_same_alpha_AC",
-    "data_set": "delete_same_alpha_AC"
+    "label": "op_time_delete_same_alpha_AC"
   },
   {
     "op_time": true,
@@ -428,8 +380,7 @@
     "op_arg_type": "same",
     "alphabet": "AD",
     "Selection": "$\\mathtt{delete}(same)$ where $|\\Sigma| = 4$",
-    "label": "op_time_delete_same_alpha_AD",
-    "data_set": "delete_same_alpha_AD"
+    "label": "op_time_delete_same_alpha_AD"
   },
   {
     "op_time": true,
@@ -437,8 +388,7 @@
     "op_arg_type": "same",
     "alphabet": "AE",
     "Selection": "$\\mathtt{delete}(same)$ where $|\\Sigma| = 5$",
-    "label": "op_time_delete_same_alpha_AE",
-    "data_set": "delete_same_alpha_AE"
+    "label": "op_time_delete_same_alpha_AE"
   },
   {
     "op_time": true,
@@ -446,8 +396,7 @@
     "op_arg_type": "same",
     "length": 1,
     "Selection": "$\\mathtt{delete}(same)$ for Length 1",
-    "label": "op_time_delete_same_len_1",
-    "data_set": "delete_same_len_1"
+    "label": "op_time_delete_same_len_1"
   },
   {
     "op_time": true,
@@ -455,8 +404,7 @@
     "op_arg_type": "same",
     "length": 2,
     "Selection": "$\\mathtt{delete}(same)$ for Length 2",
-    "label": "op_time_delete_same_len_2",
-    "data_set": "delete_same_len_2"
+    "label": "op_time_delete_same_len_2"
   },
   {
     "op_time": true,
@@ -464,8 +412,7 @@
     "op_arg_type": "same",
     "length": 3,
     "Selection": "$\\mathtt{delete}(same)$ for Length 3",
-    "label": "op_time_delete_same_len_3",
-    "data_set": "delete_same_len_3"
+    "label": "op_time_delete_same_len_3"
   },
   {
     "op_time": true,
@@ -473,8 +420,7 @@
     "op_arg_type": "same",
     "length": 4,
     "Selection": "$\\mathtt{delete}(same)$ for Length 4",
-    "label": "op_time_delete_same_len_4",
-    "data_set": "delete_same_len_4"
+    "label": "op_time_delete_same_len_4"
   },
   {
     "is_blank": true
@@ -484,8 +430,7 @@
     "operation": "delete",
     "op_arg_type": "diff",
     "Selection": "$\\mathtt{delete}(diff)$",
-    "label": "op_time_delete_diff_all",
-    "data_set": "delete_diff_all"
+    "label": "op_time_delete_diff_all"
   },
   {
     "op_time": true,
@@ -493,8 +438,7 @@
     "op_arg_type": "diff",
     "alphabet": "AB",
     "Selection": "$\\mathtt{delete}(diff)$ where $|\\Sigma| = 2$",
-    "label": "op_time_delete_diff_alpha_AB",
-    "data_set": "delete_diff_alpha_AB"
+    "label": "op_time_delete_diff_alpha_AB"
   },
   {
     "op_time": true,
@@ -502,8 +446,7 @@
     "op_arg_type": "diff",
     "alphabet": "AC",
     "Selection": "$\\mathtt{delete}(diff)$ where $|\\Sigma| = 3$",
-    "label": "op_time_delete_diff_alpha_AC",
-    "data_set": "delete_diff_alpha_AC"
+    "label": "op_time_delete_diff_alpha_AC"
   },
   {
     "op_time": true,
@@ -511,8 +454,7 @@
     "op_arg_type": "diff",
     "alphabet": "AD",
     "Selection": "$\\mathtt{delete}(diff)$ where $|\\Sigma| = 4$",
-    "label": "op_time_delete_diff_alpha_AD",
-    "data_set": "delete_diff_alpha_AD"
+    "label": "op_time_delete_diff_alpha_AD"
   },
   {
     "op_time": true,
@@ -520,8 +462,7 @@
     "op_arg_type": "diff",
     "alphabet": "AE",
     "Selection": "$\\mathtt{delete}(diff)$ where $|\\Sigma| = 5$",
-    "label": "op_time_delete_diff_alpha_AE",
-    "data_set": "delete_diff_alpha_AE"
+    "label": "op_time_delete_diff_alpha_AE"
   },
   {
     "op_time": true,
@@ -529,8 +470,7 @@
     "op_arg_type": "diff",
     "length": 1,
     "Selection": "$\\mathtt{delete}(diff)$ for Length 1",
-    "label": "op_time_delete_diff_len_1",
-    "data_set": "delete_diff_len_1"
+    "label": "op_time_delete_diff_len_1"
   },
   {
     "op_time": true,
@@ -538,8 +478,7 @@
     "op_arg_type": "diff",
     "length": 2,
     "Selection": "$\\mathtt{delete}(diff)$ for Length 2",
-    "label": "op_time_delete_diff_len_2",
-    "data_set": "delete_diff_len_2"
+    "label": "op_time_delete_diff_len_2"
   },
   {
     "op_time": true,
@@ -547,8 +486,7 @@
     "op_arg_type": "diff",
     "length": 3,
     "Selection": "$\\mathtt{delete}(diff)$ for Length 3",
-    "label": "op_time_delete_diff_len_3",
-    "data_set": "delete_diff_len_3"
+    "label": "op_time_delete_diff_len_3"
   },
   {
     "op_time": true,
@@ -556,8 +494,7 @@
     "op_arg_type": "diff",
     "length": 4,
     "Selection": "$\\mathtt{delete}(diff)$ for Length 4",
-    "label": "op_time_delete_diff_len_4",
-    "data_set": "delete_diff_len_4"
+    "label": "op_time_delete_diff_len_4"
   },
   {
     "is_blank": true
@@ -566,72 +503,63 @@
     "op_time": true,
     "operation": "replace",
     "Selection": "$\\mathtt{replace}$",
-    "label": "op_time_replace_all",
-    "data_set": "replace_all"
+    "label": "op_time_replace_all"
   },
   {
     "op_time": true,
     "operation": "replace",
     "alphabet": "AB",
     "Selection": "$\\mathtt{replace}$ where $|\\Sigma| = 2$",
-    "label": "op_time_replace_alpha_AB",
-    "data_set": "replace_alpha_AB"
+    "label": "op_time_replace_alpha_AB"
   },
   {
     "op_time": true,
     "operation": "replace",
     "alphabet": "AC",
     "Selection": "$\\mathtt{replace}$ where $|\\Sigma| = 3$",
-    "label": "op_time_replace_alpha_AC",
-    "data_set": "replace_alpha_AC"
+    "label": "op_time_replace_alpha_AC"
   },
   {
     "op_time": true,
     "operation": "replace",
     "alphabet": "AD",
     "Selection": "$\\mathtt{replace}$ where $|\\Sigma| = 4$",
-    "label": "op_time_replace_alpha_AD",
-    "data_set": "replace_alpha_AD"
+    "label": "op_time_replace_alpha_AD"
   },
   {
     "op_time": true,
     "operation": "replace",
     "alphabet": "AE",
     "Selection": "$\\mathtt{replace}$ where $|\\Sigma| = 5$",
-    "label": "op_time_replace_alpha_AE",
-    "data_set": "replace_alpha_AE"
+    "label": "op_time_replace_alpha_AE"
   },
   {
     "op_time": true,
     "operation": "replace",
     "length": 1,
     "Selection": "$\\mathtt{replace}$ for Length 1",
-    "label": "op_time_replace_len_1",
-    "data_set": "replace_len_1"
+    "label": "op_time_replace_len_1"
   },
   {
     "op_time": true,
     "operation": "replace",
     "length": 2,
     "Selection": "$\\mathtt{replace}$ for Length 2",
-    "label": "op_time_replace_len_2",
-    "data_set": "replace_len_2"
+    "label": "op_time_replace_len_2"
   },
   {
     "op_time": true,
     "operation": "replace",
     "length": 3,
     "Selection": "$\\mathtt{replace}$ for Length 3",
-    "label": "op_time_replace_len_3",
-    "data_set": "replace_len_3"
+    "label": "op_time_replace_len_3"
   },
   {
     "op_time": true,
     "operation": "replace",
     "length": 4,
     "Selection": "$\\mathtt{replace}$ for Length 4",
-    "label": "op_time_replace_len_4",
-    "data_set": "replace_len_4"
+    "label": "op_time_replace_len_4"
   },
   {
     "is_blank": true
@@ -641,8 +569,7 @@
     "operation": "replace",
     "op_arg_type": "same",
     "Selection": "$\\mathtt{replace}(same)$",
-    "label": "op_time_replace_same_all",
-    "data_set": "replace_same_all"
+    "label": "op_time_replace_same_all"
   },
   {
     "op_time": true,
@@ -650,8 +577,7 @@
     "op_arg_type": "same",
     "alphabet": "AB",
     "Selection": "$\\mathtt{replace}(same)$ where $|\\Sigma| = 2$",
-    "label": "op_time_replace_same_alpha_AB",
-    "data_set": "replace_same_alpha_AB"
+    "label": "op_time_replace_same_alpha_AB"
   },
   {
     "op_time": true,
@@ -659,8 +585,7 @@
     "op_arg_type": "same",
     "alphabet": "AC",
     "Selection": "$\\mathtt{replace}(same)$ where $|\\Sigma| = 3$",
-    "label": "op_time_replace_same_alpha_AC",
-    "data_set": "replace_same_alpha_AC"
+    "label": "op_time_replace_same_alpha_AC"
   },
   {
     "op_time": true,
@@ -668,8 +593,7 @@
     "op_arg_type": "same",
     "alphabet": "AD",
     "Selection": "$\\mathtt{replace}(same)$ where $|\\Sigma| = 4$",
-    "label": "op_time_replace_same_alpha_AD",
-    "data_set": "replace_same_alpha_AD"
+    "label": "op_time_replace_same_alpha_AD"
   },
   {
     "op_time": true,
@@ -677,8 +601,7 @@
     "op_arg_type": "same",
     "alphabet": "AE",
     "Selection": "$\\mathtt{replace}(same)$ where $|\\Sigma| = 5$",
-    "label": "op_time_replace_same_alpha_AE",
-    "data_set": "replace_same_alpha_AE"
+    "label": "op_time_replace_same_alpha_AE"
   },
   {
     "op_time": true,
@@ -686,8 +609,7 @@
     "op_arg_type": "same",
     "length": 1,
     "Selection": "$\\mathtt{replace}(same)$ for Length 1",
-    "label": "op_time_replace_same_len_1",
-    "data_set": "replace_same_len_1"
+    "label": "op_time_replace_same_len_1"
   },
   {
     "op_time": true,
@@ -695,8 +617,7 @@
     "op_arg_type": "same",
     "length": 2,
     "Selection": "$\\mathtt{replace}(same)$ for Length 2",
-    "label": "op_time_replace_same_len_2",
-    "data_set": "replace_same_len_2"
+    "label": "op_time_replace_same_len_2"
   },
   {
     "op_time": true,
@@ -704,8 +625,7 @@
     "op_arg_type": "same",
     "length": 3,
     "Selection": "$\\mathtt{replace}(same)$ for Length 3",
-    "label": "op_time_replace_same_len_3",
-    "data_set": "replace_same_len_3"
+    "label": "op_time_replace_same_len_3"
   },
   {
     "op_time": true,
@@ -713,8 +633,7 @@
     "op_arg_type": "same",
     "length": 4,
     "Selection": "$\\mathtt{replace}(same)$ for Length 4",
-    "label": "op_time_replace_same_len_4",
-    "data_set": "replace_same_len_4"
+    "label": "op_time_replace_same_len_4"
   },
   {
     "is_blank": true
@@ -724,8 +643,7 @@
     "operation": "replace",
     "op_arg_type": "diff",
     "Selection": "$\\mathtt{replace}(diff)$",
-    "label": "op_time_replace_diff_all",
-    "data_set": "replace_diff_all"
+    "label": "op_time_replace_diff_all"
   },
   {
     "op_time": true,
@@ -733,8 +651,7 @@
     "op_arg_type": "diff",
     "alphabet": "AB",
     "Selection": "$\\mathtt{replace}(diff)$ where $|\\Sigma| = 2$",
-    "label": "op_time_replace_diff_alpha_AB",
-    "data_set": "replace_diff_alpha_AB"
+    "label": "op_time_replace_diff_alpha_AB"
   },
   {
     "op_time": true,
@@ -742,8 +659,7 @@
     "op_arg_type": "diff",
     "alphabet": "AC",
     "Selection": "$\\mathtt{replace}(diff)$ where $|\\Sigma| = 3$",
-    "label": "op_time_replace_diff_alpha_AC",
-    "data_set": "replace_diff_alpha_AC"
+    "label": "op_time_replace_diff_alpha_AC"
   },
   {
     "op_time": true,
@@ -751,8 +667,7 @@
     "op_arg_type": "diff",
     "alphabet": "AD",
     "Selection": "$\\mathtt{replace}(diff)$ where $|\\Sigma| = 4$",
-    "label": "op_time_replace_diff_alpha_AD",
-    "data_set": "replace_diff_alpha_AD"
+    "label": "op_time_replace_diff_alpha_AD"
   },
   {
     "op_time": true,
@@ -760,8 +675,7 @@
     "op_arg_type": "diff",
     "alphabet": "AE",
     "Selection": "$\\mathtt{replace}(diff)$ where $|\\Sigma| = 5$",
-    "label": "op_time_replace_diff_alpha_AE",
-    "data_set": "replace_diff_alpha_AE"
+    "label": "op_time_replace_diff_alpha_AE"
   },
   {
     "op_time": true,
@@ -769,8 +683,7 @@
     "op_arg_type": "diff",
     "length": 1,
     "Selection": "$\\mathtt{replace}(diff)$ for Length 1",
-    "label": "op_time_replace_diff_len_1",
-    "data_set": "replace_diff_len_1"
+    "label": "op_time_replace_diff_len_1"
   },
   {
     "op_time": true,
@@ -778,8 +691,7 @@
     "op_arg_type": "diff",
     "length": 2,
     "Selection": "$\\mathtt{replace}(diff)$ for Length 2",
-    "label": "op_time_replace_diff_len_2",
-    "data_set": "replace_diff_len_2"
+    "label": "op_time_replace_diff_len_2"
   },
   {
     "op_time": true,
@@ -787,8 +699,7 @@
     "op_arg_type": "diff",
     "length": 3,
     "Selection": "$\\mathtt{replace}(diff)$ for Length 3",
-    "label": "op_time_replace_diff_len_3",
-    "data_set": "replace_diff_len_3"
+    "label": "op_time_replace_diff_len_3"
   },
   {
     "op_time": true,
@@ -796,8 +707,7 @@
     "op_arg_type": "diff",
     "length": 4,
     "Selection": "$\\mathtt{replace}(diff)$ for Length 4",
-    "label": "op_time_replace_diff_len_4",
-    "data_set": "replace_diff_len_4"
+    "label": "op_time_replace_diff_len_4"
   },
   {
     "is_blank": true
@@ -806,72 +716,63 @@
     "op_time": true,
     "operation": "reverse",
     "Selection": "$\\mathtt{reverse}$",
-    "label": "op_time_reverse_all",
-    "data_set": "reverse_all"
+    "label": "op_time_reverse_all"
   },
   {
     "op_time": true,
     "operation": "reverse",
     "alphabet": "AB",
     "Selection": "$\\mathtt{reverse}$ where $|\\Sigma| = 2$",
-    "label": "op_time_reverse_alpha_AB",
-    "data_set": "reverse_alpha_AB"
+    "label": "op_time_reverse_alpha_AB"
   },
   {
     "op_time": true,
     "operation": "reverse",
     "alphabet": "AC",
     "Selection": "$\\mathtt{reverse}$ where $|\\Sigma| = 3$",
-    "label": "op_time_reverse_alpha_AC",
-    "data_set": "reverse_alpha_AC"
+    "label": "op_time_reverse_alpha_AC"
   },
   {
     "op_time": true,
     "operation": "reverse",
     "alphabet": "AD",
     "Selection": "$\\mathtt{reverse}$ where $|\\Sigma| = 4$",
-    "label": "op_time_reverse_alpha_AD",
-    "data_set": "reverse_alpha_AD"
+    "label": "op_time_reverse_alpha_AD"
   },
   {
     "op_time": true,
     "operation": "reverse",
     "alphabet": "AE",
     "Selection": "$\\mathtt{reverse}$ where $|\\Sigma| = 5$",
-    "label": "op_time_reverse_alpha_AE",
-    "data_set": "reverse_alpha_AE"
+    "label": "op_time_reverse_alpha_AE"
   },
   {
     "op_time": true,
     "operation": "reverse",
     "length": 1,
     "Selection": "$\\mathtt{reverse}$ for Length 1",
-    "label": "op_time_reverse_len_1",
-    "data_set": "reverse_len_1"
+    "label": "op_time_reverse_len_1"
   },
   {
     "op_time": true,
     "operation": "reverse",
     "length": 2,
     "Selection": "$\\mathtt{reverse}$ for Length 2",
-    "label": "op_time_reverse_len_2",
-    "data_set": "reverse_len_2"
+    "label": "op_time_reverse_len_2"
   },
   {
     "op_time": true,
     "operation": "reverse",
     "length": 3,
     "Selection": "$\\mathtt{reverse}$ for Length 3",
-    "label": "op_time_reverse_len_3",
-    "data_set": "reverse_len_3"
+    "label": "op_time_reverse_len_3"
   },
   {
     "op_time": true,
     "operation": "reverse",
     "length": 4,
     "Selection": "$\\mathtt{reverse}$ for Length 4",
-    "label": "op_time_reverse_len_4",
-    "data_set": "reverse_len_4"
+    "label": "op_time_reverse_len_4"
   },
   {
     "is_blank": true
@@ -880,72 +781,63 @@
     "op_time": true,
     "operation": "contains",
     "Selection": "$\\mathtt{contains}$",
-    "label": "op_time_contains_all",
-    "data_set": "contains_all"
+    "label": "op_time_contains_all"
   },
   {
     "op_time": true,
     "operation": "contains",
     "alphabet": "AB",
     "Selection": "$\\mathtt{contains}$ where $|\\Sigma| = 2$",
-    "label": "op_time_contains_alpha_AB",
-    "data_set": "contains_alpha_AB"
+    "label": "op_time_contains_alpha_AB"
   },
   {
     "op_time": true,
     "operation": "contains",
     "alphabet": "AC",
     "Selection": "$\\mathtt{contains}$ where $|\\Sigma| = 3$",
-    "label": "op_time_contains_alpha_AC",
-    "data_set": "contains_alpha_AC"
+    "label": "op_time_contains_alpha_AC"
   },
   {
     "op_time": true,
     "operation": "contains",
     "alphabet": "AD",
     "Selection": "$\\mathtt{contains}$ where $|\\Sigma| = 4$",
-    "label": "op_time_contains_alpha_AD",
-    "data_set": "contains_alpha_AD"
+    "label": "op_time_contains_alpha_AD"
   },
   {
     "op_time": true,
     "operation": "contains",
     "alphabet": "AE",
     "Selection": "$\\mathtt{contains}$ where $|\\Sigma| = 5$",
-    "label": "op_time_contains_alpha_AE",
-    "data_set": "contains_alpha_AE"
+    "label": "op_time_contains_alpha_AE"
   },
   {
     "op_time": true,
     "operation": "contains",
     "length": 1,
     "Selection": "$\\mathtt{contains}$ for Length 1",
-    "label": "op_time_contains_len_1",
-    "data_set": "contains_len_1"
+    "label": "op_time_contains_len_1"
   },
   {
     "op_time": true,
     "operation": "contains",
     "length": 2,
     "Selection": "$\\mathtt{contains}$ for Length 2",
-    "label": "op_time_contains_len_2",
-    "data_set": "contains_len_2"
+    "label": "op_time_contains_len_2"
   },
   {
     "op_time": true,
     "operation": "contains",
     "length": 3,
     "Selection": "$\\mathtt{contains}$ for Length 3",
-    "label": "op_time_contains_len_3",
-    "data_set": "contains_len_3"
+    "label": "op_time_contains_len_3"
   },
   {
     "op_time": true,
     "operation": "contains",
     "length": 4,
     "Selection": "$\\mathtt{contains}$ for Length 4",
-    "label": "op_time_contains_len_4",
-    "data_set": "contains_len_4"
+    "label": "op_time_contains_len_4"
   },
   {
     "is_blank": true
@@ -955,8 +847,7 @@
     "operation": "contains",
     "op_arg_type": "Simple",
     "Selection": "$\\mathtt{contains}(Simple)$",
-    "label": "op_time_contains_simple_all",
-    "data_set": "contains_simple_all"
+    "label": "op_time_contains_simple_all"
   },
   {
     "op_time": true,
@@ -964,8 +855,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AB",
     "Selection": "$\\mathtt{contains}(Simple)$ where $|\\Sigma| = 2$",
-    "label": "op_time_contains_simple_alpha_AB",
-    "data_set": "contains_simple_alpha_AB"
+    "label": "op_time_contains_simple_alpha_AB"
   },
   {
     "op_time": true,
@@ -973,8 +863,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AC",
     "Selection": "$\\mathtt{contains}(Simple)$ where $|\\Sigma| = 3$",
-    "label": "op_time_contains_simple_alpha_AC",
-    "data_set": "contains_simple_alpha_AC"
+    "label": "op_time_contains_simple_alpha_AC"
   },
   {
     "op_time": true,
@@ -982,8 +871,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AD",
     "Selection": "$\\mathtt{contains}(Simple)$ where $|\\Sigma| = 4$",
-    "label": "op_time_contains_simple_alpha_AD",
-    "data_set": "contains_simple_alpha_AD"
+    "label": "op_time_contains_simple_alpha_AD"
   },
   {
     "op_time": true,
@@ -991,8 +879,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AE",
     "Selection": "$\\mathtt{contains}(Simple)$ where $|\\Sigma| = 5$",
-    "label": "op_time_contains_simple_alpha_AE",
-    "data_set": "contains_simple_alpha_AE"
+    "label": "op_time_contains_simple_alpha_AE"
   },
   {
     "op_time": true,
@@ -1000,8 +887,7 @@
     "op_arg_type": "Simple",
     "length": 1,
     "Selection": "$\\mathtt{contains}(Simple)$ for Length 1",
-    "label": "op_time_contains_simple_len_1",
-    "data_set": "contains_simple_len_1"
+    "label": "op_time_contains_simple_len_1"
   },
   {
     "op_time": true,
@@ -1009,8 +895,7 @@
     "op_arg_type": "Simple",
     "length": 2,
     "Selection": "$\\mathtt{contains}(Simple)$ for Length 2",
-    "label": "op_time_contains_simple_len_2",
-    "data_set": "contains_simple_len_2"
+    "label": "op_time_contains_simple_len_2"
   },
   {
     "op_time": true,
@@ -1018,8 +903,7 @@
     "op_arg_type": "Simple",
     "length": 3,
     "Selection": "$\\mathtt{contains}(Simple)$ for Length 3",
-    "label": "op_time_contains_simple_len_3",
-    "data_set": "contains_simple_len_3"
+    "label": "op_time_contains_simple_len_3"
   },
   {
     "op_time": true,
@@ -1027,8 +911,7 @@
     "op_arg_type": "Simple",
     "length": 4,
     "Selection": "$\\mathtt{contains}(Simple)$ for Length 4",
-    "label": "op_time_contains_simple_len_4",
-    "data_set": "contains_simple_len_4"
+    "label": "op_time_contains_simple_len_4"
   },
   {
     "is_blank": true
@@ -1038,8 +921,7 @@
     "operation": "contains",
     "op_arg_type": "Even",
     "Selection": "$\\mathtt{contains}(Even)$",
-    "label": "op_time_contains_Even_all",
-    "data_set": "contains_Even_all"
+    "label": "op_time_contains_Even_all"
   },
   {
     "op_time": true,
@@ -1047,8 +929,7 @@
     "op_arg_type": "Even",
     "alphabet": "AB",
     "Selection": "$\\mathtt{contains}(Even)$ where $|\\Sigma| = 2$",
-    "label": "op_time_contains_Even_alpha_AB",
-    "data_set": "contains_Even_alpha_AB"
+    "label": "op_time_contains_Even_alpha_AB"
   },
   {
     "op_time": true,
@@ -1056,8 +937,7 @@
     "op_arg_type": "Even",
     "alphabet": "AC",
     "Selection": "$\\mathtt{contains}(Even)$ where $|\\Sigma| = 3$",
-    "label": "op_time_contains_Even_alpha_AC",
-    "data_set": "contains_Even_alpha_AC"
+    "label": "op_time_contains_Even_alpha_AC"
   },
   {
     "op_time": true,
@@ -1065,8 +945,7 @@
     "op_arg_type": "Even",
     "alphabet": "AD",
     "Selection": "$\\mathtt{contains}(Even)$ where $|\\Sigma| = 4$",
-    "label": "op_time_contains_Even_alpha_AD",
-    "data_set": "contains_Even_alpha_AD"
+    "label": "op_time_contains_Even_alpha_AD"
   },
   {
     "op_time": true,
@@ -1074,8 +953,7 @@
     "op_arg_type": "Even",
     "alphabet": "AE",
     "Selection": "$\\mathtt{contains}(Even)$ where $|\\Sigma| = 5$",
-    "label": "op_time_contains_Even_alpha_AE",
-    "data_set": "contains_Even_alpha_AE"
+    "label": "op_time_contains_Even_alpha_AE"
   },
   {
     "op_time": true,
@@ -1083,8 +961,7 @@
     "op_arg_type": "Even",
     "length": 1,
     "Selection": "$\\mathtt{contains}(Even)$ for Length 1",
-    "label": "op_time_contains_Even_len_1",
-    "data_set": "contains_Even_len_1"
+    "label": "op_time_contains_Even_len_1"
   },
   {
     "op_time": true,
@@ -1092,8 +969,7 @@
     "op_arg_type": "Even",
     "length": 2,
     "Selection": "$\\mathtt{contains}(Even)$ for Length 2",
-    "label": "op_time_contains_Even_len_2",
-    "data_set": "contains_Even_len_2"
+    "label": "op_time_contains_Even_len_2"
   },
   {
     "op_time": true,
@@ -1101,8 +977,7 @@
     "op_arg_type": "Even",
     "length": 3,
     "Selection": "$\\mathtt{contains}(Even)$ for Length 3",
-    "label": "op_time_contains_Even_len_3",
-    "data_set": "contains_Even_len_3"
+    "label": "op_time_contains_Even_len_3"
   },
   {
     "op_time": true,
@@ -1110,8 +985,7 @@
     "op_arg_type": "Even",
     "length": 4,
     "Selection": "$\\mathtt{contains}(Even)$ for Length 4",
-    "label": "op_time_contains_Even_len_4",
-    "data_set": "contains_Even_len_4"
+    "label": "op_time_contains_Even_len_4"
   },
   {
     "is_blank": true
@@ -1121,8 +995,7 @@
     "operation": "contains",
     "op_arg_type": "Uneven",
     "Selection": "$\\mathtt{contains}(Uneven)$",
-    "label": "op_time_contains_uneven_all",
-    "data_set": "contains_uneven_all"
+    "label": "op_time_contains_uneven_all"
   },
   {
     "op_time": true,
@@ -1130,8 +1003,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AB",
     "Selection": "$\\mathtt{contains}(Uneven)$ where $|\\Sigma| = 2$",
-    "label": "op_time_contains_uneven_alpha_AB",
-    "data_set": "contains_uneven_alpha_AB"
+    "label": "op_time_contains_uneven_alpha_AB"
   },
   {
     "op_time": true,
@@ -1139,8 +1011,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AC",
     "Selection": "$\\mathtt{contains}(Uneven)$ where $|\\Sigma| = 3$",
-    "label": "op_time_contains_uneven_alpha_AC",
-    "data_set": "contains_uneven_alpha_AC"
+    "label": "op_time_contains_uneven_alpha_AC"
   },
   {
     "op_time": true,
@@ -1148,8 +1019,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AD",
     "Selection": "$\\mathtt{contains}(Uneven)$ where $|\\Sigma| = 4$",
-    "label": "op_time_contains_uneven_alpha_AD",
-    "data_set": "contains_uneven_alpha_AD"
+    "label": "op_time_contains_uneven_alpha_AD"
   },
   {
     "op_time": true,
@@ -1157,8 +1027,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AE",
     "Selection": "$\\mathtt{contains}(Uneven)$ where $|\\Sigma| = 5$",
-    "label": "op_time_contains_uneven_alpha_AE",
-    "data_set": "contains_uneven_alpha_AE"
+    "label": "op_time_contains_uneven_alpha_AE"
   },
   {
     "op_time": true,
@@ -1166,8 +1035,7 @@
     "op_arg_type": "Uneven",
     "length": 1,
     "Selection": "$\\mathtt{contains}(Uneven)$ for Length 1",
-    "label": "op_time_contains_uneven_len_1",
-    "data_set": "contains_uneven_len_1"
+    "label": "op_time_contains_uneven_len_1"
   },
   {
     "op_time": true,
@@ -1175,8 +1043,7 @@
     "op_arg_type": "Uneven",
     "length": 2,
     "Selection": "$\\mathtt{contains}(Uneven)$ for Length 2",
-    "label": "op_time_contains_uneven_len_2",
-    "data_set": "contains_uneven_len_2"
+    "label": "op_time_contains_uneven_len_2"
   },
   {
     "op_time": true,
@@ -1184,8 +1051,7 @@
     "op_arg_type": "Uneven",
     "length": 3,
     "Selection": "$\\mathtt{contains}(Uneven)$ for Length 3",
-    "label": "op_time_contains_uneven_len_3",
-    "data_set": "contains_uneven_len_3"
+    "label": "op_time_contains_uneven_len_3"
   },
   {
     "op_time": true,
@@ -1193,8 +1059,7 @@
     "op_arg_type": "Uneven",
     "length": 4,
     "Selection": "$\\mathtt{contains}(Uneven)$ for Length 4",
-    "label": "op_time_contains_uneven_len_4",
-    "data_set": "contains_uneven_len_4"
+    "label": "op_time_contains_uneven_len_4"
   },
   {
     "is_blank": true
@@ -1203,72 +1068,63 @@
     "op_time": true,
     "operation": "equals",
     "Selection": "$\\mathtt{equals}$",
-    "label": "op_time_equals_all",
-    "data_set": "equals_all"
+    "label": "op_time_equals_all"
   },
   {
     "op_time": true,
     "operation": "equals",
     "alphabet": "AB",
     "Selection": "$\\mathtt{equals}$ where $|\\Sigma| = 2$",
-    "label": "op_time_equals_alpha_AB",
-    "data_set": "equals_alpha_AB"
+    "label": "op_time_equals_alpha_AB"
   },
   {
     "op_time": true,
     "operation": "equals",
     "alphabet": "AC",
     "Selection": "$\\mathtt{equals}$ where $|\\Sigma| = 3$",
-    "label": "op_time_equals_alpha_AC",
-    "data_set": "equals_alpha_AC"
+    "label": "op_time_equals_alpha_AC"
   },
   {
     "op_time": true,
     "operation": "equals",
     "alphabet": "AD",
     "Selection": "$\\mathtt{equals}$ where $|\\Sigma| = 4$",
-    "label": "op_time_equals_alpha_AD",
-    "data_set": "equals_alpha_AD"
+    "label": "op_time_equals_alpha_AD"
   },
   {
     "op_time": true,
     "operation": "equals",
     "alphabet": "AE",
     "Selection": "$\\mathtt{equals}$ where $|\\Sigma| = 5$",
-    "label": "op_time_equals_alpha_AE",
-    "data_set": "equals_alpha_AE"
+    "label": "op_time_equals_alpha_AE"
   },
   {
     "op_time": true,
     "operation": "equals",
     "length": 1,
     "Selection": "$\\mathtt{equals}$ for Length 1",
-    "label": "op_time_equals_len_1",
-    "data_set": "equals_len_1"
+    "label": "op_time_equals_len_1"
   },
   {
     "op_time": true,
     "operation": "equals",
     "length": 2,
     "Selection": "$\\mathtt{equals}$ for Length 2",
-    "label": "op_time_equals_len_2",
-    "data_set": "equals_len_2"
+    "label": "op_time_equals_len_2"
   },
   {
     "op_time": true,
     "operation": "equals",
     "length": 3,
     "Selection": "$\\mathtt{equals}$ for Length 3",
-    "label": "op_time_equals_len_3",
-    "data_set": "equals_len_3"
+    "label": "op_time_equals_len_3"
   },
   {
     "op_time": true,
     "operation": "equals",
     "length": 4,
     "Selection": "$\\mathtt{equals}$ for Length 4",
-    "label": "op_time_equals_len_4",
-    "data_set": "equals_len_4"
+    "label": "op_time_equals_len_4"
   },
   {
     "is_blank": true
@@ -1278,8 +1134,7 @@
     "operation": "equals",
     "op_arg_type": "Simple",
     "Selection": "$\\mathtt{equals}(Simple)$",
-    "label": "op_time_equals_simple_all",
-    "data_set": "equals_simple_all"
+    "label": "op_time_equals_simple_all"
   },
   {
     "op_time": true,
@@ -1287,8 +1142,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AB",
     "Selection": "$\\mathtt{equals}(Simple)$ where $|\\Sigma| = 2$",
-    "label": "op_time_equals_simple_alpha_AB",
-    "data_set": "equals_simple_alpha_AB"
+    "label": "op_time_equals_simple_alpha_AB"
   },
   {
     "op_time": true,
@@ -1296,8 +1150,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AC",
     "Selection": "$\\mathtt{equals}(Simple)$ where $|\\Sigma| = 3$",
-    "label": "op_time_equals_simple_alpha_AC",
-    "data_set": "equals_simple_alpha_AC"
+    "label": "op_time_equals_simple_alpha_AC"
   },
   {
     "op_time": true,
@@ -1305,8 +1158,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AD",
     "Selection": "$\\mathtt{equals}(Simple)$ where $|\\Sigma| = 4$",
-    "label": "op_time_equals_simple_alpha_AD",
-    "data_set": "equals_simple_alpha_AD"
+    "label": "op_time_equals_simple_alpha_AD"
   },
   {
     "op_time": true,
@@ -1314,8 +1166,7 @@
     "op_arg_type": "Simple",
     "alphabet": "AE",
     "Selection": "$\\mathtt{equals}(Simple)$ where $|\\Sigma| = 5$",
-    "label": "op_time_equals_simple_alpha_AE",
-    "data_set": "equals_simple_alpha_AE"
+    "label": "op_time_equals_simple_alpha_AE"
   },
   {
     "op_time": true,
@@ -1323,8 +1174,7 @@
     "op_arg_type": "Simple",
     "length": 1,
     "Selection": "$\\mathtt{equals}(Simple)$ for Length 1",
-    "label": "op_time_equals_simple_len_1",
-    "data_set": "equals_simple_len_1"
+    "label": "op_time_equals_simple_len_1"
   },
   {
     "op_time": true,
@@ -1332,8 +1182,7 @@
     "op_arg_type": "Simple",
     "length": 2,
     "Selection": "$\\mathtt{equals}(Simple)$ for Length 2",
-    "label": "op_time_equals_simple_len_2",
-    "data_set": "equals_simple_len_2"
+    "label": "op_time_equals_simple_len_2"
   },
   {
     "op_time": true,
@@ -1341,8 +1190,7 @@
     "op_arg_type": "Simple",
     "length": 3,
     "Selection": "$\\mathtt{equals}(Simple)$ for Length 3",
-    "label": "op_time_equals_simple_len_3",
-    "data_set": "equals_simple_len_3"
+    "label": "op_time_equals_simple_len_3"
   },
   {
     "op_time": true,
@@ -1350,8 +1198,7 @@
     "op_arg_type": "Simple",
     "length": 4,
     "Selection": "$\\mathtt{equals}(Simple)$ for Length 4",
-    "label": "op_time_equals_simple_len_4",
-    "data_set": "equals_simple_len_4"
+    "label": "op_time_equals_simple_len_4"
   },
   {
     "is_blank": true
@@ -1361,8 +1208,7 @@
     "operation": "equals",
     "op_arg_type": "Even",
     "Selection": "$\\mathtt{equals}(Even)$",
-    "label": "op_time_equals_even_all",
-    "data_set": "equals_even_all"
+    "label": "op_time_equals_even_all"
   },
   {
     "op_time": true,
@@ -1370,8 +1216,7 @@
     "op_arg_type": "Even",
     "alphabet": "AB",
     "Selection": "$\\mathtt{equals}(Even)$ where $|\\Sigma| = 2$",
-    "label": "op_time_equals_even_alpha_AB",
-    "data_set": "equals_even_alpha_AB"
+    "label": "op_time_equals_even_alpha_AB"
   },
   {
     "op_time": true,
@@ -1379,8 +1224,7 @@
     "op_arg_type": "Even",
     "alphabet": "AC",
     "Selection": "$\\mathtt{equals}(Even)$ where $|\\Sigma| = 3$",
-    "label": "op_time_equals_even_alpha_AC",
-    "data_set": "equals_even_alpha_AC"
+    "label": "op_time_equals_even_alpha_AC"
   },
   {
     "op_time": true,
@@ -1388,8 +1232,7 @@
     "op_arg_type": "Even",
     "alphabet": "AD",
     "Selection": "$\\mathtt{equals}(Even)$ where $|\\Sigma| = 4$",
-    "label": "op_time_equals_even_alpha_AD",
-    "data_set": "equals_even_alpha_AD"
+    "label": "op_time_equals_even_alpha_AD"
   },
   {
     "op_time": true,
@@ -1397,8 +1240,7 @@
     "op_arg_type": "Even",
     "alphabet": "AE",
     "Selection": "$\\mathtt{equals}(Even)$ where $|\\Sigma| = 5$",
-    "label": "op_time_equals_even_alpha_AE",
-    "data_set": "equals_even_alpha_AE"
+    "label": "op_time_equals_even_alpha_AE"
   },
   {
     "op_time": true,
@@ -1406,8 +1248,7 @@
     "op_arg_type": "Even",
     "length": 1,
     "Selection": "$\\mathtt{equals}(Even)$ for Length 1",
-    "label": "op_time_equals_even_len_1",
-    "data_set": "equals_even_len_1"
+    "label": "op_time_equals_even_len_1"
   },
   {
     "op_time": true,
@@ -1415,8 +1256,7 @@
     "op_arg_type": "Even",
     "length": 2,
     "Selection": "$\\mathtt{equals}(Even)$ for Length 2",
-    "label": "op_time_equals_even_len_2",
-    "data_set": "equals_even_len_2"
+    "label": "op_time_equals_even_len_2"
   },
   {
     "op_time": true,
@@ -1424,8 +1264,7 @@
     "op_arg_type": "Even",
     "length": 3,
     "Selection": "$\\mathtt{equals}(Even)$ for Length 3",
-    "label": "op_time_equals_even_len_3",
-    "data_set": "equals_even_len_3"
+    "label": "op_time_equals_even_len_3"
   },
   {
     "op_time": true,
@@ -1433,8 +1272,7 @@
     "op_arg_type": "Even",
     "length": 4,
     "Selection": "$\\mathtt{equals}(Even)$ for Length 4",
-    "label": "op_time_equals_even_len_4",
-    "data_set": "equals_even_len_4"
+    "label": "op_time_equals_even_len_4"
   },
   {
     "is_blank": true
@@ -1444,8 +1282,7 @@
     "operation": "equals",
     "op_arg_type": "Uneven",
     "Selection": "$\\mathtt{equals}(Uneven)$",
-    "label": "op_time_equals_uneven_all",
-    "data_set": "equals_uneven_all"
+    "label": "op_time_equals_uneven_all"
   },
   {
     "op_time": true,
@@ -1453,8 +1290,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AB",
     "Selection": "$\\mathtt{equals}(Uneven)$ where $|\\Sigma| = 2$",
-    "label": "op_time_equals_uneven_alpha_AB",
-    "data_set": "equals_uneven_alpha_AB"
+    "label": "op_time_equals_uneven_alpha_AB"
   },
   {
     "op_time": true,
@@ -1462,8 +1298,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AC",
     "Selection": "$\\mathtt{equals}(Uneven)$ where $|\\Sigma| = 3$",
-    "label": "op_time_equals_uneven_alpha_AC",
-    "data_set": "equals_uneven_alpha_AC"
+    "label": "op_time_equals_uneven_alpha_AC"
   },
   {
     "op_time": true,
@@ -1471,8 +1306,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AD",
     "Selection": "$\\mathtt{equals}(Uneven)$ where $|\\Sigma| = 4$",
-    "label": "op_time_equals_uneven_alpha_AD",
-    "data_set": "equals_uneven_alpha_AD"
+    "label": "op_time_equals_uneven_alpha_AD"
   },
   {
     "op_time": true,
@@ -1480,8 +1314,7 @@
     "op_arg_type": "Uneven",
     "alphabet": "AE",
     "Selection": "$\\mathtt{equals}(Uneven)$ where $|\\Sigma| = 5$",
-    "label": "op_time_equals_uneven_alpha_AE",
-    "data_set": "equals_uneven_alpha_AE"
+    "label": "op_time_equals_uneven_alpha_AE"
   },
   {
     "op_time": true,
@@ -1489,8 +1322,7 @@
     "op_arg_type": "Uneven",
     "length": 1,
     "Selection": "$\\mathtt{equals}(Uneven)$ for Length 1",
-    "label": "op_time_equals_uneven_len_1",
-    "data_set": "equals_uneven_len_1"
+    "label": "op_time_equals_uneven_len_1"
   },
   {
     "op_time": true,
@@ -1498,8 +1330,7 @@
     "op_arg_type": "Uneven",
     "length": 2,
     "Selection": "$\\mathtt{equals}(Uneven)$ for Length 2",
-    "label": "op_time_equals_uneven_len_2",
-    "data_set": "equals_uneven_len_2"
+    "label": "op_time_equals_uneven_len_2"
   },
   {
     "op_time": true,
@@ -1507,8 +1338,7 @@
     "op_arg_type": "Uneven",
     "length": 3,
     "Selection": "$\\mathtt{equals}(Uneven)$ for Length 3",
-    "label": "op_time_equals_uneven_len_3",
-    "data_set": "equals_uneven_len_3"
+    "label": "op_time_equals_uneven_len_3"
   },
   {
     "op_time": true,
@@ -1516,7 +1346,6 @@
     "op_arg_type": "Uneven",
     "length": 4,
     "Selection": "$\\mathtt{equals}(Uneven)$ for Length 4",
-    "label": "op_time_equals_uneven_len_4",
-    "data_set": "equals_uneven_len_4"
+    "label": "op_time_equals_uneven_len_4"
   }
 ]

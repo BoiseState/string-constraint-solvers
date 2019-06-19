@@ -3,24 +3,21 @@
     "mc_time": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Model Counting Time for All Constraints",
-    "label": "mc_time_stat_all",
-    "data_set": "all"
+    "label": "mc_time_stat_all"
   },
   {
     "branch": true,
     "mc_time": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Model Counting Time for \\textit{true} Branch Constraints",
-    "label": "mc_time_stat_true",
-    "data_set": "true"
+    "label": "mc_time_stat_true"
   },
   {
     "branch": false,
     "mc_time": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Model Counting Time for \\textit{false} Branch Constraints",
-    "label": "mc_time_stat_false",
-    "data_set": "false"
+    "label": "mc_time_stat_false"
   },
   {
     "alphabet": "AB",
@@ -28,8 +25,7 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Model Counting Time for Constraints Where $|\\Sigma| = 2$",
-    "label": "mc_time_stat_alpha_AB",
-    "data_set": "alpha_AB"
+    "label": "mc_time_stat_alpha_AB"
   },
   {
     "alphabet": "AC",
@@ -37,8 +33,7 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Model Counting Time for Constraints Where $|\\Sigma| = 3$",
-    "label": "mc_time_stat_alpha_AC",
-    "data_set": "alpha_AC"
+    "label": "mc_time_stat_alpha_AC"
   },
   {
     "alphabet": "AD",
@@ -46,8 +41,7 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Model Counting Time for Constraints Where $|\\Sigma| = 4$",
-    "label": "mc_time_stat_alpha_AD",
-    "data_set": "alpha_AD"
+    "label": "mc_time_stat_alpha_AD"
   },
   {
     "alphabet": "AE",
@@ -55,8 +49,7 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Model Counting Time for Constraints Where $|\\Sigma| = 5$",
-    "label": "mc_time_stat_alpha_AE",
-    "data_set": "alpha_AE"
+    "label": "mc_time_stat_alpha_AE"
   },
   {
     "length": 1,
@@ -64,8 +57,7 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Model Counting Time for Constraints Following an Input String of Length 1",
-    "label": "mc_time_stat_len_1",
-    "data_set": "len_1"
+    "label": "mc_time_stat_len_1"
   },
   {
     "length": 2,
@@ -73,8 +65,7 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Model Counting Time for Constraints Following an Input String of Length 2",
-    "label": "mc_time_stat_len_2",
-    "data_set": "len_2"
+    "label": "mc_time_stat_len_2"
   },
   {
     "length": 3,
@@ -82,8 +73,7 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Model Counting Time for Constraints Following an Input String of Length 3",
-    "label": "mc_time_stat_len_3",
-    "data_set": "len_3"
+    "label": "mc_time_stat_len_3"
   },
   {
     "length": 4,
@@ -91,7 +81,6 @@
     "ind_var": true,
     "t_test": true,
     "caption": "\\textit{t}-test of Model Counting Time for Constraints Following an Input String of Length 3",
-    "label": "mc_time_stat_len_4",
-    "data_set": "len_4"
+    "label": "mc_time_stat_len_4"
   }
 ]
