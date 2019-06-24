@@ -103,6 +103,7 @@ D_TYPES = {
         ('Measurement', 'u1'),
         ('Solver', 'u1'),
         ('Data_Set', 'u1'),
+        ('Count', 'u8'),
         ('Avg/Freq', 'f8'),
         ('Median', 'f8'),
         ('Std_Dev', 'f8'),
@@ -183,6 +184,7 @@ OUT_FORMATS = {
         '{:d}'
     ],
     'stat': [
+        '{:d}',
         '{:d}',
         '{:d}',
         '{:d}',

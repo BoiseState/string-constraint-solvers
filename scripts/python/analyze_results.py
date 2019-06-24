@@ -1256,6 +1256,7 @@ def analyze_data(const_data, entries):
     stat_rows = numpy.empty(0, dtype=D_TYPES.get('stat'))
     box_plot_data = dict()
     histogram_data = dict()
+    unfiltered = filter_rows(const_data)
 
     for entry in entries:
         log.debug('Processing Data Set Entry: %s', entry.get('data_set'))
@@ -1289,7 +1290,7 @@ def analyze_data(const_data, entries):
                                 only_agree=entry.get('only_agree'))
 
             # get unfiltered measurements
-            u_values = get_values(filtered,
+            u_values = get_values(unfiltered,
                                   measurement,
                                   branch=entry.get('branch'),
                                   only_agree=entry.get('only_agree'))
@@ -1313,6 +1314,8 @@ def analyze_data(const_data, entries):
                 new_stat_rows['Solver'] = numpy.asarray(solver_indices)
                 new_stat_rows['Data_Set'] = numpy.full(new_stat_rows.size,
                                                        ds_val)
+                new_stat_rows['Count'] = numpy.full(new_stat_rows.size,
+                                                    filtered.size)
 
                 calculate_stats(values, u_values, new_stat_rows,
                                 agree=(measurement == 'agree'))
