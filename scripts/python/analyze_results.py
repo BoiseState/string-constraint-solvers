@@ -1364,7 +1364,10 @@ def perform_analysis(const_data, op_data):
 def output_results(stats_results, box_results, hist_results):
 
     log.debug('Saving Statistic Results')
-    stats_file_path = os.path.join(project_dir, 'data', 'stats.csv')
+    stats_file_path = os.path.join(project_dir,
+                                   'data',
+                                   'plot-data',
+                                   'stats.csv')
     output_csv_file(stats_file_path, stats_results, 'stat')
 
     # get plot data dir
@@ -1375,16 +1378,18 @@ def output_results(stats_results, box_results, hist_results):
     log.debug('Writing Box Plot Data')
     for m_num, ds_num in box_results.keys():
         box_values = box_results.get((m_num, ds_num))
-        box_file_name = '{0}-{1}-box.csv'.format(MEASUREMENTS[m_num],
+        box_file_name = '{0}_{1}_box.csv'.format(MEASUREMENTS[m_num],
                                                  DATA_SETS[ds_num])
+        box_file_name = box_file_name.replace('-', '_')
         box_file_path = os.path.join(plot_data_dir, box_file_name)
         output_csv_file(box_file_path, box_values, 'box')
 
     log.debug('Writing Histogram Data')
     for m_num, ds_num in hist_results.keys():
         hist_values = hist_results.get((m_num, ds_num))
-        hist_file_name = '{0}-{1}-hist.csv'.format(MEASUREMENTS[m_num],
+        hist_file_name = '{0}_{1}_hist.csv'.format(MEASUREMENTS[m_num],
                                                    DATA_SETS[ds_num])
+        hist_file_name = hist_file_name.replace('-', '_')
         hist_file_path = os.path.join(plot_data_dir, hist_file_name)
         output_csv_file(hist_file_path, hist_values, 'hist')
 
